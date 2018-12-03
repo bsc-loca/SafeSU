@@ -9,9 +9,9 @@
 		// Do not modify the parameters beyond this line
 
 
-		// Parameters of Axi Slave Bus Interface S00_AXI
-		parameter integer C_S00_AXI_DATA_WIDTH	= 32,
-		parameter integer C_S00_AXI_ADDR_WIDTH	= 7
+		// Parameters of Axi Slave Bus Interface S_AXI
+		parameter integer C_S_AXI_DATA_WIDTH	= 32,
+		parameter integer C_S_AXI_ADDR_WIDTH	= 7
 	)
 	(
 		// Users to add ports here
@@ -20,25 +20,25 @@
 		// Do not modify the ports beyond this line
 
 
-		// Ports of Axi Slave Bus Interface S00_AXI
+		// Ports of Axi Slave Bus Interface S_AXI
 		input wire  S_AXI_ACLK,
 		input wire  S_AXI_ARESETN,
-		input wire [C_S00_AXI_ADDR_WIDTH-1 : 0] S_AXI_AWADDR,
+		input wire [C_S_AXI_ADDR_WIDTH-1 : 0] S_AXI_AWADDR,
 		input wire [2 : 0] S_AXI_AWPROT,
 		input wire  S_AXI_AWVALID,
 		output wire  S_AXI_AWREADY,
-		input wire [C_S00_AXI_DATA_WIDTH-1 : 0] S_AXI_WDATA,
-		input wire [(C_S00_AXI_DATA_WIDTH/8)-1 : 0] S_AXI_WSTRB,
+		input wire [C_S_AXI_DATA_WIDTH-1 : 0] S_AXI_WDATA,
+		input wire [(C_S_AXI_DATA_WIDTH/8)-1 : 0] S_AXI_WSTRB,
 		input wire  S_AXI_WVALID,
 		output wire  S_AXI_WREADY,
 		output wire [1 : 0] S_AXI_BRESP,
 		output wire  S_AXI_BVALID,
 		input wire  S_AXI_BREADY,
-		input wire [C_S00_AXI_ADDR_WIDTH-1 : 0] S_AXI_ARADDR,
+		input wire [C_S_AXI_ADDR_WIDTH-1 : 0] S_AXI_ARADDR,
 		input wire [2 : 0] S_AXI_ARPROT,
 		input wire  S_AXI_ARVALID,
 		output wire  S_AXI_ARREADY,
-		output wire [C_S00_AXI_DATA_WIDTH-1 : 0] S_AXI_RDATA,
+		output wire [C_S_AXI_DATA_WIDTH-1 : 0] S_AXI_RDATA,
 		output wire [1 : 0] S_AXI_RRESP,
 		output wire  S_AXI_RVALID,
 		input wire  S_AXI_RREADY,
@@ -64,29 +64,29 @@
 		localparam integer N_COUNTERS	= 16;
 		// Configuration registers
 		localparam integer N_CONF_REGS	= 5;
-// Instantiation of Axi Bus Interface S00_AXI
-	wire [N_COUNTERS-1:0] EVents;
-    assign events = {EV0,
-                         EV1,
-                         EV2,
-                         EV3,
-                         EV4,
-                         EV5,
-                         EV6,
-                         EV7,
-                         EV8,
-                         EV9,
-                         EV10,
-                         EV11,
-                         EV12,
-                         EV13,
+// Instantiation of Axi Bus Interface S_AXI
+	wire [N_COUNTERS-1:0] events;
+    assign events = {    EV15,
                          EV14,
-                         EV15
+                         EV13,
+                         EV12,
+                         EV11,
+                         EV10,
+                         EV9,
+                         EV8,
+                         EV7,
+                         EV6,
+                         EV5,
+                         EV4,
+                         EV3,
+                         EV2,
+                         EV1,
+                         EV0
                         };
 
     AXI_PMU_interface_v1_0_S00_AXI # ( 
-		.C_S_AXI_DATA_WIDTH(C_S00_AXI_DATA_WIDTH),
-		.C_S_AXI_ADDR_WIDTH(C_S00_AXI_ADDR_WIDTH),
+		.C_S_AXI_DATA_WIDTH(C_S_AXI_DATA_WIDTH),
+		.C_S_AXI_ADDR_WIDTH(C_S_AXI_ADDR_WIDTH),
 	    .N_COUNTERS(N_COUNTERS),
         .N_CONF_REGS(N_CONF_REGS)
     ) AXI_PMU_inst (
