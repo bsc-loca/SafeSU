@@ -1,6 +1,7 @@
 myWrite_c_src = \
 	myWrite_main.c \
 	syscalls.c \
+	PMU.c \
 
 myWrite_riscv_src = \
 	crt.S
