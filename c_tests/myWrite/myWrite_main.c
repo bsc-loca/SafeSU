@@ -15,7 +15,7 @@ uint32_t bench_pmu(void){
     printf("\n ***bench_pmu***\n\n");
 #endif
     enable_PMU_32b();
-    search_loop(IO_BASE,IO_BASE+IO_MASK,4,0xBEAF);
+//    search_loop(IO_BASE,IO_BASE+IO_MASK,4,0xBEAF);
     disable_PMU_32b ();
     read_test_loop(PMU_BASE,PMU_BASE+MASK3,4);
     return(0);
