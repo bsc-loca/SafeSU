@@ -15,8 +15,11 @@ instbasedir = $(UCB_VLSI_HOME)/install
 # Sources
 #--------------------------------------------------------------------
 
-bmarks =  myWrite
+bmarks = \
+	myWrite \
+
 bmarks_host = \
+	myWrite \
 
 #--------------------------------------------------------------------
 # Build rules
@@ -27,8 +30,8 @@ HOST_COMP = gcc $(HOST_OPTS)
 
 RISCV_PREFIX=riscv64-unknown-elf-
 RISCV_GCC = $(RISCV_PREFIX)gcc
-RISCV_GCC_OPTS = -static -std=gnu99 -O0 -ffast-math -fno-common -fno-builtin-printf 
-RISCV_LINK = $(RISCV_GCC) -T $(bmarkdir)/common/test.ld $(incs) -Wl,--verbose
+RISCV_GCC_OPTS = -static -std=gnu99 -O2 -ffast-math -fno-common -fno-builtin-printf
+RISCV_LINK = $(RISCV_GCC) -T $(bmarkdir)/common/test.ld $(incs)
 RISCV_LINK_MT = $(RISCV_GCC) -T $(bmarkdir)/common/test-mt.ld
 RISCV_LINK_OPTS = -nostdlib -nostartfiles -ffast-math -lc -lgcc
 RISCV_OBJDUMP = $(RISCV_PREFIX)objdump --disassemble-all --disassemble-zeroes --section=.text --section=.text.startup --section=.data
@@ -40,11 +43,10 @@ VPATH += $(bmarkdir)/common
 incs  += -I$(bmarkdir)/../env -I$(bmarkdir)/common $(addprefix -I$(bmarkdir)/, $(bmarks))
 objs  :=
 
-
 include $(patsubst %, $(bmarkdir)/%/bmark.mk, $(bmarks))
 
 #------------------------------------------------------------
-# Build and run benchmarks on riscv simulator
+# Build and run programs on riscv simulator
 
 bmarks_riscv_bin  = $(addsuffix .riscv,  $(bmarks))
 bmarks_riscv_dump = $(addsuffix .riscv.dump, $(bmarks))
@@ -79,7 +81,7 @@ run-riscv: $(bmarks_riscv_out)
 junk += $(bmarks_riscv_bin) $(bmarks_riscv_dump) $(bmarks_riscv_hex) $(bmarks_riscv_out)
 
 #------------------------------------------------------------
-# Build and run benchmarks on host machine
+# Build and run programs on host machine
 
 bmarks_host_bin = $(addsuffix .host, $(bmarks_host))
 bmarks_host_out = $(addsuffix .host.out, $(bmarks_host))

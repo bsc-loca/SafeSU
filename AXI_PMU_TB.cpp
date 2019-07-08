@@ -1,11 +1,19 @@
-//testbench for the default case where bus is 64bits
+//-----------------------------------------------------
+// Project Name : DRAC
+// Function     : Shows intended behaviour 
+// Description  : This TB is not used to debug and veryfy just to show the
+//                intended behaviour.
+// Coder        : G.Cabo
+
+
+//testbench  is INCOMPLETE, do  not REUSE
 #include "VAXI_PMU.h"
 #include "VAXI_PMU_AXI_PMU.h"
 #include "VAXI_PMU_AXI_PMU_interface_v1_0_S00_AXI__pi1.h"
 #include "verilated.h"
 //waveform
 #include "verilated_vcd_c.h"
-
+#include <algorithm> 
 #define TRACE_DEF true 
 
 //time for waveforms
@@ -18,30 +26,40 @@ double sc_time_stamp(){ //called by $time in verilog
 void ticktoc_and_trace(VAXI_PMU* module,VerilatedVcdC* tfp){
   //waveforms and tick clock
   if (tfp != NULL){
-  module->s00_axi_aclk = !module->s00_axi_aclk;
+  module->eval();
+  module->S_AXI_ACLK_i = !module->S_AXI_ACLK_i;
+  module->eval();
+  tfp->dump (main_time);
+  module->eval();
+    main_time++;
+  module->eval();
+  module->S_AXI_ACLK_i = !module->S_AXI_ACLK_i;
   module->eval();
     tfp->dump (main_time);
-    main_time++;
-  module->s00_axi_aclk = !module->s00_axi_aclk;
   module->eval();
-    tfp->dump (main_time);
     main_time++;
+  module->eval();
   }else{
-  module->s00_axi_aclk = !module->s00_axi_aclk;
   module->eval();
-  module->s00_axi_aclk = !module->s00_axi_aclk;
+  module->S_AXI_ACLK_i = !module->S_AXI_ACLK_i;
+  module->eval();
+  module->S_AXI_ACLK_i = !module->S_AXI_ACLK_i;
   module->eval();
   }
 }
 void tick_and_trace(VAXI_PMU* module,VerilatedVcdC* tfp){
   //waveforms and tick clock
   if (tfp != NULL){
-  module->s00_axi_aclk = !module->s00_axi_aclk;
+  module->eval();
+  module->S_AXI_ACLK_i = !module->S_AXI_ACLK_i;
   module->eval();
     tfp->dump (main_time);
+  module->eval();
     main_time++;
+  module->eval();
   }else{
-  module->s00_axi_aclk = !module->s00_axi_aclk;
+  module->eval();
+  module->S_AXI_ACLK_i = !module->S_AXI_ACLK_i;
   module->eval();
   }
 }
@@ -50,35 +68,15 @@ void tick_and_trace(VAXI_PMU* module,VerilatedVcdC* tfp){
 
 struct TestCase {
     const char* name;
-    
     bool en, clr;
-    uint8_t sel_buffer;
-    uint8_t sel_events;
-  
-    //bool s00_axi_aclk,CPUtimer,DcacheMisses;
-    uint64_t expected_events;
-    uint64_t expected_EV0;
+    uint64_t ev0,ev1,ev2,ev3,quota_mask,quota_lim;
 };
 
 TestCase test_cases[] {
-//name                        en  clr sel_buffer  sel_events  exNev  exEV0    
-  { "slv_reg0"                ,1  ,0  ,0x00       ,0          ,0x0f  ,0x0f  },
-  { "slv_reg1"                ,1  ,0  ,0x01       ,0          ,0x0f  ,0x0f },
-  { "slv_reg2"                ,1  ,0  ,0x02       ,0          ,0x0f  ,0x0f },
-  { "slv_reg3"                ,1  ,0  ,0x03       ,0          ,0x0f  ,0x0f },
-  { "slv_reg4"                ,1  ,0  ,0x04       ,0          ,0x0f  ,0x0f },
-  { "slv_reg5"                ,1  ,0  ,0x05       ,0          ,0x0f  ,0x0f },
-  { "slv_reg6"                ,1  ,0  ,0x06       ,0          ,0x0f  ,0x0f },
-  { "slv_reg7"                ,1  ,0  ,0x07       ,0          ,0x0f  ,0x0f },
-  { "slv_reg8"                ,1  ,0  ,0x08       ,0          ,0x0f  ,0x0f },
-  { "slv_reg9"                ,1  ,0  ,0x09       ,0          ,0x0f  ,0x0f },
-  { "slv_reg10"               ,1  ,0  ,0x0a       ,0          ,0x0f  ,0x0f },
-  { "slv_reg11"               ,1  ,0  ,0x0b       ,0          ,0x0f  ,0x0f },
-  { "slv_reg12"               ,1  ,0  ,0x0c       ,0          ,0x0f  ,0x0f },
-  { "slv_reg13"               ,1  ,0  ,0x0d       ,0          ,0x0f  ,0x0f },
-  { "slv_reg14"               ,1  ,0  ,0x0e       ,0          ,0x0f  ,0x0f },
-  { "slv_reg15"               ,1  ,0  ,0x0f       ,0          ,0x0f  ,0x0f },
-  { "slv_reg0"                ,1  ,1  ,0x0f       ,0          ,0x0f  ,0x0f },
+//name                  en,clr,ev0,ev1,ev2,ev3,quota_mask,quota_lim     
+  { "No Int_quota "     ,1 ,0  ,2  ,3  ,3  ,4  ,0b11    ,6   },
+  { "Int_quota "        ,1 ,0  ,1  ,0  ,0  ,0  ,0b11    ,6   },
+  { "Int_quota "        ,1 ,0  ,1  ,3  ,3  ,4  ,0b11    ,6   },
 };
 
 int main(int argc, char **argv, char **env) {
@@ -99,40 +97,72 @@ int main(int argc, char **argv, char **env) {
     std::cout << vcdname << std::endl;
     tfp->open(vcdname.c_str());
   }
-  //pointers to the values of the register
-  /*
-  uint64_t* output_regs[16]={
-  &PMU->slv_reg0
-  };*/
   
-  //initial configuration
-  PMU->s00_ev0=0;
-  PMU->s00_axi_aresetn=0;
-  tick_and_trace(PMU,tfp);
-  PMU->s00_axi_aresetn=1;
-  tick_and_trace(PMU,tfp);
+  //initial reset 
+  PMU->S_AXI_ARESETN_i=0;
+  ticktoc_and_trace(PMU,tfp);
+  PMU->S_AXI_ARESETN_i=1;
+  ticktoc_and_trace(PMU,tfp);
  //loop through test cases 
  int num_test_cases = sizeof(test_cases)/sizeof(TestCase);
  for(int k = 0; k < num_test_cases; k++) {
       TestCase *test_case = &test_cases[k];
       //fill configuration register
-      PMU->AXI_PMU->AXI_PMU_inst->slv_reg20=0;
-      PMU->AXI_PMU->AXI_PMU_inst->slv_reg20|=test_case->en;
-      PMU->AXI_PMU->AXI_PMU_inst->slv_reg20|=(test_case->sel_buffer)<<1;
-      PMU->AXI_PMU->AXI_PMU_inst->slv_reg20|=(test_case->sel_events)<<5;
-      PMU->AXI_PMU->AXI_PMU_inst->slv_reg20|=(test_case->clr)<<9;
+      PMU->AXI_PMU->inst_AXI_PMU->slv_reg[16]|=test_case->en;
+      PMU->AXI_PMU->inst_AXI_PMU->slv_reg[16]|=(test_case->clr)<<1;
+      //set the mask for quota
+      PMU->AXI_PMU->inst_AXI_PMU->slv_reg[22]|=test_case->quota_mask; 
+      //Set the limit of quota
+      PMU->AXI_PMU->inst_AXI_PMU->slv_reg[23]|=test_case->quota_lim;
       // run  some cycles
-      for(uint64_t i=0;i<test_case->expected_EV0;i++){
-       PMU->s00_ev0= !PMU->s00_ev0;
-          //waveforms and tick clock
-       tick_and_trace(PMU,tfp);
-       
-       PMU->s00_ev0= !PMU->s00_ev0;
-          //waveforms and tick clock
-       tick_and_trace(PMU,tfp);
-       
+      uint64_t tmp=std::max(std::max(test_case->ev0,test_case->ev1),std::max(test_case->ev2,test_case->ev3));
+      for(uint64_t i=0;i<tmp;i++){
+      tick_and_trace(PMU,tfp);
+      tick_and_trace(PMU,tfp);
+        if(i<test_case->ev0){
+            PMU->EV0_i= 1;
+        }
+        if(i<test_case->ev1){
+            PMU->EV1_i= 1;
+        }
+        if(i<test_case->ev2){
+            PMU->EV2_i= 1;
+        }
+        if(i<test_case->ev3){
+            PMU->EV3_i= 1;
+        }
+        
+        if(i>=test_case->ev0){
+            PMU->EV0_i= 0;
+        }
+        if(i>=test_case->ev1){
+            PMU->EV1_i= 0;
+        }
+        if(i>=test_case->ev2){
+            PMU->EV2_i= 0;
+        }
+        if(i>=test_case->ev3){
+            PMU->EV3_i= 0;
+        }
       }  
   }
+    
+  //do a software reset
+  PMU->AXI_PMU->inst_AXI_PMU->slv_reg[16]|=1<<1;
+  tick_and_trace(PMU,tfp);
+  tick_and_trace(PMU,tfp);
+  //continue monitoring
+  PMU->AXI_PMU->inst_AXI_PMU->slv_reg[16]&=0<<1;
+  tick_and_trace(PMU,tfp);
+  tick_and_trace(PMU,tfp);
+  //delay test
+  tick_and_trace(PMU,tfp);
+  tick_and_trace(PMU,tfp);
+  tick_and_trace(PMU,tfp);
+  tick_and_trace(PMU,tfp);
+  tick_and_trace(PMU,tfp);
+  tick_and_trace(PMU,tfp);
+  tick_and_trace(PMU,tfp);
   //waveforms
   if (tfp != NULL){
     tfp->dump (main_time);
@@ -144,4 +174,5 @@ int main(int argc, char **argv, char **env) {
   delete PMU;
 exit(0);
 }
+
 
