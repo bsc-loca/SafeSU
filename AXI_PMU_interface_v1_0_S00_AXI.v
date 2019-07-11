@@ -11,7 +11,6 @@
 // Coder      : G.Cabo
 
 `default_nettype none
-`timescale 1 ns / 1 ps
 
 `timescale 1 ns / 1 ps
 
@@ -24,9 +23,17 @@
 		// Amount of counters
 		parameter integer N_COUNTERS	= 9,
 		// Configuration registers
-		parameter integer N_CONF_REGS	= 1
+		parameter integer N_CONF_REGS	= 1,
+		// Overflow
+		parameter integer OVERFLOW	= 1, //Yes/No
+		// Quota
+		parameter integer QUOTA	= 1 //Yes/No
 	)
 	(
+        //interruption rises when one of the counters overflows
+        output int_overflow_o,
+        //interruption rises when the total of cuota consumed is exceeded
+        output int_quota_o,
         //external signals from Soc events
         input wire [N_COUNTERS-1:0] events_i, // bus of signals for counters 
 		// Global Clock Signal
@@ -85,6 +92,7 @@
 
 	// AXI4LITE signals
 	/* verilator lint_off UNUSED */
+    //Lower bits are not used due to 32 bit address aligment
     reg [C_S_AXI_ADDR_WIDTH-1 : 0] 	axi_awaddr;
 	/* verilator lint_on UNUSED */
 	reg  	axi_awready;
@@ -92,6 +100,7 @@
 	reg [1 : 0] 	axi_bresp;
 	reg  	axi_bvalid;
 	/* verilator lint_off UNUSED */
+    //Lower bits are not used due to 32 bit address aligment
 	reg [C_S_AXI_ADDR_WIDTH-1 : 0] 	axi_araddr;
 	/* verilator lint_on UNUSED */
 	reg  	axi_arready;
@@ -106,6 +115,27 @@
 	// ADDR_LSB = 3 for 64 bits (n downto 3)
 	localparam integer ADDR_LSB = (C_S_AXI_DATA_WIDTH/32) + 1;
 	localparam integer OPT_MEM_ADDR_BITS = 4;
+    
+    //One bit per counter and round up to N registers of DATA_WIDTH
+    localparam integer N_OVERFLOW_REGS= (OVERFLOW == 0)? 0
+                       :(N_COUNTERS % C_S_AXI_DATA_WIDTH) >0
+                       ? (N_COUNTERS / C_S_AXI_DATA_WIDTH)+1 
+                       : (N_COUNTERS / C_S_AXI_DATA_WIDTH);
+
+    localparam integer N_QUOTA_MASK= (QUOTA==1)
+                       ?(N_COUNTERS/C_S_AXI_DATA_WIDTH)+1:0;
+
+    localparam integer N_QUOTA_LIMIT= (QUOTA==1)?1:0;//quota_limit
+
+    localparam integer TOTAL_REGS = N_CONF_REGS+N_OVERFLOW_REGS+N_COUNTERS 
+                                    +N_QUOTA_MASK+N_QUOTA_LIMIT;
+
+    localparam integer RW_REGS = N_CONF_REGS+N_OVERFLOW_REGS+N_QUOTA_MASK
+                                 +N_QUOTA_LIMIT;
+    //if more than 32 counters extra registers are needed for overflow
+    localparam integer BASE_QUOTA = N_COUNTERS+N_CONF_REGS+N_OVERFLOW_REGS;
+    //This may change, there are advantages to be able to set the initial value
+    localparam integer R_ONLY_REGS = N_COUNTERS;
 	//----------------------------------------------
 	//-- Signals for user logic register space example
 	//------------------------------------------------
@@ -231,9 +261,10 @@
 	    if (slv_reg_wren)
 	      begin : strobes
             integer i;
-            // Address read as integer to avoid width mismatch
             integer write_address;
             /* verilator lint_off WIDTH */
+            // Width mismatch between integer 32B and MSB due to aligment of 
+            // addresses
             write_address = axi_awaddr[ADDR_LSB+OPT_MEM_ADDR_BITS:ADDR_LSB];
             /* verilator lint_on WIDTH */
             
@@ -397,7 +428,13 @@
     //the second bit of the first config register is the reset
     assign reset_PMU = slv_reg[N_COUNTERS][1];
    
-   //Adders with reset
+//-------------Adders with reset
+    //Inside the generate loop it creates as many counters as the parameter
+    //N_COUNTERS. For each of them one slv_reg is assigned. When a soft reset
+    //(reset_PMU high) or hard reset (S_AXI_ARESETN_i) slv_registers are set
+    //to 0. If non of this cases happen if the PMU is enabled (en_PMU high) and
+    //the event of the given counter (events_i[k]) is high the counter
+    // increases by one.
     genvar k;
     generate
     for (k=0; k<N_COUNTERS; k=k+1) begin : generated_counter
@@ -411,5 +448,80 @@
         end
     end
     endgenerate
+//-------------Overflow
+//TODO:
+//this one may not be parametric if more than 32 counters are used
+    //Here we generate the overflow signal for each one of the counters. 
+    //One bit per counter is given in the overflow register. a accounts for
+    //multiple 32 bit registers if needed.(slv_reg[a+OVERFLOW_REGS_OFFSET])
+    //Overflow registers are placed after Counter and Configuration registers.
+    //At hard or soft reset values are set to 0. 
+    genvar j;
+    generate
+        if(OVERFLOW==1) begin : generated_overflow
+        //iterate over the registers, each one has one overflow bit
+            for (j=0; j<N_COUNTERS; j=j+1) begin : overflow_bit
+                //When more than 32 counters, extra registers are needed
+                localparam integer OVERFLOW_REGS_OFFSET= N_COUNTERS+N_CONF_REGS;
+                localparam integer a = j/C_S_AXI_DATA_WIDTH;
+                assign int_overflow_o =(reset_PMU || (S_AXI_ARESETN_i == 1'b0))?
+                                     1'b0: | slv_reg[a+OVERFLOW_REGS_OFFSET];
+                always @(posedge S_AXI_ACLK_i) begin
+                    if (reset_PMU || (S_AXI_ARESETN_i == 1'b0)) 
+                        slv_reg[a+OVERFLOW_REGS_OFFSET]
+                        <={C_S_AXI_DATA_WIDTH{1'b0}};
+                    else if (slv_reg[j]=={C_S_AXI_DATA_WIDTH{1'b1}})
+                             slv_reg[a+OVERFLOW_REGS_OFFSET][j]<=1'b1;
+                end
+            end
+        //decide the overflow register if there are more than 32 counters
+        //if overflow set bit to 1
+        end else assign int_overflow_o = 0'b0;
+    endgenerate
+
+    
+//-------------Quota
+    //TODO
+    //instead os sum the 16 registers at the same time you could use a 
+    //statemachine that sums two at a time. you will increase latency but less
+    //hardware is required
+    //64 bits for overflow are not needed
+
+    //A quota consumption interruption is generated when a the total of 
+    //measured events exceeds the value set in slv_reg[BASE_QUOTA+1].
+    //To account for a given event a 1 must be set to the correspondent bit in
+    //slv_reg[BASE_QUOTA][x]. (This register is refered as Quota mask)
+    //When the mask is 0 the value is not accounted for the quota.
+    //If the QUOTA local parameter is set to 0, int_quota_o will never trigger.
+    genvar x;
+    generate
+        if(QUOTA==1) begin : generated_quota
+            //avoid width mismatch when dealing with 32b register addition
+            localparam padding0 = 64-C_S_AXI_DATA_WIDTH;
+            assign int_quota_o =(suma>{{padding0{1'b0}},slv_reg[BASE_QUOTA+1]})? 1'b1:1'b0;
+            //from each register we take a wire 
+            wire [C_S_AXI_DATA_WIDTH-1:0] values_count [0:N_COUNTERS-1];
+            reg [63:0]suma;//64bits to avoid overflows
+            wire[63:0]tmp;
+            for (x=0; x<N_COUNTERS; x=x+1) begin : check_mask
+                //when reset is eneabled the values are 0. If not reset
+                // check the mask and pass the value of the counter if enabled
+                assign values_count[x]=
+                        (reset_PMU || (S_AXI_ARESETN_i == 1'b0))
+                        ?{C_S_AXI_DATA_WIDTH{1'b0}}:
+                        {C_S_AXI_DATA_WIDTH{slv_reg[BASE_QUOTA][x]}}
+                        &slv_reg[x];
+            end
+            //Add quotas of all signals. The ones that are not enabled are 0
+            always @(*) begin
+                    tmp =0;
+                    for(x=0; x<N_COUNTERS; x=x+1)  begin: sum_quotas
+                       tmp={{padding0{1'b0}},values_count[x]}+tmp;
+                    end
+                    suma=tmp;
+            end
+        end else assign int_quota_o =1'b0;
+    endgenerate
+`default_nettype wire //allow compatibility with legacy code and xilinx ip
 endmodule
 

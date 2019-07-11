@@ -52,15 +52,18 @@
         input  wire        EV12_i            ,// signal  
         input  wire        EV13_i            ,// signal  
         input  wire        EV14_i            ,// signal  
-        input  wire        EV15_i            // signal  
+        input  wire        EV15_i            ,// signal  
+        //outputs
+        output wire        int_overflow_o,
+        output wire        int_quota_o
     );
     
     localparam integer N_COUNTERS	= 16;
     // Configuration registers
     localparam integer N_CONF_REGS	= 5;
-    wire [N_COUNTERS-1:0] events_int;
+    wire [N_COUNTERS-1:0] events_i;
     // Assign individual signals to packed array 
-    assign events_int= { EV15_i,
+    assign events_i= { EV15_i,
                          EV14_i,
                          EV13_i,
                          EV12_i,
@@ -83,9 +86,12 @@
         .C_S_AXI_DATA_WIDTH(C_S_AXI_DATA_WIDTH),
         .C_S_AXI_ADDR_WIDTH(C_S_AXI_ADDR_WIDTH),
         .N_COUNTERS(N_COUNTERS),
-        .N_CONF_REGS(N_CONF_REGS)
+        .N_CONF_REGS(N_CONF_REGS),
+		.OVERFLOW(0), //No
+		.QUOTA(0) //No
     ) inst_AXI_PMU (
-        .S_AXI_ACLK_i(S_AXI_ACLK_i),
+        .*
+/*        .S_AXI_ACLK_i(S_AXI_ACLK_i),
         .S_AXI_ARESETN_i(S_AXI_ARESETN_i),
         .S_AXI_AWADDR_i(S_AXI_AWADDR_i),
         .S_AXI_AWVALID_i(S_AXI_AWVALID_i),
@@ -104,6 +110,9 @@
         .S_AXI_RRESP_o(S_AXI_RRESP_o),
         .S_AXI_RVALID_o(S_AXI_RVALID_o),
         .S_AXI_RREADY_i(S_AXI_RREADY_i),
-        .events_i(events_int)
+        .events_i(events_i),
+        .int_overflow_o(int_overflow_o),
+        .int_quota_o(int_quota_o)*/
+
     );
 	endmodule
