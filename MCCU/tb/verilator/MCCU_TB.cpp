@@ -65,12 +65,19 @@ void tick_and_trace(VMCCU* module,VerilatedVcdC* tfp){
 
 struct TestCase {
     const char* name;
-    bool en, rstn;
+    bool rstn_i, enable_i; 
+    uint64_t events_i[4]; 
+    uint64_t quota_i[4]; 
+    uint16_t events_weights_i[4][4];
 };
 
 TestCase test_cases[] {
-//name                  en,clr,ev0,ev1,ev2,ev3,quota_mask,quota_lim     
-  { "No Int_quota "     ,1 ,0  },
+//name                  ,rstn_i ,enable_i ,events_i      ,quota_i    ,events_weights_i 
+  { "Rst          "     ,0      ,0        ,{0,2,0,4}     ,{0,0,0,0} ,{{0,0,0,0},{5,0,0,8},{9,0,11,7},{9,6,11,11}}},
+  { "Init         "     ,1      ,0        ,{16,16,7,7}   ,{10,15,20,25} ,{{1,2,3,4},{5,6,7,8},{9,10,11,12},{13,14,15,16}}},
+  { "Delay        "     ,1      ,0        ,{14,15,3,4}   ,{10,15,20,25} ,{{1,2,3,4},{5,6,7,8},{9,10,11,12},{13,14,15,16}}},
+  { "Enable       "     ,1      ,1        ,{13,12,3,4}   ,{10,15,20,25} ,{{1,2,3,4},{5,6,7,8},{9,10,11,12},{13,14,15,16}}},
+  { "Enable       "     ,1      ,1        ,{1,2,3,4}     ,{10,15,20,25} ,{{1,2,3,4},{5,6,7,8},{9,10,11,12},{13,14,15,16}}},
 };
 
 int main(int argc, char **argv, char **env) {
@@ -101,6 +108,20 @@ int main(int argc, char **argv, char **env) {
  int num_test_cases = sizeof(test_cases)/sizeof(TestCase);
  for(int k = 0; k < num_test_cases; k++) {
       TestCase *test_case = &test_cases[k];
+      MCCU->rstn_i = test_case->rstn_i;
+      MCCU->enable_i = test_case->enable_i;
+    //TODO: find a way to read localparam to  drive this loops
+      int N_CORES =2; 
+      int CORE_EVENTS=4;
+      for( int i = 0; i<N_CORES; i++){
+          MCCU->events_i[i] = test_case->events_i[i];
+          MCCU->quota_i[i] = test_case->quota_i[i];
+          for(int j = 0; j<CORE_EVENTS; j++) {
+            MCCU->events_weights_i[i][j] = test_case->events_weights_i[i][j];
+          }
+      }
+      ticktoc_and_trace(MCCU,tfp);
+//  printf("%s: passed\n", MCCU->DATA_WIDTH);
   }
     
   //delay test
