@@ -7,7 +7,7 @@ echo -e "${RED} Modify the script if you need to set your verilator path ${NC}"
 #export VERILATOR_ROOT=$TOP/verilator
 #____________end set path verilator
 rm -rf obj_dir 
-verilator -Wall --cc --trace MCCU.v --exe MCCU_TB.cpp -CFLAGS "-std=c++14"
+verilator -Wall --cc --trace ../../hdl/MCCU.sv --exe MCCU_TB.cpp -CFLAGS "-std=c++14"
 
 cd obj_dir/
 make -f VMCCU.mk 
