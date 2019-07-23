@@ -19,7 +19,6 @@ double sc_time_stamp(){ //called by $time in verilog
     return main_time;   //converts to double , to match
 }
 // debug function to generate waveforms and clock
-// debug function to generate waveforms and clock
 void ticktoc_and_trace(VMCCU* module,VerilatedVcdC* tfp){
   //waveforms and tick clock
   if (tfp != NULL){
@@ -61,8 +60,6 @@ void tick_and_trace(VMCCU* module,VerilatedVcdC* tfp){
   }
 }
 
-
-
 struct TestCase {
     const char* name;
     bool rstn_i, enable_i; 
@@ -74,11 +71,18 @@ struct TestCase {
 TestCase test_cases[] {
 //name                  ,rstn_i ,enable_i ,events_i      ,quota_i    ,events_weights_i 
   { "Rst          "     ,0      ,0        ,{0,2,0,4}     ,{0,0,0,0} ,{{0,0,0,0},{5,0,0,8},{9,0,11,7},{9,6,11,11}}},
-  { "Init         "     ,1      ,0        ,{16,16,7,7}   ,{10,15,20,25} ,{{1,2,3,4},{5,6,7,8},{9,10,11,12},{13,14,15,16}}},
-  { "Delay        "     ,1      ,0        ,{14,15,3,4}   ,{10,15,20,25} ,{{1,2,3,4},{5,6,7,8},{9,10,11,12},{13,14,15,16}}},
+  { "Init         "     ,1      ,0        ,{15,15,7,7}   ,{10,15,20,25} ,{{1,2,3,4},{5,6,7,8},{9,10,11,12},{13,14,15,16}}},
+  { "Delay        "     ,1      ,0        ,{15,15,3,4}   ,{10,15,20,25} ,{{1,2,3,4},{5,6,7,8},{9,10,11,12},{13,14,15,16}}},
   { "Enable       "     ,1      ,1        ,{13,12,3,4}   ,{10,15,20,25} ,{{1,2,3,4},{5,6,7,8},{9,10,11,12},{13,14,15,16}}},
   { "Enable       "     ,1      ,1        ,{1,2,3,4}     ,{10,15,20,25} ,{{1,2,3,4},{5,6,7,8},{9,10,11,12},{13,14,15,16}}},
 };
+/*
+TestCase test_cases[] {
+//name                  ,rstn_i ,enable_i ,events_i      ,quota_i    ,events_weights_i 
+  { "Rst          "     ,0      ,0        ,{0,0,0,0}     ,{0,0,0,0} ,{{0,0,0,0},{0,0,0,0},{9,0,11,7},{9,6,11,11}}},
+  { "Init         "     ,1      ,0        ,{1,0,0,0}   ,{0,0,0,0} ,{{512,0,0,0},{0,0,0,0},{9,10,11,12},{13,14,15,16}}},
+  { "wait          "    ,1      ,0        ,{0,0,0,0}     ,{0,0,0,0} ,{{0,0,0,0},{0,0,0,0},{9,0,11,7},{9,6,11,11}}},
+};*/
 
 int main(int argc, char **argv, char **env) {
   //enable waveforms

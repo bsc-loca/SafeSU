@@ -1,0 +1,24 @@
+[options]
+mode bmc
+#append 10
+
+[engines]
+smtbmc boolector
+smtbmc
+abc bmc3
+
+#SystemVerilog
+[script]
+verific -vlog-define FORMAL
+verific -sv MCCU.sv
+verific -import -extnets -all MCCU
+prep -top MCCU
+
+#Verilog
+#[script]
+#read_verilog -formal MCCU.sv
+#prep -top MCCU
+#opt -share_all
+
+[files]
+/home/bscuser/GITLAB/multicore_pmu/lagarto-lowrisc/lagarto_modulos/AXI_PMU/MCCU/hdl/MCCU.sv
