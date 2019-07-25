@@ -23,20 +23,22 @@
 		// Width of weights registers
 		parameter integer WEIGHTS_WIDTH	= 7,
         //Cores
-        parameter integer N_CORES       =2,
+        parameter integer N_CORES       =1,
         //Signals per core
-        parameter integer CORE_EVENTS  =8
+        parameter integer CORE_EVENTS  =4
 	)
 	(
 		input wire clk_i,
         //Active low asyncronous reset. It can have hardware or software source
 		input wire rstn_i,
-		//TODO: Add enable signal, active high
+		//Active high enable. If enabled quota can decrease and interruptions
+        //can be generated
         input wire enable_i,
         //Monitored events that can generate contention in the system
         input wire [CORE_EVENTS-1:0] events_i [0:N_CORES-1],
         //Quota for each of the cores, internally registered, set by software
         input wire [DATA_WIDTH-1:0] quota_i [0:N_CORES-1],
+        //Internal quota available
         output wire [DATA_WIDTH-1:0] quota_o [0:N_CORES-1],
         //Worst contention that  each of the previous events can generate,
         //internally registered, set by software, if 0 event is dissabled
