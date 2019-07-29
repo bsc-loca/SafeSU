@@ -63,18 +63,19 @@ void tick_and_trace(VMCCU* module,VerilatedVcdC* tfp){
 struct TestCase {
     const char* name;
     bool rstn_i, enable_i; 
-    uint64_t events_i[4]; 
+    uint64_t events_i[4];
+    uint8_t update_quota_i[4];
     uint64_t quota_i[4]; 
     uint16_t events_weights_i[4][4];
 };
 
 TestCase test_cases[] {
-//name                  ,rstn_i ,enable_i ,events_i      ,quota_i    ,events_weights_i 
-  { "Rst          "     ,0      ,0        ,{0,2,0,4}     ,{0,0,0,0} ,{{0,0,0,0},{5,0,0,8},{9,0,11,7},{9,6,11,11}}},
-  { "Init         "     ,1      ,0        ,{15,15,7,7}   ,{10,15,20,25} ,{{1,2,3,4},{5,6,7,8},{9,10,11,12},{13,14,15,16}}},
-  { "Delay        "     ,1      ,0        ,{15,15,3,4}   ,{10,15,20,25} ,{{1,2,3,4},{5,6,7,8},{9,10,11,12},{13,14,15,16}}},
-  { "Enable       "     ,1      ,1        ,{13,12,3,4}   ,{10,15,20,25} ,{{1,2,3,4},{5,6,7,8},{9,10,11,12},{13,14,15,16}}},
-  { "Enable       "     ,1      ,1        ,{1,2,3,4}     ,{10,15,20,25} ,{{1,2,3,4},{5,6,7,8},{9,10,11,12},{13,14,15,16}}},
+//name                  ,rstn_i ,enable_i,update_quota_i ,events_i      ,quota_i    ,events_weights_i 
+  { "Rst          "     ,0      ,0       ,{0,0,0,0}      ,{0,2,0,4}     ,{0,0,0,0} ,{{0,0,0,0},{5,0,0,8},{9,0,11,7},{9,6,11,11}}},
+  { "Init         "     ,1      ,0       ,{1,0,0,0}      ,{15,15,7,7}   ,{10,15,20,25} ,{{1,2,3,4},{5,6,7,8},{9,10,11,12},{13,14,15,16}}},
+  { "Delay        "     ,1      ,0       ,{0,0,0,0}      ,{15,15,3,4}   ,{10,15,20,25} ,{{1,2,3,4},{5,6,7,8},{9,10,11,12},{13,14,15,16}}},
+  { "Enable       "     ,1      ,1       ,{0,0,0,0}      ,{13,12,3,4}   ,{10,15,20,25} ,{{1,2,3,4},{5,6,7,8},{9,10,11,12},{13,14,15,16}}},
+  { "Enable       "     ,1      ,1       ,{0,0,0,0}      ,{1,2,3,4}     ,{10,15,20,25} ,{{1,2,3,4},{5,6,7,8},{9,10,11,12},{13,14,15,16}}},
 };
 /*
 TestCase test_cases[] {
@@ -118,6 +119,7 @@ int main(int argc, char **argv, char **env) {
       int N_CORES =2; 
       int CORE_EVENTS=4;
       for( int i = 0; i<N_CORES; i++){
+          MCCU->update_quota_i[i] = test_case->update_quota_i[i];
           MCCU->events_i[i] = test_case->events_i[i];
           MCCU->quota_i[i] = test_case->quota_i[i];
           for(int j = 0; j<CORE_EVENTS; j++) {

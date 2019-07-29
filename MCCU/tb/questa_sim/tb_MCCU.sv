@@ -38,6 +38,7 @@ module tb_MCCU();
     reg     [TB_DATA_WIDTH-1:0] tb_quota_i [0:TB_N_CORES-1];
     reg     [TB_WEIGHTS_WIDTH-1:0] tb_events_weights_i [0:TB_N_CORES-1]
                                                [0:TB_CORE_EVENTS-1];
+    reg     tb_update_quota_i [0:TB_N_CORES-1];
     wire    [TB_DATA_WIDTH-1:0] tb_quota_o [0:TB_N_CORES-1];
     wire    tb_interruption_quota_o[TB_N_CORES-1:0];
 //***Module***
@@ -53,6 +54,7 @@ module tb_MCCU();
         .enable_i   (tb_enable_i),
         .events_i (tb_events_i),
         .quota_i (tb_quota_i),
+        .update_quota_i(tb_update_quota_i),
         .quota_o (tb_quota_o),
         .events_weights_i(tb_events_weights_i),
         .interruption_quota_o(tb_interruption_quota_o)
@@ -67,11 +69,6 @@ module tb_MCCU();
         begin
             $display("*** Toggle reset.");
             tb_rstn_i <= 1'b0; 
-            //TB registers reset, Host could have same reset or not
-            //This emulates a wrapper that resets alonf DUT
-            tb_enable_i ='{default:0};
-            tb_events_i ='{default:0};
-            tb_quota_i = '{default:0};
             #CLK_PERIOD;
             tb_rstn_i <= 1'b1;
             #CLK_PERIOD;
@@ -80,16 +77,18 @@ module tb_MCCU();
     endtask 
 
 //***task automatic init_sim***
-//when to use this? Is better not use it and handle the reset with hardware
+//Initialize TB registers to a known state. Assumes good host
 task automatic init_sim;
         begin
             $display("*** init sim.");
             //*** TODO ***
-            tb_clk_i <='{default:0};
+            tb_clk_i <='{default:1};
             tb_rstn_i<='{default:0};
             tb_enable_i <='{default:0};
             tb_events_i <='{default:0};
             tb_quota_i <= '{default:0};
+            tb_events_weights_i <= '{default:0};
+            tb_update_quota_i <= '{default:0};
             $display("Done");
         end
     endtask
@@ -113,40 +112,47 @@ task automatic init_sim;
             //***Handcrafted test***
             enable_MCCU;
             set_quota(q_val,c1_id);
-            get_remaining_quota(c1_id,temp);
             #CLK_PERIOD;
+            get_remaining_quota(c1_id,temp);
             if(temp!=q_val)
                 $error("FAIL test_sim.\n Expected remaining_quota %d,\
                 obtained %d",q_val,temp);
             set_quota(200,c1_id);
+            #CLK_PERIOD;
             disable_MCCU;
             get_remaining_quota(c1_id,temp);
             if(temp!=200)
                 $error("FAIL test_sim.\n Expected remaining_quota %d,\
                 obtained %d",200,temp);
             #CLK_PERIOD;
-            //set_weight(c1_id,c1_s1,value);//works
             set_weight(c1_id,c1_s1,10);
-            //set_weight(2'b10,1'b0,7'b11111111);//works
-            //set_weight(2,0,101);//works
             #CLK_PERIOD;
             //quota shall remain 200
             rise_event(c1_id,c1_s1);
+            #CLK_PERIOD;
             get_remaining_quota(c1_id,temp);
             if(temp!=200)
                 $error("FAIL test_sim.\n Expected remaining_quota %d,\
                 obtained %d",200,temp);
-            #CLK_PERIOD;
             //quota shall decrease to 190 
             enable_MCCU;
             rise_event(c1_id,c1_s1);
+            #CLK_PERIOD;
             get_remaining_quota(c1_id,temp);
             if(temp!=190)
                 $error("FAIL test_sim.\n Expected remaining_quota %d,\
                 obtained %d",190,temp);
+            //quota shall decrease to 180 
+            release_event(c1_id,c1_s1);
+            #CLK_PERIOD;
+            get_remaining_quota(c1_id,temp);
+            if(temp!=180)
+                $error("FAIL test_sim.\n Expected remaining_quota %d,\
+                obtained %d",180,temp);
+            #CLK_PERIOD;
+            reset_dut;
             #CLK_PERIOD;
             //quota sall be 0
-            reset_dut;
             get_remaining_quota(c1_id,temp);
             if(temp!=0)
                 $error("FAIL test_sim.\n Expected remaining_quota %d,\
@@ -154,6 +160,7 @@ task automatic init_sim;
             #CLK_PERIOD;
             //interrupt shall be risen quota shall remain 0
             rise_event(c1_id,c1_s1);
+            #CLK_PERIOD;
             get_remaining_quota(c1_id,temp);
             if(temp!=0)
                 $error("FAIL test_sim.\n Expected remaining_quota %d,\
@@ -171,6 +178,10 @@ task automatic init_sim;
         input int unsigned core_i;
         begin
             $display("*** set_quota of core: %d to: %d",core_i,quota_i);
+            tb_update_quota_i[core_i] <= 1'b1;       
+            tb_quota_i[core_i] = quota_i;       
+            #CLK_PERIOD;
+            tb_update_quota_i[core_i] <= 1'b0;       
             tb_quota_i[core_i] = quota_i;       
         end
             //if((quota_i>2**TB_DATA_WIDTH))
@@ -182,15 +193,26 @@ task automatic init_sim;
                 $display("FAIL");
             end
     endtask 
+//***task get_remaining_quota
+    task automatic get_remaining_quota;
+        input int unsigned core_i;
+        output int unsigned value_o;
+        value_o = tb_quota_o[core_i]; 
+        $display("get quota of core: %d remaining quota: %d",core_i,value_o);
+        if((core_i>TB_N_CORES)) begin
+            $error("core_i > N_CORES. core_i=%d",core_i);
+            $display("FAIL");
+        end
+    endtask
 //***task enable_MCCU
     task automatic enable_MCCU; 
         $display("enable MCCU");
-        tb_enable_i <= 1'b1;
+        tb_enable_i = 1'b1;
     endtask
 //***task disable_MCCU
     task automatic disable_MCCU; 
         $display("disable MCCU");
-        tb_enable_i <= 1'b0;
+        tb_enable_i = 1'b0;
     endtask
 //***task rise_event
     task automatic rise_event; 
@@ -241,17 +263,6 @@ task automatic init_sim;
         end
     
     endtask
-//***task get_remaining_quota
-    task automatic get_remaining_quota;
-        input core_i;
-        output int unsigned value_o;
-        value_o = tb_quota_o[core_i]; 
-        $display("get quota of core: %d remaining quota: %d",core_i,value_o);
-        if((core_i>TB_N_CORES)) begin
-            $error("core_i > N_CORES. core_i=%d",core_i);
-            $display("FAIL");
-        end
-    endtask
 //***task get_interrupt
     task automatic get_interrupt;
         input core_i;
@@ -266,7 +277,7 @@ task automatic init_sim;
     endtask
 //***init_sim***
     initial begin
-        //init_sim();
+        init_sim();
         init_dump();
         reset_dut();
         test_sim();

@@ -22,9 +22,9 @@
 		parameter integer DATA_WIDTH	= 32,
 		// Width of weights registers
 		parameter integer WEIGHTS_WIDTH	= 7,
-        //Cores
-        parameter integer N_CORES       =1,
-        //Signals per core
+        //Cores. Change this may break Verilator TB
+        parameter integer N_CORES       =4,
+        //Signals per core. Change this may break Verilator TB
         parameter integer CORE_EVENTS  =4
 	)
 	(
@@ -38,6 +38,8 @@
         input wire [CORE_EVENTS-1:0] events_i [0:N_CORES-1],
         //Quota for each of the cores, internally registered, set by software
         input wire [DATA_WIDTH-1:0] quota_i [0:N_CORES-1],
+        //Update quota. Set quota_int to the value of quota_i
+        input wire update_quota_i [0:N_CORES-1],
         //Internal quota available
         output wire [DATA_WIDTH-1:0] quota_o [0:N_CORES-1],
         //Worst contention that  each of the previous events can generate,
@@ -60,7 +62,6 @@
     
     //internal registers
     reg [DATA_WIDTH-1:0] quota_int [0:N_CORES-1];//Quota set by external registers
-    wire update_quota [0:N_CORES-1];//Quota updated this cycle
     wire [WEIGHTS_WIDTH-1:0] events_weights_int [0:N_CORES-1] [0:CORE_EVENTS-1];
     reg [OVERFLOW_PROT-1:0] ccc_suma_int [0:N_CORES-1];//Addition of current cycle
                                                //consumed quota
@@ -128,13 +129,13 @@
             if($past(rstn_i)&& rstn_i) begin
                 for (i=0; i<N_CORES; i=i+1) begin : AssertionsQuotaNonReset
                     //!Enable && !update: hold values quota_int
-                    if(!$past(enable_i) && !$past(update_quota[i])) begin
+                    if(!$past(enable_i) && !$past(update_quota_i[i])) begin
                         assert(quota_int[i] == $past(quota_int[i]));
                     end
                     
                     //!Enable && update: Update values quota_int with quota_i,
                     //                      do NOT substract 
-                    if(!$past(enable_i) && $past(update_quota[i])) begin
+                    if(!$past(enable_i) && $past(update_quota_i[i])) begin
                         assert(quota_int[i] == $past(quota_i[i]));
                     end
                     
@@ -142,7 +143,7 @@
                     //                      consumed quota (ccc_quota). If
                     //                      underflow the content of 
                     //                      quota_int[i] can be 0.
-                    if($past(enable_i) && !$past(update_quota[i])) begin
+                    if($past(enable_i) && !$past(update_quota_i[i])) begin
                         assert(quota_int[i] == ($past(quota_int[i])-$past(ccc_suma_int[i])) 
                                                 || (quota_int[i]==
                                                    {DATA_WIDTH{1'b0}}));
@@ -152,7 +153,7 @@
                     //                      substract ccc_quota if  
                     //                      underflow the content of 
                     //                      quota_int[i] can be 0.
-                    if($past(enable_i) && $past(update_quota[i])) begin
+                    if($past(enable_i) && $past(update_quota_i[i])) begin
                         assert(quota_int[i] == ($past(quota_i[i])-$past(ccc_suma_int[i]))
                                                 || (quota_int[i]==
                                                    {DATA_WIDTH{1'b0}}));
@@ -168,15 +169,15 @@
 
             for (i=0; i<N_CORES; i=i+1) begin : SetQuota
                 //!Enable && !update: hold values quota_int
-                if(!enable_i && !update_quota[i]) begin
+                if(!enable_i && !update_quota_i[i]) begin
                     quota_int[i] <= quota_int[i];
                 //!Enable && update: Update values quota_int with quota_i,
                 //                      do NOT substract 
-                end else if (!enable_i && update_quota[i]) begin
+                end else if (!enable_i && update_quota_i[i]) begin
                     quota_int[i] <= quota_i[i]; 
                 //Enable && !update:Replace quota_int with quota_int minus
                 //                      consumed quota (ccc_quota)
-                end else if (enable_i && !update_quota[i]) begin
+                end else if (enable_i && !update_quota_i[i]) begin
                     for (j=0; j<CORE_EVENTS; j=j+1) begin
                             //underflow detection. Padding needed for
                             // prevent width mismatch
@@ -189,7 +190,7 @@
                     end
                 //Enable && update: Update values quota_int with quota_i and 
                 //                      substract ccc_quota 
-                end else if(enable_i && update_quota[i])begin
+                end else if(enable_i && update_quota_i[i])begin
                     for (j=0; j<CORE_EVENTS; j=j+1) begin
                             //underflow detection. Padding needed for
                             // prevent width mismatch
@@ -272,13 +273,6 @@
     forward results of internal registers 
     ----------*/
     assign quota_o = quota_int;
-    /*----------
-    auxiliar signal to determine when to update quota_int
-    ----------*/
-    for (x=0; x<N_CORES; x=x+1) begin : UpdateQuota
-        assign update_quota[x] = (quota_int[x]!=quota_i[x]) ?  1'b1:1'b0;
-    end
-//    endgenerate
 
 /*----------
 Section of Formal propperties, valid for SBY 
