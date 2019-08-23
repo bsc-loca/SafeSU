@@ -320,9 +320,6 @@
                       end  
                 end
             end
-          /*  if(write_address > TOTAL_REGS) begin
-                            for (i=N_COUNTERS; i<N_CONF_REGS+N_COUNTERS; i=i+1) slv_reg[i] <=slv_reg[i];
-            end*/
 	      end
 	  end
 	end    
@@ -589,28 +586,33 @@
             //not written. To prevent problems with multidriven signals we
             //shall check the AXI_LITE state machines
             
-                integer config_address;
-                integer write_address;
-            always @(posedge S_AXI_ACLK_i) begin
-                //current write address
-                write_address = axi_awaddr[ADDR_LSB+OPT_MEM_ADDR_BITS:ADDR_LSB];
-                //Addres where the  base configuration register is located
-                config_address = BASE_MCCU*MCCU_DATA_WIDTH>>ADDR_LSB;
+            //Addres where the  base configuration register is located
+            localparam VALID_ADDR_SIZE = C_S_AXI_ADDR_WIDTH-ADDR_LSB;
+            wire [VALID_ADDR_SIZE-1:0] config_address;
+            assign config_address =VALID_ADDR_SIZE'(BASE_MCCU*MCCU_DATA_WIDTH>>ADDR_LSB);
+            //current write address
+            wire [C_S_AXI_ADDR_WIDTH-ADDR_LSB-1:0] write_address;
+            assign write_address = axi_awaddr[ADDR_LSB+OPT_MEM_ADDR_BITS:ADDR_LSB];
+            always @(posedge S_AXI_ACLK_i, negedge S_AXI_ARESETN_i) begin
                 //If we are not in reset and we are not writting to any
                 //register we can reset the lower bits to 0
-                if(S_AXI_ARESETN_i && !slv_reg_wren ) begin
-                    //set all bits except the MSB to 0
-                    slv_reg[BASE_MCCU]<=slv_reg[BASE_MCCU]
-                                        &{1'b1,{(MCCU_DATA_WIDTH-1){1'b0}}};
+                if(!S_AXI_ARESETN_i) begin
                 end else begin
+                    if(S_AXI_ARESETN_i && !slv_reg_wren ) begin
+                        //set all bits except the MSB to 0
+                 //       slv_reg[BASE_MCCU]<=slv_reg[BASE_MCCU]
+                 //                           &{1'b1,{(MCCU_DATA_WIDTH-1){1'b0}}};
+                    end else begin
                 //If we are not in reset but we are writting to some
                 //register we have to check if this register is actually the
                 //same that slv_reg[BASE_MCCU], If not we can set it to 0s
-                    if (S_AXI_ARESETN_i && slv_reg_wren) begin
-                        if(write_address!=config_address) 
-                            slv_reg[BASE_MCCU]<=
-                                            slv_reg[BASE_MCCU]
-                                            &{1'b1,{(MCCU_DATA_WIDTH-1){1'b0}}};
+                        if (S_AXI_ARESETN_i && slv_reg_wren) begin
+                            if(write_address!=config_address) begin 
+                      //          slv_reg[BASE_MCCU]<=
+                        //                        slv_reg[BASE_MCCU]
+                //                                &{1'b1,{(MCCU_DATA_WIDTH-1){1'b0}}};
+                            end
+                        end
                     end
                 end
             end
@@ -627,39 +629,41 @@
             // configuration register of the MCCU. I will go for this to keep
             // changes more self contained.
             wire [MCCU_DATA_WIDTH-1:0] MCCU_quota_o [ 0: MCCU_N_CORES-1];
-                integer base_address;
-                integer top_address;
-            integer j;
-            always @(posedge S_AXI_ACLK_i) begin
-                localparam BASE_MCCU_R_ONLY = BASE_MCCU+MCCU_RW_REGS;
-                localparam TOP_MCCU_R_ONLY = BASE_MCCU+MCCU_RW_REGS+MCCU_R_REGS;
-                //current write address
-                write_address = axi_awaddr[ADDR_LSB+OPT_MEM_ADDR_BITS:ADDR_LSB];
-                //Addres where the  base of MCCU output regs is located
-                base_address = BASE_MCCU_R_ONLY*MCCU_DATA_WIDTH>>ADDR_LSB;
-                top_address = TOP_MCCU_R_ONLY*MCCU_DATA_WIDTH>>ADDR_LSB;
+            localparam BASE_MCCU_R_ONLY = BASE_MCCU+MCCU_RW_REGS;
+            localparam TOP_MCCU_R_ONLY = BASE_MCCU+MCCU_RW_REGS+MCCU_R_REGS;
+            wire [C_S_AXI_ADDR_WIDTH-ADDR_LSB-1:0] base_address;
+            wire [C_S_AXI_ADDR_WIDTH-ADDR_LSB-1:0] top_address;
+            //Addres where the  base of MCCU output regs is located
+            assign base_address =VALID_ADDR_SIZE'(BASE_MCCU_R_ONLY*MCCU_DATA_WIDTH>>ADDR_LSB);
+            assign top_address = VALID_ADDR_SIZE'(TOP_MCCU_R_ONLY*MCCU_DATA_WIDTH>>ADDR_LSB);
+            integer q;
+            always @(posedge S_AXI_ACLK_i, negedge S_AXI_ARESETN_i) begin
                 //If we are not in reset and we are not writting to any
                 //register we can write the values of the MCCU to the slv_regs
-                if(S_AXI_ARESETN_i && !slv_reg_wren ) begin
-                    //set all addresses in r_only range
-                    for(j=0; j< MCCU_N_CORES; j++) begin
-                        slv_reg[BASE_MCCU_R_ONLY+j]<=MCCU_quota_o[j];
-                    end
+                if(S_AXI_ARESETN_i==1'b0) begin
                 end else begin
-                //If we are not in reset but we are writting to some
-                //register we have to check if this register is the same than
-                //the ones of the quota output.
-                    if (S_AXI_ARESETN_i && slv_reg_wren) begin
-                        if(write_address > top_address 
-                           || write_address < BASE_MCCU_R_ONLY) begin
-                            for(j=0; j< MCCU_N_CORES; j++) begin
-                                slv_reg[BASE_MCCU_R_ONLY+j]<=MCCU_quota_o[j];
-                            end
+                    if (slv_reg_wren==1'b0) begin
+                        //set all addresses in r_only range
+                        for(q=0; q< MCCU_N_CORES; q++) begin
+                    //        slv_reg[BASE_MCCU_R_ONLY+q]<=MCCU_quota_o[q];
                         end
                     end
+                    else begin
+                    //If we are not in reset but we are writting to some
+                    //register we have to check if this register is the same than
+                    //the ones of the quota output.
+                        if (S_AXI_ARESETN_i && slv_reg_wren) begin
+                            if(write_address > top_address 
+                               || write_address < VALID_ADDR_SIZE'(BASE_MCCU_R_ONLY)) begin
+                                for(q=0; q< MCCU_N_CORES; q++) begin
+                  //                  slv_reg[BASE_MCCU_R_ONLY+q]<=MCCU_quota_o[q];
+                                end
+                            end
+                        end
+                    end 
                 end
             end
-        genvar i;
+        genvar i; 
         for (i=0;i<MCCU_N_CORES;i=i+1) begin
             assign MCCU_update_quota_int[i] = slv_reg[BASE_MCCU][i];
         end 
@@ -756,7 +760,8 @@
             //REG2 contains the MSB of the missaligned addres. 
             localparam N_BITS_REG2 = SLV_BIT_OFFSET_H; 
             localparam N_BITS_REG1 = MCCU_DATA_WIDTH - SLV_BIT_OFFSET_L;
-            
+           //TODO: the width mismatch is causing trouble including the
+           //multidriven problem. check the two assiments in lines below. 
             //assign aligned bits. lower bits are in CURRENT_REG_OFFSET-1
             //slv_reg assigment goes from the MSB of slv_reg to MCCU_DATA_WIDTH
             // minus the amount of bits in REG1 of the misaligned weigth
@@ -779,6 +784,25 @@
                                         :0];
             end
         end 
+        //rearrange weights to match events_weights_i
+        wire [MCCU_WEIGHTS_WIDTH-1:0] MCCU_events_weights_int [0:MCCU_N_CORES-1]
+                                                       [0:MCCU_CORE_EVENTS-1];
+        //genvar x;
+        for(x=0;x<MCCU_N_CORES;x++) begin
+            genvar y;
+            for(y=0;y<MCCU_CORE_EVENTS;y++) begin
+                //calculate the indexes in the flat bitarray
+        //      LOW_INDEX = x*MCCU_CORE_EVENTS*MCCU_DATA_WIDTH+y*MCCU_DATA_WIDTH;
+        //      HIGH_INDEX = x*MCCU_CORE_EVENTS*MCCU_DATA_WIDTH+(y+1)*MCCU_DATA_WIDTH+-1;
+                assign MCCU_events_weights_int [x][y] = weights_flat_bitarray
+                                                       // [LOW_INDEX:HIGH_INDEX]; 
+                             [x*MCCU_CORE_EVENTS*MCCU_WEIGHTS_WIDTH
+                             +(y+1)*MCCU_WEIGHTS_WIDTH-1
+                             :
+                             x*MCCU_CORE_EVENTS*MCCU_WEIGHTS_WIDTH
+                             +y*MCCU_WEIGHTS_WIDTH];
+            end
+        end
         MCCU # (
             // Width of data registers
             .DATA_WIDTH     (MCCU_DATA_WIDTH),
@@ -797,7 +821,7 @@
             .quota_i                (MCCU_quota_int),//One register per core
             .update_quota_i         (MCCU_update_quota_int),//Software map
             .quota_o                (MCCU_quota_o),//write back to a read register
-            .events_weights_i       (),//core_events times WEIGHTS_WIDTH registers
+            .events_weights_i       (MCCU_events_weights_int),//core_events times WEIGHTS_WIDTH registers
             .interruption_quota_o   (MCCU_int_o)//N_CORES output signals Add this to top or single toplevel interrupt and an interrupt vector that identifies the source?
                                        // Individual interrupts allow each core to
                                        // handle their own interrupts , therefore
