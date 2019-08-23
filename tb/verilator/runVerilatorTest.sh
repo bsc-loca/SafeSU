@@ -7,8 +7,7 @@ echo -e "${RED} Modify the script if you need to set your verilator path ${NC}"
 #export VERILATOR_ROOT=$TOP/verilator
 #____________end set path verilator
 rm -rf obj_dir 
-verilator -Wall --cc --trace AXI_PMU.v --exe AXI_PMU_TB.cpp -CFLAGS "-std=c++14"
-
+verilator -Wall --cc --trace ../../hdl/AXI_PMU.v -I../../hdl  -I../../submodules/MCCU/hdl --exe AXI_PMU_TB.cpp -CFLAGS "-std=c++14"
 cd obj_dir/
 make -f VAXI_PMU.mk 
 ./VAXI_PMU

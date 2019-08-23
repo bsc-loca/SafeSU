@@ -25,7 +25,7 @@
         //Cores. Change this may break Verilator TB
         parameter integer N_CORES       =4,
         //Signals per core. Change this may break Verilator TB
-        parameter integer CORE_EVENTS  =4
+        parameter integer CORE_EVENTS   =4
 	)
 	(
 		input wire clk_i,

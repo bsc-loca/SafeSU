@@ -53,9 +53,14 @@
         input  wire        EV13_i            ,// signal  
         input  wire        EV14_i            ,// signal  
         input  wire        EV15_i            ,// signal  
+        
         //outputs
         output wire        int_overflow_o,
-        output wire        int_quota_o
+        output wire        int_quota_o,
+        
+        //MCCU io
+        output wire        int_quota_c0_o,
+        output wire        int_quota_c1_o
     );
     
     localparam integer N_COUNTERS	= 16;
@@ -80,7 +85,14 @@
                          EV1_i,
                          EV0_i
                         };
-
+    localparam N_CORES = 2;
+    wire MCCU_int_o [N_CORES-1:0];
+    //TODO: MCCU_int_o is not assigned parametrically
+        //A pack array will look better. Consider chang it on the MCCU
+    // Assign individual signals to unpacked array 
+    assign int_quota_c0_o = MCCU_int_o[0];
+    assign int_quota_c1_o = MCCU_int_o[1];
+   
     // Instantiation of PMU
     AXI_PMU_interface_v1_0_S00_AXI # ( 
         .C_S_AXI_DATA_WIDTH(C_S_AXI_DATA_WIDTH),
@@ -88,7 +100,9 @@
         .N_COUNTERS(N_COUNTERS),
         .N_CONF_REGS(N_CONF_REGS),
 		.OVERFLOW(0), //No
-		.QUOTA(0) //No
+		.QUOTA(0), //No
+		.MCCU(1), //Yes
+        .N_CORES(2)
     ) inst_AXI_PMU (
         .*
 /*        .S_AXI_ACLK_i(S_AXI_ACLK_i),

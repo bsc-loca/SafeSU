@@ -9,11 +9,19 @@
 //              axi_awaddr[1:0] and axi_araddr[1:0] are unused because data 
 //              is accessed must be 32bit aligned.
 // Coder      : G.Cabo
+// References : Implementation of Maximum-Contention Control Unit (MCCU): 
+//              ResourceAccess Count and Contention Time Enforcement. 
+//              https://upcommons.upc.edu/handle/2117/133656
 
 `default_nettype none
 
 `timescale 1 ns / 1 ps
 
+`ifndef SYNT
+    `ifdef FORMAL 
+        `define ASSERTIONS
+    `endif
+`endif
 	module AXI_PMU_interface_v1_0_S00_AXI #
 	(
 		// Width of S_AXI data bus
@@ -27,13 +35,19 @@
 		// Overflow
 		parameter integer OVERFLOW	= 1, //Yes/No
 		// Quota
-		parameter integer QUOTA	= 1 //Yes/No
+		parameter integer QUOTA	= 1, //Yes/No
+		// MCCU - Maximum-contention Control Unit mode
+		parameter integer MCCU	= 1, //Yes/No
+		// MCCU - N_CORES
+		parameter integer N_CORES	= 1 
 	)
 	(
+        //interruptions risen when cores exceeds the quota of MCCU
+        output wire MCCU_int_o [N_CORES-1:0],
         //interruption rises when one of the counters overflows
-        output int_overflow_o,
+        output wire int_overflow_o,
         //interruption rises when the total of cuota consumed is exceeded
-        output int_quota_o,
+        output wire int_quota_o,
         //external signals from Soc events
         input wire [N_COUNTERS-1:0] events_i, // bus of signals for counters 
 		// Global Clock Signal
@@ -89,7 +103,35 @@
     		// accept the read data and response information.
 		input wire  S_AXI_RREADY_i
 	);
+//-------------MCCU local paramaters
+    //this parameters are 0 if PMU is not declared
+    localparam MCCU_DATA_WIDTH = (MCCU!=0)? C_S_AXI_DATA_WIDTH : 0;  
+    //TODO: add MCCU_WEIGHTS_WIDTH as top parameter?
+    localparam MCCU_WEIGHTS_WIDTH = (MCCU!=0)?  7 : 0;
+    localparam MCCU_N_CORES = (MCCU!=0)? N_CORES : 0;
+    //TODO: add CORE_EVENTS as top parameter?
+    localparam MCCU_CORE_EVENTS = (MCCU!=0)? 4: 0;
+    //TODO: FIX rounding MCCU_WEIGHTS_REGS
+    //number of registers needed to store weights
 
+    localparam integer MCCU_WEIGHTS_REGS = (MCCU==0) ?
+                        0:
+                        ((MCCU_N_CORES * MCCU_CORE_EVENTS * MCCU_WEIGHTS_WIDTH)
+                        % MCCU_DATA_WIDTH )>0
+                        ? 
+                        ((MCCU_N_CORES * MCCU_CORE_EVENTS * MCCU_WEIGHTS_WIDTH)
+                        / MCCU_DATA_WIDTH) + 1 
+                        :
+                        ((MCCU_N_CORES * MCCU_CORE_EVENTS * MCCU_WEIGHTS_WIDTH)
+                        / MCCU_DATA_WIDTH);
+                                     
+    localparam MCCU_REGS = (MCCU!=0)? 1 + MCCU_N_CORES + MCCU_N_CORES +
+                                      MCCU_WEIGHTS_REGS : 0;
+    //the outputs of quota_o are read only
+    localparam MCCU_R_REGS =(MCCU!=0)? MCCU_N_CORES : 0;
+    //the remaining registers are read write
+    localparam MCCU_RW_REGS =(MCCU!=0)? (MCCU_REGS - MCCU_R_REGS):0;
+    
 	// AXI4LITE signals
 	/* verilator lint_off UNUSED */
     //Lower bits are not used due to 32 bit address aligment
@@ -108,11 +150,7 @@
 	reg [1 : 0] 	axi_rresp;
 	reg  	axi_rvalid;
 
-	// Example-specific design signals
-	// local parameter for addressing 32 bit / 64 bit C_S_AXI_DATA_WIDTH
-	// ADDR_LSB is used for addressing 32/64 bit registers/memories
-	// ADDR_LSB = 2 for 32 bits (n downto 2)
-	// ADDR_LSB = 3 for 64 bits (n downto 3)
+//-------------AXI and PMU local paramaters
 	localparam integer ADDR_LSB = (C_S_AXI_DATA_WIDTH/32) + 1;
 	localparam integer OPT_MEM_ADDR_BITS = 4;
     
@@ -126,21 +164,26 @@
                        ?(N_COUNTERS/C_S_AXI_DATA_WIDTH)+1:0;
 
     localparam integer N_QUOTA_LIMIT= (QUOTA==1)?1:0;//quota_limit
+    
 
-    localparam integer TOTAL_REGS = N_CONF_REGS+N_OVERFLOW_REGS+N_COUNTERS 
-                                    +N_QUOTA_MASK+N_QUOTA_LIMIT;
-
-    localparam integer RW_REGS = N_CONF_REGS+N_OVERFLOW_REGS+N_QUOTA_MASK
-                                 +N_QUOTA_LIMIT;
     //if more than 32 counters extra registers are needed for overflow
-    localparam integer BASE_QUOTA = N_COUNTERS+N_CONF_REGS+N_OVERFLOW_REGS;
+    localparam integer BASE_QUOTA = N_COUNTERS + N_CONF_REGS + N_OVERFLOW_REGS;
+    //First addres for the MCCU
+    localparam integer BASE_MCCU = BASE_QUOTA + N_QUOTA_MASK + N_QUOTA_LIMIT;
     //This may change, there are advantages to be able to set the initial value
-    localparam integer R_ONLY_REGS = N_COUNTERS;
+    //Quota out registers of MCCU are read only
+    //TODO:MCCU output registers are not read only now. fix it
+    localparam integer R_ONLY_REGS = N_COUNTERS + MCCU_R_REGS;
+    //Quota out registers of MCCU are write and read
+    localparam integer RW_REGS = N_CONF_REGS + N_OVERFLOW_REGS + N_QUOTA_MASK
+                                 + N_QUOTA_LIMIT + MCCU_RW_REGS;
+    //Total of memory map registers
+    localparam integer TOTAL_REGS = R_ONLY_REGS + RW_REGS;
 	//----------------------------------------------
 	//-- Signals for user logic register space example
 	//------------------------------------------------
 	//-- Number of Slave Registers 
-    reg [C_S_AXI_DATA_WIDTH-1:0] slv_reg [0:N_CONF_REGS+N_COUNTERS-1] /*verilator public*/;
+    reg [C_S_AXI_DATA_WIDTH-1:0] slv_reg [0:TOTAL_REGS-1] /*verilator public*/;
 	
     wire	 slv_reg_rden;
 	wire	 slv_reg_wren;
@@ -163,7 +206,7 @@
 	// S_AXI_AWVALID_i and S_AXI_WVALID_i are asserted. axi_awready is
 	// de-asserted when reset is low.
 
-	always @( posedge S_AXI_ACLK_i )
+	always @( posedge S_AXI_ACLK_i, negedge S_AXI_ARESETN_i)
 	begin
 	  if ( S_AXI_ARESETN_i == 1'b0 )
 	    begin
@@ -197,7 +240,7 @@
 	// This process is used to latch the address when both 
 	// S_AXI_AWVALID_i and S_AXI_WVALID_i are valid. 
 
-	always @( posedge S_AXI_ACLK_i )
+	always @( posedge S_AXI_ACLK_i, negedge S_AXI_ARESETN_i)
 	begin
 	  if ( S_AXI_ARESETN_i == 1'b0 )
 	    begin
@@ -218,7 +261,7 @@
 	// S_AXI_AWVALID_i and S_AXI_WVALID_i are asserted. axi_wready is 
 	// de-asserted when reset is low. 
 
-	always @( posedge S_AXI_ACLK_i )
+	always @( posedge S_AXI_ACLK_i, negedge S_AXI_ARESETN_i)
 	begin
 	  if ( S_AXI_ARESETN_i == 1'b0 )
 	    begin
@@ -250,12 +293,12 @@
 	// and the slave is ready to accept the write address and write data.
 	assign slv_reg_wren = axi_wready && S_AXI_WVALID_i && axi_awready && S_AXI_AWVALID_i;
 
-	always @( posedge S_AXI_ACLK_i )
+	always @( posedge S_AXI_ACLK_i, negedge S_AXI_ARESETN_i )
 	begin
 	  if ( S_AXI_ARESETN_i == 1'b0 )
 	    begin : reset_all
         integer i;
-        for (i=N_COUNTERS; i<N_CONF_REGS+N_COUNTERS; i=i+1) slv_reg[i] <={C_S_AXI_DATA_WIDTH{1'b0}};
+        for (i=N_COUNTERS; i<TOTAL_REGS; i=i+1) slv_reg[i] <={C_S_AXI_DATA_WIDTH{1'b0}};
 	    end 
 	  else begin
 	    if (slv_reg_wren)
@@ -268,7 +311,7 @@
             write_address = axi_awaddr[ADDR_LSB+OPT_MEM_ADDR_BITS:ADDR_LSB];
             /* verilator lint_on WIDTH */
             
-            for (i=N_COUNTERS; i<N_CONF_REGS+N_COUNTERS; i=i+1)begin
+            for (i=N_COUNTERS; i<TOTAL_REGS; i=i+1)begin
                 if (write_address == i) begin
                     for ( byte_index = 0; byte_index <= (C_S_AXI_DATA_WIDTH/8)-1; byte_index = byte_index+1 )
                       if ( S_AXI_WSTRB_i[byte_index] == 1 ) begin
@@ -277,9 +320,9 @@
                       end  
                 end
             end
-            if(write_address > N_CONF_REGS+N_COUNTERS) begin
+          /*  if(write_address > TOTAL_REGS) begin
                             for (i=N_COUNTERS; i<N_CONF_REGS+N_COUNTERS; i=i+1) slv_reg[i] <=slv_reg[i];
-            end
+            end*/
 	      end
 	  end
 	end    
@@ -290,7 +333,7 @@
 	// This marks the acceptance of address and indicates the status of 
 	// write transaction.
 
-	always @( posedge S_AXI_ACLK_i )
+	always @( posedge S_AXI_ACLK_i, negedge S_AXI_ARESETN_i)
 	begin
 	  if ( S_AXI_ARESETN_i == 1'b0 )
 	    begin
@@ -324,7 +367,7 @@
 	// The read address is also latched when S_AXI_ARVALID_i is 
 	// asserted. axi_araddr is reset to zero on reset assertion.
 
-	always @( posedge S_AXI_ACLK_i )
+	always @( posedge S_AXI_ACLK_i, negedge S_AXI_ARESETN_i )
 	begin
 	  if ( S_AXI_ARESETN_i == 1'b0 )
 	    begin
@@ -355,7 +398,7 @@
 	// bus and axi_rresp indicates the status of read transaction.axi_rvalid 
 	// is deasserted on reset (active low). axi_rresp and axi_rdata are 
 	// cleared to zero on reset (active low).  
-	always @( posedge S_AXI_ACLK_i )
+	always @( posedge S_AXI_ACLK_i, negedge S_AXI_ARESETN_i )
 	begin
 	  if ( S_AXI_ARESETN_i == 1'b0 )
 	    begin
@@ -392,18 +435,18 @@
           read_address = axi_araddr[ADDR_LSB+OPT_MEM_ADDR_BITS:ADDR_LSB];
           /* verilator lint_on WIDTH */
           reg_data_out = 0;
-          for (i=0; i<N_CONF_REGS+N_COUNTERS; i=i+1) begin
+          for (i=0; i<TOTAL_REGS; i=i+1) begin
             if (read_address==i) begin
                 reg_data_out =slv_reg[i];
             end
           end
-         if (read_address>N_CONF_REGS+N_COUNTERS) begin
+         if (read_address>TOTAL_REGS) begin
             reg_data_out = 0;
           end
 	end
 
 	// Output register or memory read data
-	always @( posedge S_AXI_ACLK_i )
+	always @( posedge S_AXI_ACLK_i, negedge S_AXI_ARESETN_i )
 	begin
 	  if ( S_AXI_ARESETN_i == 1'b0 )
 	    begin
@@ -438,7 +481,7 @@
     genvar k;
     generate
     for (k=0; k<N_COUNTERS; k=k+1) begin : generated_counter
-        always @(posedge S_AXI_ACLK_i) begin
+        always @(posedge S_AXI_ACLK_i, negedge S_AXI_ARESETN_i) begin
             if(!S_AXI_ARESETN_i)
                 slv_reg[k] <={C_S_AXI_DATA_WIDTH{1'b0}};
             else begin
@@ -466,7 +509,7 @@
                 localparam integer a = j/C_S_AXI_DATA_WIDTH;
                 assign int_overflow_o =(reset_PMU || (S_AXI_ARESETN_i == 1'b0))?
                                      1'b0: | slv_reg[a+OVERFLOW_REGS_OFFSET];
-                always @(posedge S_AXI_ACLK_i) begin
+                always @(posedge S_AXI_ACLK_i , negedge S_AXI_ARESETN_i) begin
                     if (reset_PMU || (S_AXI_ARESETN_i == 1'b0)) 
                         slv_reg[a+OVERFLOW_REGS_OFFSET]
                         <={C_S_AXI_DATA_WIDTH{1'b0}};
@@ -476,7 +519,7 @@
             end
         //decide the overflow register if there are more than 32 counters
         //if overflow set bit to 1
-        end else assign int_overflow_o = 0'b0;
+        end else assign int_overflow_o = 1'b0;
     endgenerate
 
     
@@ -496,9 +539,6 @@
     genvar x;
     generate
         if(QUOTA==1) begin : generated_quota
-            //avoid width mismatch when dealing with 32b register addition
-            localparam padding0 = 64-C_S_AXI_DATA_WIDTH;
-            assign int_quota_o =(suma>{{padding0{1'b0}},slv_reg[BASE_QUOTA+1]})? 1'b1:1'b0;
             //from each register we take a wire 
             wire [C_S_AXI_DATA_WIDTH-1:0] values_count [0:N_COUNTERS-1];
             reg [63:0]suma;//64bits to avoid overflows
@@ -512,16 +552,265 @@
                         {C_S_AXI_DATA_WIDTH{slv_reg[BASE_QUOTA][x]}}
                         &slv_reg[x];
             end
+            //avoid width mismatch when dealing with 32b register addition
+            localparam padding0 = 64-C_S_AXI_DATA_WIDTH;
+            assign int_quota_o =(suma>{{padding0{1'b0}},slv_reg[BASE_QUOTA+1]})
+                                ? 1'b1:1'b0;
             //Add quotas of all signals. The ones that are not enabled are 0
+            integer y;
+            //TODO: why I cant use the same genvar X. Instead of y?
             always @(*) begin
                     tmp =0;
-                    for(x=0; x<N_COUNTERS; x=x+1)  begin: sum_quotas
-                       tmp={{padding0{1'b0}},values_count[x]}+tmp;
+                    for(y=0; y<N_COUNTERS; y=y+1)  begin: sum_quotas
+                       tmp={{padding0{1'b0}},values_count[y]}+tmp;
                     end
                     suma=tmp;
             end
         end else assign int_quota_o =1'b0;
     endgenerate
-`default_nettype wire //allow compatibility with legacy code and xilinx ip
+
+//-------------MCCU instance and auxiliar logic
+        //max cores == MCCU_DATA_WIDTH -1
+    if(MCCU !=0) begin : generate_MCCU
+        wire [MCCU_CORE_EVENTS-1:0] events_int [0:MCCU_N_CORES-1];
+        wire MCCU_enable_int;
+        wire MCCU_update_quota_int [MCCU_N_CORES-1:0];
+        
+        //first n bists (MCCU_N_CORES) set when the quota need to be updated.
+        //The update_quota_int needs to be  reset after one cycle. IF
+            // not the counter will not decrease.
+            // This module maps the bits of the slave registers to the unpack wire
+            // that connects with the MCCU to trigger an update of the quota
+            //The update only at rise can be done here with some temporal
+            //registers that check when the slv_register as changed, but it
+            //will need to check as well if there is a new write every time,
+            //not only the changes in slv_reg. I have prefered to reset the
+            //lower bits of slv_reg[BASE_MCCU] to 0 every time the register is
+            //not written. To prevent problems with multidriven signals we
+            //shall check the AXI_LITE state machines
+            
+                integer config_address;
+                integer write_address;
+            always @(posedge S_AXI_ACLK_i) begin
+                //current write address
+                write_address = axi_awaddr[ADDR_LSB+OPT_MEM_ADDR_BITS:ADDR_LSB];
+                //Addres where the  base configuration register is located
+                config_address = BASE_MCCU*MCCU_DATA_WIDTH>>ADDR_LSB;
+                //If we are not in reset and we are not writting to any
+                //register we can reset the lower bits to 0
+                if(S_AXI_ARESETN_i && !slv_reg_wren ) begin
+                    //set all bits except the MSB to 0
+                    slv_reg[BASE_MCCU]<=slv_reg[BASE_MCCU]
+                                        &{1'b1,{(MCCU_DATA_WIDTH-1){1'b0}}};
+                end else begin
+                //If we are not in reset but we are writting to some
+                //register we have to check if this register is actually the
+                //same that slv_reg[BASE_MCCU], If not we can set it to 0s
+                    if (S_AXI_ARESETN_i && slv_reg_wren) begin
+                        if(write_address!=config_address) 
+                            slv_reg[BASE_MCCU]<=
+                                            slv_reg[BASE_MCCU]
+                                            &{1'b1,{(MCCU_DATA_WIDTH-1){1'b0}}};
+                    end
+                end
+            end
+        //TODO: Connect quota_o to the axi registers.
+            // We can modify the AXI_LITE wrapper as with the counters to 
+            // prevent the user to write to this addresses. This way is a bit
+            // less "self contained" because it needs chages in the wrapper 
+            // instead of doing it in the MCCU section. To simplify the 
+            // description all the  R only registers could be in the lower 
+            // registers and RW on top...
+            // An other option is allow writting to the output registers but
+            // set them to the output as soon as the register is released.
+            // That will be similar to the reset to 0 in the main
+            // configuration register of the MCCU. I will go for this to keep
+            // changes more self contained.
+            wire [MCCU_DATA_WIDTH-1:0] MCCU_quota_o [ 0: MCCU_N_CORES-1];
+                integer base_address;
+                integer top_address;
+            integer j;
+            always @(posedge S_AXI_ACLK_i) begin
+                localparam BASE_MCCU_R_ONLY = BASE_MCCU+MCCU_RW_REGS;
+                localparam TOP_MCCU_R_ONLY = BASE_MCCU+MCCU_RW_REGS+MCCU_R_REGS;
+                //current write address
+                write_address = axi_awaddr[ADDR_LSB+OPT_MEM_ADDR_BITS:ADDR_LSB];
+                //Addres where the  base of MCCU output regs is located
+                base_address = BASE_MCCU_R_ONLY*MCCU_DATA_WIDTH>>ADDR_LSB;
+                top_address = TOP_MCCU_R_ONLY*MCCU_DATA_WIDTH>>ADDR_LSB;
+                //If we are not in reset and we are not writting to any
+                //register we can write the values of the MCCU to the slv_regs
+                if(S_AXI_ARESETN_i && !slv_reg_wren ) begin
+                    //set all addresses in r_only range
+                    for(j=0; j< MCCU_N_CORES; j++) begin
+                        slv_reg[BASE_MCCU_R_ONLY+j]<=MCCU_quota_o[j];
+                    end
+                end else begin
+                //If we are not in reset but we are writting to some
+                //register we have to check if this register is the same than
+                //the ones of the quota output.
+                    if (S_AXI_ARESETN_i && slv_reg_wren) begin
+                        if(write_address > top_address 
+                           || write_address < BASE_MCCU_R_ONLY) begin
+                            for(j=0; j< MCCU_N_CORES; j++) begin
+                                slv_reg[BASE_MCCU_R_ONLY+j]<=MCCU_quota_o[j];
+                            end
+                        end
+                    end
+                end
+            end
+        genvar i;
+        for (i=0;i<MCCU_N_CORES;i=i+1) begin
+            assign MCCU_update_quota_int[i] = slv_reg[BASE_MCCU][i];
+        end 
+        //last bit of the  first register in the MCCU region is the enable
+        assign MCCU_enable_int = slv_reg[BASE_MCCU][MCCU_DATA_WIDTH-1];
+        //Map interesting signals to MCCU
+        assign events_int[0] = {
+                                events_i[0]
+                                ,events_i[1]
+                                ,events_i[2]
+                                ,events_i[3]
+                                };//TODO: replace by correct signals
+        assign events_int[1] = {
+                                events_i[0]
+                                ,events_i[1]
+                                ,events_i[2]
+                                ,events_i[3]
+                                };//TODO: replace by correct signals
+       
+        
+        //Map slv_regs that control the quota in to the MCCCU
+        wire [MCCU_DATA_WIDTH-1:0] MCCU_quota_int [ 0: MCCU_N_CORES-1];
+        //TODO: this is not parametric. if more than one config register is
+        //needed for MCCU this need to be changed. Parametrize this in the
+        //futute
+        localparam OFFSET_MCCU_CONFIG = 1;
+        for (i=0;i<MCCU_N_CORES;i=i+1) begin
+            assign MCCU_quota_int[i] = slv_reg[BASE_MCCU + 
+                                                      OFFSET_MCCU_CONFIG+i];
+        end 
+         
+        //TODO:
+        //map slv_reg s to events_weights_i. In the way it is now it is not
+        //trivial to describe because weights are "compacted" and I need to
+        //decode them on 32b chunks. Maybe rearrange the slv_regs in to
+        //wires and loop through them here. 
+       // for (i=0;i<;i=i+1) begin
+       // end 
+        localparam OFFSET_MCCU_WEIGHTS = OFFSET_MCCU_CONFIG + MCCU_N_CORES;
+        localparam TOTAL_WEIGHT_BITS = MCCU_CORE_EVENTS * MCCU_N_CORES
+                                       * MCCU_WEIGHTS_WIDTH; 
+        wire [TOTAL_WEIGHT_BITS-1:0] weights_flat_bitarray;
+        for (i=0;i<MCCU_CORE_EVENTS*MCCU_N_CORES;i=i+1) begin : slv_reg_to_flat_bitarray
+            //Track the Nº of bits used by the weight registers until this
+            //iteration of the loop
+            localparam USED_BITS = (i+1)*MCCU_WEIGHTS_WIDTH;
+            //Track the Nº of registers that weights ocuppy based on DATA_WIDTH
+            //WEIGHTS_WIDTH and iteration
+            localparam USED_REGISTERS = ((USED_BITS % MCCU_DATA_WIDTH)>0) ?
+                                        USED_BITS/MCCU_DATA_WIDTH+1 : 
+                                        USED_BITS/MCCU_DATA_WIDTH;
+            //Rename local parameter for clarify  assignation
+            localparam CURRENT_REG_OFFSET = USED_REGISTERS; 
+            //Offset of the weights you are assigning in  this iteration for
+            //the weights_flat_bitarray. As bit range starts at 0 the -1 
+            //is added in both offsets
+            localparam ARRAY_BIT_OFFSET_H = USED_BITS-1;
+            localparam ARRAY_BIT_OFFSET_L = (USED_BITS
+                                            -MCCU_WEIGHTS_WIDTH);
+            //Offset of the weights you are assigning in  this iteration for
+            //the slv_reg, this has to consider that there is a wrap betwen
+            //registers. Consider that weights can be misaligned.
+            //For example on a slv_reg of 16 bits and weigths of 5bits
+            //The 4th weigth will take 1 bit of slv_reg[n] and 4 bits of
+            //slv_reg[n+1]
+            //--------------------------------
+            //slv_reg[n]   *****|*****|*****|*
+            //slv_reg[n+1] ****|*****|*****|**
+            //--------------------------------
+            
+            //If ARRAY_BIT_OFFSET_H exceeds the first slv_reg size we have
+            //to wrap the indexes. REM_* localparameters help to reduce
+            //the index
+            localparam int SLV_BIT_OFFSET_H = ARRAY_BIT_OFFSET_H 
+                                                % MCCU_DATA_WIDTH; 
+            localparam int SLV_BIT_OFFSET_L = ARRAY_BIT_OFFSET_L 
+                                                % MCCU_DATA_WIDTH;
+            // If the registers can not fit one weigth this design is not
+            // valid
+            `ifdef ASSERTIONS
+            assert(MCCU_DATA_WIDTH>=MCCU_WEIGHTS_WIDTH);
+            `endif
+            //If weight is not misaligned
+            if(SLV_BIT_OFFSET_H>SLV_BIT_OFFSET_L) begin : misaligned_weight
+                assign weights_flat_bitarray[ARRAY_BIT_OFFSET_H
+                                            :ARRAY_BIT_OFFSET_L]
+                                            =
+                                            slv_reg [CURRENT_REG_OFFSET]
+                                           [SLV_BIT_OFFSET_H:SLV_BIT_OFFSET_L];
+            end else begin
+            //Else if weight takes two slv_reg. REG2 is the latest register to
+            //be used.
+            //REG1 contains the LSB of the missaligned addres. 
+            //REG2 contains the MSB of the missaligned addres. 
+            localparam N_BITS_REG2 = SLV_BIT_OFFSET_H; 
+            localparam N_BITS_REG1 = MCCU_DATA_WIDTH - SLV_BIT_OFFSET_L;
+            
+            //assign aligned bits. lower bits are in CURRENT_REG_OFFSET-1
+            //slv_reg assigment goes from the MSB of slv_reg to MCCU_DATA_WIDTH
+            // minus the amount of bits in REG1 of the misaligned weigth
+            assign weights_flat_bitarray[(ARRAY_BIT_OFFSET_L+N_BITS_REG1)
+                                           :ARRAY_BIT_OFFSET_L]
+                                           =
+                                           slv_reg [CURRENT_REG_OFFSET-1]
+                                           [MCCU_DATA_WIDTH-1
+                                           :MCCU_DATA_WIDTH-N_BITS_REG1];
+            //Assign MSB bits of misaligned weight. MSB bits shall be placed 
+            //in CURRENT_REG_OFFSET .
+            // slv_reg assigment goes from the LSB of slv_reg to 
+            // SLV_BIT_OFFSET_H
+            assign weights_flat_bitarray[ARRAY_BIT_OFFSET_H:
+                                        ARRAY_BIT_OFFSET_H-N_BITS_REG2
+                                        ]
+                                        =
+                                        slv_reg [CURRENT_REG_OFFSET]
+                                        [SLV_BIT_OFFSET_H
+                                        :0];
+            end
+        end 
+        MCCU # (
+            // Width of data registers
+            .DATA_WIDTH     (MCCU_DATA_WIDTH),
+            // Width of weights registers
+            .WEIGHTS_WIDTH  (MCCU_WEIGHTS_WIDTH),
+            //Cores. Change this may break Verilator TB
+            .N_CORES        (MCCU_N_CORES),
+            //Signals per core. Change this may break Verilator TB
+            .CORE_EVENTS    (MCCU_CORE_EVENTS)
+        )
+        inst_MCCU(
+            .clk_i                  (S_AXI_ACLK_i),
+            .rstn_i                 (S_AXI_ARESETN_i),
+            .enable_i               (MCCU_enable_int),//TODO: Software map
+            .events_i               (events_int),//how to parametrize this? new parameter on top or up to the programer that does the integration?
+            .quota_i                (MCCU_quota_int),//One register per core
+            .update_quota_i         (MCCU_update_quota_int),//Software map
+            .quota_o                (MCCU_quota_o),//write back to a read register
+            .events_weights_i       (),//core_events times WEIGHTS_WIDTH registers
+            .interruption_quota_o   (MCCU_int_o)//N_CORES output signals Add this to top or single toplevel interrupt and an interrupt vector that identifies the source?
+                                       // Individual interrupts allow each core to
+                                       // handle their own interrupts , therefore
+                                       // it seems to be te right solution.
+        ); 
+    end else begin
+        //TODO: what happen if i is an integer instead of a genvar?
+        genvar i;
+        //drive interrupts to 0 if no MCCU to prevent problems
+        for (i=0;i<MCCU_N_CORES;i=i+1) begin
+            assign MCCU_int_o[i] = 1'b0;
+        end
+    end
 endmodule
+`default_nettype wire //allow compatibility with legacy code and xilinx ip
 

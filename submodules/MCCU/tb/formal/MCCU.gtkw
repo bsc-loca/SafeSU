@@ -1,0 +1,33 @@
+[*]
+[*] GTKWave Analyzer v3.3.86 (w)1999-2017 BSI
+[*] Tue Jul 23 13:51:54 2019
+[*]
+[dumpfile] "/home/bscuser/GITLAB/multicore_pmu/lagarto-lowrisc/lagarto_modulos/AXI_PMU/MCCU/tb/formal/MCCU/engine_0/trace.vcd"
+[dumpfile_mtime] "Tue Jul 23 13:50:06 2019"
+[dumpfile_size] 2289
+[savefile] "/home/bscuser/GITLAB/multicore_pmu/lagarto-lowrisc/lagarto_modulos/AXI_PMU/MCCU/tb/formal/MCCU.gtkw"
+[timestart] 0
+[size] 1920 1025
+[pos] 0 27
+*-2.734677 2 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] MCCU.
+[sst_width] 326
+[signals_width] 262
+[sst_expanded] 1
+[sst_vpaned_height] 303
+@28
+[color] 4
+MCCU.clk_i
+[color] 1
+MCCU.enable_i
+[color] 1
+MCCU.rstn_i
+MCCU.interruption_quota_o
+@22
+[color] 3
+MCCU.quota_int<0>[31:0]
+@24
+[color] 3
+MCCU.ccc_suma_int<0>[10:0]
+[pattern_trace] 1
+[pattern_trace] 0
