@@ -1,12 +1,12 @@
 #set dependencies
-cd ../../
+cd ../../../../
 . dep.sh
 # make project
 cd vsim
 make clean
 make sim-lagarto
 # make our test
-cd $TOP/lagarto_modulos/AXI_PMU/pmu_sample_program/programs
+cd $TOP/lagarto_modulos/AXI_PMU/tb/software_tests/pmu_sample_program/programs
 make clean
 make
 cp myWrite.riscv.hex $TOP/vsim 
