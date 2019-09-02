@@ -99,8 +99,8 @@
         .C_S_AXI_ADDR_WIDTH(C_S_AXI_ADDR_WIDTH),
         .N_COUNTERS(N_COUNTERS),
         .N_CONF_REGS(N_CONF_REGS),
-		.OVERFLOW(0), //No
-		.QUOTA(0), //No
+		.OVERFLOW(1), //No
+		.QUOTA(1), //No
 		.MCCU(1), //Yes
         .N_CORES(2)
     ) inst_AXI_PMU (

@@ -1,9 +1,9 @@
 # Hierarchy
-+ AXI_PMU.v
++ AXI_PMU.sv
     + AXI_PMU_interface_v1_0_S00_AXI.sv
         + MCCU.sv
 # Parameters
-### AXI_PMU.v
+### AXI_PMU.sv
 | Name                     | Defaults | Valid values | Description                                                                              |
 |--------------------------|----------|--------------|------------------------------------------------------------------------------------------|
 | C_S_AXI_DATA_WIDTH       | 32       | 32/64        | Sets the data width of the bus                                                           |
@@ -34,7 +34,7 @@
 | O_W_0PAD      | OVERFLOW_PROT - WEIGHTS_WIDTH| Padding of 0s for  overflow and weights|
 
 # Pinout
-### AXI_PMU.v
+### AXI_PMU.sv
 | Number | Name          | Type | Bus_wide(bits)   |
 |--------|---------------|------|------------------|
 | 1      | int_quota_c0_o| out  | 1       |
@@ -138,7 +138,7 @@ Pass down to AXI_PMU_interface_v1_0_S00_AXI.sv
 | 0x58 | 22 | Quota\_mask | User defined mask that selects which signals must be acounted for the quota|
 | 0x5E | 23 | Quota\_limit | User defined value. When quota is over this value int\_quota is triggered |
 
-### AXI_PMU.v
+### AXI_PMU.sv
 
 
 

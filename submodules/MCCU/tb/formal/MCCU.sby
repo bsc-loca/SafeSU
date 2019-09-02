@@ -21,4 +21,4 @@ prep -top MCCU
 #opt -share_all
 
 [files]
-/home/bscuser/GITLAB/multicore_pmu/lagarto-lowrisc/lagarto_modulos/AXI_PMU/MCCU/hdl/MCCU.sv
+../../hdl/MCCU.sv

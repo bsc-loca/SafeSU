@@ -23,7 +23,7 @@
 		// Width of weights registers
 		parameter integer WEIGHTS_WIDTH	= 7,
         //Cores. Change this may break Verilator TB
-        parameter integer N_CORES       =4,
+        parameter integer N_CORES       =2,
         //Signals per core. Change this may break Verilator TB
         parameter integer CORE_EVENTS   =4
 	)
@@ -94,7 +94,6 @@
             for (i=0; i<N_CORES; i=i+1) begin : ResetQuota
                 quota_int[i] <={DATA_WIDTH{1'b0}}; 
             end
-            
             /*----------
             Async reset current cycle consumed quota
             ----------*/

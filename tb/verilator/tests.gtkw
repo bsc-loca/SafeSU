@@ -1,205 +1,146 @@
 [*]
 [*] GTKWave Analyzer v3.3.86 (w)1999-2017 BSI
-[*] Wed Jul 31 14:12:00 2019
+[*] Wed Aug 28 14:44:18 2019
 [*]
 [dumpfile] "/home/bscuser/GITLAB/multicore_pmu/lagarto-lowrisc/lagarto_modulos/AXI_PMU/tb/verilator/obj_dir/VAXI_PMU.vcd"
-[dumpfile_mtime] "Wed Jul 31 14:10:11 2019"
-[dumpfile_size] 27515
+[dumpfile_mtime] "Wed Aug 28 14:43:56 2019"
+[dumpfile_size] 29892
 [savefile] "/home/bscuser/GITLAB/multicore_pmu/lagarto-lowrisc/lagarto_modulos/AXI_PMU/tb/verilator/tests.gtkw"
 [timestart] 0
-[size] 1920 1025
-[pos] 3840 0
-*-3.606035 1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[size] 1920 1052
+[pos] 0 0
+*-3.606035 23 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] TOP.
 [treeopen] TOP.AXI_PMU.
 [treeopen] TOP.AXI_PMU.inst_AXI_PMU.
-[treeopen] TOP.AXI_PMU.inst_AXI_PMU.generate_MCCU.
 [treeopen] TOP.AXI_PMU.inst_AXI_PMU.generate_MCCU.slv_reg_to_flat_bitarray(3).
 [sst_width] 413
-[signals_width] 687
+[signals_width] 222
 [sst_expanded] 1
-[sst_vpaned_height] 319
-@22
-TOP.AXI_PMU.inst_AXI_PMU.slv_reg(20)[31:0]
+[sst_vpaned_height] 386
 @800022
 TOP.AXI_PMU.inst_AXI_PMU.events_i[15:0]
 @28
-(0)TOP.AXI_PMU.inst_AXI_PMU.events_i[15:0]
-(1)TOP.AXI_PMU.inst_AXI_PMU.events_i[15:0]
-(2)TOP.AXI_PMU.inst_AXI_PMU.events_i[15:0]
-(3)TOP.AXI_PMU.inst_AXI_PMU.events_i[15:0]
-(4)TOP.AXI_PMU.inst_AXI_PMU.events_i[15:0]
-(5)TOP.AXI_PMU.inst_AXI_PMU.events_i[15:0]
-(6)TOP.AXI_PMU.inst_AXI_PMU.events_i[15:0]
-(7)TOP.AXI_PMU.inst_AXI_PMU.events_i[15:0]
-(8)TOP.AXI_PMU.inst_AXI_PMU.events_i[15:0]
-(9)TOP.AXI_PMU.inst_AXI_PMU.events_i[15:0]
-(10)TOP.AXI_PMU.inst_AXI_PMU.events_i[15:0]
-(11)TOP.AXI_PMU.inst_AXI_PMU.events_i[15:0]
-(12)TOP.AXI_PMU.inst_AXI_PMU.events_i[15:0]
-(13)TOP.AXI_PMU.inst_AXI_PMU.events_i[15:0]
-(14)TOP.AXI_PMU.inst_AXI_PMU.events_i[15:0]
+[color] 1
 (15)TOP.AXI_PMU.inst_AXI_PMU.events_i[15:0]
+[color] 2
+(14)TOP.AXI_PMU.inst_AXI_PMU.events_i[15:0]
+[color] 3
+(13)TOP.AXI_PMU.inst_AXI_PMU.events_i[15:0]
+[color] 7
+(12)TOP.AXI_PMU.inst_AXI_PMU.events_i[15:0]
 @1001200
 -group_end
 @28
 TOP.AXI_PMU.inst_AXI_PMU.S_AXI_ACLK_i
+@800200
+-counters_slv_reg
 @22
-TOP.AXI_PMU.inst_AXI_PMU.MCCU_CORE_EVENTS[31:0]
-TOP.AXI_PMU.inst_AXI_PMU.MCCU_DATA_WIDTH[31:0]
-TOP.AXI_PMU.inst_AXI_PMU.MCCU_N_CORES[31:0]
 [color] 1
-TOP.AXI_PMU.inst_AXI_PMU.MCCU_REGS[31:0]
-TOP.AXI_PMU.inst_AXI_PMU.MCCU_WEIGHTS_REGS[31:0]
-TOP.AXI_PMU.inst_AXI_PMU.MCCU_WEIGHTS_WIDTH[31:0]
-@800200
--g0
-@24
-[color] 1
-TOP.AXI_PMU.inst_AXI_PMU.generate_MCCU.slv_reg_to_flat_bitarray(0).ARRAY_BIT_OFFSET_H[31:0]
-[color] 1
-TOP.AXI_PMU.inst_AXI_PMU.generate_MCCU.slv_reg_to_flat_bitarray(0).SLV_BIT_OFFSET_H[31:0]
-[color] 1
-TOP.AXI_PMU.inst_AXI_PMU.generate_MCCU.slv_reg_to_flat_bitarray(0).ARRAY_BIT_OFFSET_L[31:0]
-[color] 1
-TOP.AXI_PMU.inst_AXI_PMU.generate_MCCU.slv_reg_to_flat_bitarray(0).SLV_BIT_OFFSET_L[31:0]
-TOP.AXI_PMU.inst_AXI_PMU.generate_MCCU.slv_reg_to_flat_bitarray(0).CURRENT_REG_OFFSET[31:0]
-TOP.AXI_PMU.inst_AXI_PMU.generate_MCCU.slv_reg_to_flat_bitarray(0).USED_BITS[31:0]
-TOP.AXI_PMU.inst_AXI_PMU.generate_MCCU.slv_reg_to_flat_bitarray(0).USED_REGISTERS[31:0]
+TOP.AXI_PMU.inst_AXI_PMU.slv_reg(0)[31:0]
+[color] 2
+TOP.AXI_PMU.inst_AXI_PMU.slv_reg(1)[31:0]
+[color] 3
+TOP.AXI_PMU.inst_AXI_PMU.slv_reg(2)[31:0]
+[color] 7
+TOP.AXI_PMU.inst_AXI_PMU.slv_reg(3)[31:0]
+TOP.AXI_PMU.inst_AXI_PMU.slv_reg(4)[31:0]
+@c00200
+-unused
+@22
+TOP.AXI_PMU.inst_AXI_PMU.slv_reg(4)[31:0]
+TOP.AXI_PMU.inst_AXI_PMU.slv_reg(5)[31:0]
+TOP.AXI_PMU.inst_AXI_PMU.slv_reg(6)[31:0]
+TOP.AXI_PMU.inst_AXI_PMU.slv_reg(7)[31:0]
+TOP.AXI_PMU.inst_AXI_PMU.slv_reg(8)[31:0]
+TOP.AXI_PMU.inst_AXI_PMU.slv_reg(9)[31:0]
+TOP.AXI_PMU.inst_AXI_PMU.slv_reg(10)[31:0]
+TOP.AXI_PMU.inst_AXI_PMU.slv_reg(11)[31:0]
+TOP.AXI_PMU.inst_AXI_PMU.slv_reg(12)[31:0]
+TOP.AXI_PMU.inst_AXI_PMU.slv_reg(13)[31:0]
+TOP.AXI_PMU.inst_AXI_PMU.slv_reg(14)[31:0]
+TOP.AXI_PMU.inst_AXI_PMU.slv_reg(15)[31:0]
+@1401200
+-unused
 @1000200
--g0
+-counters_slv_reg
 @800200
--g1
-@24
-[color] 1
-TOP.AXI_PMU.inst_AXI_PMU.generate_MCCU.slv_reg_to_flat_bitarray(1).ARRAY_BIT_OFFSET_H[31:0]
-[color] 1
-TOP.AXI_PMU.inst_AXI_PMU.generate_MCCU.slv_reg_to_flat_bitarray(1).ARRAY_BIT_OFFSET_L[31:0]
-TOP.AXI_PMU.inst_AXI_PMU.generate_MCCU.slv_reg_to_flat_bitarray(1).CURRENT_REG_OFFSET[31:0]
-[color] 1
-TOP.AXI_PMU.inst_AXI_PMU.generate_MCCU.slv_reg_to_flat_bitarray(1).SLV_BIT_OFFSET_H[31:0]
-[color] 1
-TOP.AXI_PMU.inst_AXI_PMU.generate_MCCU.slv_reg_to_flat_bitarray(1).SLV_BIT_OFFSET_L[31:0]
-TOP.AXI_PMU.inst_AXI_PMU.generate_MCCU.slv_reg_to_flat_bitarray(1).USED_BITS[31:0]
-TOP.AXI_PMU.inst_AXI_PMU.generate_MCCU.slv_reg_to_flat_bitarray(1).USED_REGISTERS[31:0]
+-main_cfg_slv_reg
+@22
+TOP.AXI_PMU.inst_AXI_PMU.slv_reg(16)[31:0]
 @1000200
--g1
+-main_cfg_slv_reg
+@c00200
+-secondary_cfg_svl_reg
+@22
+TOP.AXI_PMU.inst_AXI_PMU.slv_reg(17)[31:0]
+TOP.AXI_PMU.inst_AXI_PMU.slv_reg(18)[31:0]
+TOP.AXI_PMU.inst_AXI_PMU.slv_reg(19)[31:0]
+TOP.AXI_PMU.inst_AXI_PMU.slv_reg(20)[31:0]
+@1401200
+-secondary_cfg_svl_reg
 @800200
--g2
-@24
-[color] 1
-TOP.AXI_PMU.inst_AXI_PMU.generate_MCCU.slv_reg_to_flat_bitarray(2).ARRAY_BIT_OFFSET_H[31:0]
-[color] 1
-TOP.AXI_PMU.inst_AXI_PMU.generate_MCCU.slv_reg_to_flat_bitarray(2).ARRAY_BIT_OFFSET_L[31:0]
-TOP.AXI_PMU.inst_AXI_PMU.generate_MCCU.slv_reg_to_flat_bitarray(2).CURRENT_REG_OFFSET[31:0]
-[color] 1
-TOP.AXI_PMU.inst_AXI_PMU.generate_MCCU.slv_reg_to_flat_bitarray(2).SLV_BIT_OFFSET_H[31:0]
-[color] 1
-TOP.AXI_PMU.inst_AXI_PMU.generate_MCCU.slv_reg_to_flat_bitarray(2).SLV_BIT_OFFSET_L[31:0]
-TOP.AXI_PMU.inst_AXI_PMU.generate_MCCU.slv_reg_to_flat_bitarray(2).USED_BITS[31:0]
-TOP.AXI_PMU.inst_AXI_PMU.generate_MCCU.slv_reg_to_flat_bitarray(2).USED_REGISTERS[31:0]
+-overflow_slv_reg
+@22
+TOP.AXI_PMU.inst_AXI_PMU.slv_reg(21)[31:0]
 @1000200
--g2
+-overflow_slv_reg
 @800200
--g3
+-quota_slv_regs
 @24
-[color] 1
-TOP.AXI_PMU.inst_AXI_PMU.generate_MCCU.slv_reg_to_flat_bitarray(3).ARRAY_BIT_OFFSET_H[31:0]
-[color] 1
-TOP.AXI_PMU.inst_AXI_PMU.generate_MCCU.slv_reg_to_flat_bitarray(3).ARRAY_BIT_OFFSET_L[31:0]
-TOP.AXI_PMU.inst_AXI_PMU.generate_MCCU.slv_reg_to_flat_bitarray(3).CURRENT_REG_OFFSET[31:0]
-[color] 1
-TOP.AXI_PMU.inst_AXI_PMU.generate_MCCU.slv_reg_to_flat_bitarray(3).SLV_BIT_OFFSET_H[31:0]
-[color] 1
-TOP.AXI_PMU.inst_AXI_PMU.generate_MCCU.slv_reg_to_flat_bitarray(3).SLV_BIT_OFFSET_L[31:0]
-TOP.AXI_PMU.inst_AXI_PMU.generate_MCCU.slv_reg_to_flat_bitarray(3).USED_BITS[31:0]
-TOP.AXI_PMU.inst_AXI_PMU.generate_MCCU.slv_reg_to_flat_bitarray(3).USED_REGISTERS[31:0]
+TOP.AXI_PMU.inst_AXI_PMU.BASE_QUOTA[31:0]
+@22
+TOP.AXI_PMU.inst_AXI_PMU.slv_reg(22)[31:0]
+@200
+-quota_mask
+@22
+TOP.AXI_PMU.inst_AXI_PMU.slv_reg(23)[31:0]
+@200
+-quota_limit
 @1000200
--g3
+-quota_slv_regs
 @800200
--g4
+-MCC_slv_regs
 @24
-[color] 1
-TOP.AXI_PMU.inst_AXI_PMU.generate_MCCU.slv_reg_to_flat_bitarray(4).ARRAY_BIT_OFFSET_H[31:0]
-[color] 1
-TOP.AXI_PMU.inst_AXI_PMU.generate_MCCU.slv_reg_to_flat_bitarray(4).ARRAY_BIT_OFFSET_L[31:0]
-TOP.AXI_PMU.inst_AXI_PMU.generate_MCCU.slv_reg_to_flat_bitarray(4).CURRENT_REG_OFFSET[31:0]
-[color] 1
-TOP.AXI_PMU.inst_AXI_PMU.generate_MCCU.slv_reg_to_flat_bitarray(4).SLV_BIT_OFFSET_H[31:0]
-[color] 1
-TOP.AXI_PMU.inst_AXI_PMU.generate_MCCU.slv_reg_to_flat_bitarray(4).SLV_BIT_OFFSET_L[31:0]
-TOP.AXI_PMU.inst_AXI_PMU.generate_MCCU.slv_reg_to_flat_bitarray(4).USED_BITS[31:0]
-TOP.AXI_PMU.inst_AXI_PMU.generate_MCCU.slv_reg_to_flat_bitarray(4).USED_REGISTERS[31:0]
+TOP.AXI_PMU.inst_AXI_PMU.BASE_MCCU[31:0]
+@22
+TOP.AXI_PMU.inst_AXI_PMU.slv_reg(24)[31:0]
+@200
+-main_MCCU_cnf_slv_reg
+@22
+TOP.AXI_PMU.inst_AXI_PMU.slv_reg(25)[31:0]
+@200
+-c0_available_quota
+@22
+TOP.AXI_PMU.inst_AXI_PMU.slv_reg(26)[31:0]
+@200
+-c1_avaialble_quota
+@22
+TOP.AXI_PMU.inst_AXI_PMU.slv_reg(27)[31:0]
+@200
+-weights_r0
+@22
+TOP.AXI_PMU.inst_AXI_PMU.slv_reg(28)[31:0]
+@200
+-weights_r1
+@22
+TOP.AXI_PMU.inst_AXI_PMU.slv_reg(29)[31:0]
+@200
+-c0_remaining_quota
+@23
+TOP.AXI_PMU.inst_AXI_PMU.slv_reg(30)[31:0]
+@200
+-c1_remaining_quota
 @1000200
--g4
-@800200
--g5
-@24
+-MCC_slv_regs
+@28
+TOP.AXI_PMU.inst_AXI_PMU.en_PMU
+TOP.AXI_PMU.inst_AXI_PMU.reset_PMU
+TOP.AXI_PMU.inst_AXI_PMU.int_overflow_o
+TOP.AXI_PMU.inst_AXI_PMU.int_quota_o
+TOP.AXI_PMU.inst_AXI_PMU.MCCU_int_o(0)
+TOP.AXI_PMU.inst_AXI_PMU.MCCU_int_o(1)
 [color] 1
-TOP.AXI_PMU.inst_AXI_PMU.generate_MCCU.slv_reg_to_flat_bitarray(5).ARRAY_BIT_OFFSET_H[31:0]
-[color] 1
-TOP.AXI_PMU.inst_AXI_PMU.generate_MCCU.slv_reg_to_flat_bitarray(5).ARRAY_BIT_OFFSET_L[31:0]
-TOP.AXI_PMU.inst_AXI_PMU.generate_MCCU.slv_reg_to_flat_bitarray(5).CURRENT_REG_OFFSET[31:0]
-[color] 1
-TOP.AXI_PMU.inst_AXI_PMU.generate_MCCU.slv_reg_to_flat_bitarray(5).SLV_BIT_OFFSET_H[31:0]
-[color] 1
-TOP.AXI_PMU.inst_AXI_PMU.generate_MCCU.slv_reg_to_flat_bitarray(5).SLV_BIT_OFFSET_L[31:0]
-TOP.AXI_PMU.inst_AXI_PMU.generate_MCCU.slv_reg_to_flat_bitarray(5).USED_BITS[31:0]
-TOP.AXI_PMU.inst_AXI_PMU.generate_MCCU.slv_reg_to_flat_bitarray(5).USED_REGISTERS[31:0]
-@1000200
--g5
-@800204
--g6
-@25
-[color] 1
-TOP.AXI_PMU.inst_AXI_PMU.generate_MCCU.slv_reg_to_flat_bitarray(6).ARRAY_BIT_OFFSET_H[31:0]
-[color] 1
-TOP.AXI_PMU.inst_AXI_PMU.generate_MCCU.slv_reg_to_flat_bitarray(6).ARRAY_BIT_OFFSET_L[31:0]
-@24
-TOP.AXI_PMU.inst_AXI_PMU.generate_MCCU.slv_reg_to_flat_bitarray(6).CURRENT_REG_OFFSET[31:0]
-@25
-[color] 1
-TOP.AXI_PMU.inst_AXI_PMU.generate_MCCU.slv_reg_to_flat_bitarray(6).SLV_BIT_OFFSET_H[31:0]
-[color] 1
-TOP.AXI_PMU.inst_AXI_PMU.generate_MCCU.slv_reg_to_flat_bitarray(6).SLV_BIT_OFFSET_L[31:0]
-@24
-TOP.AXI_PMU.inst_AXI_PMU.generate_MCCU.slv_reg_to_flat_bitarray(6).USED_BITS[31:0]
-TOP.AXI_PMU.inst_AXI_PMU.generate_MCCU.slv_reg_to_flat_bitarray(6).USED_REGISTERS[31:0]
-@1000204
--g6
-@800200
--g7
-@25
-[color] 1
-TOP.AXI_PMU.inst_AXI_PMU.generate_MCCU.slv_reg_to_flat_bitarray(7).ARRAY_BIT_OFFSET_H[31:0]
-[color] 1
-TOP.AXI_PMU.inst_AXI_PMU.generate_MCCU.slv_reg_to_flat_bitarray(7).ARRAY_BIT_OFFSET_L[31:0]
-@24
-TOP.AXI_PMU.inst_AXI_PMU.generate_MCCU.slv_reg_to_flat_bitarray(7).CURRENT_REG_OFFSET[31:0]
-@25
-[color] 1
-TOP.AXI_PMU.inst_AXI_PMU.generate_MCCU.slv_reg_to_flat_bitarray(7).SLV_BIT_OFFSET_H[31:0]
-[color] 1
-TOP.AXI_PMU.inst_AXI_PMU.generate_MCCU.slv_reg_to_flat_bitarray(7).SLV_BIT_OFFSET_L[31:0]
-@24
-TOP.AXI_PMU.inst_AXI_PMU.generate_MCCU.slv_reg_to_flat_bitarray(7).USED_BITS[31:0]
-TOP.AXI_PMU.inst_AXI_PMU.generate_MCCU.slv_reg_to_flat_bitarray(7).USED_REGISTERS[31:0]
-@1000200
--g7
-@25
-[color] 1
-TOP.AXI_PMU.inst_AXI_PMU.generate_MCCU.slv_reg_to_flat_bitarray(8).ARRAY_BIT_OFFSET_H[31:0]
-[color] 1
-TOP.AXI_PMU.inst_AXI_PMU.generate_MCCU.slv_reg_to_flat_bitarray(8).ARRAY_BIT_OFFSET_L[31:0]
-@24
-TOP.AXI_PMU.inst_AXI_PMU.generate_MCCU.slv_reg_to_flat_bitarray(8).CURRENT_REG_OFFSET[31:0]
-@25
-[color] 1
-TOP.AXI_PMU.inst_AXI_PMU.generate_MCCU.slv_reg_to_flat_bitarray(8).SLV_BIT_OFFSET_H[31:0]
-[color] 1
-TOP.AXI_PMU.inst_AXI_PMU.generate_MCCU.slv_reg_to_flat_bitarray(8).SLV_BIT_OFFSET_L[31:0]
-@24
-TOP.AXI_PMU.inst_AXI_PMU.generate_MCCU.slv_reg_to_flat_bitarray(8).USED_BITS[31:0]
-TOP.AXI_PMU.inst_AXI_PMU.generate_MCCU.slv_reg_to_flat_bitarray(8).USED_REGISTERS[31:0]
+TOP.AXI_PMU.inst_AXI_PMU.slv_reg_wren
 [pattern_trace] 1
 [pattern_trace] 0
