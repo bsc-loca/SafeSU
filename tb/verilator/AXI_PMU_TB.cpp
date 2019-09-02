@@ -16,6 +16,15 @@
 #include <algorithm> 
 #define TRACE_DEF true 
 
+#define addr_PMU_main_cfg 16 
+#define addr_PMU_quota_mask 22 
+#define addr_PMU_quota_limit 23 
+#define addr_MCCU_main_cfg 24 
+#define addr_MCCU_c0_available_quota 25 
+#define addr_MCCU_c1_available_quota 26 
+#define addr_MCCU_weights_r0 27 
+#define addr_MCCU_weights_r1 28 
+
 //time for waveforms
 vluint64_t main_time =0;//current simulation time
 double sc_time_stamp(){ //called by $time in verilog
@@ -68,15 +77,23 @@ void tick_and_trace(VAXI_PMU* module,VerilatedVcdC* tfp){
 
 struct TestCase {
     const char* name;
-    bool en, clr;
-    uint64_t ev0,ev1,ev2,ev3,quota_mask,quota_lim;
+    bool en, clr, wren;
+    uint32_t ev0,ev1,ev2,ev3,quota_mask,quota_lim, MCCU_cfg,MCCU_c0_av_quota,MCCU_c1_av_quota,MCCU_weight0,MCCU_weight1;
 };
+	//assign slv_reg_wren = axi_wready && S_AXI_WVALID_i && axi_awready && S_AXI_AWVALID_i;
 
 TestCase test_cases[] {
-//name                  en,clr,ev0,ev1,ev2,ev3,quota_mask,quota_lim     
-  { "No Int_quota "     ,1 ,0  ,2  ,3  ,3  ,4  ,0b11    ,6   },
-  { "Int_quota "        ,1 ,0  ,1  ,0  ,0  ,0  ,0b11    ,6   },
-  { "Int_quota "        ,1 ,0  ,1  ,3  ,3  ,4  ,0b11    ,6   },
+//name                  en,clr,wren,ev0,ev1,ev2,ev3,quota_mask,quota_lim,MCCU_cfg,MCCU_c0_av_quota,MCCU_c1_av_quota,MCCU_weight0,MCCU_weight1    
+  { "No Int_quota "     ,1 ,0 ,1 ,2  ,3  ,3  ,4  ,0b11      ,6       ,0      ,0               ,0               ,0           ,0   },
+  { "Int_quota "        ,1 ,0 ,1 ,1  ,0  ,0  ,0  ,0b11      ,6       ,0      ,0               ,0               ,0           ,0   },
+  { "Int_quota "        ,1 ,0 ,1 ,1  ,3  ,3  ,4  ,0b11      ,6       ,0      ,0               ,0               ,0           ,0   },
+  { "Set_MCCU  "        ,1 ,0 ,1 ,0  ,0  ,0  ,0  ,0b00      ,0       ,0      ,15              ,0               ,0           ,0},
+  { "Set_MCCU  "        ,1 ,0 ,1 ,0  ,0  ,0  ,0  ,0b00      ,0       ,0      ,15              ,10              ,0           ,0},
+  { "Set_MCCU  "        ,1 ,0 ,1 ,0  ,0  ,0  ,0  ,0b00      ,0       ,0      ,15              ,10              ,0xffff  ,0},
+  { "Set_MCCU  "        ,1 ,0 ,1 ,0  ,0  ,0  ,0  ,0b00      ,0       ,0      ,15              ,10              ,0xffff  ,0xffff },
+  { "Set_MCCU  "        ,1 ,0 ,1 ,0  ,0  ,0  ,0  ,0b00      ,0       ,0xffff ,15              ,10              ,0xffff  ,0xffff },
+  { "Set_MCCU  "        ,1 ,0 ,0 ,0  ,0  ,0  ,0  ,0b00      ,0       ,0xffff ,15              ,10              ,0xffff  ,0xffff },
+  { "Set_MCCU  "        ,1 ,0 ,1 ,0  ,0  ,0  ,0  ,0b00      ,0       ,0x0fff ,15              ,10              ,0xffff  ,0xffff },
 };
 
 int main(int argc, char **argv, char **env) {
@@ -108,14 +125,24 @@ int main(int argc, char **argv, char **env) {
  for(int k = 0; k < num_test_cases; k++) {
       TestCase *test_case = &test_cases[k];
       //fill configuration register
-      PMU->AXI_PMU->inst_AXI_PMU->slv_reg[16]|=test_case->en;
-      PMU->AXI_PMU->inst_AXI_PMU->slv_reg[16]|=(test_case->clr)<<1;
+      PMU->AXI_PMU->inst_AXI_PMU->slv_reg[addr_PMU_main_cfg]|=test_case->en;
+      PMU->AXI_PMU->inst_AXI_PMU->slv_reg[addr_PMU_main_cfg]|=(test_case->clr)<<1;
       //set the mask for quota
-      PMU->AXI_PMU->inst_AXI_PMU->slv_reg[22]|=test_case->quota_mask; 
+      PMU->AXI_PMU->inst_AXI_PMU->slv_reg[addr_PMU_quota_mask]|=test_case->quota_mask; 
       //Set the limit of quota
-      PMU->AXI_PMU->inst_AXI_PMU->slv_reg[23]|=test_case->quota_lim;
+      PMU->AXI_PMU->inst_AXI_PMU->slv_reg[addr_PMU_quota_limit]|=test_case->quota_lim;
+      //set the MCCU values
+      PMU->AXI_PMU->inst_AXI_PMU->slv_reg[addr_MCCU_main_cfg]=test_case->MCCU_cfg; 
+      PMU->AXI_PMU->inst_AXI_PMU->slv_reg[addr_MCCU_c0_available_quota]=test_case->MCCU_c0_av_quota; 
+      PMU->AXI_PMU->inst_AXI_PMU->slv_reg[addr_MCCU_c1_available_quota]=test_case->MCCU_c1_av_quota; 
+      PMU->AXI_PMU->inst_AXI_PMU->slv_reg[addr_MCCU_weights_r0]=test_case->MCCU_weight0; 
+      PMU->AXI_PMU->inst_AXI_PMU->slv_reg[addr_MCCU_weights_r1]=test_case->MCCU_weight1; 
+      PMU->AXI_PMU->inst_AXI_PMU->slv_reg_wren=1; 
       // run  some cycles
       uint64_t tmp=std::max(std::max(test_case->ev0,test_case->ev1),std::max(test_case->ev2,test_case->ev3));
+      //if no events, still execute one cycle
+      if(tmp==0)
+        tmp=1;
       for(uint64_t i=0;i<tmp;i++){
       tick_and_trace(PMU,tfp);
       tick_and_trace(PMU,tfp);
@@ -146,13 +173,22 @@ int main(int argc, char **argv, char **env) {
         }
       }  
   }
-    
+  //force overflow
+  PMU->AXI_PMU->inst_AXI_PMU->slv_reg[4]=0xfffffffe;
+  for(uint64_t i=0;i<3;i++){
+    PMU->EV4_i= !PMU->EV4_i;
+    //waveforms and tick clock
+    tick_and_trace(PMU,tfp);
+    //waveforms and tick clock
+    PMU->EV4_i= !PMU->EV4_i;
+    tick_and_trace(PMU,tfp);
+  }  
   //do a software reset
-  PMU->AXI_PMU->inst_AXI_PMU->slv_reg[16]|=1<<1;
+  PMU->AXI_PMU->inst_AXI_PMU->slv_reg[addr_PMU_main_cfg]|=1<<1;
   tick_and_trace(PMU,tfp);
   tick_and_trace(PMU,tfp);
   //continue monitoring
-  PMU->AXI_PMU->inst_AXI_PMU->slv_reg[16]&=0<<1;
+  PMU->AXI_PMU->inst_AXI_PMU->slv_reg[addr_PMU_main_cfg]&=0<<1;
   tick_and_trace(PMU,tfp);
   tick_and_trace(PMU,tfp);
   //delay test
@@ -163,6 +199,10 @@ int main(int argc, char **argv, char **env) {
   tick_and_trace(PMU,tfp);
   tick_and_trace(PMU,tfp);
   tick_and_trace(PMU,tfp);
+  //do a hard reset
+  PMU->S_AXI_ARESETN_i=0;
+  ticktoc_and_trace(PMU,tfp);
+  PMU->S_AXI_ARESETN_i=1;
   //waveforms
   if (tfp != NULL){
     tfp->dump (main_time);

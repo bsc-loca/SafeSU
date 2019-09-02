@@ -187,7 +187,7 @@
     reg [C_S_AXI_DATA_WIDTH-1:0] slv_reg [0:TOTAL_REGS-1] /*verilator public*/;
 	
     wire	 slv_reg_rden;
-	wire	 slv_reg_wren;
+	wire	 slv_reg_wren/*verilator public*/;
 	reg [C_S_AXI_DATA_WIDTH-1:0]	 reg_data_out;
 	integer	 byte_index;
 	reg	 aw_en;
@@ -343,8 +343,11 @@
             end
             if(OVERFLOW==1) begin : generated_overflow
             //iterate over the registers, each one has one overflow bit
-                for (integer j=0; j<N_COUNTERS; j=j+1) begin : overflow_bit
                     //When more than 32 counters, extra registers are needed
+                    `ifdef ASSERTIONS
+                        assert(N_COUNTERS < 32);
+                    `endif
+                for (integer j=0; j<N_COUNTERS; j=j+1) begin : overflow_bit
                     localparam integer OVERFLOW_REGS_OFFSET= N_COUNTERS+N_CONF_REGS;
                     automatic integer a = j/C_S_AXI_DATA_WIDTH;
                         if (reset_PMU) 
@@ -533,8 +536,8 @@
             //iterate over the registers, each one has one overflow bit
                 for (integer j=0; j<N_COUNTERS; j=j+1) begin : overflow_bit
                     //When more than 32 counters, extra registers are needed
-                    integer OVERFLOW_REGS_OFFSET= N_COUNTERS+N_CONF_REGS;
-                    integer a = j/C_S_AXI_DATA_WIDTH;
+                    automatic integer OVERFLOW_REGS_OFFSET= N_COUNTERS+N_CONF_REGS;
+                    automatic integer a = j/C_S_AXI_DATA_WIDTH;
                     int_overflow_o =(reset_PMU || (S_AXI_ARESETN_i == 1'b0))?
                                          1'b0: | slv_reg[a+OVERFLOW_REGS_OFFSET];
                 end
@@ -781,6 +784,57 @@
             assign MCCU_int_o[i] = 1'b0;
         end
     end
+////////////////////////////////////////////////////////////////////////////////
+//
+// Formal Verification section begins here.
+//
+////////////////////////////////////////////////////////////////////////////////
+`ifdef	FORMAL
+localparam	F_LGDEPTH = 4;
+
+	wire	[(F_LGDEPTH-1):0]	f_axi_awr_outstanding,
+					f_axi_wr_outstanding,
+					f_axi_rd_outstanding;
+	// Connect our slave to the AXI-lite property set
+	//
+	faxil_slave #(  .C_AXI_DATA_WIDTH(C_S_AXI_DATA_WIDTH),
+			.C_AXI_ADDR_WIDTH(C_S_AXI_ADDR_WIDTH),
+			.F_LGDEPTH(F_LGDEPTH)) properties(
+		.i_clk(S_AXI_ACLK_i),
+		.i_axi_reset_n(S_AXI_ARESETN_i),
+		//
+		.i_axi_awaddr(S_AXI_AWADDR_i),
+		.i_axi_awcache(4'h0),
+		.i_axi_awprot(1'b0),
+		.i_axi_awvalid(S_AXI_AWVALID_i),
+		.i_axi_awready(S_AXI_AWREADY_o),
+		//
+		.i_axi_wdata(S_AXI_WDATA_i),
+		.i_axi_wstrb(S_AXI_WSTRB_i),
+		.i_axi_wvalid(S_AXI_WVALID_i),
+		.i_axi_wready(S_AXI_WREADY_o),
+		//
+		.i_axi_bresp(S_AXI_BRESP_o),
+		.i_axi_bvalid(S_AXI_BVALID_o),
+		.i_axi_bready(S_AXI_BREADY_i),
+		//
+		.i_axi_araddr(S_AXI_ARADDR_i),
+		.i_axi_arprot(1'b0),
+		.i_axi_arcache(4'h0),
+		.i_axi_arvalid(S_AXI_ARVALID_i),
+		.i_axi_arready(S_AXI_ARREADY_o),
+		//
+		.i_axi_rdata(S_AXI_RDATA_o),
+		.i_axi_rresp(S_AXI_RRESP_o),
+		.i_axi_rvalid(S_AXI_RVALID_o),
+		.i_axi_rready(S_AXI_RREADY_i),
+		//
+		.f_axi_rd_outstanding(f_axi_rd_outstanding),
+		.f_axi_wr_outstanding(f_axi_wr_outstanding),
+		.f_axi_awr_outstanding(f_axi_awr_outstanding));
+`endif
+
 endmodule
+
 `default_nettype wire //allow compatibility with legacy code and xilinx ip
 

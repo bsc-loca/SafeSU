@@ -18,4 +18,4 @@ verific -import -extnets -all MCCU
 prep -top MCCU
 
 [files]
-/home/bscuser/GITLAB/multicore_pmu/lagarto-lowrisc/lagarto_modulos/AXI_PMU/MCCU/hdl/MCCU.sv
+../../hdl/MCCU.sv
