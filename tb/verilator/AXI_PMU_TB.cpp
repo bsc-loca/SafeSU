@@ -81,7 +81,8 @@ struct TestCase {
     uint32_t ev0,ev1,ev2,ev3,quota_mask,quota_lim, MCCU_cfg,MCCU_c0_av_quota,MCCU_c1_av_quota,MCCU_weight0,MCCU_weight1;
 };
 	//assign slv_reg_wren = axi_wready && S_AXI_WVALID_i && axi_awready && S_AXI_AWVALID_i;
-
+//TODO: MCCU_cfg can't be written directly. It needs to be done through the Axi interface. The test cases below will not be able to set It's value.
+// As new default tool for testbenches is  Questasim this file has been deprecated
 TestCase test_cases[] {
 //name                  en,clr,wren,ev0,ev1,ev2,ev3,quota_mask,quota_lim,MCCU_cfg,MCCU_c0_av_quota,MCCU_c1_av_quota,MCCU_weight0,MCCU_weight1    
   { "No Int_quota "     ,1 ,0 ,1 ,2  ,3  ,3  ,4  ,0b11      ,6       ,0      ,0               ,0               ,0           ,0   },
