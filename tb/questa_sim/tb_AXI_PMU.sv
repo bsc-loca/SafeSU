@@ -17,13 +17,14 @@
 // Description: Unit tests, if this fails functionality is broken
 `timescale 1 ns / 1 ns
 `default_nettype none
-
+`include "colors.vh"
 //***Headers***
 //***Test bench***
 module tb_AXI_PMU();
 //***Parameters***
     parameter CLK_PERIOD      = 2;
     parameter CLK_HALF_PERIOD = CLK_PERIOD / 2;
+    parameter  VERBOSE = 0;
 // Depth of the queues (FIFOs) for the axi_test_master
     parameter AQ_DEPTH  = 10; // Max 1K addresses
     parameter DQ_DEPTH  = 16;  // Max 64K data 
@@ -271,12 +272,11 @@ axi_test_master0 (
 //***task automatic reset_dut***
     task automatic reset_dut;
         begin
-            $display("*** Toggle reset.");
+            $display("***Reset");
             tb_rstn_i <= 1'b0; 
             #CLK_PERIOD;
             tb_rstn_i <= 1'b1;
             #CLK_PERIOD;
-            $display("Done");
         end
     endtask 
 
@@ -284,6 +284,7 @@ axi_test_master0 (
 //Initialize TB registers to a known state. Assumes good host
 task automatic init_sim;
         begin
+            if(VERBOSE)
             $display("*** init sim.");
             //*** TODO ***
             tb_clk_i <='{default:1};
@@ -304,7 +305,6 @@ task automatic init_sim;
             tb_EV13_i <= '{default:0};
             tb_EV14_i <= '{default:0};
             tb_EV15_i <= '{default:0};
-            $display("Done");
         end
     endtask
 
@@ -321,25 +321,11 @@ task automatic init_sim;
         begin
             $display("***Running ALL test");
             write_all_max;
-            $display("Done ALL tests");
+            hw_reset_all;
+            all_counters;
+            $display("***Done ALL tests");
         end
     endtask 
-//***task automatic write_all***
-//Write all registers and get expected values
-//No events enabled
-
-//***task automatic reset_all***
-//Read all registers after a reset and check expected values
-//No events enabled
-
-//***task automatic all_counters***
-//Enable counters sequentially. Count up, reset, rise overflow & check
-//interrupt.
-
-//***task automatic Quota_monitor***
-//Mask some signals, count up. Check masked signals do not count up.
-//Set a limit, wait until the interruption is enabled.
-
 
 //***task automatic write_all_max***
 //This task checks that the wrapper of axi still handles the writtes propperly
@@ -351,6 +337,7 @@ task automatic init_sim;
             int unsigned tmp=0;
             tb_run=0;
             for (int w_addr=first_addr;w_addr <=last_addr;w_addr+=4) begin
+                if(VERBOSE)
                 $display("*** writting addres: %h with: 32'hffffffff",w_addr);
                 axi_test_master0.q_wsync(
                         .address(w_addr),
@@ -368,70 +355,77 @@ task automatic init_sim;
                 );
 
             end
-        $display("*** addresses written");
-        $display("*** reading results ...");
+        if(VERBOSE) $display("*** addresses written");
+        if(VERBOSE) $display("*** reading results ...");
         tb_run=1;
         //Let the master write the registers
         wait(tb_done);
         //check the registers of the counters after write into 32'hffffffff.
         //For this registers nothing shall change because are read only
         for (int i = base_counters; i<=last_counter; i=i+4) begin
-            if (dut_AXI_PMU.inst_AXI_PMU.slv_reg[i>>2] != 32'b0)
+            if (dut_AXI_PMU.inst_AXI_PMU.slv_reg[i>>2] != 32'b0) begin
                 $error("FAIL write_all_max. Register %d is not 0", i>>2);
                 tmp=1;
+            end
         end
         //check the registers of PMU configuration after write into 
         //32'hffffffff. This registers must contain 32'hffffffff.
         for (int i = base_conf; i<=last_conf; i=i+4) begin
-            if (dut_AXI_PMU.inst_AXI_PMU.slv_reg[i>>2] != 32'hffffffff)
+            if (dut_AXI_PMU.inst_AXI_PMU.slv_reg[i>>2] != 32'hffffffff) begin
                 $error("FAIL write_all_max. Register %d has\
                         not been set to 32'hffffffff", i>>2);
                 tmp=1;
+            end
         end
         //check overflow registers. They must stay in 0 because no events have
         //been feeded in to the PMU and we started the with a hw reset.
         if(dut_AXI_PMU.inst_AXI_PMU.OVERFLOW)
         for (int i = base_overflow; i<=last_overflow; i=i+4) begin
-            if (dut_AXI_PMU.inst_AXI_PMU.slv_reg[i>>2] != 32'b0)
+            if (dut_AXI_PMU.inst_AXI_PMU.slv_reg[i>>2] != 32'b0) begin
                 $error("FAIL write_all_max. Register %d is not 0", i>>2);
                 tmp=1;
+            end
         end
         //Check quota registers.  Both are  writable, so This registers must 
         //contain 32'hffffffff.
         if(dut_AXI_PMU.inst_AXI_PMU.QUOTA)
         for (int i = base_quota; i<=last_quota; i=i+4) begin
-            if (dut_AXI_PMU.inst_AXI_PMU.slv_reg[i>>2] != 32'hffffffff)
+            if (dut_AXI_PMU.inst_AXI_PMU.slv_reg[i>>2] != 32'hffffffff) begin
                 $error("FAIL write_all_max. Register %d has\
                         not been set to 32'hffffffff", i>>2);
                 tmp=1;
+            end
         end
         //check MCCU main configuration registers. Only the MSB of the main 
         //configuration register of the MCCU must be set to 1. The other bits
         //reset to 0 after one cycle if they have been written.
         if(dut_AXI_PMU.inst_AXI_PMU.MCCU)
-        if (dut_AXI_PMU.inst_AXI_PMU.slv_reg[base_MCCU>>2] != 32'h80000000)
+        if (dut_AXI_PMU.inst_AXI_PMU.slv_reg[base_MCCU>>2] !=32'h80000000) begin
             $error("FAIL write_all_max. Main MCCU configuration register %d has\
                     not been set to 32'h80000000", base_MCCU>>2);
             tmp=1;
+            end
         //check MCCU core Quota. This registers must be writable, so they must
         //contain 32'hffffffff
         if(dut_AXI_PMU.inst_AXI_PMU.MCCU)
         for (int i=first_MCCU_quota; i<=first_MCCU_quota+n_cores_MCCU; i=i+4)
         begin
-            if (dut_AXI_PMU.inst_AXI_PMU.slv_reg[i>>2] != 32'hffffffff)
+            if (dut_AXI_PMU.inst_AXI_PMU.slv_reg[i>>2] != 32'hffffffff) begin 
                 $error("FAIL write_all_max. Register %d has\
                         not been set to 32'hffffffff", i>>2);
                 tmp=1;
+            end
         end
         //check MCCU weights quota. This registers must be writable, so they
         //must contain 32'hffffffff
         if(dut_AXI_PMU.inst_AXI_PMU.MCCU)
         for (int i=first_MCCU_weights; i<=first_MCCU_weights+n_regs_MCCU_weights
             ; i=i+4) begin
-            if (dut_AXI_PMU.inst_AXI_PMU.slv_reg[i>>2] != 32'hffffffff)
+            if (dut_AXI_PMU.inst_AXI_PMU.slv_reg[i>>2] != 32'hffffffff) begin
                 $error("FAIL write_all_max. Register %d has\
                         not been set to 32'hffffffff", i>>2);
                 tmp=1;
+            end
         end
         //check MCCU interruption registers of consumed quota. This registers
         //can be written but will reset to the value generated by the MCCU in
@@ -440,18 +434,269 @@ task automatic init_sim;
         if(dut_AXI_PMU.inst_AXI_PMU.MCCU)
         for (int i=first_MCCU_out_quota; i<=first_MCCU_weights+n_cores_MCCU
             ; i=i+4) begin
-            if (dut_AXI_PMU.inst_AXI_PMU.slv_reg[i>>2] != 32'b0)
+            if (dut_AXI_PMU.inst_AXI_PMU.slv_reg[i>>2] != 32'b0) begin
                 $error("FAIL write_all_max. Register %d has\
                         not been set to 32'h00000000", i>>2);
                 tmp=1;
+            end
         end
-        
+        read_all; 
         if(tmp==0)
-                $error("PASS write_all_max.");
-            $display("Done");
+        `START_GREEN_PRINT
+                $display("PASS write_all_max.");
+        `END_COLOR_PRINT
         end
     endtask
-//
+//***task automatic read_all***
+//Read all registers and print results
+    task automatic read_all;
+        begin
+            int value;
+            for (int r_addr=first_addr;r_addr <=last_addr ;r_addr+=4) begin
+                axi_test_master0.q_radrs(
+                        .address(r_addr),
+                        .length(1),
+                        .size(TB_DATA_WIDTH),
+                        .id(0),
+                        .burst(1),
+                        .delay_random(0),
+                        .delay(4)
+                );
+                tb_run = 1;
+                wait(tb_done);
+                value = tb_r_data;  
+                if(VERBOSE) $display("*** readed addres: %h with value: %h",r_addr,value);
+            end
+        end
+    endtask
+//***task automatic hw_reset_all***
+//Read all registers after a hw_reset and check expected values
+//No events enabled
+    task automatic hw_reset_all;
+        begin
+            int value, tmp=0;
+            reset_dut;
+            for (int r_addr=first_addr;r_addr <=last_addr ;r_addr+=4) begin
+                axi_test_master0.q_radrs(
+                        .address(r_addr),
+                        .length(1),
+                        .size(TB_DATA_WIDTH),
+                        .id(0),
+                        .burst(1),
+                        .delay_random(0),
+                        .delay(4)
+                );
+                tb_run = 1;
+                wait(tb_done);
+                value = tb_r_data;
+                if (value!=32'b0) begin
+                    `START_RED_PRINT
+                    $error("FAIL reset_all. Register %d has\
+                        not been set to 32'h00000000", r_addr>2);
+                    `END_COLOR_PRINT
+                    tmp=1;
+                    end
+            end
+        if(tmp==0)
+        `START_GREEN_PRINT
+                $display("PASS hw_reset_all.");
+        `END_COLOR_PRINT
+        end
+    endtask
+//***task automatic all_counters***
+//Enable counters sequentially. Count up, reset, rise overflow & check
+//interrupt.
+    task automatic all_counters;
+        begin
+            int value=0, tmp=0, up2='h1f;
+            //set configuration through AXI-LITE commands
+            int w_addr = main_conf;
+            int set_reg = 32'h1; 
+            if(VERBOSE)
+            $display("*** writting addres: %h with: %h",w_addr,set_reg);
+            axi_test_master0.q_wsync(
+                    .address(w_addr),
+                    .length(1),
+                    .size(TB_DATA_WIDTH),
+                    .id(0),
+                    .burst(1),
+                    .adelay_random(0),
+                    .adelay(4),
+                    .data(set_reg),
+                    .strobes(4'hf),
+                    .last(1),
+                    .wdelay_random(0),
+                    .wdelay(5)
+            );
+            //Execute configuration  commands
+                tb_run = 1;
+                wait(tb_done);
+            //Trigger events
+            enable_all_events;
+            //Run
+            while(value<=up2) begin
+                #CLK_PERIOD;
+                value++;
+            end
+            //Disable events
+            disable_all_events; 
+            //Read results
+            for (int r_addr=base_counters;r_addr <=last_counter;r_addr+=4) begin
+                axi_test_master0.q_radrs(
+                        .address(r_addr),
+                        .length(1),
+                        .size(TB_DATA_WIDTH),
+                        .id(0),
+                        .burst(1),
+                        .delay_random(0),
+                        .delay(4)
+                );
+                value = tb_r_data;
+                if (up2!=dut_AXI_PMU.inst_AXI_PMU.slv_reg[r_addr>>2]) begin
+                    $error("FAIL all_counters. Register %d has captured %h \
+                    events instead of expected %h", r_addr>2,dut_AXI_PMU.inst_AXI_PMU.slv_reg[r_addr>>2], up2);
+                    tmp=1;
+                end
+            end
+            //Tests Overflow by setting counter near overflow
+            for (int r_addr=base_counters;r_addr <=last_counter;r_addr+=4) begin
+                dut_AXI_PMU.inst_AXI_PMU.slv_reg[r_addr>>2] ='hffffffff;
+            end
+            //Trigger events
+            enable_all_events;
+            #CLK_PERIOD;
+            #CLK_PERIOD;
+            //Read Overflow registers
+            //TODO: This is only valid up to 16 input signals
+            axi_test_master0.q_radrs(
+                    .address(base_overflow),
+                    .length(1),
+                    .size(TB_DATA_WIDTH),
+                    .id(0),
+                    .burst(1),
+                    .delay_random(0),
+                    .delay(4)
+            );
+            value = tb_r_data;
+            up2 ='hffff;
+            if (dut_AXI_PMU.inst_AXI_PMU.slv_reg[base_overflow>>2]!=up2) begin
+                $error("FAIL all_counters. Overflow register %d has captured %h \
+                    interrupts instead of expected %h", base_overflow>2
+                    ,dut_AXI_PMU.inst_AXI_PMU.slv_reg[base_overflow>>2], up2);
+                tmp=1;
+            end
+            if(int_overflow_o != 1'b1)
+                $error("Overflow Interrupt has not been risen");
+        if(tmp==0)
+        `START_GREEN_PRINT
+            $display("PASS overflow_counters.");
+            $display("PASS all_counters.");
+        `END_COLOR_PRINT
+        end
+        
+    endtask enable_all_events
+        begin
+        //Trigger events
+        tb_EV0_i=1;
+        tb_EV1_i=1;
+        tb_EV2_i=1;
+        tb_EV3_i=1;
+        tb_EV4_i=1;
+        tb_EV5_i=1;
+        tb_EV6_i=1;
+        tb_EV7_i=1;
+        tb_EV8_i=1;
+        tb_EV9_i=1;
+        tb_EV10_i=1;
+        tb_EV11_i=1;
+        tb_EV12_i=1;
+        tb_EV13_i=1;
+        tb_EV14_i=1;
+        tb_EV15_i=1;
+        end
+    endtask 
+
+    task disable_all_events 
+        begin
+            //Trigger events
+            tb_EV0_i=0;
+            tb_EV1_i=0;
+            tb_EV2_i=0;
+            tb_EV3_i=0;
+            tb_EV4_i=0;
+            tb_EV5_i=0;
+            tb_EV6_i=0;
+            tb_EV7_i=0;
+            tb_EV8_i=0;
+            tb_EV9_i=0;
+            tb_EV10_i=0;
+            tb_EV11_i=0;
+            tb_EV12_i=0;
+            tb_EV13_i=0;
+            tb_EV14_i=0;
+            tb_EV15_i=0;
+        end
+    endtask
+
+
+//***task automatic Quota_monitor***
+//Mask some signals, count up. Check masked signals do not count up.
+//Set a limit, wait until the interruption is enabled.
+    task automatic quota_monitor
+        begin
+        //reset the PMU
+        reset_dut;
+        //Set the mask
+            //set quota mask PMU through AXI-LITE commands, Only selected
+            //events will substract quota.
+            int w_addr = first_quota_mask;
+            int set_reg = 32'b1010; 
+            if(VERBOSE)
+            $display("*** writting addres: %h with: %h",w_addr,set_reg);
+            axi_test_master0.q_wsync(
+                    .address(w_addr),
+                    .length(1),
+                    .size(TB_DATA_WIDTH),
+                    .id(0),
+                    .burst(1),
+                    .adelay_random(0),
+                    .adelay(4),
+                    .data(set_reg),
+                    .strobes(4'hf),
+                    .last(1),
+                    .wdelay_random(0),
+                    .wdelay(5)
+            );
+            //set main configuration  register PMU through AXI-LITE commands
+            int w_addr = main_conf;
+            int set_reg = 32'h1; 
+            if(VERBOSE)
+            $display("*** writting addres: %h with: %h",w_addr,set_reg);
+            axi_test_master0.q_wsync(
+                    .address(w_addr),
+                    .length(1),
+                    .size(TB_DATA_WIDTH),
+                    .id(0),
+                    .burst(1),
+                    .adelay_random(0),
+                    .adelay(4),
+                    .data(set_reg),
+                    .strobes(4'hf),
+                    .last(1),
+                    .wdelay_random(0),
+                    .wdelay(5)
+            );
+            //Execute configuration  commands
+            tb_run = 1;
+            wait(tb_done);
+        //Rise several events
+        enable_all_events;        
+        //check reduction in quota
+        //Set limit
+        //trigger more events
+        //Expect interrupt
+        end
+    endtask
 
 //***init_sim***
     initial begin
