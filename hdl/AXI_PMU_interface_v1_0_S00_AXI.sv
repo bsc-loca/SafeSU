@@ -647,7 +647,18 @@
         //map slv_reg s to events_weights_i. Weight size shall be a power of
         //2 an smaller than MCCU_DATA_WIDTH. This constrain can be overcome
         //with a mechanism "align" the weights of the registers in hardware but
-        //we will skip it for now.
+        `ifdef ASSERTIONS
+             //we will skip it for now And assume that MCCU_DATA_WIDTH is
+             //always aligned
+             //TODO: handele misaligment aligments and remove this constrains 
+            always@(*) begin
+            assert (
+                    (MCCU_DATA_WIDTH!=4) 
+                    ||(MCCU_DATA_WIDTH!=8) 
+                    || (MCCU_DATA_WIDTH!=16) 
+                    || (MCCU_DATA_WIDTH!=32);
+            end
+        `endif
         
         //Nº of the slv_register where weights start
         localparam OFFSET_MCCU_WEIGHTS = OFFSET_MCCU_CONFIG + MCCU_N_CORES;
@@ -692,7 +703,8 @@
                 assign weights_flat_bitarray[ARRAY_BIT_OFFSET_H
                                             :ARRAY_BIT_OFFSET_L]
                                             =
-                                            slv_reg [CURRENT_REG_OFFSET]
+                                            slv_reg [CURRENT_REG_OFFSET 
+                                            + BASE_MCCU + N_CORES]
                                            [SLV_BIT_OFFSET_H:SLV_BIT_OFFSET_L];
             end 
             /*
