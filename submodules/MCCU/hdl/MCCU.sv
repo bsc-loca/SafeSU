@@ -351,7 +351,6 @@ Section of Formal propperties, valid for SBY
         end
     end
     
-    //TODO
 `endif
 endmodule
 `default_nettype wire //allow compatibility with legacy code and xilinx ip
