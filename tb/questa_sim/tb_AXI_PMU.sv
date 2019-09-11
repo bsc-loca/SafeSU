@@ -62,7 +62,7 @@ module tb_AXI_PMU();
     localparam first_quota_mask = base_quota; 
     localparam first_quota_limit = base_quota + (dut_AXI_PMU
                                                  .inst_AXI_PMU
-                                                 .N_QUOTA_MASK -1)*4; 
+                                                 .N_QUOTA_MASK)*4; 
         //MCCU
     localparam n_MCCU = dut_AXI_PMU.inst_AXI_PMU.MCCU_REGS;
     localparam n_cores_MCCU = dut_AXI_PMU.inst_AXI_PMU.MCCU_N_CORES;
@@ -71,7 +71,7 @@ module tb_AXI_PMU();
     localparam main_MCCU_cfg = base_MCCU;
     localparam first_MCCU_quota = base_MCCU+4;
     localparam first_MCCU_weights = first_MCCU_quota 
-                                    + (n_cores_MCCU-1)*4;
+                                    + (n_cores_MCCU)*4;
     localparam n_regs_MCCU_weights = dut_AXI_PMU.inst_AXI_PMU.MCCU_WEIGHTS_REGS;
     localparam first_MCCU_out_quota = first_MCCU_weights 
                                     + (n_regs_MCCU_weights-1)*4;
@@ -323,6 +323,8 @@ task automatic init_sim;
             write_all_max;
             hw_reset_all;
             all_counters;
+            quota_monitor;
+            test_MCCU;
             $display("***Done ALL tests");
         end
     endtask 
@@ -594,7 +596,8 @@ task automatic init_sim;
         `END_COLOR_PRINT
         end
         
-    endtask enable_all_events
+    endtask 
+    task automatic enable_all_events;
         begin
         //Trigger events
         tb_EV0_i=1;
@@ -616,7 +619,7 @@ task automatic init_sim;
         end
     endtask 
 
-    task disable_all_events 
+    task automatic disable_all_events ;
         begin
             //Trigger events
             tb_EV0_i=0;
@@ -642,15 +645,38 @@ task automatic init_sim;
 //***task automatic Quota_monitor***
 //Mask some signals, count up. Check masked signals do not count up.
 //Set a limit, wait until the interruption is enabled.
-    task automatic quota_monitor
+    task automatic quota_monitor;
         begin
+        //declare variables
+        int unsigned tmp=0;
+        int w_addr, set_reg;
+        int expected_cycles_before_interrupt,v_cycles;
         //reset the PMU
         reset_dut;
         //Set the mask
             //set quota mask PMU through AXI-LITE commands, Only selected
             //events will substract quota.
-            int w_addr = first_quota_mask;
-            int set_reg = 32'b1010; 
+            w_addr = first_quota_mask;
+            set_reg = 32'b1010; 
+            if(VERBOSE)
+            $display("*** writting addres: %h with: %h",w_addr,set_reg);
+            axi_test_master0.q_wsync(
+                    .address(w_addr),
+                    .length(1),
+                    .size(TB_DATA_WIDTH),
+                    .id(0),
+                    .burst(1),
+                    .adelay_random(0),
+                    .adelay(4),
+                    .data(set_reg),
+                    .strobes(4'hf),
+                    .last(1),
+                    .wdelay_random(0),
+                    .wdelay(5)
+            );
+            //Set set limit of quota allowed before interruoption
+            w_addr = first_quota_limit;
+            set_reg = 32'hf; 
             if(VERBOSE)
             $display("*** writting addres: %h with: %h",w_addr,set_reg);
             axi_test_master0.q_wsync(
@@ -668,8 +694,8 @@ task automatic init_sim;
                     .wdelay(5)
             );
             //set main configuration  register PMU through AXI-LITE commands
-            int w_addr = main_conf;
-            int set_reg = 32'h1; 
+            w_addr = main_conf;
+            set_reg = 32'h1; 
             if(VERBOSE)
             $display("*** writting addres: %h with: %h",w_addr,set_reg);
             axi_test_master0.q_wsync(
@@ -690,11 +716,193 @@ task automatic init_sim;
             tb_run = 1;
             wait(tb_done);
         //Rise several events
-        enable_all_events;        
-        //check reduction in quota
-        //Set limit
-        //trigger more events
-        //Expect interrupt
+        enable_all_events;       
+        //check reduction in quota after n cycles
+        expected_cycles_before_interrupt =8;
+        for(int i = 0; i<expected_cycles_before_interrupt; i++ ) begin
+            #CLK_PERIOD;
+            if( dut_AXI_PMU.inst_AXI_PMU.int_quota_o==1) begin
+                `START_RED_PRINT
+                $error("FAIL quota_monitor.Interruption risen before time");
+                `END_COLOR_PRINT
+            tmp=1;
+            end
+        end
+        #CLK_PERIOD;
+        //v_cycles = dut_AXI_PMU.inst_AXI_PMU.suma;
+        if( dut_AXI_PMU.inst_AXI_PMU.int_quota_o==0) begin
+            `START_RED_PRINT
+            $error("FAIL quota_monitor. Interruption NOT been risen");
+            `END_COLOR_PRINT
+            tmp=1;
+        end
+        if(tmp==0)
+        `START_GREEN_PRINT
+            $display("PASS quota_monitor.");
+        `END_COLOR_PRINT
+        end
+    endtask
+//tests MCCU
+//enable, disable, set quota, set event weight, set quota, rise events, get
+//quota, check interrupts
+
+//***task automatic Test_MCCU***
+//Mask some signals, count up. Check masked signals do not count up.
+//Set a limit, wait until the interruption is enabled.
+    task automatic test_MCCU;
+        begin
+        //declare variables
+        int unsigned tmp=0, cycles_int_c0=0, cycles_int_c1=0;
+        int w_addr, set_reg;
+        //reset the PMU
+        reset_dut;
+        //Set the mask
+            //set quota mask PMU through AXI-LITE commands, Only selected
+            //events will substract quota.
+                
+            //Set quota core 0
+            w_addr = first_MCCU_quota;
+            set_reg = 32'h4b; 
+            if(VERBOSE)
+            $display("*** writting addres: %h with: %h",w_addr,set_reg);
+            axi_test_master0.q_wsync(
+                    .address(w_addr),
+                    .length(1),
+                    .size(TB_DATA_WIDTH),
+                    .id(0),
+                    .burst(1),
+                    .adelay_random(0),
+                    .adelay(4),
+                    .data(set_reg),
+                    .strobes(4'hf),
+                    .last(1),
+                    .wdelay_random(0),
+                    .wdelay(5)
+            );
+            //Set quota core 1
+            w_addr = first_MCCU_quota+4;
+            set_reg = 32'h5fa; 
+            if(VERBOSE)
+            $display("*** writting addres: %h with: %h",w_addr,set_reg);
+            axi_test_master0.q_wsync(
+                    .address(w_addr),
+                    .length(1),
+                    .size(TB_DATA_WIDTH),
+                    .id(0),
+                    .burst(1),
+                    .adelay_random(0),
+                    .adelay(4),
+                    .data(set_reg),
+                    .strobes(4'hf),
+                    .last(1),
+                    .wdelay_random(0),
+                    .wdelay(5)
+            );
+            //Set MCCU weights C0
+            w_addr = first_MCCU_weights;
+            set_reg = 32'hf;
+            if(VERBOSE)
+            $display("*** writting addres: %h with: %h",w_addr,set_reg);
+            axi_test_master0.q_wsync(
+                    .address(w_addr),
+                    .length(1),
+                    .size(TB_DATA_WIDTH),
+                    .id(0),
+                    .burst(1),
+                    .adelay_random(0),
+                    .adelay(4),
+                    .data(set_reg),
+                    .strobes(4'hf),
+                    .last(1),
+                    .wdelay_random(0),
+                    .wdelay(5)
+            );
+            //Set MCCU weights C1
+            w_addr = first_MCCU_weights+4;
+            set_reg = 32'hff; 
+            if(VERBOSE)
+            $display("*** writting addres: %h with: %h",w_addr,set_reg);
+            axi_test_master0.q_wsync(
+                    .address(w_addr),
+                    .length(1),
+                    .size(TB_DATA_WIDTH),
+                    .id(0),
+                    .burst(1),
+                    .adelay_random(0),
+                    .adelay(4),
+                    .data(set_reg),
+                    .strobes(4'hf),
+                    .last(1),
+                    .wdelay_random(0),
+                    .wdelay(5)
+            );
+            //quota update
+            w_addr = main_MCCU_cfg;
+            set_reg = 32'h7fffffff; 
+            if(VERBOSE)
+            $display("*** writting addres: %h with: %h",w_addr,set_reg);
+            axi_test_master0.q_wsync(
+                    .address(w_addr),
+                    .length(1),
+                    .size(TB_DATA_WIDTH),
+                    .id(0),
+                    .burst(1),
+                    .adelay_random(0),
+                    .adelay(4),
+                    .data(set_reg),
+                    .strobes(4'hf),
+                    .last(1),
+                    .wdelay_random(0),
+                    .wdelay(5)
+            );
+            //enable MCCU 
+            w_addr = main_MCCU_cfg;
+            set_reg = 32'h80000000; 
+            if(VERBOSE)
+            $display("*** writting addres: %h with: %h",w_addr,set_reg);
+            axi_test_master0.q_wsync(
+                    .address(w_addr),
+                    .length(1),
+                    .size(TB_DATA_WIDTH),
+                    .id(0),
+                    .burst(1),
+                    .adelay_random(0),
+                    .adelay(4),
+                    .data(set_reg),
+                    .strobes(4'hf),
+                    .last(1),
+                    .wdelay_random(0),
+                    .wdelay(5)
+            );
+            //Execute configuration  commands
+            tb_run = 1;
+            wait(tb_done);
+            //wait until interrupts
+            while (!(int_quota_c0_o && int_quota_c1_o)) begin
+                #CLK_PERIOD;
+                if(!int_quota_c0_o)
+                    cycles_int_c0++;
+                if(!int_quota_c1_o)
+                    cycles_int_c1++;
+            end
+        if( cycles_int_c0!=5) begin
+            `START_RED_PRINT
+            $error("FAIL test_MCCI. Int_quota_c0 took %d cycles instead of %d"
+                    , cycles_int_c0, 5);
+            `END_COLOR_PRINT
+            tmp=1;
+        end
+        if( cycles_int_c1!=6) begin
+            `START_RED_PRINT
+            $error("FAIL test_MCCI. Int_quota_c1 took %d cycles instead of %d"
+                    , cycles_int_c1, 6);
+            `END_COLOR_PRINT
+            tmp=1;
+        end
+        if(tmp==0)
+        `START_GREEN_PRINT
+            $display("PASS test_MCCU.");
+        `END_COLOR_PRINT
         end
     endtask
 
