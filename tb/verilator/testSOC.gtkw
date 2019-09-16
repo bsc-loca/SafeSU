@@ -1,0 +1,290 @@
+[*]
+[*] GTKWave Analyzer v3.3.86 (w)1999-2017 BSI
+[*] Mon Sep 16 12:38:15 2019
+[*]
+[dumpfile] "/home/bscuser/GITLAB/multicore_pmu/lagarto-lowrisc/vsim/write_test.vcd"
+[dumpfile_mtime] "Thu Jul 11 09:23:47 2019"
+[dumpfile_size] 24338315
+[savefile] "/home/bscuser/GITLAB/multicore_pmu/lagarto-lowrisc/lagarto_modulos/AXI_PMU/tb/verilator/testSOC.gtkw"
+[timestart] 15292
+[size] 1920 1052
+[pos] 0 0
+*-7.000000 15730 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] TOP.
+[treeopen] TOP.chip_top.
+[treeopen] TOP.chip_top.AXI_PMU_0.
+[treeopen] TOP.chip_top.AXI_PMU_0.inst_AXI_PMU.
+[treeopen] TOP.chip_top.io_nasti.
+[treeopen] TOP.chip_top.io_nasti_cbo.
+[treeopen] TOP.chip_top.io_nasti_mem.
+[treeopen] TOP.chip_top.mem_nasti.
+[treeopen] TOP.chip_top.Rocket.
+[treeopen] TOP.chip_top.Rocket.RocketTile.
+[treeopen] TOP.chip_top.Rocket.RocketTile.cache.
+[treeopen] TOP.chip_top.Rocket.RocketTile.core.
+[treeopen] TOP.chip_top.Rocket.RocketTile.core.BIMODAL_PREDICTOR.BIP.
+[treeopen] TOP.chip_top.Rocket.RocketTile.core.BIMODAL_PREDICTOR.BTB.
+[treeopen] TOP.chip_top.Rocket.RocketTile.core.BIMODAL_PREDICTOR.PHT.
+[treeopen] TOP.chip_top.Rocket.RocketTile.core.FETCH.
+[treeopen] TOP.chip_top.Rocket.RocketTile.dcache.
+[treeopen] TOP.chip_top.Rocket.RocketTile.dcache.dtlb.
+[treeopen] TOP.chip_top.Rocket.RocketTile.ptw.
+[sst_width] 422
+[signals_width] 381
+[sst_expanded] 1
+[sst_vpaned_height] 345
+@22
+[color] 3
+TOP.clk_n
+@28
+TOP.chip_top.Rocket.RocketTile.core.EXE_PC_VALID
+TOP.chip_top.Rocket.RocketTile.core.EXE_INT_UNIT_VALID
+@804022
+^>1 /home/bscuser/BSC/lowrisc/gtkwave/RISC-V_DISASSEMBLER.o
+#{Full_OP} (0)TOP.chip_top.Rocket.RocketTile.core.EXE_OPCODE[6:0] (1)TOP.chip_top.Rocket.RocketTile.core.EXE_OPCODE[6:0] (2)TOP.chip_top.Rocket.RocketTile.core.EXE_OPCODE[6:0] (3)TOP.chip_top.Rocket.RocketTile.core.EXE_OPCODE[6:0] (4)TOP.chip_top.Rocket.RocketTile.core.EXE_OPCODE[6:0] (5)TOP.chip_top.Rocket.RocketTile.core.EXE_OPCODE[6:0] (6)TOP.chip_top.Rocket.RocketTile.core.EXE_OPCODE[6:0] (0)TOP.chip_top.Rocket.RocketTile.core.EXE_FUNCT3[2:0] (1)TOP.chip_top.Rocket.RocketTile.core.EXE_FUNCT3[2:0] (2)TOP.chip_top.Rocket.RocketTile.core.EXE_FUNCT3[2:0] (0)TOP.chip_top.Rocket.RocketTile.core.EXE_FUNCT7[6:0] (1)TOP.chip_top.Rocket.RocketTile.core.EXE_FUNCT7[6:0] (2)TOP.chip_top.Rocket.RocketTile.core.EXE_FUNCT7[6:0] (3)TOP.chip_top.Rocket.RocketTile.core.EXE_FUNCT7[6:0] (4)TOP.chip_top.Rocket.RocketTile.core.EXE_FUNCT7[6:0] (5)TOP.chip_top.Rocket.RocketTile.core.EXE_FUNCT7[6:0] (6)TOP.chip_top.Rocket.RocketTile.core.EXE_FUNCT7[6:0]
+@c00022
+[color] 1
+TOP.chip_top.Rocket.RocketTile.core.EXE_OPCODE[6:0]
+@28
+(0)TOP.chip_top.Rocket.RocketTile.core.EXE_OPCODE[6:0]
+(1)TOP.chip_top.Rocket.RocketTile.core.EXE_OPCODE[6:0]
+(2)TOP.chip_top.Rocket.RocketTile.core.EXE_OPCODE[6:0]
+(3)TOP.chip_top.Rocket.RocketTile.core.EXE_OPCODE[6:0]
+(4)TOP.chip_top.Rocket.RocketTile.core.EXE_OPCODE[6:0]
+(5)TOP.chip_top.Rocket.RocketTile.core.EXE_OPCODE[6:0]
+(6)TOP.chip_top.Rocket.RocketTile.core.EXE_OPCODE[6:0]
+@1401200
+-group_end
+@c00022
+[color] 1
+TOP.chip_top.Rocket.RocketTile.core.EXE_FUNCT3[2:0]
+@28
+(0)TOP.chip_top.Rocket.RocketTile.core.EXE_FUNCT3[2:0]
+(1)TOP.chip_top.Rocket.RocketTile.core.EXE_FUNCT3[2:0]
+(2)TOP.chip_top.Rocket.RocketTile.core.EXE_FUNCT3[2:0]
+@1401200
+-group_end
+@22
+[color] 1
+TOP.chip_top.Rocket.RocketTile.core.EXE_FUNCT7[6:0]
+@1001200
+-group_end
+@c00022
+TOP.chip_top.Rocket.RocketTile.core.EXE_PC[39:0]
+@28
+(0)TOP.chip_top.Rocket.RocketTile.core.EXE_PC[39:0]
+(1)TOP.chip_top.Rocket.RocketTile.core.EXE_PC[39:0]
+(2)TOP.chip_top.Rocket.RocketTile.core.EXE_PC[39:0]
+(3)TOP.chip_top.Rocket.RocketTile.core.EXE_PC[39:0]
+(4)TOP.chip_top.Rocket.RocketTile.core.EXE_PC[39:0]
+(5)TOP.chip_top.Rocket.RocketTile.core.EXE_PC[39:0]
+(6)TOP.chip_top.Rocket.RocketTile.core.EXE_PC[39:0]
+(7)TOP.chip_top.Rocket.RocketTile.core.EXE_PC[39:0]
+(8)TOP.chip_top.Rocket.RocketTile.core.EXE_PC[39:0]
+(9)TOP.chip_top.Rocket.RocketTile.core.EXE_PC[39:0]
+(10)TOP.chip_top.Rocket.RocketTile.core.EXE_PC[39:0]
+(11)TOP.chip_top.Rocket.RocketTile.core.EXE_PC[39:0]
+(12)TOP.chip_top.Rocket.RocketTile.core.EXE_PC[39:0]
+(13)TOP.chip_top.Rocket.RocketTile.core.EXE_PC[39:0]
+(14)TOP.chip_top.Rocket.RocketTile.core.EXE_PC[39:0]
+(15)TOP.chip_top.Rocket.RocketTile.core.EXE_PC[39:0]
+(16)TOP.chip_top.Rocket.RocketTile.core.EXE_PC[39:0]
+(17)TOP.chip_top.Rocket.RocketTile.core.EXE_PC[39:0]
+(18)TOP.chip_top.Rocket.RocketTile.core.EXE_PC[39:0]
+(19)TOP.chip_top.Rocket.RocketTile.core.EXE_PC[39:0]
+(20)TOP.chip_top.Rocket.RocketTile.core.EXE_PC[39:0]
+(21)TOP.chip_top.Rocket.RocketTile.core.EXE_PC[39:0]
+(22)TOP.chip_top.Rocket.RocketTile.core.EXE_PC[39:0]
+(23)TOP.chip_top.Rocket.RocketTile.core.EXE_PC[39:0]
+(24)TOP.chip_top.Rocket.RocketTile.core.EXE_PC[39:0]
+(25)TOP.chip_top.Rocket.RocketTile.core.EXE_PC[39:0]
+(26)TOP.chip_top.Rocket.RocketTile.core.EXE_PC[39:0]
+(27)TOP.chip_top.Rocket.RocketTile.core.EXE_PC[39:0]
+(28)TOP.chip_top.Rocket.RocketTile.core.EXE_PC[39:0]
+(29)TOP.chip_top.Rocket.RocketTile.core.EXE_PC[39:0]
+(30)TOP.chip_top.Rocket.RocketTile.core.EXE_PC[39:0]
+(31)TOP.chip_top.Rocket.RocketTile.core.EXE_PC[39:0]
+(32)TOP.chip_top.Rocket.RocketTile.core.EXE_PC[39:0]
+(33)TOP.chip_top.Rocket.RocketTile.core.EXE_PC[39:0]
+(34)TOP.chip_top.Rocket.RocketTile.core.EXE_PC[39:0]
+(35)TOP.chip_top.Rocket.RocketTile.core.EXE_PC[39:0]
+(36)TOP.chip_top.Rocket.RocketTile.core.EXE_PC[39:0]
+(37)TOP.chip_top.Rocket.RocketTile.core.EXE_PC[39:0]
+(38)TOP.chip_top.Rocket.RocketTile.core.EXE_PC[39:0]
+(39)TOP.chip_top.Rocket.RocketTile.core.EXE_PC[39:0]
+@1401200
+-group_end
+@c00022
+[color] 1
+TOP.chip_top.Rocket.RocketTile.core.EXE_OPCODE[6:0]
+@28
+(0)TOP.chip_top.Rocket.RocketTile.core.EXE_OPCODE[6:0]
+(1)TOP.chip_top.Rocket.RocketTile.core.EXE_OPCODE[6:0]
+(2)TOP.chip_top.Rocket.RocketTile.core.EXE_OPCODE[6:0]
+(3)TOP.chip_top.Rocket.RocketTile.core.EXE_OPCODE[6:0]
+(4)TOP.chip_top.Rocket.RocketTile.core.EXE_OPCODE[6:0]
+(5)TOP.chip_top.Rocket.RocketTile.core.EXE_OPCODE[6:0]
+(6)TOP.chip_top.Rocket.RocketTile.core.EXE_OPCODE[6:0]
+@1401200
+-group_end
+@22
+TOP.chip_top.Rocket.RocketTile.core.IMM12_BRANCH[11:0]
+TOP.chip_top.Rocket.RocketTile.core.IMM12_INT[11:0]
+TOP.chip_top.Rocket.RocketTile.core.IMM20_INT[19:0]
+@c00022
+[color] 1
+TOP.chip_top.Rocket.RocketTile.core.EXE_FUNCT3[2:0]
+@28
+(0)TOP.chip_top.Rocket.RocketTile.core.EXE_FUNCT3[2:0]
+(1)TOP.chip_top.Rocket.RocketTile.core.EXE_FUNCT3[2:0]
+(2)TOP.chip_top.Rocket.RocketTile.core.EXE_FUNCT3[2:0]
+@1401200
+-group_end
+@22
+[color] 1
+TOP.chip_top.Rocket.RocketTile.core.EXE_FUNCT7[6:0]
+@c00200
+-IO_NASTI write response
+@22
+[color] 2
+TOP.chip_top.io_nasti.b_id[8:0]
+@28
+[color] 2
+TOP.chip_top.io_nasti.b_ready[0]
+[color] 2
+TOP.chip_top.io_nasti.b_resp[1:0]
+[color] 2
+TOP.chip_top.io_nasti.b_user[0]
+[color] 2
+TOP.chip_top.io_nasti.b_valid[0]
+@1401200
+-IO_NASTI write response
+@800200
+-IO_NASTI write writeaddr
+@22
+[color] 2
+TOP.chip_top.io_nasti.aw_addr[31:0]
+@28
+[color] 2
+TOP.chip_top.io_nasti.aw_valid[0]
+[color] 2
+TOP.chip_top.io_nasti.aw_ready[0]
+[color] 2
+TOP.chip_top.io_nasti.w_valid[0]
+[color] 2
+TOP.chip_top.io_nasti.w_ready[0]
+@22
+[color] 2
+TOP.chip_top.io_nasti.w_data[31:0]
+[color] 2
+TOP.chip_top.io_nasti.w_strb[3:0]
+@1000200
+-IO_NASTI write writeaddr
+@800200
+-PMU signals and sources
+@28
+[color] 1
++{ICACHE_s2_miss} TOP.chip_top.Rocket.RocketTile.cache.icache.s2_miss
+[color] 2
+TOP.chip_top.Rocket.io_AXI_PMU_icache_miss
+[color] 1
++{ITLB_miss} TOP.chip_top.Rocket.RocketTile.cache.tlb.tlb_miss
+[color] 2
+TOP.chip_top.Rocket.io_AXI_PMU_itlb_miss
+[color] 3
++{DCHACHE_s2_nack_miss} TOP.chip_top.Rocket.RocketTile.dcache.s2_nack_miss
+[color] 2
+TOP.chip_top.Rocket.io_AXI_PMU_dcache_miss
+[color] 1
++{DTLB_miss} TOP.chip_top.Rocket.RocketTile.dcache.dtlb.tlb_miss
+[color] 3
+TOP.chip_top.Rocket.io_AXI_PMU_dtlb_miss
+[color] 1
+TOP.chip_top.Rocket.RocketTile.core.EXE_LOAD
+[color] 2
+TOP.chip_top.Rocket.io_AXI_PMU_EXE_LOAD
+[color] 1
+TOP.chip_top.Rocket.RocketTile.core.EXE_STORE
+[color] 2
+TOP.chip_top.Rocket.io_AXI_PMU_EXE_STORE
+[color] 1
+TOP.chip_top.Rocket.RocketTile.core.FETCH.EXE_MISS_PREDICTION
+[color] 2
+TOP.chip_top.Rocket.io_AXI_PMU_branch_miss
+@22
+[color] 1
+TOP.chip_top.Rocket.RocketTile.core.EXE_PC[39:0]
+@28
+[color] 1
+TOP.chip_top.Rocket.RocketTile.core.EXE_PC_VALID
+@1000200
+-PMU signals and sources
+@c04022
+^>1 /home/bscuser/BSC/lowrisc/gtkwave/RISC-V_DISASSEMBLER.o
+#{Full_OP} (0)TOP.chip_top.Rocket.RocketTile.core.EXE_OPCODE[6:0] (1)TOP.chip_top.Rocket.RocketTile.core.EXE_OPCODE[6:0] (2)TOP.chip_top.Rocket.RocketTile.core.EXE_OPCODE[6:0] (3)TOP.chip_top.Rocket.RocketTile.core.EXE_OPCODE[6:0] (4)TOP.chip_top.Rocket.RocketTile.core.EXE_OPCODE[6:0] (5)TOP.chip_top.Rocket.RocketTile.core.EXE_OPCODE[6:0] (6)TOP.chip_top.Rocket.RocketTile.core.EXE_OPCODE[6:0] (0)TOP.chip_top.Rocket.RocketTile.core.EXE_FUNCT3[2:0] (1)TOP.chip_top.Rocket.RocketTile.core.EXE_FUNCT3[2:0] (2)TOP.chip_top.Rocket.RocketTile.core.EXE_FUNCT3[2:0] (0)TOP.chip_top.Rocket.RocketTile.core.EXE_FUNCT7[6:0] (1)TOP.chip_top.Rocket.RocketTile.core.EXE_FUNCT7[6:0] (2)TOP.chip_top.Rocket.RocketTile.core.EXE_FUNCT7[6:0] (3)TOP.chip_top.Rocket.RocketTile.core.EXE_FUNCT7[6:0] (4)TOP.chip_top.Rocket.RocketTile.core.EXE_FUNCT7[6:0] (5)TOP.chip_top.Rocket.RocketTile.core.EXE_FUNCT7[6:0] (6)TOP.chip_top.Rocket.RocketTile.core.EXE_FUNCT7[6:0]
+@28
+TOP.chip_top.Rocket.RocketTile.core.EXE_PC_VALID
+@c00022
+[color] 1
+TOP.chip_top.Rocket.RocketTile.core.EXE_OPCODE[6:0]
+@28
+(0)TOP.chip_top.Rocket.RocketTile.core.EXE_OPCODE[6:0]
+(1)TOP.chip_top.Rocket.RocketTile.core.EXE_OPCODE[6:0]
+(2)TOP.chip_top.Rocket.RocketTile.core.EXE_OPCODE[6:0]
+(3)TOP.chip_top.Rocket.RocketTile.core.EXE_OPCODE[6:0]
+(4)TOP.chip_top.Rocket.RocketTile.core.EXE_OPCODE[6:0]
+(5)TOP.chip_top.Rocket.RocketTile.core.EXE_OPCODE[6:0]
+(6)TOP.chip_top.Rocket.RocketTile.core.EXE_OPCODE[6:0]
+@1401200
+-group_end
+@c00022
+[color] 1
+TOP.chip_top.Rocket.RocketTile.core.EXE_FUNCT3[2:0]
+@28
+(0)TOP.chip_top.Rocket.RocketTile.core.EXE_FUNCT3[2:0]
+(1)TOP.chip_top.Rocket.RocketTile.core.EXE_FUNCT3[2:0]
+(2)TOP.chip_top.Rocket.RocketTile.core.EXE_FUNCT3[2:0]
+@1401200
+-group_end
+@22
+[color] 1
+TOP.chip_top.Rocket.RocketTile.core.EXE_FUNCT7[6:0]
+@1401200
+-group_end
+@22
+TOP.chip_top.Rocket.RocketTile.core.previous_EXE_PC[39:0]
+TOP.chip_top.Rocket.RocketTile.core.EXE_PC[39:0]
+@800200
+-pmu_regs
+@1000200
+-pmu_regs
+@800200
+-PMU_REGS
+@22
+TOP.chip_top.AXI_PMU_0.inst_AXI_PMU.slv_reg(0)[31:0]
+TOP.chip_top.AXI_PMU_0.inst_AXI_PMU.slv_reg(1)[31:0]
+TOP.chip_top.AXI_PMU_0.inst_AXI_PMU.slv_reg(2)[31:0]
+TOP.chip_top.AXI_PMU_0.inst_AXI_PMU.slv_reg(3)[31:0]
+TOP.chip_top.AXI_PMU_0.inst_AXI_PMU.slv_reg(4)[31:0]
+TOP.chip_top.AXI_PMU_0.inst_AXI_PMU.slv_reg(5)[31:0]
+TOP.chip_top.AXI_PMU_0.inst_AXI_PMU.slv_reg(6)[31:0]
+TOP.chip_top.AXI_PMU_0.inst_AXI_PMU.slv_reg(7)[31:0]
+TOP.chip_top.AXI_PMU_0.inst_AXI_PMU.slv_reg(8)[31:0]
+TOP.chip_top.AXI_PMU_0.inst_AXI_PMU.slv_reg(9)[31:0]
+TOP.chip_top.AXI_PMU_0.inst_AXI_PMU.slv_reg(10)[31:0]
+TOP.chip_top.AXI_PMU_0.inst_AXI_PMU.slv_reg(11)[31:0]
+TOP.chip_top.AXI_PMU_0.inst_AXI_PMU.slv_reg(12)[31:0]
+TOP.chip_top.AXI_PMU_0.inst_AXI_PMU.slv_reg(13)[31:0]
+TOP.chip_top.AXI_PMU_0.inst_AXI_PMU.slv_reg(14)[31:0]
+TOP.chip_top.AXI_PMU_0.inst_AXI_PMU.slv_reg(15)[31:0]
+@23
+TOP.chip_top.AXI_PMU_0.inst_AXI_PMU.slv_reg(16)[31:0]
+@22
+TOP.chip_top.AXI_PMU_0.inst_AXI_PMU.slv_reg(17)[31:0]
+TOP.chip_top.AXI_PMU_0.inst_AXI_PMU.slv_reg(18)[31:0]
+TOP.chip_top.AXI_PMU_0.inst_AXI_PMU.slv_reg(19)[31:0]
+TOP.chip_top.AXI_PMU_0.inst_AXI_PMU.slv_reg(20)[31:0]
+@1000200
+-PMU_REGS
+[pattern_trace] 1
+[pattern_trace] 0
