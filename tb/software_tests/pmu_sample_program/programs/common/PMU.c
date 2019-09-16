@@ -1,5 +1,4 @@
-#include "PMU.h"
-//#define CONG_REG_1_OFFSET (0xA0) //64Bit Counters
+#include <PMU.h>
 typedef enum { false, true } bool;
 
 #define CYCLES 0
@@ -35,7 +34,6 @@ void search_loop(uint32_t entry, uint32_t exit,uint32_t aligment, uint32_t key){
     volatile uint32_t *var;
     volatile uint32_t reader;
     #ifdef __UART__
-    printf("\n *** END DUMP ***\n\n");
     printf("\n *** Memory dump***\n\n");
     #endif
     for(uint32_t i=entry;i<exit+4;i=i+aligment){
@@ -57,13 +55,13 @@ void search_loop(uint32_t entry, uint32_t exit,uint32_t aligment, uint32_t key){
 
 void enable_PMU_32b (void){
     uint32_t *var;
-    var=(uint32_t*)(PMU_BASE+CONG_REG_1_OFFSET);
+    var=(uint32_t*)(PMU_BASE + MAIN_CONF_REG);
     *var=1;
 }
 
 void disable_PMU_32b (void){
     uint32_t *var;
-    var=(uint32_t*)(PMU_BASE+CONG_REG_1_OFFSET);
+    var=(uint32_t*)(PMU_BASE+MAIN_CONF_REG);
     *var=0;
 }
 
@@ -91,16 +89,16 @@ uint32_t get_instr_32b (void){
 uint32_t reset_pmu(void){
     //reset counters 
     volatile uint32_t *var;
-    var=(uint32_t*)(PMU_BASE+CONG_REG_1_OFFSET);
-    //var=(uint32_t*)(PMU_BASE+CONG_REG_1_OFFSET);
+    var=(uint32_t*)(PMU_BASE+MAIN_CONF_REG);
+    //var=(uint32_t*)(PMU_BASE+MAIN_CONF_REG);
     *var=2;
 }
 
 uint32_t get_cycles(void){
     //reset counters 
     volatile uint32_t *var;
-    var=(uint32_t*)(PMU_BASE+CONG_REG_1_OFFSET);
-    //var=(uint32_t*)(PMU_BASE+CONG_REG_1_OFFSET);
+    var=(uint32_t*)(PMU_BASE+MAIN_CONF_REG);
+    //var=(uint32_t*)(PMU_BASE+MAIN_CONF_REG);
     *var=2;
 }
 
