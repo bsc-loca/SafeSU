@@ -1,15 +1,15 @@
 [*]
 [*] GTKWave Analyzer v3.3.86 (w)1999-2017 BSI
-[*] Mon Sep 16 12:38:15 2019
+[*] Wed Sep 18 07:37:13 2019
 [*]
 [dumpfile] "/home/bscuser/GITLAB/multicore_pmu/lagarto-lowrisc/vsim/write_test.vcd"
-[dumpfile_mtime] "Thu Jul 11 09:23:47 2019"
-[dumpfile_size] 24338315
+[dumpfile_mtime] "Wed Sep 18 07:11:06 2019"
+[dumpfile_size] 53953958
 [savefile] "/home/bscuser/GITLAB/multicore_pmu/lagarto-lowrisc/lagarto_modulos/AXI_PMU/tb/verilator/testSOC.gtkw"
-[timestart] 15292
+[timestart] 4670
 [size] 1920 1052
 [pos] 0 0
-*-7.000000 15730 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-13.000000 20030 16295 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] TOP.
 [treeopen] TOP.chip_top.
 [treeopen] TOP.chip_top.AXI_PMU_0.
@@ -30,9 +30,9 @@
 [treeopen] TOP.chip_top.Rocket.RocketTile.dcache.dtlb.
 [treeopen] TOP.chip_top.Rocket.RocketTile.ptw.
 [sst_width] 422
-[signals_width] 381
+[signals_width] 380
 [sst_expanded] 1
-[sst_vpaned_height] 345
+[sst_vpaned_height] 391
 @22
 [color] 3
 TOP.clk_n
@@ -253,13 +253,45 @@ TOP.chip_top.Rocket.RocketTile.core.EXE_FUNCT7[6:0]
 -group_end
 @22
 TOP.chip_top.Rocket.RocketTile.core.previous_EXE_PC[39:0]
+TOP.chip_top.Rocket.RocketTile.core.previous_EXE_PC[39:0]
 TOP.chip_top.Rocket.RocketTile.core.EXE_PC[39:0]
-@800200
--pmu_regs
-@1000200
--pmu_regs
-@800200
--PMU_REGS
+@28
+TOP.chip_top.Rocket.RocketTile.core.EXE_PC_VALID
+TOP.chip_top.Rocket.RocketTile.core.new_instruction
+[color] 1
+TOP.chip_top.new_instruction_c0
+[color] 2
+TOP.chip_top.clk
+@22
+TOP.chip_top.AXI_PMU_0.inst_AXI_PMU.slv_reg(0)[31:0]
+@28
+TOP.chip_top.icache_miss_c0
+@22
+TOP.chip_top.AXI_PMU_0.inst_AXI_PMU.slv_reg(1)[31:0]
+@28
+TOP.chip_top.itlb_miss_c0
+@22
+TOP.chip_top.AXI_PMU_0.inst_AXI_PMU.slv_reg(2)[31:0]
+@28
+TOP.chip_top.dcache_miss_c0
+@22
+TOP.chip_top.AXI_PMU_0.inst_AXI_PMU.slv_reg(3)[31:0]
+@28
+[color] 1
++{DTLB_miss} TOP.chip_top.Rocket.RocketTile.dcache.dtlb.tlb_miss
+@22
+TOP.chip_top.AXI_PMU_0.inst_AXI_PMU.slv_reg(4)[31:0]
+@28
+TOP.chip_top.EXE_STORE_c0
+@22
+TOP.chip_top.AXI_PMU_0.inst_AXI_PMU.slv_reg(5)[31:0]
+@28
+TOP.chip_top.EXE_LOAD_c0
+@22
+TOP.chip_top.AXI_PMU_0.inst_AXI_PMU.slv_reg(7)[31:0]
+@28
+[color] 1
+TOP.chip_top.new_instruction_c0
 @22
 TOP.chip_top.AXI_PMU_0.inst_AXI_PMU.slv_reg(0)[31:0]
 TOP.chip_top.AXI_PMU_0.inst_AXI_PMU.slv_reg(1)[31:0]
@@ -277,14 +309,54 @@ TOP.chip_top.AXI_PMU_0.inst_AXI_PMU.slv_reg(12)[31:0]
 TOP.chip_top.AXI_PMU_0.inst_AXI_PMU.slv_reg(13)[31:0]
 TOP.chip_top.AXI_PMU_0.inst_AXI_PMU.slv_reg(14)[31:0]
 TOP.chip_top.AXI_PMU_0.inst_AXI_PMU.slv_reg(15)[31:0]
-@23
 TOP.chip_top.AXI_PMU_0.inst_AXI_PMU.slv_reg(16)[31:0]
+@200
+-PMU_main_cfg
 @22
 TOP.chip_top.AXI_PMU_0.inst_AXI_PMU.slv_reg(17)[31:0]
 TOP.chip_top.AXI_PMU_0.inst_AXI_PMU.slv_reg(18)[31:0]
 TOP.chip_top.AXI_PMU_0.inst_AXI_PMU.slv_reg(19)[31:0]
 TOP.chip_top.AXI_PMU_0.inst_AXI_PMU.slv_reg(20)[31:0]
-@1000200
--PMU_REGS
+@23
+TOP.chip_top.AXI_PMU_0.inst_AXI_PMU.slv_reg(21)[31:0]
+@22
+TOP.chip_top.AXI_PMU_0.inst_AXI_PMU.slv_reg(22)[31:0]
+@200
+-PMU_quota_mask
+@22
+TOP.chip_top.AXI_PMU_0.inst_AXI_PMU.slv_reg(23)[31:0]
+@200
+-PMU_quota_limit
+@22
+TOP.chip_top.AXI_PMU_0.inst_AXI_PMU.slv_reg(24)[31:0]
+@200
+-MCCU_main_cfg
+@22
+TOP.chip_top.AXI_PMU_0.inst_AXI_PMU.slv_reg(25)[31:0]
+@200
+-MCCU_quota_c0
+@22
+TOP.chip_top.AXI_PMU_0.inst_AXI_PMU.slv_reg(26)[31:0]
+@200
+-MCCU_quota_c1
+@22
+TOP.chip_top.AXI_PMU_0.inst_AXI_PMU.slv_reg(27)[31:0]
+@200
+-MCCU_weights_0
+@22
+TOP.chip_top.AXI_PMU_0.inst_AXI_PMU.slv_reg(28)[31:0]
+@200
+-MCCU_weights_1
+@22
+TOP.chip_top.AXI_PMU_0.inst_AXI_PMU.slv_reg(29)[31:0]
+@200
+-MCCU_remaining_quota_c0
+@22
+TOP.chip_top.AXI_PMU_0.inst_AXI_PMU.slv_reg(30)[31:0]
+@200
+-MCCU_remaining_quota_c1
+@22
+TOP.chip_top.AXI_PMU_0.S_AXI_ARADDR_i[27:0]
+TOP.chip_top.AXI_PMU_0.S_AXI_AWADDR_i[27:0]
 [pattern_trace] 1
 [pattern_trace] 0

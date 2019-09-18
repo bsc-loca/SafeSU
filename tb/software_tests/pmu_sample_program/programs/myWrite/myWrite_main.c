@@ -15,7 +15,14 @@ uint32_t bench_pmu(void){
     printf("\n ***bench_pmu***\n\n");
 #endif
     enable_PMU_32b();
-//    search_loop(IO_BASE,IO_BASE+IO_MASK,4,0xBEAF);
+    int a=0, b =0;
+    for(int i = 0 ; i< 0xfffff; i++){
+        a=i-b;
+        if(i%3){
+            b++;
+        read_test_loop(PMU_BASE,PMU_BASE+MASK3,4);
+        }
+    }
     disable_PMU_32b ();
     read_test_loop(PMU_BASE,PMU_BASE+MASK3,4);
     return(0);
@@ -26,8 +33,8 @@ void main(void){
 #endif
    // printf("\n ***DELAY***\n\n");
    // read_test_loop(PMU_BASE,PMU_BASE+0x01fff,4);
-   // test_pmu();
-   bench_pmu();
+   test_pmu();
+   //bench_pmu();
    //search_loop(IO_BASE,PMU_BASE+IO_MASK,4,0xDEAD);
 }
 
