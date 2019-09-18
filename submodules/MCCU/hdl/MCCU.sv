@@ -268,6 +268,14 @@
                  !enable_i ? 1'b0:
                  (ccc_suma_int[x]>{{O_D_0PAD{1'b0}},quota_int[x]})? 1'b1:1'b0;
     end
+    `ifdef ASSERTIONS
+    always @(posedge clk_i) begin
+        for(integer x=0; x<N_CORES; x=x+1)  begin: InterruptionQuota
+            if(quota_int[x]>ccc_suma_int[x])
+                assert (interruption_quota_o[x]==1'b0);
+        end
+    end
+    `endif
     /*----------
     forward results of internal registers 
     ----------*/
