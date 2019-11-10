@@ -94,6 +94,9 @@ module tb_AXI_PMU();
     reg     tb_EV13_i;
     reg     tb_EV14_i;
     reg     tb_EV15_i;
+    reg     tb_EV16_i;
+    reg     tb_EV17_i;
+    reg     tb_EV18_i;
     wire    int_overflow_o;
     wire    int_quota_o;
     wire    int_quota_c0_o;
@@ -186,6 +189,9 @@ module tb_AXI_PMU();
         .EV13_i            (tb_EV13_i),   
         .EV14_i            (tb_EV14_i),   
         .EV15_i            (tb_EV15_i),   
+        .EV16_i            (tb_EV16_i),   
+        .EV17_i            (tb_EV17_i),   
+        .EV18_i            (tb_EV18_i),   
         .int_overflow_o (int_overflow_o),
         .int_quota_o(int_quota_o),
         .int_quota_c0_o(int_quota_c0_o),
@@ -555,8 +561,10 @@ task automatic init_sim;
                 );
                 value = tb_r_data;
                 if (up2!=dut_AXI_PMU.inst_AXI_PMU.slv_reg[r_addr>>2]) begin
+                    `START_RED_PRINT
                     $error("FAIL all_counters. Register %d has captured %h \
                     events instead of expected %h", r_addr>2,dut_AXI_PMU.inst_AXI_PMU.slv_reg[r_addr>>2], up2);
+                    `END_COLOR_PRINT
                     tmp=1;
                 end
             end
@@ -580,19 +588,21 @@ task automatic init_sim;
                     .delay(4)
             );
             value = tb_r_data;
-            up2 ='hffff;
+            up2 ='h7ffff;// Depends on the nº of counters
             if (dut_AXI_PMU.inst_AXI_PMU.slv_reg[base_overflow>>2]!=up2) begin
+                `START_RED_PRINT
                 $error("FAIL all_counters. Overflow register %d has captured %h \
                     interrupts instead of expected %h", base_overflow>2
                     ,dut_AXI_PMU.inst_AXI_PMU.slv_reg[base_overflow>>2], up2);
+                `END_COLOR_PRINT
                 tmp=1;
             end
             if(int_overflow_o != 1'b1)
                 $error("Overflow Interrupt has not been risen");
         if(tmp==0)
         `START_GREEN_PRINT
-            $display("PASS overflow_counters.");
-            $display("PASS all_counters.");
+        $display("PASS overflow_counters.");
+        $display("PASS all_counters.");
         `END_COLOR_PRINT
         end
         
@@ -616,6 +626,9 @@ task automatic init_sim;
         tb_EV13_i=1;
         tb_EV14_i=1;
         tb_EV15_i=1;
+        tb_EV16_i=1;
+        tb_EV17_i=1;
+        tb_EV18_i=1;
         end
     endtask 
 
@@ -638,6 +651,9 @@ task automatic init_sim;
             tb_EV13_i=0;
             tb_EV14_i=0;
             tb_EV15_i=0;
+            tb_EV16_i=0;
+            tb_EV17_i=0;
+            tb_EV18_i=0;
         end
     endtask
 

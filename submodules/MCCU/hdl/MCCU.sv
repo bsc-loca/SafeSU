@@ -161,7 +161,7 @@
             end else begin
             //if the  unit has been reseted in current or  previous cycle
                 for (i=0; i<N_CORES; i=i+1) begin : AssertionsQuotaReset
-                    assert(quota_int[i] == {DATA_WIDTH{1'b0}});
+                    assert(quota_int[i] == {DATA_WIDTH{1'b1}});
                 end
             end
             `endif

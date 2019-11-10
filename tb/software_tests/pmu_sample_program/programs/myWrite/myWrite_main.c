@@ -31,10 +31,6 @@ void main(void){
 #ifdef __UART__
     uart_init();
 #endif
-   // printf("\n ***DELAY***\n\n");
-   // read_test_loop(PMU_BASE,PMU_BASE+0x01fff,4);
    test_pmu();
-   //bench_pmu();
-   //search_loop(IO_BASE,PMU_BASE+IO_MASK,4,0xDEAD);
 }
 

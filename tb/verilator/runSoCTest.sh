@@ -8,7 +8,6 @@ make sim-lagarto
 #Copy most recent drivers
 cp $TOP/fpga/board/kc705/driver/PMU.c  $TOP/lagarto_modulos/AXI_PMU/tb/software_tests/pmu_sample_program/programs/common/ 
 cp $TOP/fpga/board/kc705/driver/PMU.h  $TOP/lagarto_modulos/AXI_PMU/tb/software_tests/pmu_sample_program/programs/common/ 
-cp $TOP/fpga/board/kc705/driver/PMU.o  $TOP/lagarto_modulos/AXI_PMU/tb/software_tests/pmu_sample_program/programs/ 
 # make our test
 cd $TOP/lagarto_modulos/AXI_PMU/tb/software_tests/pmu_sample_program/programs
 make clean

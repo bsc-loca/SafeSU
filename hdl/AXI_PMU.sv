@@ -53,6 +53,9 @@
         input  wire        EV13_i            ,// signal  
         input  wire        EV14_i            ,// signal  
         input  wire        EV15_i            ,// signal  
+        input  wire        EV16_i            ,// signal  
+        input  wire        EV17_i            ,// signal  
+        input  wire        EV18_i            ,// signal  
         
         //outputs
         output wire        int_overflow_o,
@@ -62,13 +65,87 @@
         output wire        int_quota_c0_o,
         output wire        int_quota_c1_o
     );
-    
-    localparam integer N_COUNTERS	= 16;
+    //Different configurations to get are usage
+    `ifdef YOSYS_1
+    localparam integer N_COUNTERS	= 19;
     // Configuration registers
     localparam integer N_CONF_REGS	= 5;
+    localparam N_CORES = 1;
+    localparam OVERFLOW = 1;
+    localparam QUOTA= 1;
+    localparam MCCU= 1;
+    `elsif YOSYS_2
+    localparam integer N_COUNTERS	= 19;
+    // Configuration registers
+    localparam integer N_CONF_REGS	= 5;
+    localparam N_CORES = 2;
+    localparam OVERFLOW = 1;
+    localparam QUOTA= 1;
+    localparam MCCU= 1;
+    `elsif YOSYS_3
+    localparam integer N_COUNTERS	= 19;
+    // Configuration registers
+    localparam integer N_CONF_REGS	= 5;
+    localparam N_CORES = 3;
+    localparam OVERFLOW = 1;
+    localparam QUOTA= 1;
+    localparam MCCU= 1;
+    `elsif YOSYS_4
+    localparam integer N_COUNTERS	= 19;
+    // Configuration registers
+    localparam integer N_CONF_REGS	= 5;
+    localparam N_CORES = 4;
+    localparam OVERFLOW = 1;
+    localparam QUOTA= 1;
+    localparam MCCU= 1;
+    `elsif YOSYS_5
+    localparam integer N_COUNTERS	= 19;
+    // Configuration registers
+    localparam integer N_CONF_REGS	= 5;
+    localparam N_CORES = 1;
+    localparam OVERFLOW = 0;
+    localparam QUOTA= 0;
+    localparam MCCU= 0;
+    `elsif YOSYS_6
+    localparam integer N_COUNTERS	= 19;
+    // Configuration registers
+    localparam integer N_CONF_REGS	= 5;
+    localparam N_CORES = 1;
+    localparam OVERFLOW = 1;
+    localparam QUOTA= 0;
+    localparam MCCU= 0;
+    `elsif YOSYS_7
+    localparam integer N_COUNTERS	= 19;
+    // Configuration registers
+    localparam integer N_CONF_REGS	= 5;
+    localparam N_CORES = 1;
+    localparam OVERFLOW = 0;
+    localparam QUOTA= 1;
+    localparam MCCU= 0;
+    `elsif YOSYS_8
+    localparam integer N_COUNTERS	= 19;
+    // Configuration registers
+    localparam integer N_CONF_REGS	= 5;
+    localparam N_CORES = 1;
+    localparam OVERFLOW = 0;
+    localparam QUOTA= 0;
+    localparam MCCU= 1;
+    `else
+    localparam integer N_COUNTERS	= 19;
+    // Configuration registers
+    localparam integer N_CONF_REGS	= 5;
+    localparam N_CORES = 2;
+    localparam OVERFLOW = 1;
+    localparam QUOTA= 1;
+    localparam MCCU= 1;
+    `endif
     wire [N_COUNTERS-1:0] events_i;
     // Assign individual signals to packed array 
-    assign events_i= { EV15_i,
+    assign events_i= { 
+                         EV18_i,
+                         EV17_i,
+                         EV16_i,
+                         EV15_i,
                          EV14_i,
                          EV13_i,
                          EV12_i,
@@ -85,7 +162,6 @@
                          EV1_i,
                          EV0_i
                         };
-    localparam N_CORES = 2;
     wire MCCU_int_o [N_CORES-1:0];
     //TODO: MCCU_int_o is not assigned parametrically
         //A pack array will look better. Consider chang it on the MCCU
@@ -99,10 +175,10 @@
         .C_S_AXI_ADDR_WIDTH(C_S_AXI_ADDR_WIDTH),
         .N_COUNTERS(N_COUNTERS),
         .N_CONF_REGS(N_CONF_REGS),
-		.OVERFLOW(1), //No
-		.QUOTA(1), //No
-		.MCCU(1), //Yes
-        .N_CORES(2)
+		.OVERFLOW(OVERFLOW), //No
+		.QUOTA(QUOTA), //No
+		.MCCU(MCCU), //Yes
+        .N_CORES(N_CORES)
     ) inst_AXI_PMU (
         .*
 /*        .S_AXI_ACLK_i(S_AXI_ACLK_i),
