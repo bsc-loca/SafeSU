@@ -13,6 +13,6 @@ make
 cp qsort.riscv.hex $TOP/vsim/qsort.riscv.hex 
 cd -
 #get waveform
-./DefaultConfig-sim +vcd +vcd_name=qsort100.vcd +max-cycles=100000  +load=./qsort.riscv.hex | spike-dasm > write_test.log
+./DefaultConfig-sim +vcd +vcd_name=qsort100.vcd +max-cycles=120000 +load=./qsort.riscv.hex | spike-dasm > write_test.log
 #display waveform
 gtkwave qsort100.vcd $TOP/lagarto_modulos/AXI_PMU/tb/verilator/testSOC.gtkw

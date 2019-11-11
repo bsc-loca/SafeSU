@@ -1,6 +1,7 @@
 qsort_c_src = \
 	qsort_main.c \
 	syscalls.c \
+	contender.c\
 	PMU.c 
 
 qsort_riscv_src = \

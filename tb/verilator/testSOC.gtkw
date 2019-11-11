@@ -1,15 +1,15 @@
 [*]
 [*] GTKWave Analyzer v3.3.86 (w)1999-2017 BSI
-[*] Fri Nov  8 11:48:47 2019
+[*] Mon Nov 11 12:07:39 2019
 [*]
 [dumpfile] "/home/bscuser/GITLAB/multicore_pmu/lagarto-lowrisc/vsim/qsort100.vcd"
-[dumpfile_mtime] "Fri Nov  8 11:30:50 2019"
-[dumpfile_size] 224875803
+[dumpfile_mtime] "Mon Nov 11 12:03:52 2019"
+[dumpfile_size] 231013831
 [savefile] "/home/bscuser/GITLAB/multicore_pmu/lagarto-lowrisc/lagarto_modulos/AXI_PMU/tb/verilator/testSOC.gtkw"
-[timestart] 3679
-[size] 1920 1025
-[pos] 1920 29
-*-10.057642 4570 16295 112420 237330 113990 241080 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[timestart] 0
+[size] 1920 1052
+[pos] 0 2
+*-13.057642 31750 16295 112420 237330 113990 241080 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] TOP.
 [treeopen] TOP.chip_top.
 [treeopen] TOP.chip_top.AXI_PMU_0.
@@ -30,11 +30,14 @@
 [treeopen] TOP.chip_top.Rocket.RocketTile.dcache.dtlb.
 [treeopen] TOP.chip_top.Rocket.RocketTile.dcache.mshrs.
 [treeopen] TOP.chip_top.Rocket.RocketTile.ptw.
+[treeopen] TOP.chip_top.Rocket.RocketTile_1.
+[treeopen] TOP.chip_top.Rocket.RocketTile_1.core.
+[treeopen] TOP.chip_top.Rocket.RocketTile_1.core.INT_REGISTER_FILE.
 [treeopen] TOP.chip_top.Rocket.RocketTile_1.dcache.
 [sst_width] 422
-[signals_width] 443
+[signals_width] 374
 [sst_expanded] 1
-[sst_vpaned_height] 473
+[sst_vpaned_height] 488
 @22
 [color] 3
 TOP.clk_n
@@ -145,6 +148,30 @@ TOP.chip_top.AXI_PMU_0.S_AXI_ARADDR_i[27:0]
 TOP.chip_top.AXI_PMU_0.S_AXI_AWADDR_i[27:0]
 TOP.chip_top.AXI_PMU_0.S_AXI_WDATA_i[31:0]
 TOP.chip_top.AXI_PMU_0.S_AXI_WSTRB_i[3:0]
+@800022
+TOP.chip_top.AXI_PMU_0.inst_AXI_PMU.events_i[18:0]
+@28
+(0)TOP.chip_top.AXI_PMU_0.inst_AXI_PMU.events_i[18:0]
+(1)TOP.chip_top.AXI_PMU_0.inst_AXI_PMU.events_i[18:0]
+(2)TOP.chip_top.AXI_PMU_0.inst_AXI_PMU.events_i[18:0]
+(3)TOP.chip_top.AXI_PMU_0.inst_AXI_PMU.events_i[18:0]
+(4)TOP.chip_top.AXI_PMU_0.inst_AXI_PMU.events_i[18:0]
+(5)TOP.chip_top.AXI_PMU_0.inst_AXI_PMU.events_i[18:0]
+(6)TOP.chip_top.AXI_PMU_0.inst_AXI_PMU.events_i[18:0]
+(7)TOP.chip_top.AXI_PMU_0.inst_AXI_PMU.events_i[18:0]
+(8)TOP.chip_top.AXI_PMU_0.inst_AXI_PMU.events_i[18:0]
+(9)TOP.chip_top.AXI_PMU_0.inst_AXI_PMU.events_i[18:0]
+(10)TOP.chip_top.AXI_PMU_0.inst_AXI_PMU.events_i[18:0]
+(11)TOP.chip_top.AXI_PMU_0.inst_AXI_PMU.events_i[18:0]
+(12)TOP.chip_top.AXI_PMU_0.inst_AXI_PMU.events_i[18:0]
+(13)TOP.chip_top.AXI_PMU_0.inst_AXI_PMU.events_i[18:0]
+(14)TOP.chip_top.AXI_PMU_0.inst_AXI_PMU.events_i[18:0]
+(15)TOP.chip_top.AXI_PMU_0.inst_AXI_PMU.events_i[18:0]
+(16)TOP.chip_top.AXI_PMU_0.inst_AXI_PMU.events_i[18:0]
+(17)TOP.chip_top.AXI_PMU_0.inst_AXI_PMU.events_i[18:0]
+(18)TOP.chip_top.AXI_PMU_0.inst_AXI_PMU.events_i[18:0]
+@1001200
+-group_end
 @200
 -CLK
 @24
@@ -318,7 +345,7 @@ TOP.chip_top.Rocket.RocketTile.dcache_io_mem_acquire_valid
 TOP.chip_top.Rocket.RocketTile.dcache_io_mem_grant_ready
 TOP.chip_top.Rocket.RocketTile.dcache_io_mem_probe_ready
 TOP.chip_top.Rocket.RocketTile.dcache_io_mem_release_valid
-@201
+@200
 -
 @28
 TOP.chip_top.Rocket.RocketTile.io_cached_release_bits_voluntary
@@ -349,5 +376,80 @@ TOP.chip_top.Rocket.RocketTile.io_cached_release_bits_r_type[2:0]
 TOP.chip_top.Rocket.RocketTile.io_cached_release_bits_voluntary
 TOP.chip_top.Rocket.RocketTile.io_cached_release_ready
 TOP.chip_top.Rocket.RocketTile.io_cached_release_valid
+@22
+TOP.chip_top.Rocket.RocketTile_1.core.INT_REGISTER_FILE.BANK_1.BANK(0)[63:0]
+TOP.chip_top.Rocket.RocketTile_1.core.INT_REGISTER_FILE.BANK_1.BANK(1)[63:0]
+TOP.chip_top.Rocket.RocketTile_1.core.INT_REGISTER_FILE.BANK_1.BANK(2)[63:0]
+TOP.chip_top.Rocket.RocketTile_1.core.INT_REGISTER_FILE.BANK_1.BANK(3)[63:0]
+TOP.chip_top.Rocket.RocketTile_1.core.INT_REGISTER_FILE.BANK_1.BANK(4)[63:0]
+TOP.chip_top.Rocket.RocketTile_1.core.INT_REGISTER_FILE.BANK_1.BANK(5)[63:0]
+TOP.chip_top.Rocket.RocketTile_1.core.INT_REGISTER_FILE.BANK_1.BANK(6)[63:0]
+TOP.chip_top.Rocket.RocketTile_1.core.INT_REGISTER_FILE.BANK_1.BANK(7)[63:0]
+TOP.chip_top.Rocket.RocketTile_1.core.INT_REGISTER_FILE.BANK_1.BANK(8)[63:0]
+TOP.chip_top.Rocket.RocketTile_1.core.INT_REGISTER_FILE.BANK_1.BANK(9)[63:0]
+TOP.chip_top.Rocket.RocketTile_1.core.INT_REGISTER_FILE.BANK_1.BANK(10)[63:0]
+TOP.chip_top.Rocket.RocketTile_1.core.INT_REGISTER_FILE.BANK_1.BANK(11)[63:0]
+TOP.chip_top.Rocket.RocketTile_1.core.INT_REGISTER_FILE.BANK_1.BANK(12)[63:0]
+TOP.chip_top.Rocket.RocketTile_1.core.INT_REGISTER_FILE.BANK_1.BANK(13)[63:0]
+TOP.chip_top.Rocket.RocketTile_1.core.INT_REGISTER_FILE.BANK_1.BANK(14)[63:0]
+TOP.chip_top.Rocket.RocketTile_1.core.INT_REGISTER_FILE.BANK_1.BANK(15)[63:0]
+TOP.chip_top.Rocket.RocketTile_1.core.INT_REGISTER_FILE.BANK_1.BANK(16)[63:0]
+TOP.chip_top.Rocket.RocketTile_1.core.INT_REGISTER_FILE.BANK_1.BANK(17)[63:0]
+TOP.chip_top.Rocket.RocketTile_1.core.INT_REGISTER_FILE.BANK_1.BANK(18)[63:0]
+TOP.chip_top.Rocket.RocketTile_1.core.INT_REGISTER_FILE.BANK_1.BANK(19)[63:0]
+TOP.chip_top.Rocket.RocketTile_1.core.INT_REGISTER_FILE.BANK_1.BANK(20)[63:0]
+TOP.chip_top.Rocket.RocketTile_1.core.INT_REGISTER_FILE.BANK_1.BANK(21)[63:0]
+TOP.chip_top.Rocket.RocketTile_1.core.INT_REGISTER_FILE.BANK_1.BANK(22)[63:0]
+TOP.chip_top.Rocket.RocketTile_1.core.INT_REGISTER_FILE.BANK_1.BANK(23)[63:0]
+TOP.chip_top.Rocket.RocketTile_1.core.INT_REGISTER_FILE.BANK_1.BANK(24)[63:0]
+TOP.chip_top.Rocket.RocketTile_1.core.INT_REGISTER_FILE.BANK_1.BANK(25)[63:0]
+TOP.chip_top.Rocket.RocketTile_1.core.INT_REGISTER_FILE.BANK_1.BANK(26)[63:0]
+TOP.chip_top.Rocket.RocketTile_1.core.INT_REGISTER_FILE.BANK_1.BANK(27)[63:0]
+TOP.chip_top.Rocket.RocketTile_1.core.INT_REGISTER_FILE.BANK_1.BANK(28)[63:0]
+TOP.chip_top.Rocket.RocketTile_1.core.INT_REGISTER_FILE.BANK_1.BANK(29)[63:0]
+TOP.chip_top.Rocket.RocketTile_1.core.INT_REGISTER_FILE.BANK_1.BANK(30)[63:0]
+TOP.chip_top.Rocket.RocketTile_1.core.INT_REGISTER_FILE.BANK_1.BANK(31)[63:0]
+@28
+TOP.chip_top.Rocket.RocketTile_1.core.INT_REGISTER_FILE.BANK_1.CLK
+@22
+TOP.chip_top.Rocket.RocketTile_1.core.INT_REGISTER_FILE.BANK_1.i[31:0]
+@28
+TOP.chip_top.Rocket.RocketTile_1.core.INT_REGISTER_FILE.BANK_1.lock
+@22
+TOP.chip_top.Rocket.RocketTile_1.core.INT_REGISTER_FILE.BANK_1.read_addr[4:0]
+TOP.chip_top.Rocket.RocketTile_1.core.INT_REGISTER_FILE.BANK_1.read_data[63:0]
+TOP.chip_top.Rocket.RocketTile_1.core.INT_REGISTER_FILE.BANK_1.write_addr[4:0]
+@23
+TOP.chip_top.Rocket.RocketTile_1.core.INT_REGISTER_FILE.BANK_1.write_data[63:0]
+@28
+TOP.chip_top.Rocket.RocketTile_1.core.INT_REGISTER_FILE.BANK_1.write_enable
+@22
+TOP.chip_top.Rocket.RocketTile_1.core.INT_REGISTER_FILE.BANK_1.BANK(5)[63:0]
+@200
+-a0
+@22
+TOP.chip_top.Rocket.RocketTile_1.core.INT_REGISTER_FILE.BANK_1.BANK(6)[63:0]
+@28
+TOP.chip_top.Rocket.RocketTile.cache_io_tlb_resp_xcpt_if
+TOP.chip_top.Rocket.RocketTile.cache_io_tlb_resp_xcpt_ld
+TOP.chip_top.Rocket.RocketTile.cache_io_tlb_resp_xcpt_st
+TOP.chip_top.Rocket.RocketTile.csr_io_csr_xcpt
+TOP.chip_top.Rocket.RocketTile.dcArb_io_requestor_0_xcpt_ma_ld
+TOP.chip_top.Rocket.RocketTile.dcArb_io_requestor_0_xcpt_ma_st
+TOP.chip_top.Rocket.RocketTile.dcArb_io_requestor_0_xcpt_pf_ld
+TOP.chip_top.Rocket.RocketTile.dcArb_io_requestor_0_xcpt_pf_st
+TOP.chip_top.Rocket.RocketTile.dcArb_io_requestor_1_xcpt_ma_ld
+TOP.chip_top.Rocket.RocketTile.dcArb_io_requestor_1_xcpt_ma_st
+TOP.chip_top.Rocket.RocketTile.dcArb_io_requestor_1_xcpt_pf_ld
+TOP.chip_top.Rocket.RocketTile.dcArb_io_requestor_1_xcpt_pf_st
+TOP.chip_top.Rocket.RocketTile.dcache_io_cpu_xcpt_ma_ld
+TOP.chip_top.Rocket.RocketTile.dcache_io_cpu_xcpt_ma_st
+TOP.chip_top.Rocket.RocketTile.dcache_io_cpu_xcpt_pf_ld
+TOP.chip_top.Rocket.RocketTile.dcache_io_cpu_xcpt_pf_st
 [pattern_trace] 1
 [pattern_trace] 0
+!100000@@
+?"E68
+@c00023
+TOP.chip_top.Rocket.RocketTile.core.EXE_PC[39:0]
+!!

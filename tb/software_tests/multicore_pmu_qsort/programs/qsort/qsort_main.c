@@ -78,8 +78,7 @@ void thread_entry(int cid, int nc)
 {
   if (cid > 0){
     while(1){
-ub_dpath_01_01_03_run(ub_dpath_01_01_03_init());
-//        contender();
+    cont_hitL2_load();
     }
   }
 }
@@ -208,7 +207,7 @@ int main( int argc, char* argv[] )
     uint32_t *var;
     var=(uint32_t*)(0x8002004c);
     *var=1;*/
-enable_PMU_32b();
+  enable_PMU_32b();
 
   // Do the sort
   setStats(1);
@@ -217,7 +216,7 @@ enable_PMU_32b();
 
   // Print out the results
   printArray( "test", DATA_SIZE, input_data );
-disable_PMU_32b();
-  // Check the results
+  disable_PMU_32b();
+// Check the results
   return verify( DATA_SIZE, input_data, verify_data );
 }

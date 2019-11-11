@@ -42,7 +42,7 @@ VPATH += $(bmarkdir)/common
 
 incs  += -I$(bmarkdir)/../env -I$(bmarkdir)/common $(addprefix -I$(bmarkdir)/, $(bmarks))
 objs  := 
-static_libs  := ./libs/riscv-ubs.a
+#static_libs  := ./libs/riscv-ubs.a
 
 include $(patsubst %, $(bmarkdir)/%/bmark.mk, $(bmarks))
 
