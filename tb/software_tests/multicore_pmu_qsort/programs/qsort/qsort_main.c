@@ -216,7 +216,7 @@ int main( int argc, char* argv[] )
 
   // Print out the results
   printArray( "test", DATA_SIZE, input_data );
-  disable_PMU_32b();
+//  disable_PMU_32b();
 // Check the results
   return verify( DATA_SIZE, input_data, verify_data );
 }

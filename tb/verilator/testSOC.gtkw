@@ -1,15 +1,15 @@
 [*]
 [*] GTKWave Analyzer v3.3.86 (w)1999-2017 BSI
-[*] Mon Nov 11 12:07:39 2019
+[*] Tue Nov 12 11:10:16 2019
 [*]
 [dumpfile] "/home/bscuser/GITLAB/multicore_pmu/lagarto-lowrisc/vsim/qsort100.vcd"
-[dumpfile_mtime] "Mon Nov 11 12:03:52 2019"
-[dumpfile_size] 231013831
+[dumpfile_mtime] "Tue Nov 12 11:09:22 2019"
+[dumpfile_size] 201950538
 [savefile] "/home/bscuser/GITLAB/multicore_pmu/lagarto-lowrisc/lagarto_modulos/AXI_PMU/tb/verilator/testSOC.gtkw"
 [timestart] 0
 [size] 1920 1052
 [pos] 0 2
-*-13.057642 31750 16295 112420 237330 113990 241080 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-16.057642 31750 16295 112420 237330 113990 241080 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] TOP.
 [treeopen] TOP.chip_top.
 [treeopen] TOP.chip_top.AXI_PMU_0.
@@ -19,7 +19,6 @@
 [treeopen] TOP.chip_top.io_nasti_mem.
 [treeopen] TOP.chip_top.mem_nasti.
 [treeopen] TOP.chip_top.Rocket.
-[treeopen] TOP.chip_top.Rocket.RocketTile.
 [treeopen] TOP.chip_top.Rocket.RocketTile.cache.
 [treeopen] TOP.chip_top.Rocket.RocketTile.core.BIMODAL_PREDICTOR.
 [treeopen] TOP.chip_top.Rocket.RocketTile.core.BIMODAL_PREDICTOR.BIP.
@@ -30,14 +29,13 @@
 [treeopen] TOP.chip_top.Rocket.RocketTile.dcache.dtlb.
 [treeopen] TOP.chip_top.Rocket.RocketTile.dcache.mshrs.
 [treeopen] TOP.chip_top.Rocket.RocketTile.ptw.
-[treeopen] TOP.chip_top.Rocket.RocketTile_1.
 [treeopen] TOP.chip_top.Rocket.RocketTile_1.core.
 [treeopen] TOP.chip_top.Rocket.RocketTile_1.core.INT_REGISTER_FILE.
 [treeopen] TOP.chip_top.Rocket.RocketTile_1.dcache.
 [sst_width] 422
-[signals_width] 374
+[signals_width] 437
 [sst_expanded] 1
-[sst_vpaned_height] 488
+[sst_vpaned_height] 504
 @22
 [color] 3
 TOP.clk_n
@@ -419,7 +417,6 @@ TOP.chip_top.Rocket.RocketTile_1.core.INT_REGISTER_FILE.BANK_1.lock
 TOP.chip_top.Rocket.RocketTile_1.core.INT_REGISTER_FILE.BANK_1.read_addr[4:0]
 TOP.chip_top.Rocket.RocketTile_1.core.INT_REGISTER_FILE.BANK_1.read_data[63:0]
 TOP.chip_top.Rocket.RocketTile_1.core.INT_REGISTER_FILE.BANK_1.write_addr[4:0]
-@23
 TOP.chip_top.Rocket.RocketTile_1.core.INT_REGISTER_FILE.BANK_1.write_data[63:0]
 @28
 TOP.chip_top.Rocket.RocketTile_1.core.INT_REGISTER_FILE.BANK_1.write_enable
@@ -446,10 +443,16 @@ TOP.chip_top.Rocket.RocketTile.dcache_io_cpu_xcpt_ma_ld
 TOP.chip_top.Rocket.RocketTile.dcache_io_cpu_xcpt_ma_st
 TOP.chip_top.Rocket.RocketTile.dcache_io_cpu_xcpt_pf_ld
 TOP.chip_top.Rocket.RocketTile.dcache_io_cpu_xcpt_pf_st
+TOP.chip_top.pmu_intr_overflow
+TOP.chip_top.pmu_intr_quota
+@29
+[color] 1
+TOP.chip_top.pmu_intr_quota_c0
+[color] 1
+TOP.chip_top.pmu_intr_quota_c1
+[color] 1
+TOP.chip_top.Rocket.RocketTile.io_PMU_MCCU_intr
+[color] 1
+TOP.chip_top.Rocket.RocketTile_1.io_PMU_MCCU_intr
 [pattern_trace] 1
 [pattern_trace] 0
-!100000@@
-?"E68
-@c00023
-TOP.chip_top.Rocket.RocketTile.core.EXE_PC[39:0]
-!!
