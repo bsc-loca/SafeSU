@@ -1,0 +1,52 @@
+[*]
+[*] GTKWave Analyzer v3.3.86 (w)1999-2017 BSI
+[*] Tue Nov 26 15:19:56 2019
+[*]
+[dumpfile] "/home/bscuser/GITLAB/multicore_pmu/lagarto-lowrisc/lagarto_modulos/AXI_PMU/submodules/RDC/tb/formal/RDC/engine_0/trace.vcd"
+[dumpfile_mtime] "Tue Nov 26 15:18:55 2019"
+[dumpfile_size] 1892
+[savefile] "/home/bscuser/GITLAB/multicore_pmu/lagarto-lowrisc/lagarto_modulos/AXI_PMU/submodules/RDC/tb/formal/RDC.gtkw"
+[timestart] 0
+[size] 1678 929
+[pos] 50 50
+*-2.707499 20 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[sst_width] 228
+[signals_width] 447
+[sst_expanded] 1
+[sst_vpaned_height] 262
+@28
+RDC.clk_i
+RDC.enable_i
+@22
+RDC.events_i[7:0]
+RDC.events_weights_i[63:0]
+@28
+RDC.interruption_rdc_o
+@22
+RDC.interruption_vector_rdc_o[7:0]
+RDC.max_value<0>[7:0]
+RDC.max_value<1>[7:0]
+RDC.max_value<2>[7:0]
+RDC.max_value<3>[7:0]
+RDC.max_value<4>[7:0]
+RDC.max_value<5>[7:0]
+RDC.max_value<6>[7:0]
+RDC.max_value<7>[7:0]
+@28
+RDC.rstn_i
+@22
+RDC.unpacked_vector_rdc_int[7:0]
+@c00022
+RDC.sum_interruption_vector_rdc_o[3:0]
+@28
+(0)RDC.sum_interruption_vector_rdc_o[3:0]
+(1)RDC.sum_interruption_vector_rdc_o[3:0]
+(2)RDC.sum_interruption_vector_rdc_o[3:0]
+(3)RDC.sum_interruption_vector_rdc_o[3:0]
+@1401200
+-group_end
+@22
+RDC.interruption_vector_int<1>[3:0]
+RDC.interruption_vector_int<0>[3:0]
+[pattern_trace] 1
+[pattern_trace] 0

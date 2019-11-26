@@ -1,0 +1,24 @@
+[options]
+mode bmc
+#append 10
+
+[engines]
+smtbmc boolector
+smtbmc
+abc bmc3
+
+#SystemVerilog
+[script]
+verific -vlog-define FORMAL
+verific -sv RDC.sv
+verific -import -extnets -all RDC
+prep -top RDC
+
+#Verilog
+#[script]
+#read_verilog -formal RDC.sv
+#prep -top RDC
+#opt -share_all
+
+[files]
+../../hdl/RDC.sv
