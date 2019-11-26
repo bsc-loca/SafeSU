@@ -63,9 +63,11 @@
         
         //MCCU io
         output wire        int_quota_c0_o,
-        output wire        int_quota_c1_o
+        output wire        int_quota_c1_o,
+        output wire        int_rdc_o
+    
     );
-    //Different configurations to get are usage
+    //Different configurations to get area usage
     `ifdef YOSYS_1
     localparam integer N_COUNTERS	= 19;
     // Configuration registers
@@ -181,7 +183,7 @@
         .N_CORES(N_CORES)
     ) inst_AXI_PMU (
         .*
-/*        .S_AXI_ACLK_i(S_AXI_ACLK_i),
+/*      .S_AXI_ACLK_i(S_AXI_ACLK_i),
         .S_AXI_ARESETN_i(S_AXI_ARESETN_i),
         .S_AXI_AWADDR_i(S_AXI_AWADDR_i),
         .S_AXI_AWVALID_i(S_AXI_AWVALID_i),

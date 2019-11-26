@@ -21,7 +21,7 @@
 		// Width of data registers
 		parameter integer DATA_WIDTH	= 32,
 		// Width of weights registers
-		parameter integer WEIGHTS_WIDTH	= 7,
+		parameter integer WEIGHTS_WIDTH	= 8,
         //Cores. Change this may break Verilator TB
         parameter integer N_CORES       =2,
         //Signals per core. Change this may break Verilator TB
@@ -48,7 +48,7 @@
                                                        [0:CORE_EVENTS-1],
         //Quota interruption
         output wire interruption_quota_o[N_CORES-1:0]
-	);
+    );
     //Parameters required for additions and substractions of quotas.
     //OVERFLOW_PROT can be reduced. It needs to be a bit larger than 
     //DATA_WIDTH. 
@@ -161,7 +161,7 @@
             end else begin
             //if the  unit has been reseted in current or  previous cycle
                 for (i=0; i<N_CORES; i=i+1) begin : AssertionsQuotaReset
-                    assert(quota_int[i] == {DATA_WIDTH{1'b1}});
+                    assert(quota_int[i] == {DATA_WIDTH{1'b0}});
                 end
             end
             `endif

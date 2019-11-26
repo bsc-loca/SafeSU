@@ -30,7 +30,7 @@
 		input wire clk_i,
         //Active low asyncronous reset. It can have hardware or software source
 		input wire rstn_i,
-		//Active high enable. If enabled quota can decrease and interruptions
+		//Active high enable. If enabled MaxValue can increase and interruptions
         //can be generated
         input wire enable_i,
         //Monitored events that can generate contention in the system
