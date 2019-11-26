@@ -3,6 +3,23 @@ quietly WaveActivateNextPane {} 0
 add wave -noupdate /tb_AXI_PMU/tb_clk_i
 add wave -noupdate /tb_AXI_PMU/dut_AXI_PMU/inst_AXI_PMU/events_i
 add wave -noupdate -expand /tb_AXI_PMU/dut_AXI_PMU/inst_AXI_PMU/slv_reg
+add wave -noupdate /tb_AXI_PMU/dut_AXI_PMU/inst_AXI_PMU/generate_MCCU/inst_RDC/clk_i
+add wave -noupdate /tb_AXI_PMU/dut_AXI_PMU/inst_AXI_PMU/generate_MCCU/inst_RDC/rstn_i
+add wave -noupdate /tb_AXI_PMU/dut_AXI_PMU/inst_AXI_PMU/generate_MCCU/inst_RDC/enable_i
+add wave -noupdate /tb_AXI_PMU/dut_AXI_PMU/inst_AXI_PMU/generate_MCCU/inst_RDC/events_i
+add wave -noupdate /tb_AXI_PMU/dut_AXI_PMU/inst_AXI_PMU/generate_MCCU/inst_RDC/events_weights_i
+add wave -noupdate /tb_AXI_PMU/dut_AXI_PMU/inst_AXI_PMU/generate_MCCU/inst_RDC/DATA_WIDTH
+add wave -noupdate /tb_AXI_PMU/dut_AXI_PMU/inst_AXI_PMU/generate_MCCU/inst_RDC/WEIGHTS_WIDTH
+add wave -noupdate /tb_AXI_PMU/dut_AXI_PMU/inst_AXI_PMU/generate_MCCU/inst_RDC/N_CORES
+add wave -noupdate /tb_AXI_PMU/dut_AXI_PMU/inst_AXI_PMU/generate_MCCU/inst_RDC/CORE_EVENTS
+add wave -noupdate /tb_AXI_PMU/dut_AXI_PMU/inst_AXI_PMU/generate_MCCU/inst_RDC/N_COUNTERS
+add wave -noupdate /tb_AXI_PMU/dut_AXI_PMU/inst_AXI_PMU/generate_MCCU/inst_RDC/max_value
+add wave -noupdate /tb_AXI_PMU/dut_AXI_PMU/inst_AXI_PMU/generate_MCCU/inst_RDC/interruption_vector_int
+add wave -noupdate /tb_AXI_PMU/dut_AXI_PMU/inst_AXI_PMU/generate_MCCU/inst_RDC/unpacked_vector_rdc_int
+add wave -noupdate /tb_AXI_PMU/dut_AXI_PMU/inst_AXI_PMU/generate_MCCU/inst_RDC/interruption_rdc_o
+add wave -noupdate /tb_AXI_PMU/dut_AXI_PMU/int_rdc_o
+add wave -noupdate -color {Medium Violet Red} /tb_AXI_PMU/dut_AXI_PMU/inst_AXI_PMU/generate_MCCU/inst_RDC/interruption_vector_rdc_o
+add wave -noupdate /tb_AXI_PMU/dut_AXI_PMU/int_rdc_o
 add wave -noupdate /tb_AXI_PMU/dut_AXI_PMU/inst_AXI_PMU/MCCU_int_o
 add wave -noupdate /tb_AXI_PMU/dut_AXI_PMU/inst_AXI_PMU/int_quota_o
 add wave -noupdate /tb_AXI_PMU/dut_AXI_PMU/inst_AXI_PMU/int_overflow_o
@@ -82,8 +99,9 @@ add wave -noupdate /tb_AXI_PMU/dut_AXI_PMU/inst_AXI_PMU/BASE_MCCU_R_ONLY
 add wave -noupdate /tb_AXI_PMU/dut_AXI_PMU/inst_AXI_PMU/R_ONLY_REGS
 add wave -noupdate /tb_AXI_PMU/dut_AXI_PMU/inst_AXI_PMU/RW_REGS
 add wave -noupdate /tb_AXI_PMU/dut_AXI_PMU/inst_AXI_PMU/TOTAL_REGS
+add wave -noupdate /tb_AXI_PMU/int_overflow_o
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {1764651 ps} 0}
+WaveRestoreCursors {{Cursor 1} {8453 ps} 0}
 quietly wave cursor active 1
 configure wave -namecolwidth 506
 configure wave -valuecolwidth 241
@@ -99,4 +117,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {1741372 ps} {1829568 ps}
+WaveRestoreZoom {0 ps} {13404 ps}

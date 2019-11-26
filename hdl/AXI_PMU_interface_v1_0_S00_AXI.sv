@@ -821,7 +821,7 @@
 
         //Request Duration Counter (RDC)
         //TODO: events_int is not the group of signals you actually need
-        RCD #(
+        RDC #(
             // Width of data registers
             .DATA_WIDTH     (MCCU_DATA_WIDTH),
             // Width of weights registers
@@ -830,7 +830,7 @@
             .N_CORES        (MCCU_N_CORES),
             //Signals per core. 
             .CORE_EVENTS    (MCCU_CORE_EVENTS)
-        ) inst_RCD(
+        ) inst_RDC(
             .clk_i                  (S_AXI_ACLK_i),
             .rstn_i                 (S_AXI_ARESETN_i || MCCU_rstn_int ),
             .enable_i               (MCCU_enable_int),// Software map

@@ -24,7 +24,7 @@ module tb_AXI_PMU();
 //***Parameters***
     parameter CLK_PERIOD      = 2;
     parameter CLK_HALF_PERIOD = CLK_PERIOD / 2;
-    parameter  VERBOSE = 0;
+    parameter  VERBOSE = 1;
 // Depth of the queues (FIFOs) for the axi_test_master
     parameter AQ_DEPTH  = 10; // Max 1K addresses
     parameter DQ_DEPTH  = 16;  // Max 64K data 
@@ -75,6 +75,12 @@ module tb_AXI_PMU();
     localparam n_regs_MCCU_weights = dut_AXI_PMU.inst_AXI_PMU.MCCU_WEIGHTS_REGS;
     localparam first_MCCU_out_quota = first_MCCU_weights 
                                     + (n_regs_MCCU_weights-1)*4;
+    localparam first_interruption_vector_rdc = first_MCCU_out_quota 
+                                    + (n_cores_MCCU-1)*4;
+                                    //n_cores_MCCU-1 == n_out_quota registers
+        //RDC
+    localparam base_RDC = (dut_AXI_PMU.inst_AXI_PMU.BASE_MCCU_INTRV_RDC-1) * 4;
+
 //***Signals***
     reg     tb_clk_i ;
     reg     tb_rstn_i ;
@@ -101,6 +107,7 @@ module tb_AXI_PMU();
     wire    int_quota_o;
     wire    int_quota_c0_o;
     wire    int_quota_c1_o;
+    wire    int_rdc_o;
 //***Interfaces
     //AXI_LITE PORT
       // write address 
@@ -195,7 +202,8 @@ module tb_AXI_PMU();
         .int_overflow_o (int_overflow_o),
         .int_quota_o(int_quota_o),
         .int_quota_c0_o(int_quota_c0_o),
-        .int_quota_c1_o(int_quota_c1_o)
+        .int_quota_c1_o(int_quota_c1_o),
+        .int_rdc_o(int_rdc_o)
     );
 //***Auxiliar modules for test***/
 //Axi master to generate transactions
@@ -327,7 +335,7 @@ task automatic init_sim;
         begin
             $display("***Running ALL test");
             write_all_max;
-            hw_reset_all;
+            test_RDC;
             all_counters;
             quota_monitor;
             test_MCCU;
@@ -477,46 +485,12 @@ task automatic init_sim;
             end
         end
     endtask
-//***task automatic hw_reset_all***
-//Read all registers after a hw_reset and check expected values
-//No events enabled
-    task automatic hw_reset_all;
-        begin
-            int value, tmp=0;
-            reset_dut;
-            for (int r_addr=first_addr;r_addr <=last_addr ;r_addr+=4) begin
-                axi_test_master0.q_radrs(
-                        .address(r_addr),
-                        .length(1),
-                        .size(TB_DATA_WIDTH),
-                        .id(0),
-                        .burst(1),
-                        .delay_random(0),
-                        .delay(4)
-                );
-                tb_run = 1;
-                wait(tb_done);
-                value = tb_r_data;
-                if (value!=32'b0) begin
-                    `START_RED_PRINT
-                    $error("FAIL reset_all. Register %d has\
-                        not been set to 32'h00000000", r_addr>2);
-                    `END_COLOR_PRINT
-                    tmp=1;
-                    end
-            end
-        if(tmp==0)
-        `START_GREEN_PRINT
-                $display("PASS hw_reset_all.");
-        `END_COLOR_PRINT
-        end
-    endtask
 //***task automatic all_counters***
 //Enable counters sequentially. Count up, reset, rise overflow & check
 //interrupt.
     task automatic all_counters;
         begin
-            int value=0, tmp=0, up2='h1f;
+            int value=0, tmp=0, up2='h1c;
             //set configuration through AXI-LITE commands
             int w_addr = main_conf;
             int set_reg = 32'h1; 
@@ -540,16 +514,26 @@ task automatic init_sim;
                 tb_run = 1;
                 wait(tb_done);
             //Trigger events
+            if(VERBOSE)
+            $display("*** trigger events***");
             enable_all_events;
             //Run
+            if(VERBOSE)
+            $display("*** run %d cycles and capture %d events***", up2, up2);
             while(value<=up2) begin
                 #CLK_PERIOD;
                 value++;
             end
             //Disable events
+            if(VERBOSE)
+            $display("*** disable events***");
             disable_all_events; 
             //Read results
+            if(VERBOSE)
+            $display("*** read results ***");
             for (int r_addr=base_counters;r_addr <=last_counter;r_addr+=4) begin
+                if(VERBOSE)
+                $display("*** reading addres: %h ",r_addr);
                 axi_test_master0.q_radrs(
                         .address(r_addr),
                         .length(1),
@@ -559,8 +543,10 @@ task automatic init_sim;
                         .delay_random(0),
                         .delay(4)
                 );
+                tb_run = 1;
+                wait(tb_done);
                 value = tb_r_data;
-                if (up2!=dut_AXI_PMU.inst_AXI_PMU.slv_reg[r_addr>>2]) begin
+               if (up2!=dut_AXI_PMU.inst_AXI_PMU.slv_reg[r_addr>>2]) begin
                     `START_RED_PRINT
                     $error("FAIL all_counters. Register %d has captured %h \
                     events instead of expected %h", r_addr>2,dut_AXI_PMU.inst_AXI_PMU.slv_reg[r_addr>>2], up2);
@@ -569,10 +555,14 @@ task automatic init_sim;
                 end
             end
             //Tests Overflow by setting counter near overflow
+            if(VERBOSE)
+            $display("*** Tests Overflow ***");
             for (int r_addr=base_counters;r_addr <=last_counter;r_addr+=4) begin
                 dut_AXI_PMU.inst_AXI_PMU.slv_reg[r_addr>>2] ='hffffffff;
             end
             //Trigger events
+            if(VERBOSE)
+            $display("*** Trigger events ***");
             enable_all_events;
             #CLK_PERIOD;
             #CLK_PERIOD;
@@ -589,6 +579,8 @@ task automatic init_sim;
             );
             value = tb_r_data;
             up2 ='h7ffff;// Depends on the nº of counters
+            if(VERBOSE)
+            $display("*** check number of overflows ***");
             if (dut_AXI_PMU.inst_AXI_PMU.slv_reg[base_overflow>>2]!=up2) begin
                 `START_RED_PRINT
                 $error("FAIL all_counters. Overflow register %d has captured %h \
@@ -597,6 +589,8 @@ task automatic init_sim;
                 `END_COLOR_PRINT
                 tmp=1;
             end
+            if(VERBOSE)
+            $display("*** check overflow ***");
             if(int_overflow_o != 1'b1)
                 $error("Overflow Interrupt has not been risen");
         if(tmp==0)
@@ -922,12 +916,224 @@ task automatic init_sim;
         end
     endtask
 
+//***task automatic test_RDC***
+//  conditions
+  
+    //1.Max_value on reset
+    //When module is not enabled (!enable_i), reset is active (rstn_i=0) or
+    //the events_i[k] signal for the counter[k] is low the register max_value[0]
+    //is set to 0
+    
+    //2.Interruption vector values on reset
+    //When module is not enabled (!enable_i) or reset is active (rstn_i=0) 
+    //the interruption_vector_int register is set to 0
+   
+    //3.Counter beahviour
+    //Each clock cycle if the input signal (events_i) for a given counter is
+    //high at the positive edge of the clock the counter increases
+
+    //4.Interruption generation
+    //Generate interruptions if the pulse width of a signal exceeds the weight
+    
+    //Interruption is only generated if the  MCCU is enabled
+    
+    //Register the output of comparison, to identify offending signal
+    //Check that the offending signals map propperly to the corresponding bit.
+    
+    //if interruption_vector_int !=0 then interruption_rdc_o=0
+    
+    task automatic test_RDC;
+        begin
+            int value,w_addr, set_reg,tmp_max, tmp=0;
+        //Test follwing cases by reseting, writting while disabled and reading
+        //values.
+        //1.Max_value on reset
+        //2.Interruption vector values on reset
+            if(VERBOSE)
+            $display("1 & 2. reset state");
+            reset_dut;
+            w_addr = base_RDC;
+            set_reg = 32'hf; 
+            if(VERBOSE)
+            $display("*** writting addres: %h with: %h",w_addr,set_reg);
+            axi_test_master0.q_wsync(
+                    .address(w_addr),
+                    .length(1),
+                    .size(TB_DATA_WIDTH),
+                    .id(0),
+                    .burst(1),
+                    .adelay_random(0),
+                    .adelay(4),
+                    .data(set_reg),
+                    .strobes(4'hf),
+                    .last(1),
+                    .wdelay_random(0),
+                    .wdelay(5)
+            );
+            tb_run = 1;
+            wait(tb_done);
+            //check that values are consistent with conditions 1 and 2
+            //Since a hard reset has been triggered all slv_reg shall be 0 as
+            //well. This covers possible errors with the index in adition to
+            //conditions 1 and 2
+            if (dut_AXI_PMU.inst_AXI_PMU.slv_reg.sum() != 0) begin
+                `START_RED_PRINT
+                $error("FAIL, slv_reg[base_RDC] has been written");
+                `END_COLOR_PRINT
+                tmp=1;
+            end
+            if (dut_AXI_PMU.inst_AXI_PMU.generate_MCCU.inst_RDC.max_value.sum() 
+               != 0) begin
+                `START_RED_PRINT
+                $error("FAIL, inst_RCd.max_value is not 0");
+                `END_COLOR_PRINT
+                tmp=1;
+            end
+        //3.Counter beahviour
+            if(VERBOSE)
+            $display("3.Counter beahviour");
+        //Each clock cycle if the input signal (events_i) for a given counter is
+        //high at the positive edge of the clock the counter increases
+        
+        //We need to set the weight for a signal[k], enable the MCCU and
+        //RDC(enable is shared), and send a pulse on signal[k] and hold it
+        //high for N cycles. N must match with max_value[k] within inst_RDC
+            //set weights core 0 event 0 to 0x1f cycles each. 
+            //set remaining weights to maximum(255 cycles each). 
+            w_addr = first_MCCU_weights;
+            set_reg = 32'hffffff1f; 
+            if(VERBOSE)
+            $display("*** writting addres: %h with: %h",w_addr,set_reg);
+            axi_test_master0.q_wsync(
+                    .address(w_addr),
+                    .length(1),
+                    .size(TB_DATA_WIDTH),
+                    .id(0),
+                    .burst(1),
+                    .adelay_random(0),
+                    .adelay(4),
+                    .data(set_reg),
+                    .strobes(4'hf),
+                    .last(1),
+                    .wdelay_random(0),
+                    .wdelay(5)
+            );
+            //set weights core 1 to maximum 256 cycles each. 
+            w_addr = first_MCCU_weights+4;
+            set_reg = 32'hffffffff; 
+            if(VERBOSE)
+            $display("*** writting addres: %h with: %h",w_addr,set_reg);
+            axi_test_master0.q_wsync(
+                    .address(w_addr),
+                    .length(1),
+                    .size(TB_DATA_WIDTH),
+                    .id(0),
+                    .burst(1),
+                    .adelay_random(0),
+                    .adelay(4),
+                    .data(set_reg),
+                    .strobes(4'hf),
+                    .last(1),
+                    .wdelay_random(0),
+                    .wdelay(5)
+            );
+            //set main configuration register MCCU
+            w_addr = base_MCCU;
+            set_reg = {32{1'b1}}; 
+            //enable, !reset, update all quotas
+            if(VERBOSE)
+            $display("*** writting addres: %h with: %h",w_addr,set_reg);
+            axi_test_master0.q_wsync(
+                    .address(w_addr),
+                    .length(1),
+                    .size(TB_DATA_WIDTH),
+                    .id(0),
+                    .burst(1),
+                    .adelay_random(0),
+                    .adelay(4),
+                    .data(set_reg),
+                    .strobes(4'hf),
+                    .last(1),
+                    .wdelay_random(0),
+                    .wdelay(5)
+            );
+            //Execute configuration  commands
+            tb_run = 1;
+            wait(tb_done);
+            //put pulses of different widths and check the RCD values
+            for(int i=1; i<8; i++) begin
+                enable_all_events;
+                #(i*CLK_PERIOD);
+                disable_all_events;
+                //TODO: add test conditions for pass fail
+            end
+        //4.Interruption generation
+            //Disable MCCU & RDC to reset interrupt 
+            w_addr = base_MCCU;
+            set_reg ={ 1'b0,{31{1'b1}}}; 
+            //enable, !reset, update all quotas
+            if(VERBOSE)
+            $display("*** writting addres: %h with: %h",w_addr,set_reg);
+            axi_test_master0.q_wsync(
+                    .address(w_addr),
+                    .length(1),
+                    .size(TB_DATA_WIDTH),
+                    .id(0),
+                    .burst(1),
+                    .adelay_random(0),
+                    .adelay(4),
+                    .data(set_reg),
+                    .strobes(4'hf),
+                    .last(1),
+                    .wdelay_random(0),
+                    .wdelay(5)
+            );
+            //Enable MCCU & RDC to reset interrupt 
+            w_addr = base_MCCU;
+            set_reg ={ 1'b1,{31{1'b1}}}; 
+            //enable, !reset, update all quotas
+            if(VERBOSE)
+            $display("*** writting addres: %h with: %h",w_addr,set_reg);
+            axi_test_master0.q_wsync(
+                    .address(w_addr),
+                    .length(1),
+                    .size(TB_DATA_WIDTH),
+                    .id(0),
+                    .burst(1),
+                    .adelay_random(0),
+                    .adelay(4),
+                    .data(set_reg),
+                    .strobes(4'hf),
+                    .last(1),
+                    .wdelay_random(0),
+                    .wdelay(5)
+            );
+            //Execute configuration  commands
+            tb_run = 1;
+            wait(tb_done);
+            //put a pulse larger than weight assigned to it
+            enable_all_events;
+            #(33*CLK_PERIOD);
+            disable_all_events;
+            if (dut_AXI_PMU.int_rdc_o != 1) begin
+                `START_RED_PRINT
+                $error("FAIL, Interruption has not been generated");
+                `END_COLOR_PRINT
+                tmp=1;
+            end
+        if(tmp==0)
+        `START_GREEN_PRINT
+                $display("PASS test_RDC");
+        `END_COLOR_PRINT
+        end
+    endtask
 //***init_sim***
     initial begin
         init_sim();
         init_dump();
         reset_dut();
-        test_sim();
+//        test_sim();
+        test_RDC();
     end
 
 endmodule
