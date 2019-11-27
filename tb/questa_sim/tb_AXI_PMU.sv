@@ -1132,8 +1132,7 @@ task automatic init_sim;
         init_sim();
         init_dump();
         reset_dut();
-//        test_sim();
-        test_RDC();
+        test_sim();
     end
 
 endmodule
