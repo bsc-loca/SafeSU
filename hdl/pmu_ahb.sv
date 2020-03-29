@@ -153,10 +153,11 @@
         //(LOW means read transfer from slave to master)
     wire write_req_d;
     wire read_req_d;
+    assign write_req_d = !hreadyi_i? 1'b0 : hwrite_i ? 1'b1 : 1'b0;
+    assign read_req_d  = !hreadyi_i? 1'b0 : hwrite_i ? 1'b0 : 1'b1;
+    
     reg write_req_q;
     reg read_req_q;
-    assign write_req_d = !rstn_i ? 1'b0 : !hreadyi_i? 1'b0 : hwrite_i ? 1'b1 : 1'b0;
-    assign read_req_d  = !rstn_i ? 1'b0 : !hreadyi_i? 1'b0 : hwrite_i ? 1'b0 : 1'b1;
     always_ff @(posedge clk_i, negedge rstn_i) begin
         if(rstn_i == 1'b0 ) begin
             write_req_q <= 1'b0;
@@ -188,14 +189,20 @@
 
     //Send registerd signals to interface
     assign hrdata_o = resp_data; 
-    //assign hreadyo_o = resp_done || read_done; 
-    
-    //Write in data cycle
+
+    //TODO: If the slave can block the requests move it kto
+        //AHB to PMU_raw synchronization section
+    //Acknowledge AHB read/write is done
+    assign hreadyo_o = write_req_q || read_req_q; 
+
+//TODO report error if reading out of range
 
 //----------------------------------------------
 //------------- AHB to PMU_raw synchronization 
 //----------------------------------------------
     //This will increase in complexity later
+    
+    //Write in data cycle
     genvar i;
     generate
         for(i=0;i<N_REGS;i++) begin
