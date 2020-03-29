@@ -49,7 +49,7 @@ module PMU_quota #
         // Input wire from wrapper with the maximum allowed quota consumption
             //Quota is calculated with the
             //sum_all_counters (counter_value_i[n] * counter_quota_mask_i[n]) 
-        wire [max_width-1:0] quota_limit_i,
+        input wire [max_width-1:0] quota_limit_i,
         // Input quota interrupt mask. Only counters with their corresponding
             // mask interrupt set to high can be added to compute towards the
             // total quota that triggers the interrupt
