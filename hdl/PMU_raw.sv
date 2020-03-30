@@ -29,8 +29,6 @@
 	(
 		// Width of registers data bus
 		parameter integer REG_WIDTH	= 32,
-		// Width of registers IDs
-		parameter integer REG_ID_WIDTH	= 5,
 		// Amount of counters
 		parameter integer N_COUNTERS	= 9,
 		// Configuration registers
@@ -43,10 +41,24 @@
 		parameter integer MCCU	= 0, //Yes/No
 		// MCCU - N_CORES
 		parameter integer N_CORES	= 1, 
-        //
-        parameter integer TOTAL_NREGS = N_COUNTERS + N_CONF_REGS
+        // Total of registers used
+        localparam integer TOTAL_NREGS = N_COUNTERS + N_CONF_REGS
 	)
 	(
+		// Global Clock Signal
+		input wire  clk_i,
+		// Global Reset Signal. This Signal is Active LOW
+		input wire  rstn_i,
+        // Input/output wire from registers of the wrapper to PMU_raw internal
+        // registers
+        input wire [REG_WIDTH-1:0] regs_i [0:TOTAL_NREGS-1],
+        output wire [REG_WIDTH-1:0] regs_o [0:TOTAL_NREGS-1],
+        // Wrapper writte enable, prevents slaves to write in to registers and
+        // uploads the content with external values
+        input wire wrapper_we_i,
+        // Event signals
+        input wire [N_COUNTERS-1:0] events_i
+
 /*        //interruptions risen when one event exceeds it expected max duration
         output wire int_rdc_o,
         //interruptions risen when cores exceeds the quota of MCCU
@@ -57,44 +69,77 @@
         output wire int_quota_o,
         //external signals from Soc events
         input wire [N_COUNTERS-1:0] events_i, // bus of signals for counters 
-		// Global Clock Signal
-		input wire  clk_i,
-		// Global Reset Signal. This Signal is Active LOW
-		input wire  rstn_i,
         // Input/output wire from registers of the wrapper to PMU_raw internal
         // registers
         input wire [REG_WIDTH-1:0] regs_i [0:TOTAL_NREGS-1],
         output wire [REG_WIDTH-1:0] regs_o [0:TOTAL_NREGS-1],
-        // Wrapper writte enable
-        input wire wrapper_we_i,
         // Wrapper writte addres
         input wire [REG_ID_WIDTH-1:0] wrapper_wa_i
 */        
 	);
 //----------------------------------------------
+//------------- Declare wires from/to  wrapper registers
+//----------------------------------------------
+    //---- configuration registers
+    reg [REG_WIDTH-1:0] cfg_reg;
+    wire en_i;
+    wire softrst_i;
+    //---- Counter registers
+    wire [REG_WIDTH-1:0] counter_regs_o [0 : N_COUNTERS-1];
+    wire [REG_WIDTH-1:0] counter_regs_i [0 : N_COUNTERS-1];
+    
+//----------------------------------------------
 //------------- Counters instance
 //----------------------------------------------
     PMU_counters # (
-		.REG_WIDTH	(32),
-		.N_COUNTERS	(9)
+		.REG_WIDTH	(REG_WIDTH),
+		.N_COUNTERS	(N_COUNTERS)
 	)
     inst_counters (
-		.clk_i      (),
-		.rstn_i     (),
-		.softrst_i  (),
-		.en_i       (),
-		.we_i       (),
-        .regs_i     (),
-        .regs_o     (),
-        .events_i   () 
+		.clk_i      (clk_i),
+		.rstn_i     (rstn_i),
+		.softrst_i  (softrst_i),
+		.en_i       (en_i),
+		.we_i       (wrapper_we_i),
+        .regs_i     (counter_regs_i),
+        .regs_o     (counter_regs_o),
+        .events_i   (events_i) 
 	);
 
 //----------------------------------------------
+//------------- Map registers from wrapper to slave functions
+//----------------------------------------------
+    //---- configuration registers
+    localparam BASE_CFG = 0;
+    
+    always_ff @(posedge clk_i, negedge rstn_i) begin
+        if(rstn_i == 1'b0 ) begin
+            cfg_reg <= {REG_WIDTH{1'b0}};
+        end else begin
+            cfg_reg <= regs_i [BASE_CFG];
+        end
+    end
+    assign en_i = regs_i [BASE_CFG][0];
+    assign softrst_i = regs_i [BASE_CFG][1];
+    //Send content to wrapper
+    assign regs_o[BASE_CFG] = cfg_reg;
+    
+    //---- Counter registers
+    genvar x;
+    generate
+        localparam BASE_COUNTERS = BASE_CFG + N_CONF_REGS;
+        localparam END_COUNTERS = BASE_COUNTERS + N_COUNTERS; 
+        for(x=BASE_COUNTERS;x<END_COUNTERS;x++) begin
+            assign counter_regs_i[x-BASE_COUNTERS] = regs_i[x];
+            assign regs_o[x] = counter_regs_o[x-BASE_COUNTERS];
+        end
+    endgenerate
+//----------------------------------------------
 //------------- Overflow interuption instance
 //----------------------------------------------
-    PMU_overflow # (
-		.REG_WIDTH	(32),
-		.N_COUNTERS	(9)
+/*    PMU_overflow # (
+		.REG_WIDTH	(REG_WIDTH),
+		.N_COUNTERS	(N_COUNTERS)
 	)
     inst_overflow (
 		.clk_i              (),
@@ -106,13 +151,13 @@
         .intr_overflow_o    (), 
         .over_intr_vect_o   ()
 	);
-
+*/
 //----------------------------------------------
 //------------- Quota interruption instance
 //----------------------------------------------
-    PMU_quota # (
-        .REG_WIDTH	(32),
-        .N_COUNTERS	(9)
+/*    PMU_quota # (
+        .REG_WIDTH	(REG_WIDTH),
+        .N_COUNTERS	(N_COUNTERS)
     )
     inst_quota(
         .clk_i          (),
@@ -123,11 +168,11 @@
         .quota_mask_i   (), 
         .intr_quota_o   () 
     );
-
+*/
 //----------------------------------------------
 //------------- MCCU instance
 //----------------------------------------------
-    MCCU # (
+/*    MCCU # (
         // Width of data registers
         .DATA_WIDTH     (MCCU_DATA_WIDTH),
         // Width of weights registers
@@ -151,10 +196,11 @@
                                    // handle their own interrupts , therefore
                                    //it seems to be te right solution.
     );
-
+*/
 //----------------------------------------------
 //------------- Request Duration Counter (RDC) 
 //----------------------------------------------
+/*    
     RDC #(
         // Width of data registers
         .DATA_WIDTH     (MCCU_DATA_WIDTH),
@@ -175,7 +221,7 @@
             //signals. One hot encoding.
             //Cleared when MCCU is disabled.
     );
-
+*/
 ////////////////////////////////////////////////////////////////////////////////
 //
 // Formal Verification section begins here.

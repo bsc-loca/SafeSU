@@ -1,35 +1,3 @@
-/*   -- Instance of pmu_ahb.sv                                                     
-   component pmu_ahb                                                             
-     generic (                                                                   
-         haddr  : integer := 0;                                                  
-         hmask  : integer := 16#fff#);                                           
-         n_regs : integer := 20 ;                                                
-         reg_width : integer := CFG_AHBDW --32                                   
-     port (                                                                      
-         rst   : in  std_ulogic;                                                 
-         clk   : in  std_ulogic;                                                 
-         -- AHB bus slave interface                                              
-         hsel_i       : in  std_ulogic;                               -- slave select
-         haddr_i      : in  std_logic_vector(31 downto 0);            -- address bus 
-         hwrite_i     : in  std_ulogic;                               -- read/write 
-         htrans_i     : in  std_logic_vector(1 downto 0);             -- transfer type
-         hsize_i      : in  std_logic_vector(2 downto 0);             -- transfer size
-         hburst_i     : in  std_logic_vector(2 downto 0);             -- burst type
-         hwdata_i     : in  std_logic_vector(CFG_AHBDW-1 downto 0);   -- write data bus
-         hprot_i      : in  std_logic_vector(3 downto 0);             -- prtection control
-         hreadyi_i    : in  std_ulogic;                               -- transfer done 
-         hmaster_i    : in  std_logic_vector(3 downto 0);             -- current master
-         hmastlock_i  : in  std_ulogic;                               -- locked access 
-         hreadyo_o    : out std_ulogic;                               -- trasfer done 
-         hresp_o      : out std_logic_vector(1 downto 0);             -- response type
-         hrdata_o     : out std_logic_vector(CFG_AHBDW-1 downto 0);   -- read data bus
-         hsplit_o     : out std_logic_vector(15 downto 0)             -- split completion
-         -- PMU input signals                                                    
-         -- PMU output signals                                                   
-   end component;                                                                
-*/
-
-
 //-----------------------------------------------------
 // ProjectName: LEON3_kc705_pmu
 // Function   : Integrate PMU and AHB interface
@@ -55,7 +23,7 @@
         parameter haddr = 0,                                                  
         parameter hmask  = 0,                                           
 		// Total amount of registers
-        parameter integer N_REGS = 20,                                                
+        parameter integer N_REGS = 10,                                                
 		// Width of registers data bus
         parameter integer REG_WIDTH = 32,
         
@@ -198,6 +166,31 @@
 //TODO report error if reading out of range
 
 //----------------------------------------------
+//------------- PMU_raw instance
+//----------------------------------------------
+    localparam PMU_CFG = 1;
+    localparam PMU_COUNTERS = 9;
+    localparam PMU_TOTAL_REGS = PMU_COUNTERS + PMU_CFG;
+    //assert(PMU_TOTAL_REGS == N_REGS);
+    wire [REG_WIDTH-1:0] pmu_regs_int [0:PMU_TOTAL_REGS-1];
+    PMU_raw #(
+		.REG_WIDTH(REG_WIDTH),
+		.N_COUNTERS(PMU_COUNTERS),
+		.N_CONF_REGS(PMU_CFG),
+		.OVERFLOW(0), //Yes/No
+		.QUOTA(0), //Yes/No
+		.MCCU(0), //Yes/No
+		.N_CORES(1) 
+	)inst_pmu_raw (
+		.clk_i(clk_i),
+		.rstn_i(rstn_i),
+        .regs_i(slv_reg_D),
+        .regs_o(pmu_regs_int),
+        .wrapper_we_i(write_req_d),
+        //TODO connect real events
+        .events_i({4'b0,5'b1})
+	);
+//----------------------------------------------
 //------------- AHB to PMU_raw synchronization 
 //----------------------------------------------
     //This will increase in complexity later
@@ -207,14 +200,10 @@
     generate
         for(i=0;i<N_REGS;i++) begin
             // Always update the next value for the slave registers
-            // Careful, remeber to not write when rstn_i is LOW
             assign slv_reg_D[i] = write_req_d && (i==slv_index)
-                                ? write_data :slv_reg_Q[i];
+                                ? write_data : pmu_regs_int[i];
         end
-    endgenerate   
-//----------------------------------------------
-//------------- PMU_raw instance
-//----------------------------------------------
+    endgenerate  
 
 ///////////////////////////////////////////////////////////////////////////////
 //
