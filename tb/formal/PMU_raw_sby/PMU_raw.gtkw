@@ -1,0 +1,61 @@
+[*]
+[*] GTKWave Analyzer v3.3.86 (w)1999-2017 BSI
+[*] Thu Apr  9 13:23:54 2020
+[*]
+[dumpfile] "/home/bscuser/BSC/grlib-gpl-2019-4-b4246-kc705/lib/bsc/ahb_pmu/bsc_pmu/tb/formal/PMU_raw_sby/PMU_raw_cover/engine_0/trace0.vcd"
+[dumpfile_mtime] "Thu Apr  9 13:23:25 2020"
+[dumpfile_size] 17726
+[savefile] "/home/bscuser/BSC/grlib-gpl-2019-4-b4246-kc705/lib/bsc/ahb_pmu/bsc_pmu/tb/formal/PMU_raw_sby/PMU_raw.gtkw"
+[timestart] 0
+[size] 1920 1025
+[pos] 22 22
+*-5.707499 16 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] PMU_raw.
+[sst_width] 228
+[signals_width] 214
+[sst_expanded] 1
+[sst_vpaned_height] 296
+@22
+PMU_raw.cfg_reg[31:0]
+@28
+PMU_raw.clk_i
+@22
+PMU_raw.counter_regs_o<0>[31:0]
+PMU_raw.counter_regs_o<1>[31:0]
+PMU_raw.counter_regs_o<2>[31:0]
+PMU_raw.counter_regs_o<3>[31:0]
+PMU_raw.counter_regs_o<4>[31:0]
+PMU_raw.counter_regs_o<5>[31:0]
+PMU_raw.counter_regs_o<6>[31:0]
+PMU_raw.counter_regs_o<7>[31:0]
+PMU_raw.counter_regs_o<8>[31:0]
+@28
+PMU_raw.en_i
+@22
+PMU_raw.events_i[8:0]
+@28
+PMU_raw.f_past_valid
+PMU_raw.rstn_i
+PMU_raw.softrst_i
+PMU_raw.wrapper_we_i
+PMU_raw.inst_overflow.clk_i
+@201
+-overflow
+@22
+PMU_raw.inst_overflow.counter_regs_i[287:0]
+@28
+PMU_raw.inst_overflow.en_i
+PMU_raw.inst_overflow.f_past_valid
+PMU_raw.inst_overflow.intr_overflow_int
+PMU_raw.inst_overflow.intr_overflow_o
+@22
+PMU_raw.inst_overflow.masked_overflow[8:0]
+PMU_raw.inst_overflow.over_intr_mask_i[8:0]
+PMU_raw.inst_overflow.over_intr_vect_int[8:0]
+PMU_raw.inst_overflow.over_intr_vect_o[8:0]
+PMU_raw.inst_overflow.overflow[8:0]
+@28
+PMU_raw.inst_overflow.rstn_i
+PMU_raw.inst_overflow.softrst_i
+[pattern_trace] 1
+[pattern_trace] 0

@@ -1,0 +1,43 @@
+[*]
+[*] GTKWave Analyzer v3.3.86 (w)1999-2017 BSI
+[*] Mon Apr  6 15:44:09 2020
+[*]
+[dumpfile] "/home/bscuser/BSC/grlib-gpl-2019-4-b4246-kc705/lib/bsc/ahb_pmu/bsc_pmu/tb/formal/pmu_counters_sby/PMU_counters/engine_0/trace.vcd"
+[dumpfile_mtime] "Mon Apr  6 15:43:34 2020"
+[dumpfile_size] 5021
+[savefile] "/home/bscuser/BSC/grlib-gpl-2019-4-b4246-kc705/lib/bsc/ahb_pmu/bsc_pmu/tb/formal/pmu_counters_sby/PMU_counters.gtkw"
+[timestart] 0
+[size] 1920 1025
+[pos] 0 27
+*-3.672733 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[sst_width] 228
+[signals_width] 158
+[sst_expanded] 1
+[sst_vpaned_height] 296
+@28
+PMU_counters.clk_i
+PMU_counters.en_i
+@22
+PMU_counters.events_i[8:0]
+@28
+PMU_counters.f_past_valid
+@22
+PMU_counters.i[31:0]
+PMU_counters.regs_i[287:0]
+PMU_counters.regs_o[287:0]
+@28
+PMU_counters.rstn_i
+@22
+PMU_counters.slv_reg<0>[31:0]
+PMU_counters.slv_reg<1>[31:0]
+PMU_counters.slv_reg<2>[31:0]
+PMU_counters.slv_reg<3>[31:0]
+PMU_counters.slv_reg<4>[31:0]
+PMU_counters.slv_reg<5>[31:0]
+PMU_counters.slv_reg<6>[31:0]
+PMU_counters.slv_reg<7>[31:0]
+PMU_counters.slv_reg<8>[31:0]
+@28
+PMU_counters.softrst_i
+[pattern_trace] 1
+[pattern_trace] 0

@@ -1,0 +1,39 @@
+[tasks]
+bmc
+cover
+
+[options]
+bmc: 
+    mode bmc
+--
+cover:
+    mode cover
+    depth 40
+    append 2 
+--
+
+[engines]
+#smtbmc boolector
+smtbmc
+#abc bmc3
+
+#SystemVerilog
+[script]
+verific -vlog-define FORMAL
+verific -sv PMU_raw.sv
+verific -sv PMU_counters.sv
+verific -sv PMU_overflow.sv
+verific -import -extnets -all PMU_raw
+prep -top PMU_raw
+
+#Verilog
+#[script]
+#read_verilog -formal PMU_raw.sv
+#prep -top PMU_raw
+#opt -share_all
+
+[files]
+../../../hdl/PMU_raw.sv
+../../../submodules/counters/PMU_counters.sv 
+../../../submodules/overflow/PMU_overflow.sv 
+

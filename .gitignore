@@ -1,1 +1,4 @@
+hdl/PMU_raw/
 *.swp
+hdl/tmp*
+

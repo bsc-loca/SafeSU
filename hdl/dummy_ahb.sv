@@ -9,7 +9,7 @@
 // Coder      : G.Cabo
 // References : AMBA 3 AHB-lite  specifications 
 //              ARM IHI 0033A  
-// Notes      : 
+// Notes      : Burst, protected accesses and lock access are not supported
 
 `default_nettype none
 `timescale 1 ns / 1 ps
@@ -118,6 +118,7 @@ localparam TRANSFER_ERROR_RESP_2CYCLE = 2'b11;
 //------------- Data structures
 //----------------------------------------------
 var struct packed{
+//TODO: clean up unused
     logic select;
     logic write;
     logic master_ready;
@@ -202,26 +203,14 @@ always_ff @(posedge clk_i, negedge rstn_i) begin
             TRANS_NONSEQUENTIAL:begin
                 address_phase.select <= hsel_i;
                 address_phase.write <= hwrite_i;
-                address_phase.master_ready <= hreadyi_i;
                 address_phase.master_addr <= haddr_i;
-               // address_phase.master_data <= hwdata_i;
                 address_phase.trans_type <= htrans_i;
-                //address_phase.trans_size <= hsize_i;
-                //address_phase.burst_type <= hburst_i;
-                //address_phase.protection <= hprot_i;
-                //address_phase.lock <= hmastlock_i;
             end
             TRANS_SEQUENTIAL:begin
                 address_phase.select <= hsel_i;
                 address_phase.write <= hwrite_i;
-                address_phase.master_ready <= hreadyi_i;
                 address_phase.master_addr <= haddr_i;
-               // address_phase.master_data <= hwdata_i;
                 address_phase.trans_type <= htrans_i;
-                //address_phase.trans_size <= hsize_i;
-                //address_phase.burst_type <= hburst_i;
-                //address_phase.protection <= hprot_i;
-                //address_phase.lock <= hmastlock_i;
             end
         endcase
     end
@@ -298,59 +287,3 @@ always_comb begin
 end
 endmodule
 `default_nettype wire //allow compatibility with legacy code and xilinx ip
-
-/*
-    //  -- AHB bus slave interface                                              
-        // burst type
-        // write data bus
-        input wire [HDATA_WIDTH-1:0]  hwdata_i,
-        // prtection control
-        input wire [3:0]   hprot_i,
-        // transfer done 
-        input wire         hreadyi_i,
-        // current master
-        input wire [3:0]   hmaster_i,
-        // locked access 
-        input wire         hmastlock_i,
-        // trasfer done 
-        output wire        hreadyo_o,
-        // response type
-        output wire [1:0]  hresp_o,
-        // read data bus
-        output wire [HDATA_WIDTH-1:0] hrdata_o,
-        // split completion
-        output wire [15:0] hsplit_o
-//------------- AHB Basic functions
-        input wire rstn_i,
-        input wire clk_i,
-        input wire         hsel_i,                               
-        input wire [HADDR_WIDTH-1:0]  haddr_i,
-        input wire         hwrite_i,
-        input wire [1:0]   htrans_i,
-        input wire [2:0]   hsize_i,
-//------------- AHB Bursts
-        input wire [1:0]   htrans_i,
-        input wire [2:0]   hburst_i,
-//------------- AHB Locked transfers 
-//------------- AHB Protection control
-//------------- AHB Bursts
-//------------- AHB Bursts
-                
-                address_phase.select <= hsel_i;
-                address_phase.write <= hwrite_i;
-                address_phase.master_ready <= hreadyi_i;
-                address_phase.master_addr <= haddr_i;
-                address_phase.master_data <= hwdata_i;
-                address_phase.trans_type <= htrans_i;
-                address_phase.trans_size <= hsize_i;
-                address_phase.burst_type <= hburst_i;
-                address_phase.protection <= hprot_i;
-                address_phase.lock <= hmastlock_i;
-    logic slave_ready;
-    logic [1:0] slave_resp;
-    logic [HDATA_WIDTH-1:0] slave_data;
-            data_phase.slave_ready <= ;
-            data_phase.slave_resp <= ;
-            data_phase.slave_data <= ;
-* */
-

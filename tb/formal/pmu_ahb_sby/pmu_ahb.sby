@@ -1,0 +1,28 @@
+[options]
+mode bmc
+#append 10
+
+[engines]
+#smtbmc boolector
+smtbmc
+#abc bmc3
+
+#SystemVerilog
+[script]
+verific -vlog-define FORMAL
+verific -sv pmu_ahb.sv
+verific -sv PMU_raw.sv
+verific -sv PMU_counters.sv
+verific -import -extnets -all pmu_ahb
+prep -top pmu_ahb
+
+#Verilog
+#[script]
+#read_verilog -formal pmu_ahb.sv
+#prep -top pmu_ahb
+#opt -share_all
+
+[files]
+../../../hdl/pmu_ahb.sv
+../../../hdl/PMU_raw.sv
+../../../submodules/counters/PMU_counters.sv 

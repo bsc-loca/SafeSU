@@ -1,0 +1,36 @@
+[*]
+[*] GTKWave Analyzer v3.3.86 (w)1999-2017 BSI
+[*] Wed Apr  8 18:22:11 2020
+[*]
+[dumpfile] "/home/bscuser/BSC/grlib-gpl-2019-4-b4246-kc705/lib/bsc/ahb_pmu/bsc_pmu/tb/formal/PMU_overflow_sby/PMU_overflow/engine_0/trace.vcd"
+[dumpfile_mtime] "Wed Apr  8 18:21:40 2020"
+[dumpfile_size] 1531
+[savefile] "/home/bscuser/BSC/grlib-gpl-2019-4-b4246-kc705/lib/bsc/ahb_pmu/bsc_pmu/tb/formal/PMU_overflow_sby/PMU_overflow.gtkw"
+[timestart] 0
+[size] 1000 600
+[pos] 50 50
+*-3.707499 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[sst_width] 228
+[signals_width] 214
+[sst_expanded] 1
+[sst_vpaned_height] 146
+@28
+PMU_overflow.clk_i
+@22
+PMU_overflow.counter_regs_i[287:0]
+@28
+PMU_overflow.en_i
+PMU_overflow.f_past_valid
+PMU_overflow.intr_overflow_int
+PMU_overflow.intr_overflow_o
+@22
+PMU_overflow.masked_overflow[8:0]
+PMU_overflow.over_intr_mask_i[8:0]
+PMU_overflow.over_intr_vect_int[8:0]
+PMU_overflow.over_intr_vect_o[8:0]
+PMU_overflow.overflow[8:0]
+@28
+PMU_overflow.rstn_i
+PMU_overflow.softrst_i
+[pattern_trace] 1
+[pattern_trace] 0

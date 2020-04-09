@@ -1,0 +1,313 @@
+[*]
+[*] GTKWave Analyzer v3.3.86 (w)1999-2017 BSI
+[*] Thu Apr  2 17:38:00 2020
+[*]
+[dumpfile] "/home/bscuser/BSC/grlib-gpl-2019-4-b4246-kc705/lib/bsc/ahb_pmu/bsc_pmu/tb/formal/pmu_ahb/engine_1/trace.vcd"
+[dumpfile_mtime] "Thu Apr  2 17:30:03 2020"
+[dumpfile_size] 67247
+[savefile] "/home/bscuser/BSC/grlib-gpl-2019-4-b4246-kc705/lib/bsc/ahb_pmu/bsc_pmu/tb/formal/pmu_ahb.gtkw"
+[timestart] 0
+[size] 1920 1025
+[pos] 22 22
+*-5.707499 20 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] pmu_ahb.
+[treeopen] pmu_ahb.inst_pmu_raw.
+[sst_width] 228
+[signals_width] 538
+[sst_expanded] 1
+[sst_vpaned_height] 296
+@28
+pmu_ahb.inst_pmu_raw.clk_i
+@22
+pmu_ahb.inst_pmu_raw.events_i[8:0]
+@28
+pmu_ahb.hburst_i[2:0]
+@22
+pmu_ahb.hdata_int[31:0]
+pmu_ahb.hmaster_i[3:0]
+@28
+pmu_ahb.hmastlock_i
+@22
+pmu_ahb.hprot_i[3:0]
+@28
+pmu_ahb.hsize_i[2:0]
+pmu_ahb.htrans_i[1:0]
+@c00024
+[color] 3
+pmu_ahb.haddr_i[31:0]
+@28
+[color] 3
+(0)pmu_ahb.haddr_i[31:0]
+[color] 3
+(1)pmu_ahb.haddr_i[31:0]
+[color] 3
+(2)pmu_ahb.haddr_i[31:0]
+[color] 3
+(3)pmu_ahb.haddr_i[31:0]
+[color] 3
+(4)pmu_ahb.haddr_i[31:0]
+[color] 3
+(5)pmu_ahb.haddr_i[31:0]
+[color] 3
+(6)pmu_ahb.haddr_i[31:0]
+[color] 3
+(7)pmu_ahb.haddr_i[31:0]
+[color] 3
+(8)pmu_ahb.haddr_i[31:0]
+[color] 3
+(9)pmu_ahb.haddr_i[31:0]
+[color] 3
+(10)pmu_ahb.haddr_i[31:0]
+[color] 3
+(11)pmu_ahb.haddr_i[31:0]
+[color] 3
+(12)pmu_ahb.haddr_i[31:0]
+[color] 3
+(13)pmu_ahb.haddr_i[31:0]
+[color] 3
+(14)pmu_ahb.haddr_i[31:0]
+[color] 3
+(15)pmu_ahb.haddr_i[31:0]
+[color] 3
+(16)pmu_ahb.haddr_i[31:0]
+[color] 3
+(17)pmu_ahb.haddr_i[31:0]
+[color] 3
+(18)pmu_ahb.haddr_i[31:0]
+[color] 3
+(19)pmu_ahb.haddr_i[31:0]
+[color] 3
+(20)pmu_ahb.haddr_i[31:0]
+[color] 3
+(21)pmu_ahb.haddr_i[31:0]
+[color] 3
+(22)pmu_ahb.haddr_i[31:0]
+[color] 3
+(23)pmu_ahb.haddr_i[31:0]
+[color] 3
+(24)pmu_ahb.haddr_i[31:0]
+[color] 3
+(25)pmu_ahb.haddr_i[31:0]
+[color] 3
+(26)pmu_ahb.haddr_i[31:0]
+[color] 3
+(27)pmu_ahb.haddr_i[31:0]
+[color] 3
+(28)pmu_ahb.haddr_i[31:0]
+[color] 3
+(29)pmu_ahb.haddr_i[31:0]
+[color] 3
+(30)pmu_ahb.haddr_i[31:0]
+[color] 3
+(31)pmu_ahb.haddr_i[31:0]
+@1401204
+-group_end
+@22
+[color] 3
+pmu_ahb.hwdata_i[31:0]
+[color] 3
+pmu_ahb.slv_index[3:0]
+@24
+[color] 3
+pmu_ahb.hrdata_o[31:0]
+@28
+[color] 3
+pmu_ahb.hreadyi_i
+[color] 3
+pmu_ahb.hsel_i
+[color] 6
+pmu_ahb.hresp_o[1:0]
+[color] 6
+pmu_ahb.hreadyo_o
+@22
+[color] 6
+pmu_ahb.hsplit_o[15:0]
+@28
+pmu_ahb.hwrite_i
+[color] 1
+pmu_ahb.write_req_d
+[color] 1
+pmu_ahb.write_req_q
+[color] 1
+pmu_ahb.read_req_d
+[color] 1
+pmu_ahb.read_req_q
+@22
+pmu_ahb.inst_pmu_raw.cfg_reg[31:0]
+@28
+pmu_ahb.clk_i
+pmu_ahb.rstn_i
+@22
+[color] 2
+pmu_ahb.slv_reg<0>[31:0]
+[color] 2
+pmu_ahb.slv_reg<1>[31:0]
+[color] 2
+pmu_ahb.slv_reg<2>[31:0]
+[color] 2
+pmu_ahb.slv_reg<3>[31:0]
+[color] 2
+pmu_ahb.slv_reg<4>[31:0]
+[color] 2
+pmu_ahb.slv_reg<5>[31:0]
+[color] 2
+pmu_ahb.slv_reg<6>[31:0]
+[color] 2
+pmu_ahb.slv_reg<7>[31:0]
+[color] 2
+pmu_ahb.slv_reg<8>[31:0]
+[color] 2
+pmu_ahb.slv_reg<9>[31:0]
+@c00024
+pmu_ahb.write_data[31:0]
+@28
+(0)pmu_ahb.write_data[31:0]
+(1)pmu_ahb.write_data[31:0]
+(2)pmu_ahb.write_data[31:0]
+(3)pmu_ahb.write_data[31:0]
+(4)pmu_ahb.write_data[31:0]
+(5)pmu_ahb.write_data[31:0]
+(6)pmu_ahb.write_data[31:0]
+(7)pmu_ahb.write_data[31:0]
+(8)pmu_ahb.write_data[31:0]
+(9)pmu_ahb.write_data[31:0]
+(10)pmu_ahb.write_data[31:0]
+(11)pmu_ahb.write_data[31:0]
+(12)pmu_ahb.write_data[31:0]
+(13)pmu_ahb.write_data[31:0]
+(14)pmu_ahb.write_data[31:0]
+(15)pmu_ahb.write_data[31:0]
+(16)pmu_ahb.write_data[31:0]
+(17)pmu_ahb.write_data[31:0]
+(18)pmu_ahb.write_data[31:0]
+(19)pmu_ahb.write_data[31:0]
+(20)pmu_ahb.write_data[31:0]
+(21)pmu_ahb.write_data[31:0]
+(22)pmu_ahb.write_data[31:0]
+(23)pmu_ahb.write_data[31:0]
+(24)pmu_ahb.write_data[31:0]
+(25)pmu_ahb.write_data[31:0]
+(26)pmu_ahb.write_data[31:0]
+(27)pmu_ahb.write_data[31:0]
+(28)pmu_ahb.write_data[31:0]
+(29)pmu_ahb.write_data[31:0]
+(30)pmu_ahb.write_data[31:0]
+(31)pmu_ahb.write_data[31:0]
+@1401200
+-group_end
+@24
+pmu_ahb.resp_data[31:0]
+pmu_ahb.past_output<0>[31:0]
+pmu_ahb.past_output<1>[31:0]
+pmu_ahb.past_output<2>[31:0]
+pmu_ahb.past_output<3>[31:0]
+pmu_ahb.past_output<4>[31:0]
+pmu_ahb.past_output<5>[31:0]
+pmu_ahb.past_output<6>[31:0]
+pmu_ahb.past_output<7>[31:0]
+pmu_ahb.past_output<8>[31:0]
+pmu_ahb.past_output<9>[31:0]
+@22
+pmu_ahb.inst_pmu_raw.cfg_reg[31:0]
+@28
+pmu_ahb.clk_i
+pmu_ahb.f_past_valid
+@22
+[color] 2
+pmu_ahb.haddr_i[31:0]
+[color] 2
+pmu_ahb.slv_index[3:0]
+[color] 2
+pmu_ahb.slv_reg<2>[31:0]
+pmu_ahb.haddr_int[5:0]
+@28
+pmu_ahb.hburst_i[2:0]
+@22
+pmu_ahb.hdata_int[31:0]
+pmu_ahb.hmaster_i[3:0]
+@28
+pmu_ahb.hmastlock_i
+@22
+pmu_ahb.hprot_i[3:0]
+@23
+[color] 1
+pmu_ahb.hrdata_o[31:0]
+@28
+pmu_ahb.hreadyi_i
+pmu_ahb.hreadyo_o
+pmu_ahb.hresp_o[1:0]
+pmu_ahb.hsel_i
+pmu_ahb.hsize_i[2:0]
+@22
+pmu_ahb.hsplit_o[15:0]
+@28
+pmu_ahb.htrans_i[1:0]
+@22
+pmu_ahb.hwdata_i[31:0]
+@28
+pmu_ahb.hwrite_i
+@22
+pmu_ahb.past_output<0>[31:0]
+pmu_ahb.past_output<1>[31:0]
+pmu_ahb.past_output<2>[31:0]
+pmu_ahb.past_output<3>[31:0]
+pmu_ahb.past_output<4>[31:0]
+pmu_ahb.past_output<5>[31:0]
+pmu_ahb.past_output<6>[31:0]
+pmu_ahb.past_output<7>[31:0]
+pmu_ahb.past_output<8>[31:0]
+pmu_ahb.past_output<9>[31:0]
+pmu_ahb.pmu_regs_int<0>[31:0]
+pmu_ahb.pmu_regs_int<1>[31:0]
+pmu_ahb.pmu_regs_int<2>[31:0]
+pmu_ahb.pmu_regs_int<3>[31:0]
+pmu_ahb.pmu_regs_int<4>[31:0]
+pmu_ahb.pmu_regs_int<5>[31:0]
+pmu_ahb.pmu_regs_int<6>[31:0]
+pmu_ahb.pmu_regs_int<7>[31:0]
+pmu_ahb.pmu_regs_int<8>[31:0]
+pmu_ahb.pmu_regs_int<9>[31:0]
+@28
+pmu_ahb.read_req_d
+pmu_ahb.read_req_q
+@22
+[color] 2
+pmu_ahb.resp_data[31:0]
+@28
+pmu_ahb.rstn_i
+@22
+pmu_ahb.slv_reg<0>[31:0]
+pmu_ahb.slv_reg<1>[31:0]
+pmu_ahb.slv_reg<3>[31:0]
+pmu_ahb.slv_reg<4>[31:0]
+pmu_ahb.slv_reg<5>[31:0]
+pmu_ahb.slv_reg<6>[31:0]
+pmu_ahb.slv_reg<7>[31:0]
+pmu_ahb.slv_reg<8>[31:0]
+pmu_ahb.slv_reg<9>[31:0]
+pmu_ahb.slv_reg_D<0>[31:0]
+pmu_ahb.slv_reg_D<1>[31:0]
+pmu_ahb.slv_reg_D<2>[31:0]
+pmu_ahb.slv_reg_D<3>[31:0]
+pmu_ahb.slv_reg_D<4>[31:0]
+pmu_ahb.slv_reg_D<5>[31:0]
+pmu_ahb.slv_reg_D<6>[31:0]
+pmu_ahb.slv_reg_D<7>[31:0]
+pmu_ahb.slv_reg_D<8>[31:0]
+pmu_ahb.slv_reg_D<9>[31:0]
+pmu_ahb.slv_reg_Q<0>[31:0]
+pmu_ahb.slv_reg_Q<1>[31:0]
+pmu_ahb.slv_reg_Q<2>[31:0]
+pmu_ahb.slv_reg_Q<3>[31:0]
+pmu_ahb.slv_reg_Q<4>[31:0]
+pmu_ahb.slv_reg_Q<5>[31:0]
+pmu_ahb.slv_reg_Q<6>[31:0]
+pmu_ahb.slv_reg_Q<7>[31:0]
+pmu_ahb.slv_reg_Q<8>[31:0]
+pmu_ahb.slv_reg_Q<9>[31:0]
+pmu_ahb.write_data[31:0]
+@28
+pmu_ahb.write_req_d
+pmu_ahb.write_req_q
+[pattern_trace] 1
+[pattern_trace] 0

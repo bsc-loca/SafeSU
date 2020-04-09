@@ -1,0 +1,34 @@
+[tasks]
+bmc
+cover
+
+[options]
+bmc: 
+    mode bmc
+--
+cover:
+    mode cover
+    depth 40
+    append 2 
+--
+[engines]
+#smtbmc boolector
+smtbmc
+#abc bmc3
+
+#SystemVerilog
+[script]
+verific -vlog-define FORMAL
+verific -sv PMU_counters.sv
+verific -import -extnets -all PMU_counters
+prep -top PMU_counters
+
+#Verilog
+#[script]
+#read_verilog -formal PMU_counters.sv
+#prep -top PMU_counters
+#opt -share_all
+
+[files]
+../../../submodules/counters/PMU_counters.sv 
+
