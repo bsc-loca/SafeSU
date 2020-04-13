@@ -34,23 +34,30 @@
 		parameter integer N_COUNTERS	= 9,
 		// Configuration registers
 		parameter integer N_CONF_REGS	= 1,
-		// Overflow
-		parameter integer OVERFLOW	= 1, //Yes/No
-		// Quota
-		parameter integer QUOTA	= 0, //Yes/No
-		// MCCU - Maximum-contention Control Unit mode
-		parameter integer MCCU	= 0, //Yes/No
-		// MCCU - N_CORES
-		parameter integer N_CORES	= 1,
 
         //------------- Internal Parameters 
-        //---- configuration registers
+		
+        // *** Active functions and global configuration
+        //---- Overflow
+		localparam integer OVERFLOW	= 1, //Yes/No
+		//---- Quota
+		localparam integer QUOTA	= 1, //Yes/No
+		//---- MCCU - Maximum-contention Control Unit mode
+		localparam integer MCCU	= 1, //Yes/No
+		//---- RDC - Request Duration Counters
+		localparam integer RDC	= 1, //Yes/No
+       
+        // *** Memory map related features
+        
+        //---- Main configuration registers
         localparam BASE_CFG = 0,
         localparam END_CFG = BASE_CFG + N_CONF_REGS -1,
+        
         //---- Counter registers
         localparam BASE_COUNTERS = END_CFG + 1,
         localparam END_COUNTERS = BASE_COUNTERS + N_COUNTERS-1, 
-        //---- Quota interruption  registers
+        
+        //---- Overflow interruption  registers
             // General parameters feature  
         localparam BASE_OVERFLOW_INTR = END_COUNTERS + 1,
             // mask feature
@@ -59,16 +66,83 @@
         localparam N_OVERFLOW_MASK_REGS = ((N_COUNTERS-1)/REG_WIDTH+1), 
         localparam END_OVERFLOW_MASK = BASE_OVERFLOW_MASK + N_OVERFLOW_MASK_REGS -1,
             // overflow interruption vector feature
-            // OVERFLOW_INTR_MASK_REGS is equivalent to $ceil(N_COUNTERS/REG_WIDTH)
+            // OVERFLOW_INTR_VECT_REGS is equivalent to $ceil(N_COUNTERS/REG_WIDTH)
         localparam BASE_OVERFLOW_VECT = (END_OVERFLOW_MASK+1),
         localparam N_OVERFLOW_VECT_REGS = ((N_COUNTERS-1)/REG_WIDTH+1), 
         localparam END_OVERFLOW_VECT = BASE_OVERFLOW_VECT + N_OVERFLOW_VECT_REGS -1,
-            // General parameters feature  
+            // General parameters overflow feature  
         localparam N_OVERFLOW_REGS = (N_OVERFLOW_VECT_REGS + N_OVERFLOW_VECT_REGS) * OVERFLOW,
         localparam END_OVERFLOW_INTR = BASE_OVERFLOW_INTR + N_OVERFLOW_REGS -1,
-            // Total of registers used
+        
+        //---- Quota interruption  registers
+            // General parameters feature  
+        localparam BASE_QUOTA_INTR = END_OVERFLOW_INTR + 1,
+            // mask feature
+                // QUOTA_INTR_MASK_REGS equivalentto to $ceil(N_COUNTERS/REG_WIDTH)
+        localparam BASE_QUOTA_MASK = BASE_OVERFLOW_INTR,
+        localparam N_QUOTA_MASK_REGS = ((N_COUNTERS-1)/REG_WIDTH+1), 
+        localparam END_QUOTA_MASK = BASE_QUOTA_MASK + N_QUOTA_MASK_REGS -1,
+            // Available quota aka quota limit
+        localparam BASE_QUOTA_LIMIT = END_QUOTA_MASK + 1, 
+        localparam N_QUOTA_LIMIT_REGS = 1,
+        localparam END_QUOTA_LIMIT = BASE_QUOTA_LIMIT + N_QUOTA_LIMIT_REGS -1,
+            // General parameters overflow feature  
+        localparam N_QUOTA_REGS = (N_QUOTA_MASK_REGS + N_QUOTA_LIMIT_REGS ) * QUOTA,
+        localparam END_QUOTA_INTR = BASE_QUOTA_INTR + N_QUOTA_REGS -1,
+        
+        //---- MCCU registers and parameters
+            // General parameters feature
+                // Width of the assigned weights for each event
+        localparam MCCU_WEIGHTS_WIDTH = 8,
+                // Number of cores with MCCU capabilities
+        localparam MCCU_N_CORES = 4, 
+                // Number of events per core
+        localparam MCCU_N_EVENTS = 2 , 
+            // Main configuration register for the MCCU 
+        localparam BASE_MCCU_CFG = END_QUOTA_INTR + 1,
+        localparam N_MCCU_CFG = 1,
+        localparam END_MCCU_CFG = BASE_MCCU_CFG + N_MCCU_CFG -1 ,
+            // Quota limit assgined to each core
+        localparam BASE_MCCU_LIMITS = END_MCCU_CFG +1,
+        localparam N_MCCU_LIMITS = MCCU_N_CORES,
+        localparam END_MCCU_LIMITS = BASE_MCCU_LIMITS + N_MCCU_LIMITS -1,
+            // Currently available Quota for each core
+        localparam BASE_MCCU_QUOTA = END_MCCU_LIMITS +1,
+        localparam N_MCCU_QUOTA = MCCU_N_CORES,
+        localparam END_MCCU_QUOTA = BASE_MCCU_QUOTA + N_MCCU_QUOTA -1,
+            // Weights for each one of the available events
+        localparam BASE_MCCU_WEIGHTS = END_MCCU_QUOTA + 1,
+                // (((....)-1)/(...)+1) is equivalent to ceil
+        localparam N_MCCU_WEIGHTS = (((MCCU_N_CORES*MCCU_N_EVENTS*MCCU_WEIGHTS_WIDTH)-1)/REG_WIDTH+1),
+        localparam END_MCCU_WEIGHTS = BASE_MCCU_WEIGHTS + N_MCCU_WEIGHTS -1,
+            // General parameters feature  
+        localparam N_MCCU_REGS = (N_MCCU_CFG + N_MCCU_LIMITS+ N_MCCU_QUOTA + N_MCCU_WEIGHTS) * MCCU,
+        
+        //---- RDC registers and parameters. Shared with MCCU 
+            // General parameters feature
+                // Width of the assigned weights for each event
+        localparam RDC_WEIGHTS_WIDTH = MCCU_WEIGHTS_WIDTH,
+                // Number of cores with RDC capabilities
+        localparam RDC_N_CORES = MCCU_N_CORES, 
+                // Number of events per core
+        localparam RDC_N_EVENTS = MCCU_N_EVENTS, 
+            // Interruption vector 
+        localparam BASE_RDC_VECT = (END_MCCU_WEIGHTS+1),
+                // (((....)-1)/(...)+1) is equivalent to ceil
+        localparam N_RDC_VECT_REGS = ((RDC_N_CORES*RDC_N_EVENTS-1)/REG_WIDTH+1), 
+        localparam END_RDC_VECT = BASE_RDC_VECT + N_RDC_VECT_REGS -1 ,
+            // Weights for each one of the available events. SHARED with MCCU
+        localparam BASE_RDC_WEIGHTS = BASE_MCCU_WEIGHTS, 
+                // (((....)-1)/(...)+1) is equivalent to ceil
+        localparam N_RDC_WEIGHTS = 0, 
+        localparam END_RDC_WEIGHTS = END_MCCU_WEIGHTS,
+            // General parameters feature  
+        localparam N_RDC_REGS = (N_RDC_WEIGHTS + N_RDC_VECT_REGS) * RDC,
+        
+        //---- Total of registers used
         localparam integer TOTAL_NREGS =
                                     N_COUNTERS + N_CONF_REGS + N_OVERFLOW_REGS
+                                    +N_QUOTA_REGS + N_MCCU_REGS + N_RDC_REGS
 	)
 	(
 		// Global Clock Signal
@@ -85,23 +159,13 @@
         // Event signals
         input wire [N_COUNTERS-1:0] events_i,
         //interruption rises when one of the counters overflows
-        output reg intr_overflow_o
-
-/*        //interruptions risen when one event exceeds it expected max duration
-        output wire int_rdc_o,
-        //interruptions risen when cores exceeds the quota of MCCU
-        output wire MCCU_int_o [N_CORES-1:0],
-        //interruption rises when the total of cuota consumed is exceeded
-        output wire int_quota_o,
-        //external signals from Soc events
-        input wire [N_COUNTERS-1:0] events_i, // bus of signals for counters 
-        // Input/output wire from registers of the wrapper to PMU_raw internal
-        // registers
-        input wire [REG_WIDTH-1:0] regs_i [0:TOTAL_NREGS-1],
-        output wire [REG_WIDTH-1:0] regs_o [0:TOTAL_NREGS-1],
-        // Wrapper writte addres
-        input wire [REG_ID_WIDTH-1:0] wrapper_wa_i
-*/        
+        output wire intr_overflow_o,
+        //interruption rises when overal events quota is exceeded 
+        output wire intr_quota_o,
+        // MCCU interruption for exceeded quota. One signal per core
+        output wire [MCCU_N_CORES-1:0] intr_MCCU_o,
+        // RDC (Request Duration Counter) interruption for exceeded quota
+        output wire intr_RDC_o
 	);
 //----------------------------------------------
 //------------- Declare wires from/to  wrapper registers
@@ -144,7 +208,7 @@
     //---- Overflow interruption  registers
     generate
         for(x=0;x<N_OVERFLOW_MASK_REGS;x++) begin
-            assign overflow_intr_mask_i[x] = (rstn_i == 1'b0)? '{default:0} :regs_i [x][N_COUNTERS-1:0];
+            assign overflow_intr_mask_i[x] = (rstn_i == 1'b0)? '{default:0} :regs_i [x+BASE_OVERFLOW_MASK][N_COUNTERS-1:0];
         end
         for(x=BASE_OVERFLOW_VECT;x<=END_OVERFLOW_VECT;x++) begin
             assign regs_o [x] = (rstn_i == 1'b0)? '{default:0} : REG_WIDTH'(overflow_intr_vect_o[x-BASE_OVERFLOW_VECT]);
@@ -180,11 +244,14 @@
 		.N_COUNTERS	(N_COUNTERS)
 	)
     inst_overflow (
+    `ifdef FORMAL 
 		.clk_i              (clk_i),
+    `endif
 		.rstn_i             (rstn_i),
 		.softrst_i          (softrst_i),
 		.en_i               (en_i),
         .counter_regs_i     (counter_regs_o),
+        //TODO WIP
         .over_intr_mask_i   (overflow_intr_mask_i[0][N_COUNTERS-1:0]), 
         .intr_overflow_o    (intr_overflow_o), 
         .over_intr_vect_o   (overflow_intr_vect_o[0][N_COUNTERS-1:0])
@@ -193,73 +260,143 @@
 //----------------------------------------------
 //------------- Quota interruption instance
 //----------------------------------------------
-/*    PMU_quota # (
+    
+    PMU_quota # (
         .REG_WIDTH	(REG_WIDTH),
         .N_COUNTERS	(N_COUNTERS)
     )
     inst_quota(
-        .clk_i          (),
-        .rstn_i         (),
-        .counter_value_i(),
-        .softrst_i      (),
-        .quota_limit_i  (),
-        .quota_mask_i   (), 
-        .intr_quota_o   () 
+        .clk_i          (clk_i),
+        .rstn_i         (rstn_i),
+        .counter_value_i(counter_regs_o),
+        .softrst_i      (softrst_i),
+        .quota_limit_i  (regs_i[BASE_QUOTA_LIMIT]),
+        .quota_mask_i   (regs_i[BASE_QUOTA_MASK][N_COUNTERS-1:0]), 
+        .intr_quota_o   (intr_quota_o) 
     );
-*/
+
 //----------------------------------------------
 //------------- MCCU instance
 //----------------------------------------------
-/*    MCCU # (
+    wire MCCU_enable_int;
+    assign MCCU_enable_int = regs_i[BASE_MCCU_CFG][0];
+    
+    wire MCCU_softrst;
+    assign MCCU_softrst = regs_i[BASE_MCCU_CFG][1];
+    
+    //NON-PARAMETRIC one bit for each core
+    wire MCCU_update_quota_int [0:MCCU_N_CORES-1];
+        //core_0
+    assign MCCU_update_quota_int[0] = regs_i[BASE_MCCU_CFG][2]; 
+        //core_1
+    assign MCCU_update_quota_int[1] = regs_i[BASE_MCCU_CFG][3]; 
+        //core_2
+    assign MCCU_update_quota_int[2] = regs_i[BASE_MCCU_CFG][4]; 
+        //core_3
+    assign MCCU_update_quota_int[3] = regs_i[BASE_MCCU_CFG][5]; 
+    
+    //NON-PARAMETRIC Adjust for different MCCU_N_CORES MCCU_CORE_EVENTS
+        //eventuall when inputs will be selectable with a crossbar signals can
+        //be hardcoded to specific corssbars outputs
+    wire [MCCU_N_EVENTS-1:0] events_int[0:MCCU_N_CORES-1];
+        //core_0
+    assign events_int [0] = {{events_i[0]},{events_i[1]}};
+        //core_1
+    assign events_int [1] = {{events_i[2]},{events_i[3]}};
+        //core_2
+    assign events_int [2] = {{events_i[4]},{events_i[5]}};
+        //core_3
+    assign events_int [3] = {{events_i[6]},{events_i[7]}};
+        
+    //NON-PARAMETRIC This can be autogenenerated TODO     
+    wire [MCCU_WEIGHTS_WIDTH-1:0] MCCU_events_weights_int [0:MCCU_N_CORES-1]
+                                                     [0:MCCU_N_EVENTS-1];
+        //core_0
+    assign MCCU_events_weights_int [0][0] =  regs_i[BASE_MCCU_WEIGHTS][MCCU_WEIGHTS_WIDTH-1:0];
+    assign MCCU_events_weights_int [0][1] =  regs_i[BASE_MCCU_WEIGHTS][2*MCCU_WEIGHTS_WIDTH-1:MCCU_WEIGHTS_WIDTH];
+        //core_1
+    assign MCCU_events_weights_int [1][0] =  regs_i[BASE_MCCU_WEIGHTS][3*MCCU_WEIGHTS_WIDTH-1:2*MCCU_WEIGHTS_WIDTH];
+    assign MCCU_events_weights_int [1][1] =  regs_i[BASE_MCCU_WEIGHTS][4*MCCU_WEIGHTS_WIDTH-1:3*MCCU_WEIGHTS_WIDTH];
+        //core_2
+    assign MCCU_events_weights_int [2][0] =  regs_i[BASE_MCCU_WEIGHTS+1][MCCU_WEIGHTS_WIDTH-1:0];
+    assign MCCU_events_weights_int [2][1] =  regs_i[BASE_MCCU_WEIGHTS+1][2*MCCU_WEIGHTS_WIDTH-1:MCCU_WEIGHTS_WIDTH];
+        //core_3
+    assign MCCU_events_weights_int [3][0] =  regs_i[BASE_MCCU_WEIGHTS+1][3*MCCU_WEIGHTS_WIDTH-1:2*MCCU_WEIGHTS_WIDTH];
+    assign MCCU_events_weights_int [3][1] =  regs_i[BASE_MCCU_WEIGHTS+1][4*MCCU_WEIGHTS_WIDTH-1:3*MCCU_WEIGHTS_WIDTH];
+    
+    //NON-PARAMETRIC unpack to pack
+    wire MCCU_intr_up [MCCU_N_CORES-1:0];
+    assign intr_MCCU_o = {{MCCU_intr_up[3]},{MCCU_intr_up[2]}
+                        ,{MCCU_intr_up[1]},{MCCU_intr_up[0]}};
+
+    MCCU # (
         // Width of data registers
-        .DATA_WIDTH     (MCCU_DATA_WIDTH),
+        .DATA_WIDTH     (REG_WIDTH),
         // Width of weights registers
         .WEIGHTS_WIDTH  (MCCU_WEIGHTS_WIDTH),
         //Cores. Change this may break Verilator TB
         .N_CORES        (MCCU_N_CORES),
         //Signals per core. Change this may break Verilator TB
-        .CORE_EVENTS    (MCCU_CORE_EVENTS)
+        .CORE_EVENTS    (MCCU_N_EVENTS)
     )
     inst_MCCU(
         .clk_i                  (clk_i),
-        .rstn_i                 (rstn_i || MCCU_rstn_int),
+        .rstn_i                 (rstn_i || MCCU_softrst),
         .enable_i               (MCCU_enable_int),// Software map
-        .events_i               (events_int),//how to parametrize this? new parameter on top or up to the programer that does the integration?
-        .quota_i                (MCCU_quota_int),//One register per core
+        .events_i               (events_int),
+        .quota_i                (regs_i[BASE_MCCU_QUOTA:END_MCCU_QUOTA]),//One register per core
         .update_quota_i         (MCCU_update_quota_int),//Software map
-        .quota_o                (MCCU_quota_o),//write back to a read register
+        .quota_o                (regs_o[BASE_MCCU_QUOTA:END_MCCU_QUOTA]),//write back to a read register
         .events_weights_i       (MCCU_events_weights_int),//core_events times WEIGHTS_WIDTH registers
-        .interruption_quota_o   (MCCU_int_o)//N_CORES output signals Add this to top or single toplevel interrupt and an interrupt vector that identifies the source?
+        .interruption_quota_o   (MCCU_intr_up)//N_CORES output signals Add this to top or single toplevel interrupt and an interrupt vector that identifies the source?
                                    // Individual interrupts allow each core to
                                    // handle their own interrupts , therefore
                                    //it seems to be te right solution.
     );
-*/
+
 //----------------------------------------------
 //------------- Request Duration Counter (RDC) 
 //----------------------------------------------
-/*    
+    
+    //Interruption vector to indicate signal exceeding weight
+    // NON-PARAMETRIC
+    wire [MCCU_N_EVENTS-1:0] interruption_rdc_o [0:MCCU_N_CORES-1];
+        //core_0
+    assign regs_o[BASE_RDC_VECT][1:0] = interruption_rdc_o [0] ;
+        //core_1
+    assign regs_o[BASE_RDC_VECT][3:2] = interruption_rdc_o [1] ;
+        //core_2
+    assign regs_o[BASE_RDC_VECT][5:4] = interruption_rdc_o [2] ;
+        //core_3
+    assign regs_o[BASE_RDC_VECT][7:6] = interruption_rdc_o [3] ;
+
+    //TODO: A dedicated configuration register may be required for RDC, for
+    //now it is shared with MCCU
+    wire RDC_softrst;
+    assign RDC_softrst = MCCU_softrst;
+    wire RDC_enable_int;
+    assign RDC_enable_int = MCCU_enable_int;
+
     RDC #(
         // Width of data registers
-        .DATA_WIDTH     (MCCU_DATA_WIDTH),
+        .DATA_WIDTH     (REG_WIDTH),
         // Width of weights registers
-        .WEIGHTS_WIDTH  (MCCU_WEIGHTS_WIDTH),
+        .WEIGHTS_WIDTH  (RDC_WEIGHTS_WIDTH),
         //Cores. 
-        .N_CORES        (MCCU_N_CORES),
+        .N_CORES        (RDC_N_CORES),
         //Signals per core. 
-        .CORE_EVENTS    (MCCU_CORE_EVENTS)
+        .CORE_EVENTS    (RDC_N_EVENTS)
     ) inst_RDC(
         .clk_i                  (clk_i),
-        .rstn_i                 (rstn_i || MCCU_rstn_int ),
-        .enable_i               (MCCU_enable_int),// Software map
-        .events_i               (events_int),//how to parametrize this? new parameter on top or up to the programer that does the integration?
-        .events_weights_i       (MCCU_events_weights_int),//core_events times WEIGHTS_WIDTH registers
-        .interruption_rdc_o(intr_rdc_o),// interruption signaling a signal has exceed the expected maximum request time
-        .interruption_vector_rdc_o(intrv_rdc_int) // vector with offending
-            //signals. One hot encoding.
-            //Cleared when MCCU is disabled.
+        .rstn_i                 (rstn_i || RDC_softrst ),
+        .enable_i               (RDC_enable_int),// Software map
+        .events_i               (events_int),
+        .events_weights_i       (MCCU_events_weights_int),
+        // interruption signaling a signal has exceed the expected maximum request time
+        .interruption_rdc_o(intr_RDC_o),
+        // vector with offending signals. One hot encoding. Cleared when MCCU is disabled.
+        .interruption_vector_rdc_o(interruption_rdc_o)
     );
-*/
 /////////////////////////////////////////////////////////////////////////////////
 //
 // Formal Verification section begins here.
@@ -279,8 +416,22 @@
             assume(0 == rstn_i);
          end
     end
-
-
+    
+    default clocking @(posedge clk_i); endclocking   
+    // Cover that all the bits in the mask are driven
+    cover property ((overflow_intr_mask_i[0]==32'b111111111) && f_past_valid );
+    // Cover that values of registers are independent
+        //e.g: cfg_reg != overflow_intr_mask_i[0]
+        //     && cfg_reg != counter_regs_int [0]
+        //     && cfg_reg != counter_regs_int [1]
+        //     ...
+        //     && cfg_reg != counter_regs_int [8]
+        //
+        //     overflow_intr_mask_i[0] != cfg_reg
+        //     overflow_intr_mask_i[0] != counter_regs_int [0]
+        //     ....
+        //     overflow_intr_mask_i[0] != counter_regs_int [8]
+    cover property (cfg_reg != overflow_intr_mask_i[0]);
 `endif
 
 endmodule

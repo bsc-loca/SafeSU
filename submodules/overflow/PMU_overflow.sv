@@ -28,8 +28,10 @@ module PMU_overflow #
 		parameter integer N_COUNTERS	= 9
 	)
 	(
+    `ifdef FORMAL 
 		// Global Clock Signal
 		input wire  clk_i,
+    `endif
 		// Global Reset Signal. This Signal is Active LOW
 		input wire  rstn_i,
         // Soft Reset Signal from configuration registeres. This Signal is 
@@ -73,10 +75,10 @@ module PMU_overflow #
     wire unit_disabled;
     assign unit_disabled = (rstn_i==0) || (softrst_i==1) || (en_i==0);
     //Drive output interrupt
-    assign intr_overflow_o =unit_disabled? 1'b0 : |masked_overflow; 
+    assign intr_overflow_o =unit_disabled ? 1'b0 : |masked_overflow; 
 
     //Drive output overflow interruption vector
-    assign over_intr_vect_o = unit_disabled? '{default:0} : masked_overflow;
+    assign over_intr_vect_o = unit_disabled ? '{default:0} : masked_overflow;
 
 //TODO: fill formal propperties
 ////////////////////////////////////////////////////////////////////////////////
@@ -129,11 +131,15 @@ module PMU_overflow #
             && (intr_overflow_o == 1'b0)
        );
     end
-    // Cover interrupt is enable
     default clocking @(posedge clk_i); endclocking   
+    // Cover interrupt can be enabled
     cover property (intr_overflow_o==1 && f_past_valid );
-    cover property (over_intr_vect_o == 9'b111111111 && f_past_valid );
+    // All the signals of the mask can be set active 
     cover property (masked_overflow == 9'b111111111 && f_past_valid);
+    // The overflow unit can be activated
+    cover property ((unit_disabled==0)&& f_past_valid);
+    // The overflow unit can be active and the mask set to max value
+    cover property ((unit_disabled==0)&&(masked_overflow == 9'b111111111) && f_past_valid);
                 
 `endif
 

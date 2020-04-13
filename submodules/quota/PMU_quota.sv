@@ -34,7 +34,9 @@ module PMU_quota #
 		// Amount of counters
 		parameter integer N_COUNTERS	= 9,
         //Localparameters
-        localparam max_width = $clog2(N_COUNTERS)+REG_WIDTH
+        //TODO: extend if needed more control
+        //localparam max_width = $clog2(N_COUNTERS)+REG_WIDTH
+        localparam max_width = REG_WIDTH
 	)
 	(
 		// Global Clock Signal
