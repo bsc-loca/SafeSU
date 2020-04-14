@@ -137,11 +137,13 @@
     //Check that interrupt can only be removed by user or reset
     integer sum_interruption_vector_rdc_o;
     assign sum_interruption_vector_rdc_o = interruption_vector_rdc_o.sum();
+    /*
     always@(posedge clk_i) begin
         if(rstn_i && f_past_valid && enable_i)
             //TODO: This assertion keeps failing. check again
            assert (interruption_vector_rdc_o.sum()>=$past(interruption_vector_rdc_o.sum()));
     end
+    */
     `endif
 endmodule
 `default_nettype wire

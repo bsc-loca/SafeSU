@@ -23,6 +23,9 @@ verific -vlog-define FORMAL
 verific -sv PMU_raw.sv
 verific -sv PMU_counters.sv
 verific -sv PMU_overflow.sv
+verific -sv PMU_quota.sv  
+verific -sv MCCU.sv  
+verific -sv RDC.sv
 verific -import -extnets -all PMU_raw
 prep -top PMU_raw
 
@@ -36,4 +39,6 @@ prep -top PMU_raw
 ../../../hdl/PMU_raw.sv
 ../../../submodules/counters/PMU_counters.sv 
 ../../../submodules/overflow/PMU_overflow.sv 
-
+../../../submodules/quota/PMU_quota.sv
+../../../submodules/MCCU/hdl/MCCU.sv
+../../../submodules/RDC/hdl/RDC.sv
