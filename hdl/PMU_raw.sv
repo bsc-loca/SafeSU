@@ -79,7 +79,7 @@
         localparam BASE_QUOTA_INTR = END_OVERFLOW_INTR + 1,
             // mask feature
                 // QUOTA_INTR_MASK_REGS equivalentto to $ceil(N_COUNTERS/REG_WIDTH)
-        localparam BASE_QUOTA_MASK = BASE_OVERFLOW_INTR,
+        localparam BASE_QUOTA_MASK = BASE_QUOTA_INTR,
         localparam N_QUOTA_MASK_REGS = ((N_COUNTERS-1)/REG_WIDTH+1), 
         localparam END_QUOTA_MASK = BASE_QUOTA_MASK + N_QUOTA_MASK_REGS -1,
             // Available quota aka quota limit
@@ -151,8 +151,8 @@
 		input wire  rstn_i,
         // Input/output wire from registers of the wrapper to PMU_raw internal
         // registers
-        input wire [REG_WIDTH-1:0] regs_i [0:TOTAL_NREGS-1],
-        output wire [REG_WIDTH-1:0] regs_o [0:TOTAL_NREGS-1],
+        input logic [REG_WIDTH-1:0] regs_i [0:TOTAL_NREGS-1],
+        output logic [REG_WIDTH-1:0] regs_o [0:TOTAL_NREGS-1],
         // Wrapper writte enable, prevents slaves to write in to registers and
         // uploads the content with external values
         input wire wrapper_we_i,
@@ -160,7 +160,7 @@
         input wire [N_COUNTERS-1:0] events_i,
         //interruption rises when one of the counters overflows
         output wire intr_overflow_o,
-        //interruption rises when overal events quota is exceeded 
+        //interruption rises when overall events quota is exceeded 
         output wire intr_quota_o,
         // MCCU interruption for exceeded quota. One signal per core
         output wire [MCCU_N_CORES-1:0] intr_MCCU_o,
@@ -194,8 +194,8 @@
     end
     assign en_i = regs_i [BASE_CFG][0];
     assign softrst_i = regs_i [BASE_CFG][1];
-    //Send content to wrapper
-    assign regs_o[BASE_CFG] = cfg_reg;
+        // Register never set by PMU, only written by master
+    assign regs_o[BASE_CFG:END_CFG] = regs_i[BASE_CFG:END_CFG];
     
     //---- Counter registers
     genvar x;
@@ -208,14 +208,23 @@
     //---- Overflow interruption  registers
     generate
         for(x=0;x<N_OVERFLOW_MASK_REGS;x++) begin
-            assign overflow_intr_mask_i[x] = (rstn_i == 1'b0)? '{default:0} :regs_i [x+BASE_OVERFLOW_MASK][N_COUNTERS-1:0];
+            assign overflow_intr_mask_i[x] = (rstn_i == 1'b0)? {N_COUNTERS{1'b0}} :regs_i [x+BASE_OVERFLOW_MASK][N_COUNTERS-1:0];
         end
         for(x=BASE_OVERFLOW_VECT;x<=END_OVERFLOW_VECT;x++) begin
-            assign regs_o [x] = (rstn_i == 1'b0)? '{default:0} : REG_WIDTH'(overflow_intr_vect_o[x-BASE_OVERFLOW_VECT]);
+            assign regs_o [x] = (rstn_i == 1'b0)? {REG_WIDTH{1'b0}} : REG_WIDTH'(overflow_intr_vect_o[x-BASE_OVERFLOW_VECT]);
         end
     endgenerate
+        // Register never set by PMU, only written by master
+    assign regs_o[BASE_OVERFLOW_MASK:END_OVERFLOW_MASK] = regs_i[BASE_OVERFLOW_MASK:END_OVERFLOW_MASK];
     //---- Quota interruption  registers
+        // Register never set by PMU, only written by master
+    assign regs_o[BASE_QUOTA_MASK:END_QUOTA_MASK] = regs_i[BASE_QUOTA_MASK:END_QUOTA_MASK];
+    assign regs_o[BASE_QUOTA_LIMIT:END_QUOTA_LIMIT] = regs_i[BASE_QUOTA_LIMIT:END_QUOTA_LIMIT];
     //---- MCCU  registers
+        // Register never set by PMU, only written by master
+    assign regs_o[BASE_MCCU_CFG:END_MCCU_CFG] = regs_i[BASE_MCCU_CFG:END_MCCU_CFG];
+    assign regs_o[BASE_MCCU_LIMITS:END_MCCU_LIMITS] = regs_i[BASE_MCCU_LIMITS:END_MCCU_LIMITS];
+    assign regs_o[BASE_MCCU_WEIGHTS:END_MCCU_WEIGHTS] = regs_i[BASE_MCCU_WEIGHTS:END_MCCU_WEIGHTS];
     //---- Request Duration Counter (RDC) registers 
 
 //----------------------------------------------
@@ -369,7 +378,8 @@
     assign regs_o[BASE_RDC_VECT][5:4] = interruption_rdc_o [2] ;
         //core_3
     assign regs_o[BASE_RDC_VECT][7:6] = interruption_rdc_o [3] ;
-
+        //spare bits on RDC_VECT
+    assign regs_o[BASE_RDC_VECT][REG_WIDTH-1:8] = '{default:0} ;
     //TODO: A dedicated configuration register may be required for RDC, for
     //now it is shared with MCCU
     wire RDC_softrst;

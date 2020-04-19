@@ -105,7 +105,7 @@ module PMU_quota #
         //State n = Add counter n + Suman_int
         //State 0 = Reset suma_int
         // ...
-    localparam n_states = $clog2(N_COUNTERS+1);
+    localparam n_states =$clog2(N_COUNTERS+1);
     reg [n_states-1:0] state_int;
     always_ff @(posedge clk_i, negedge rstn_i) begin
         integer i;
@@ -114,7 +114,7 @@ module PMU_quota #
         end else if(softrst_i || new_mask) begin 
                 state_int <={n_states{1'b0}};
         end else begin
-            state_int <= state_int + 1 ;
+            state_int <= state_int + 1;
         end
     end
 
@@ -139,9 +139,24 @@ module PMU_quota #
         end
     end
 
-    //Check if quota is exceeded and generate interrupt
+    //Hold the state of the interruption
+    reg hold_intr_quota;
+    always_ff @(posedge clk_i, negedge rstn_i) begin
+        if(rstn_i == 1'b0 ) begin
+                hold_intr_quota <= 1'b0; 
+        end else begin
+            if(softrst_i) begin
+                hold_intr_quota <= 1'b0; 
+            end else begin
+                hold_intr_quota <= hold_intr_quota + intr_quota_o;
+            end
+        end
+    end
+    
+    //Check if quota is exceeded and generate interrupt or interrupt has been
+    //previously triggered and never reseted
     assign intr_quota_o = (suma_int > quota_limit_i )
-                        ? 1'b1 : 1'b0;
+                        ? 1'b1 : hold_intr_quota;
 
 ////////////////////////////////////////////////////////////////////////////////
 //
@@ -149,6 +164,47 @@ module PMU_quota #
 //
 ////////////////////////////////////////////////////////////////////////////////
 `ifdef	FORMAL
+    //auxiliar registers
+    reg f_past_valid ;
+    initial f_past_valid = 1'b0;
+    //Set f_past_valid after first clock cycle
+    always@( posedge clk_i )
+        f_past_valid <= 1'b1;
+   
+    //assume that if f_past is not valid you have to reset
+    always @(*) begin
+		if(0 == f_past_valid) begin
+            assume(0 == rstn_i);
+         end
+    end
+         
+   default clocking @(posedge clk_i); endclocking   
+   // Set quotalimit stable and trigger the interrupt
+   cover property (((quota_limit_i==5)[*5] |-> (intr_quota_o==1))); 
+   // Set all the the events in the mask to one and keep it stable
+   cover property ((quota_mask_i== {N_COUNTERS{1'b1}})[*5] |-> (intr_quota_o==1));
+   // Roll over the max value of suma_int
+   cover property (($past(suma_int)=={max_width{1'b1}})
+                    &&(rstn_i == 1) &&(softrst_i == 0)
+                    && (new_mask==0)[*(2**n_states)+2] |-> (intr_quota_o==1)
+                    );
+    // Count up, count 0 and count up again. Interrupt shall be stable 
+    cover property (
+                    ($past(suma_int,1)=={max_width{1'b1}})
+                    &&($past(suma_int,2)=={max_width{1'b0}})
+                    &&($past(suma_int,3)=={max_width{1'b1}})
+                    &&(rstn_i == 1) &&(softrst_i == 0)
+                    );
+    // The interruption can't fall once it is risen unless the unit is
+    // softreset 
+    assert property ($rose(intr_quota_o) |-> ($past(softrst_i)||$past(rstn_i)));
+    // The interruption shall be high eventually
+    assert property (##[0:$] intr_quota_o );
+
+    // use all inputs. Roll over all the states of the addition once before
+    // trigger an interrupt
+    //TODO
+
 `endif
 
 endmodule

@@ -23,14 +23,25 @@
 	(
         parameter haddr = 0,                                                  
         parameter hmask  = 0,                                           
-		// Total amount of registers
-        parameter integer N_REGS = 10, 
 		// Width of registers data bus
         parameter integer REG_WIDTH = 32,
         //haddr width
         localparam integer HADDR_WIDTH = 32,
         //hdata width
-        localparam integer HDATA_WIDTH = 32
+        localparam integer HDATA_WIDTH = 32,
+        //Required for MCCU interrupts
+    // -- PMU specific parameters
+        // Cores connected to MCCU
+        localparam MCCU_N_CORES = 4,
+		// Total amount of registers
+        parameter integer N_REGS = 26, 
+        // Number of configuration registers
+        localparam PMU_CFG = 1,
+        // Number of counters
+        localparam PMU_COUNTERS = 9,
+        //TODO: for now it is hardcoded but this may be calculated given the
+        //features, n_cores and N_events in the future
+        localparam PMU_TOTAL_REGS = N_REGS
 	)
 	(
          input wire rstn_i,
@@ -61,8 +72,18 @@
         // response type
         output wire [1:0]  hresp_o,
         // read data bus
-        output wire [HDATA_WIDTH-1:0] hrdata_o
-	);
+        output wire [HDATA_WIDTH-1:0] hrdata_o,
+    // -- PMU specific signales
+        input wire [PMU_COUNTERS-1:0] events_i,
+        //interruption rises when one of the counters overflows
+        output wire intr_overflow_o,
+        //interruption rises when overal events quota is exceeded 
+        output wire intr_quota_o,
+        // MCCU interruption for exceeded quota. One signal per core
+        output wire [MCCU_N_CORES-1:0] intr_MCCU_o,
+        // RDC (Request Duration Counter) interruption for exceeded quota
+        output wire intr_RDC_o
+    );
 //----------------------------------------------
 //------------- Local parameters
 //----------------------------------------------
@@ -115,7 +136,7 @@ localparam TRANSFER_ERROR_RESP_2CYCLE = 2'b11;
 var struct packed{
     logic select;
     logic write;
-    logic master_ready;
+//    logic master_ready;
     logic [HADDR_WIDTH-1:0] master_addr;
 } address_phase;
 
@@ -247,29 +268,27 @@ end
 //----------------------------------------------
 //------------- PMU_raw instance
 //----------------------------------------------
-    localparam PMU_CFG = 1;
-    localparam PMU_COUNTERS = 9;
-    localparam PMU_TOTAL_REGS = PMU_COUNTERS + PMU_CFG;
     //assert(PMU_TOTAL_REGS == N_REGS);
-    wire [REG_WIDTH-1:0] pmu_regs_int [0:PMU_TOTAL_REGS-1];
+    wire [REG_WIDTH-1:0] pmu_regs_int [0:N_REGS-1];
     wire ahb_write_req;
     assign ahb_write_req = address_phase.write && address_phase.select;
+    
     PMU_raw #(
 		.REG_WIDTH(REG_WIDTH),
 		.N_COUNTERS(PMU_COUNTERS),
-		.N_CONF_REGS(PMU_CFG),
-		.OVERFLOW(0), //Yes/No
-		.QUOTA(0), //Yes/No
-		.MCCU(0), //Yes/No
-		.N_CORES(1) 
+		.N_CONF_REGS(PMU_CFG)
 	)inst_pmu_raw (
 		.clk_i(clk_i),
 		.rstn_i(rstn_i),
-        .regs_i(slv_reg_D),
+        .regs_i(slv_reg_Q),
         .regs_o(pmu_regs_int),
         .wrapper_we_i(ahb_write_req),
-        //TODO connect real events
-        .events_i({PMU_COUNTERS{1'b1}})
+        //on pourpose .name connections
+        .events_i,
+        .intr_overflow_o,
+        .intr_quota_o,
+        .intr_MCCU_o,
+        .intr_RDC_o
 	);
 
 //----------------------------------------------
