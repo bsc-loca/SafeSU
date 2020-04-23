@@ -28,10 +28,8 @@ module PMU_overflow #
 		parameter integer N_COUNTERS	= 9
 	)
 	(
-    `ifdef FORMAL 
 		// Global Clock Signal
 		input wire  clk_i,
-    `endif
 		// Global Reset Signal. This Signal is Active LOW
 		input wire  rstn_i,
         // Soft Reset Signal from configuration registeres. This Signal is 
@@ -72,13 +70,29 @@ module PMU_overflow #
             end
     endgenerate
     
+    
+    //State of the unit
     wire unit_disabled;
     assign unit_disabled = (rstn_i==0) || (softrst_i==1) || (en_i==0);
+    //hold the interruption vector until unit is reseted
+    logic [N_COUNTERS-1:0] past_intr_vect;
+    
+    always @(posedge clk_i, negedge rstn_i) begin
+        if(rstn_i == 1'b0 ) begin
+            past_intr_vect<='{default:0};
+        end else begin
+            if (softrst_i) begin
+                past_intr_vect <= '{default:0};
+            end else begin
+                past_intr_vect <= masked_overflow | past_intr_vect;
+            end
+        end
+    end
     //Drive output interrupt
-    assign intr_overflow_o =unit_disabled ? 1'b0 : |masked_overflow; 
+    assign intr_overflow_o =unit_disabled ? 1'b0 : |(masked_overflow | past_intr_vect); 
 
     //Drive output overflow interruption vector
-    assign over_intr_vect_o = unit_disabled ? '{default:0} : masked_overflow;
+    assign over_intr_vect_o = unit_disabled ? '{default:0} : ( masked_overflow | past_intr_vect);
 
 //TODO: fill formal propperties
 ////////////////////////////////////////////////////////////////////////////////
@@ -140,6 +154,17 @@ module PMU_overflow #
     cover property ((unit_disabled==0)&& f_past_valid);
     // The overflow unit can be active and the mask set to max value
     cover property ((unit_disabled==0)&&(masked_overflow == 9'b111111111) && f_past_valid);
+   
+   //check that overflow interruption vector and interrupt can't decrease
+   //unless module is disabled, hard reset or soft reset. 
+    always@( posedge clk_i ) begin
+       if ( (f_past_valid==1) && (en_i==1) 
+            && (softrst_i==0) && (rstn_i==1)
+          ) begin
+           assert($past(over_intr_vect_o) <= over_intr_vect_o);
+           assert($past(intr_overflow_o) <= intr_overflow_o);
+        end
+    end
                 
 `endif
 

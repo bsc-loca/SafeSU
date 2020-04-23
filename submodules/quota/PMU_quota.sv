@@ -105,19 +105,23 @@ module PMU_quota #
         //State n = Add counter n + Suman_int
         //State 0 = Reset suma_int
         // ...
-    localparam n_states =$clog2(N_COUNTERS+1);
-    reg [n_states-1:0] state_int;
+    localparam N_BITS_STATES =$clog2(N_COUNTERS+1);
+    reg [N_BITS_STATES-1:0] state_int;
     always_ff @(posedge clk_i, negedge rstn_i) begin
         integer i;
         if(rstn_i == 1'b0 ) begin
-                state_int <={n_states{1'b0}};
+                state_int <={N_BITS_STATES{1'b0}};
         end else if(softrst_i || new_mask) begin 
-                state_int <={n_states{1'b0}};
+                state_int <={N_BITS_STATES{1'b0}};
         end else begin
-            state_int <= state_int + 1;
+            if(state_int >= N_BITS_STATES'(N_COUNTERS)) begin
+                //prevent overflow of statemachine
+                state_int <= 0;
+            end else begin            
+                state_int <= state_int + 1;
+            end
         end
     end
-
     // One state per counter +  reset state -> $clog2(N_COUNTERS+1)
 
     localparam padding0 = max_width - REG_WIDTH;
@@ -130,10 +134,10 @@ module PMU_quota #
             if(softrst_i) begin
                 suma_int <={max_width{1'b0}};
             end else begin          
-                if(new_mask) begin
+                if(new_mask || (state_int==0)) begin
                     suma_int <={max_width{1'b0}};
                 end else begin
-                    suma_int <= suma_int + {{padding0{1'b0}},masked_counter_value_int[state_int]}; 
+                    suma_int <= suma_int + {{padding0{1'b0}},masked_counter_value_int[state_int-1]}; 
                 end
             end
         end
@@ -148,7 +152,7 @@ module PMU_quota #
             if(softrst_i) begin
                 hold_intr_quota <= 1'b0; 
             end else begin
-                hold_intr_quota <= hold_intr_quota + intr_quota_o;
+                hold_intr_quota <= hold_intr_quota | intr_quota_o;
             end
         end
     end
@@ -184,10 +188,12 @@ module PMU_quota #
    // Set all the the events in the mask to one and keep it stable
    cover property ((quota_mask_i== {N_COUNTERS{1'b1}})[*5] |-> (intr_quota_o==1));
    // Roll over the max value of suma_int
+   /*
    cover property (($past(suma_int)=={max_width{1'b1}})
                     &&(rstn_i == 1) &&(softrst_i == 0)
-                    && (new_mask==0)[*(2**n_states)+2] |-> (intr_quota_o==1)
+                    && (new_mask==0)[*(2**N_BITS_STATES)+2] |-> (intr_quota_o==1)
                     );
+    */
     // Count up, count 0 and count up again. Interrupt shall be stable 
     cover property (
                     ($past(suma_int,1)=={max_width{1'b1}})
@@ -201,6 +207,9 @@ module PMU_quota #
     // The interruption shall be high eventually
     assert property (##[0:$] intr_quota_o );
 
+    //Since state_int is fully encoded and needs one state for each counter
+    //+ a reset state. state_int can't be larger than the number of counters
+    assert property (state_int <= N_COUNTERS);
     // use all inputs. Roll over all the states of the addition once before
     // trigger an interrupt
     //TODO

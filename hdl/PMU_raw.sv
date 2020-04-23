@@ -171,9 +171,11 @@
 //------------- Declare wires from/to  wrapper registers
 //----------------------------------------------
     //---- configuration signals
-    reg [REG_WIDTH-1:0] cfg_reg;
     wire en_i;
     wire softrst_i;
+    wire overflow_en_i;
+    wire overflow_softrst_i;
+    wire quota_softrst_i;
     //---- Counter signals
     wire [REG_WIDTH-1:0] counter_regs_o [0 : N_COUNTERS-1];
     wire [REG_WIDTH-1:0] counter_regs_int [0 : N_COUNTERS-1];
@@ -184,17 +186,15 @@
 //----------------------------------------------
 //------------- Map registers from wrapper to slave functions
 //----------------------------------------------
-    //---- configuration registers
-    always_ff @(posedge clk_i, negedge rstn_i) begin
-        if(rstn_i == 1'b0 ) begin
-            cfg_reg <= {REG_WIDTH{1'b0}};
-        end else begin
-            cfg_reg <= regs_i [BASE_CFG];
-        end
-    end
+    //counters
     assign en_i = regs_i [BASE_CFG][0];
     assign softrst_i = regs_i [BASE_CFG][1];
-        // Register never set by PMU, only written by master
+    //overflow
+    assign overflow_en_i = regs_i [BASE_CFG][2];
+    assign overflow_softrst_i = regs_i [BASE_CFG][3];
+    //quota    
+    assign quota_softrst_i = regs_i [BASE_CFG][4];
+    // Register never set by PMU, only written by master
     assign regs_o[BASE_CFG:END_CFG] = regs_i[BASE_CFG:END_CFG];
     
     //---- Counter registers
@@ -253,12 +253,10 @@
 		.N_COUNTERS	(N_COUNTERS)
 	)
     inst_overflow (
-    `ifdef FORMAL 
 		.clk_i              (clk_i),
-    `endif
 		.rstn_i             (rstn_i),
-		.softrst_i          (softrst_i),
-		.en_i               (en_i),
+		.softrst_i          (overflow_softrst_i),
+		.en_i               (overflow_en_i),
         .counter_regs_i     (counter_regs_o),
         //TODO WIP
         .over_intr_mask_i   (overflow_intr_mask_i[0][N_COUNTERS-1:0]), 
@@ -278,7 +276,7 @@
         .clk_i          (clk_i),
         .rstn_i         (rstn_i),
         .counter_value_i(counter_regs_o),
-        .softrst_i      (softrst_i),
+        .softrst_i      (quota_softrst_i),
         .quota_limit_i  (regs_i[BASE_QUOTA_LIMIT]),
         .quota_mask_i   (regs_i[BASE_QUOTA_MASK][N_COUNTERS-1:0]), 
         .intr_quota_o   (intr_quota_o) 
@@ -430,18 +428,6 @@
     default clocking @(posedge clk_i); endclocking   
     // Cover that all the bits in the mask are driven
     cover property ((overflow_intr_mask_i[0]==32'b111111111) && f_past_valid );
-    // Cover that values of registers are independent
-        //e.g: cfg_reg != overflow_intr_mask_i[0]
-        //     && cfg_reg != counter_regs_int [0]
-        //     && cfg_reg != counter_regs_int [1]
-        //     ...
-        //     && cfg_reg != counter_regs_int [8]
-        //
-        //     overflow_intr_mask_i[0] != cfg_reg
-        //     overflow_intr_mask_i[0] != counter_regs_int [0]
-        //     ....
-        //     overflow_intr_mask_i[0] != counter_regs_int [8]
-    cover property (cfg_reg != overflow_intr_mask_i[0]);
 `endif
 
 endmodule

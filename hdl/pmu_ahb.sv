@@ -9,7 +9,9 @@
 // Coder      : G.Cabo
 // References : AMBA 3 AHB-lite  specifications 
 //              ARM IHI 0033A  
-// Notes      : 
+// Notes      : Any write to a control registers takes 2 clock cycles to
+//              take effect since it propagates from the wrapper to the
+//              internal regs of the PMU
 
 `default_nettype none
 `timescale 1 ns / 1 ps
@@ -244,9 +246,13 @@ always_latch begin
     case (state)
         TRANS_IDLE: begin
             complete_transfer_status = TRANSFER_SUCCESS_COMPLETE; 
+            dwrite_slave = 0; 
+            dread_slave = 0; 
         end
         TRANS_BUSY:begin
             complete_transfer_status = TRANSFER_SUCCESS_COMPLETE; 
+            dwrite_slave = 0; 
+            dread_slave = 0; 
         end
         TRANS_NONSEQUENTIAL:begin
             complete_transfer_status = TRANSFER_SUCCESS_COMPLETE; 
@@ -272,7 +278,25 @@ end
     wire [REG_WIDTH-1:0] pmu_regs_int [0:N_REGS-1];
     wire ahb_write_req;
     assign ahb_write_req = address_phase.write && address_phase.select;
-    
+    logic delay1_ahb_write_req; 
+    logic [REG_WIDTH-1:0]delay1_dwrite_slave;
+    logic [$clog2(N_REGS)-1:0] delay1_slv_index;
+    //sice the modules that recieve the .wrapper_we_i get the value from
+    //slv_reg_Q it needs one cycle of delay to get the right value
+    //To avoid update the vaule of the slv_reg with old values from the PMU
+    //after a write slv_index dwrite_slave ahb_write_req are held until the 
+    //value is updated in .regs_o
+    always_ff @(posedge clk_i, negedge rstn_i) begin
+        if(rstn_i == 1'b0 ) begin
+            delay1_ahb_write_req <= 0; 
+            delay1_dwrite_slave <= 0; 
+            delay1_slv_index <= 0; 
+        end else begin
+            delay1_ahb_write_req <= ahb_write_req;
+            delay1_dwrite_slave <= dwrite_slave; 
+            delay1_slv_index <= slv_index; 
+        end
+    end
     PMU_raw #(
 		.REG_WIDTH(REG_WIDTH),
 		.N_COUNTERS(PMU_COUNTERS),
@@ -282,7 +306,7 @@ end
 		.rstn_i(rstn_i),
         .regs_i(slv_reg_Q),
         .regs_o(pmu_regs_int),
-        .wrapper_we_i(ahb_write_req),
+        .wrapper_we_i(delay1_ahb_write_req),
         //on pourpose .name connections
         .events_i,
         .intr_overflow_o,
@@ -309,7 +333,12 @@ always_comb begin
         slv_reg_D=pmu_regs_int;
         slv_reg_D[slv_index] = dwrite_slave; 
     end else begin
-        slv_reg_D=pmu_regs_int;
+        if(delay1_ahb_write_req) begin
+            slv_reg_D=pmu_regs_int;
+            slv_reg_D[delay1_slv_index] = delay1_dwrite_slave; 
+        end else begin
+            slv_reg_D=pmu_regs_int;
+        end
     end
 end
 endmodule
