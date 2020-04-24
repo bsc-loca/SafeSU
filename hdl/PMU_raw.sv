@@ -170,7 +170,9 @@
 //----------------------------------------------
 //------------- Declare wires from/to  wrapper registers
 //----------------------------------------------
+    
     //---- configuration signals
+    wire [1:0] selftest_mode;
     wire en_i;
     wire softrst_i;
     wire overflow_en_i;
@@ -186,6 +188,10 @@
 //----------------------------------------------
 //------------- Map registers from wrapper to slave functions
 //----------------------------------------------
+    //Selftest mode. Bypass events and sets internal values
+    assign selftest_mode [0] =regs_i [BASE_CFG][30];
+    assign selftest_mode [1] =regs_i [BASE_CFG][31];
+
     //counters
     assign en_i = regs_i [BASE_CFG][0];
     assign softrst_i = regs_i [BASE_CFG][1];
@@ -228,6 +234,34 @@
     //---- Request Duration Counter (RDC) registers 
 
 //----------------------------------------------
+//------------- Selftest configuration
+//----------------------------------------------
+logic [N_COUNTERS-1:0] events_int;
+
+localparam NO_SELF_TEST = 2'b00;
+localparam ALL_ACTIVE = 2'b01;
+localparam ALL_OFF = 2'b10;
+localparam ONE_ON = 2'b11;
+
+always_comb begin
+    case (selftest_mode)
+        NO_SELF_TEST : begin
+            events_int = events_i;
+        end
+        ALL_ACTIVE : begin
+            events_int = {N_COUNTERS{1'b1}};
+        end
+        ALL_OFF : begin
+            events_int = {N_COUNTERS{1'b0}};
+        end
+        ONE_ON : begin
+            events_int[0] = 1'b1;
+            events_int[N_COUNTERS-1:1] = {(N_COUNTERS-1){1'b0}};
+        end
+    endcase
+end
+
+//----------------------------------------------
 //------------- Counters instance
 //----------------------------------------------
     PMU_counters # (
@@ -242,7 +276,7 @@
 		.we_i       (wrapper_we_i),
         .regs_i     (counter_regs_int),
         .regs_o     (counter_regs_o),
-        .events_i   (events_i) 
+        .events_i   (events_int) 
 	);
 
 //----------------------------------------------
@@ -291,6 +325,7 @@
     wire MCCU_softrst;
     assign MCCU_softrst = regs_i[BASE_MCCU_CFG][1];
     
+    
     //NON-PARAMETRIC one bit for each core
     wire MCCU_update_quota_int [0:MCCU_N_CORES-1];
         //core_0
@@ -305,15 +340,15 @@
     //NON-PARAMETRIC Adjust for different MCCU_N_CORES MCCU_CORE_EVENTS
         //eventuall when inputs will be selectable with a crossbar signals can
         //be hardcoded to specific corssbars outputs
-    wire [MCCU_N_EVENTS-1:0] events_int[0:MCCU_N_CORES-1];
+    wire [MCCU_N_EVENTS-1:0] MCCU_events_int[0:MCCU_N_CORES-1];
         //core_0
-    assign events_int [0] = {{events_i[0]},{events_i[1]}};
+    assign MCCU_events_int [0] = {{events_int[0]},{events_int[1]}};
         //core_1
-    assign events_int [1] = {{events_i[2]},{events_i[3]}};
+    assign MCCU_events_int [1] = {{events_int[2]},{events_int[3]}};
         //core_2
-    assign events_int [2] = {{events_i[4]},{events_i[5]}};
+    assign MCCU_events_int [2] = {{events_int[4]},{events_int[5]}};
         //core_3
-    assign events_int [3] = {{events_i[6]},{events_i[7]}};
+    assign MCCU_events_int [3] = {{events_int[6]},{events_int[7]}};
         
     //NON-PARAMETRIC This can be autogenenerated TODO     
     wire [MCCU_WEIGHTS_WIDTH-1:0] MCCU_events_weights_int [0:MCCU_N_CORES-1]
@@ -350,9 +385,10 @@
         .clk_i                  (clk_i),
         .rstn_i                 (rstn_i || MCCU_softrst),
         .enable_i               (MCCU_enable_int),// Software map
-        .events_i               (events_int),
-        .quota_i                (regs_i[BASE_MCCU_QUOTA:END_MCCU_QUOTA]),//One register per core
+        .events_i               (MCCU_events_int),
+        .quota_i                (regs_i[BASE_MCCU_LIMITS:END_MCCU_LIMITS]),//One register per core
         .update_quota_i         (MCCU_update_quota_int),//Software map
+        //.quota_o                (regs_o[BASE_MCCU_QUOTA:END_MCCU_QUOTA]),//write back to a read register
         .quota_o                (regs_o[BASE_MCCU_QUOTA:END_MCCU_QUOTA]),//write back to a read register
         .events_weights_i       (MCCU_events_weights_int),//core_events times WEIGHTS_WIDTH registers
         .interruption_quota_o   (MCCU_intr_up)//N_CORES output signals Add this to top or single toplevel interrupt and an interrupt vector that identifies the source?
@@ -378,13 +414,13 @@
     assign regs_o[BASE_RDC_VECT][7:6] = interruption_rdc_o [3] ;
         //spare bits on RDC_VECT
     assign regs_o[BASE_RDC_VECT][REG_WIDTH-1:8] = '{default:0} ;
-    //TODO: A dedicated configuration register may be required for RDC, for
-    //now it is shared with MCCU
-    wire RDC_softrst;
-    assign RDC_softrst = MCCU_softrst;
+    
     wire RDC_enable_int;
-    assign RDC_enable_int = MCCU_enable_int;
-
+    assign RDC_enable_int = regs_i[BASE_MCCU_CFG][6];
+    
+    wire RDC_softrst;
+    assign RDC_softrst = regs_i[BASE_MCCU_CFG][7];
+    
     RDC #(
         // Width of data registers
         .DATA_WIDTH     (REG_WIDTH),
@@ -398,7 +434,7 @@
         .clk_i                  (clk_i),
         .rstn_i                 (rstn_i || RDC_softrst ),
         .enable_i               (RDC_enable_int),// Software map
-        .events_i               (events_int),
+        .events_i               (MCCU_events_int),
         .events_weights_i       (MCCU_events_weights_int),
         // interruption signaling a signal has exceed the expected maximum request time
         .interruption_rdc_o(intr_RDC_o),
