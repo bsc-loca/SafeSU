@@ -1,0 +1,52 @@
+[*]
+[*] GTKWave Analyzer v3.3.86 (w)1999-2017 BSI
+[*] Wed Apr 15 14:07:42 2020
+[*]
+[dumpfile] "/home/bscuser/BSC/grlib-gpl-2019-4-b4246-kc705/lib/bsc/ahb_pmu/bsc_pmu/tb/formal/PMU_quota_sby/PMU_quota_cover/engine_0/trace2.vcd"
+[dumpfile_mtime] "Wed Apr 15 13:53:13 2020"
+[dumpfile_size] 23904
+[savefile] "/home/bscuser/BSC/grlib-gpl-2019-4-b4246-kc705/lib/bsc/ahb_pmu/bsc_pmu/tb/formal/PMU_quota_sby/PMU_quota.gtkw"
+[timestart] 0
+[size] 1559 972
+[pos] 50 50
+*-6.707499 216 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[sst_width] 228
+[signals_width] 402
+[sst_expanded] 1
+[sst_vpaned_height] 276
+@28
+PMU_quota.clk_i
+@22
+PMU_quota.counter_value_i[287:0]
+@28
+PMU_quota.f_past_valid
+@22
+PMU_quota.i[31:0]
+PMU_quota.i_2[31:0]
+@28
+PMU_quota.intr_quota_o
+@22
+PMU_quota.masked_counter_value_int<0>[31:0]
+PMU_quota.masked_counter_value_int<1>[31:0]
+PMU_quota.masked_counter_value_int<2>[31:0]
+PMU_quota.masked_counter_value_int<3>[31:0]
+PMU_quota.masked_counter_value_int<4>[31:0]
+PMU_quota.masked_counter_value_int<5>[31:0]
+PMU_quota.masked_counter_value_int<6>[31:0]
+PMU_quota.masked_counter_value_int<7>[31:0]
+PMU_quota.masked_counter_value_int<8>[31:0]
+@28
+PMU_quota.new_mask
+@22
+PMU_quota.old_mask[8:0]
+PMU_quota.quota_limit_i[31:0]
+PMU_quota.quota_mask_i[8:0]
+@28
+PMU_quota.rstn_i
+PMU_quota.softrst_i
+@22
+PMU_quota.suma_int[31:0]
+@23
+PMU_quota.state_int[3:0]
+[pattern_trace] 1
+[pattern_trace] 0

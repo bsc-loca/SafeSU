@@ -1,0 +1,35 @@
+[tasks]
+bmc
+cover
+
+[options]
+bmc: 
+    mode bmc
+--
+cover:
+    mode cover
+    depth 40
+    append 2 
+--
+
+[engines]
+#smtbmc boolector
+smtbmc
+#abc bmc3
+
+#SystemVerilog
+[script]
+verific -vlog-define FORMAL
+verific -sv PMU_quota.sv
+verific -import -extnets -all PMU_quota
+prep -top PMU_quota
+
+#Verilog
+#[script]
+#read_verilog -formal PMU_quota.sv
+#prep -top PMU_quota
+#opt -share_all
+
+[files]
+../../../submodules/quota/PMU_quota.sv 
+
