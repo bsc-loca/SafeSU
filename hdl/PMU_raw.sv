@@ -167,6 +167,31 @@
         // RDC (Request Duration Counter) interruption for exceeded quota
         output wire intr_RDC_o
 	);
+    //----------------------------------------------
+    // VIVADO: list of debug signals for ILA 
+    //----------------------------------------------     
+    //`define ILA_DEBUG_PMU_RAW                                 
+    `ifdef ILA_DEBUG_PMU_RAW                                                           
+    (* MARK_DEBUG = "TRUE" *) logic [REG_WIDTH-1:0] debug_regs_i [0:TOTAL_NREGS-1];
+    (* MARK_DEBUG = "TRUE" *) logic [REG_WIDTH-1:0] debug_regs_o [0:TOTAL_NREGS-1]; 
+    (* MARK_DEBUG = "TRUE" *) wire debug_wrapper_we_i;              
+    (* MARK_DEBUG = "TRUE" *) wire [N_COUNTERS-1:0] debug_events_i;                 
+    (* MARK_DEBUG = "TRUE" *) wire debug_intr_overflow_o;                 
+    (* MARK_DEBUG = "TRUE" *) wire debug_intr_quota_o;                           
+    (* MARK_DEBUG = "TRUE" *) wire [MCCU_N_CORES-1:0] debug_intr_MCCU_o;            
+    (* MARK_DEBUG = "TRUE" *) wire debug_intr_RDC_o;            
+                                                                                    
+    assign debug_regs_i = regs_i;                                                   
+    assign debug_regs_o = regs_o;                                                   
+    assign debug_wrapper_we_i = wrapper_we_i;                                       
+    assign debug_events_i = events_i;                                               
+    assign debug_intr_overflow_o = intr_overflow_o;                                 
+    assign debug_intr_quota_o = intr_quota_o;                                       
+    assign debug_intr_MCCU_o = intr_MCCU_o;                                         
+    assign debug_intr_RDC_o = intr_RDC_o;                                           
+                                                                                    
+    `endif                                                                          
+      
 //----------------------------------------------
 //------------- Declare wires from/to  wrapper registers
 //----------------------------------------------
