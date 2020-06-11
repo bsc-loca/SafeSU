@@ -1,5 +1,5 @@
 $1
-CYCLES=18000000
+CYCLES=-all
 mv /AXI_PMU /tmp
 vlib AXI_PMU
 vmap work $PWD/AXI_PMU

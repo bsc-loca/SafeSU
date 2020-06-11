@@ -319,6 +319,9 @@ task automatic init_sim;
             tb_EV13_i <= '{default:0};
             tb_EV14_i <= '{default:0};
             tb_EV15_i <= '{default:0};
+            tb_EV16_i <= '{default:0};
+            tb_EV17_i <= '{default:0};
+            tb_EV18_i <= '{default:0};
         end
     endtask
 
@@ -1133,6 +1136,7 @@ task automatic init_sim;
         init_dump();
         reset_dut();
         test_sim();
+        $finish;
     end
 
 endmodule
