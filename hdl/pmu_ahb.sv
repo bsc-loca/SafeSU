@@ -86,6 +86,48 @@
         // RDC (Request Duration Counter) interruption for exceeded quota
         output wire intr_RDC_o
     );
+    //----------------------------------------------
+    // VIVADO: list of debug signals for ILA 
+    //----------------------------------------------   
+    //`define ILA_DEBUG_PMU_AHB
+    `ifdef ILA_DEBUG_PMU_AHB                                              
+    (* MARK_DEBUG = "TRUE" *) wire debug_hsel_i     ;        
+    (* MARK_DEBUG = "TRUE" *) wire [HADDR_WIDTH-1:0] debug_haddr_i     ;       
+    (* MARK_DEBUG = "TRUE" *) wire debug_hwrite_i    ;       
+    (* MARK_DEBUG = "TRUE" *) wire [1:0] debug_htrans_i    ;       
+    (* MARK_DEBUG = "TRUE" *) wire [2:0] debug_hsize_i     ;       
+    (* MARK_DEBUG = "TRUE" *) wire [2:0] debug_hburst_i    ;       
+    (* MARK_DEBUG = "TRUE" *) wire [HDATA_WIDTH-1:0] debug_hwdata_i    ;       
+    (* MARK_DEBUG = "TRUE" *) wire debug_hprot_i     ;       
+    (* MARK_DEBUG = "TRUE" *) wire debug_hreadyi_i   ;       
+    (* MARK_DEBUG = "TRUE" *) wire debug_hmastlock_i ;       
+    (* MARK_DEBUG = "TRUE" *) wire debug_hreadyo_o   ;       
+    (* MARK_DEBUG = "TRUE" *) wire [1:0] debug_hresp_o     ;       
+    (* MARK_DEBUG = "TRUE" *) wire [HDATA_WIDTH-1:0] debug_hrdata_o    ;       
+    (* MARK_DEBUG = "TRUE" *) wire [PMU_COUNTERS-1:0] debug_events_i   ;        
+    (* MARK_DEBUG = "TRUE" *) wire debug_intr_overflow_o;    
+    (* MARK_DEBUG = "TRUE" *) wire debug_intr_quota_o;       
+    (* MARK_DEBUG = "TRUE" *) wire [MCCU_N_CORES-1:0] debug_intr_MCCU_o;        
+    (* MARK_DEBUG = "TRUE" *) wire debug_intr_RDC_o;         
+    assign debug_hsel_i   = hsel_i;                                                      
+    assign debug_haddr_i = haddr_i;                          
+    assign debug_hwrite_i = hwrite_i;                        
+    assign debug_htrans_i = htrans_i;                        
+    assign debug_hsize_i = hsize_i;                          
+    assign debug_hburst_i = hburst_i;                        
+    assign debug_hwdata_i = hwdata_i;                        
+    assign debug_hprot_i = hprot_i;                          
+    assign debug_hreadyi_i = hreadyi_i;                      
+    assign debug_hmastlock_i = hmastlock_i;                  
+    assign debug_hreadyo_o = hreadyo_o;                      
+    assign debug_hresp_o = hresp_o;                          
+    assign debug_hrdata_o = hrdata_o;                        
+    assign debug_events_i = events_i;                        
+    assign debug_intr_overflow_o = intr_overflow_o;          
+    assign debug_intr_quota_o = intr_quota_o;                
+    assign debug_intr_MCCU_o = intr_MCCU_o;                  
+    assign debug_intr_RDC_o = intr_RDC_o ;  
+    `endif                                                                                                              
 //----------------------------------------------
 //------------- Local parameters
 //----------------------------------------------
@@ -171,7 +213,11 @@ always_comb begin
             next = TRANS_IDLE;
         end
         TRANS_BUSY:begin
-            next = TRANS_BUSY;
+            if(!hsel_i) begin
+                next = TRANS_IDLE;
+            end else begin
+                next = TRANS_BUSY;
+            end
         end
         TRANS_NONSEQUENTIAL:begin
             if(!hsel_i) begin
@@ -194,15 +240,15 @@ always_ff @(posedge clk_i, negedge rstn_i) begin
     if(rstn_i == 1'b0 ) begin
         //initialize all the structure to  0 at reset
         address_phase <= '{default:0};
-    end else begin 
+    end else begin
         case (next) 
             TRANS_IDLE:begin
                 address_phase.select <= hsel_i;
-                address_phase.write <= hwrite_i;
+                address_phase.write <= 0; 
             end
             TRANS_BUSY:begin
                 address_phase.select <= hsel_i;
-                address_phase.write <= hwrite_i;
+                address_phase.write <= 0;
             end
             TRANS_NONSEQUENTIAL:begin
                 address_phase.select <= hsel_i;
@@ -239,33 +285,36 @@ assign hreadyo_o = complete_transfer_status [0];
 //TODO: review the amount of bits for hresp_o
 assign hresp_o = {{complete_transfer_status[1]},{complete_transfer_status[1]}};
 
-//TODO: review
-//dread_slave and dwrite_slave can be latched
-//They will be ignored by the master and slave registers
-always_latch begin
+always_comb begin
+//TODO: I don't expect any of the cafe beaf values in the registers if they do
+//there is a bug
     case (state)
         TRANS_IDLE: begin
             complete_transfer_status = TRANSFER_SUCCESS_COMPLETE; 
-            dwrite_slave = 0; 
-            dread_slave = 0; 
+            dwrite_slave = 32'hbeaf1d1e; 
+            dread_slave = 32'hcafe1d1e; 
         end
         TRANS_BUSY:begin
             complete_transfer_status = TRANSFER_SUCCESS_COMPLETE; 
-            dwrite_slave = 0; 
-            dread_slave = 0; 
+            dwrite_slave = 32'hbeafb551; 
+            dread_slave = 32'hcafeb551; 
         end
         TRANS_NONSEQUENTIAL:begin
             complete_transfer_status = TRANSFER_SUCCESS_COMPLETE; 
             dwrite_slave = hwdata_i; 
             if (!address_phase.write) begin
                 dread_slave = slv_reg_Q[slv_index];
-            end 
+            end else begin
+                dread_slave = 32'hcafe01a1;
+            end
         end
         TRANS_SEQUENTIAL:begin
             complete_transfer_status = TRANSFER_SUCCESS_COMPLETE; 
             dwrite_slave = hwdata_i; 
             if (!address_phase.write) begin
                 dread_slave = slv_reg_Q[slv_index];
+            end else begin
+                dread_slave = 32'hcafee1a1;
             end
         end
     endcase
@@ -284,14 +333,16 @@ end
     //sice the modules that recieve the .wrapper_we_i get the value from
     //slv_reg_Q it needs one cycle of delay to get the right value
     //To avoid update the vaule of the slv_reg with old values from the PMU
-    //after a write slv_index dwrite_slave ahb_write_req are held until the 
-    //value is updated in .regs_o
+    //after a write slv_index dwrite_slave ahb_write_req are held for one
+    //cycle until the value is updated in .regs_o
     always_ff @(posedge clk_i, negedge rstn_i) begin
         if(rstn_i == 1'b0 ) begin
             delay1_ahb_write_req <= 0; 
             delay1_dwrite_slave <= 0; 
             delay1_slv_index <= 0; 
         end else begin
+        //TODO: possible source of problems with reads and writes?
+        //Be sure ahb_write_req can't be 1 if hsel is low
             delay1_ahb_write_req <= ahb_write_req;
             delay1_dwrite_slave <= dwrite_slave; 
             delay1_slv_index <= slv_index; 
@@ -322,13 +373,13 @@ end
 //Each cycle the values in slv_reg_D will be saved in slv_reg
     //So if you want to update slv_reg the values for slv_reg_D shall be 
     //assigned in this section
-    //If you add aditional logic that can cahnge the values of the registers
+    //If you add aditional logic that can change the values of the registers
     //the next always block have to be modified to add the aditional
     //conditions under which the slv_reg shall be updated
          
 always_comb begin
     //AHB write
-    //Write to slv registers if slave was selected &  was a write 
+    //Write to slv registers if slave was selected & was a write 
     if(address_phase.write && address_phase.select) begin
         slv_reg_D=pmu_regs_int;
         slv_reg_D[slv_index] = dwrite_slave; 
@@ -341,5 +392,32 @@ always_comb begin
         end
     end
 end
+
+/////////////////////////////////////////////////////////////////////////////////
+//
+// Formal Verification section begins here.
+//
+////////////////////////////////////////////////////////////////////////////////
+`ifdef	FORMAL
+    //auxiliar registers
+    reg f_past_valid ;
+    initial f_past_valid = 1'b0;
+    //Set f_past_valid after first clock cycle
+    always@( posedge clk_i )
+        f_past_valid <= 1'b1;
+   
+    //assume that if f_past is not valid you have to reset
+    always @(*) begin
+		if(0 == f_past_valid) begin
+            assume(0 == rstn_i);
+         end
+    end
+    
+    default clocking @(posedge clk_i); endclocking;
+    assert property (((hsel_i == 0) && f_past_valid && rstn_i==1 && $stable(rstn_i)) |=> (ahb_write_req == 0));
+    assert property (((hsel_i == 1) && f_past_valid && rstn_i==1 && $stable(rstn_i)) |=> (ahb_write_req == 1));
+    assert property (((hsel_i == 1) && f_past_valid && rstn_i==1 && $stable(rstn_i)) |-> (ahb_write_req == 0));
+`endif
+
 endmodule
 `default_nettype wire //allow compatibility with legacy code and xilinx ip

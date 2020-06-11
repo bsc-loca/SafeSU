@@ -62,7 +62,7 @@
     genvar k;
     generate
     for (k=0; k<N_COUNTERS; k=k+1) begin : generated_counter
-        always @(posedge clk_i, negedge rstn_i) begin
+        always_ff @(posedge clk_i, negedge rstn_i) begin
             if(!rstn_i)
                 max_value[k] <={WEIGHTS_WIDTH{1'b0}};
             else begin

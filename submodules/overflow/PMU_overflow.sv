@@ -92,6 +92,7 @@ module PMU_overflow #
     assign intr_overflow_o =unit_disabled ? 1'b0 : |(masked_overflow | past_intr_vect); 
 
     //Drive output overflow interruption vector
+    //Truncated result is alright
     assign over_intr_vect_o = unit_disabled ? '{default:0} : ( masked_overflow | past_intr_vect);
 
 //TODO: fill formal propperties

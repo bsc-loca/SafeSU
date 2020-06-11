@@ -151,8 +151,8 @@
 		input wire  rstn_i,
         // Input/output wire from registers of the wrapper to PMU_raw internal
         // registers
-        input logic [REG_WIDTH-1:0] regs_i [0:TOTAL_NREGS-1],
-        output logic [REG_WIDTH-1:0] regs_o [0:TOTAL_NREGS-1],
+        input wire [REG_WIDTH-1:0] regs_i [0:TOTAL_NREGS-1],
+        output wire [REG_WIDTH-1:0] regs_o [0:TOTAL_NREGS-1],
         // Wrapper writte enable, prevents slaves to write in to registers and
         // uploads the content with external values
         input wire wrapper_we_i,
