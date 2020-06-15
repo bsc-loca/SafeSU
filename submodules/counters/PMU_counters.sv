@@ -45,11 +45,12 @@ module PMU_counters #
         // Input/output wire from registers of the wrapper to PMU_raw internal
         // registers
         input wire [REG_WIDTH-1:0] regs_i [0:N_COUNTERS-1],
-        output wire [REG_WIDTH-1:0] regs_o [0:N_COUNTERS-1],
+        output logic [REG_WIDTH-1:0] regs_o [0:N_COUNTERS-1],
         //external signals from Soc events
         input wire [N_COUNTERS-1:0] events_i 
 	);
     reg [REG_WIDTH-1:0] slv_reg [0:N_COUNTERS-1] /*verilator public*/;
+    wire [REG_WIDTH-1:0] adder_out [0:N_COUNTERS-1] /*verilator public*/;
 //-------------Adders with reset
     //Inside the generate loop it creates as many counters as the parameter
     //N_COUNTERS. For each of them one slv_reg is assigned. When a soft reset
@@ -60,6 +61,7 @@ module PMU_counters #
     genvar i;
     generate
     for (i=0; i<N_COUNTERS; i=i+1) begin
+        assign adder_out[i] = (events_i[i] & en_i)? slv_reg[i]+1:slv_reg[i];
         always @(posedge clk_i, negedge rstn_i) begin
             if(rstn_i == 1'b0 ) begin
                     slv_reg[i] <='{default:0};
@@ -70,17 +72,22 @@ module PMU_counters #
                     if (we_i) begin
                         slv_reg[i] <= regs_i[i];
                     end else begin
-                        if(events_i[i] & en_i) begin
-                            slv_reg[i] <= slv_reg[i]+1;
-                        end
+                        slv_reg[i] <= adder_out[i];
                     end
                 end
             end
         end
     end
     endgenerate
-//Map input and output registers
-    assign regs_o = slv_reg;
+//Map input and output registers. If no write is active pass the internal
+//value, otherwise bypass the write and show the most recent value
+    always_comb begin
+        if(we_i) begin
+        regs_o = regs_i;
+        end else begin
+        regs_o = adder_out; 
+        end
+    end
 //TODO: fill formal propperties
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -124,33 +131,9 @@ module PMU_counters #
    cover property (!we_i[*5] |-> slv_reg[6]==32'hffffffff);
    cover property (!we_i[*5] |-> slv_reg[7]==32'hffffffff);
    cover property (!we_i[*5] |-> slv_reg[8]==32'hffffffff);
-
-
-//Cover increase of the counters without external writes 
-    always_ff @(posedge clk_i) begin
-         /*
-         cover(
-                (
-                (
-                ($past(slv_reg,5) == '{default:0})) &&
-                //($past(we_i,5) === 0) &&
-                //($past(we_i,4) == 0) &&
-                //($past(we_i,3) == 0) &&
-                //($past(we_i,2) == 0) &&
-                //($past(we_i,1) == 0) &&
-                (slv_reg[0] == 32'h00000003)&& 
-                (slv_reg[1] == 32'h00000003)&& 
-                (slv_reg[2] == 32'h00000003)&& 
-                (slv_reg[3] == 32'h00000003)&& 
-                (slv_reg[4] == 32'h00000003)&& 
-                (slv_reg[5] == 32'h00000003)&& 
-                (slv_reg[6] == 32'h00000003)&& 
-                (slv_reg[7] == 32'h00000003)&& 
-                (slv_reg[8] == 32'h00000003) 
-                )
-                );
-        */
-    end
+   //TODO:Write assertions for:
+   //   After a write register must be update and remain stable if no more
+   //   writes or events happen
 
 `endif
 

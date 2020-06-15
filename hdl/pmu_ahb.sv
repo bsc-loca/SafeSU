@@ -89,7 +89,7 @@
     //----------------------------------------------
     // VIVADO: list of debug signals for ILA 
     //----------------------------------------------   
-    //`define ILA_DEBUG_PMU_AHB
+    `define ILA_DEBUG_PMU_AHB
     `ifdef ILA_DEBUG_PMU_AHB                                              
     (* MARK_DEBUG = "TRUE" *) wire debug_hsel_i     ;        
     (* MARK_DEBUG = "TRUE" *) wire [HADDR_WIDTH-1:0] debug_haddr_i     ;       
@@ -286,7 +286,7 @@ assign hreadyo_o = complete_transfer_status [0];
 assign hresp_o = {{complete_transfer_status[1]},{complete_transfer_status[1]}};
 
 always_comb begin
-//TODO: I don't expect any of the cafe beaf values in the registers if they do
+//NOTE: I don't expect any of the cafe beaf values in the registers if they do
 //there is a bug
     case (state)
         TRANS_IDLE: begin
@@ -341,8 +341,6 @@ end
             delay1_dwrite_slave <= 0; 
             delay1_slv_index <= 0; 
         end else begin
-        //TODO: possible source of problems with reads and writes?
-        //Be sure ahb_write_req can't be 1 if hsel is low
             delay1_ahb_write_req <= ahb_write_req;
             delay1_dwrite_slave <= dwrite_slave; 
             delay1_slv_index <= slv_index; 
@@ -376,20 +374,25 @@ end
     //If you add aditional logic that can change the values of the registers
     //the next always block have to be modified to add the aditional
     //conditions under which the slv_reg shall be updated
-         
+
 always_comb begin
     //AHB write
-    //Write to slv registers if slave was selected & was a write 
+    //Write to slv registers if slave was selected & was a write. Else
+    //register the values given by pmu_raw
     if(address_phase.write && address_phase.select) begin
+        // get the values from the pmu_raw instance
         slv_reg_D=pmu_regs_int;
-        slv_reg_D[slv_index] = dwrite_slave; 
-    end else begin
-        if(delay1_ahb_write_req) begin
-            slv_reg_D=pmu_regs_int;
+        //If there is a write pending to be written and is not overwritten 
+            //for the current write update two registers, else write only the
+            //most recent value
+        if(delay1_ahb_write_req && (delay1_slv_index!=slv_index)) begin
             slv_reg_D[delay1_slv_index] = delay1_dwrite_slave; 
+            slv_reg_D[slv_index] = dwrite_slave; 
         end else begin
-            slv_reg_D=pmu_regs_int;
+            slv_reg_D[slv_index] = dwrite_slave; 
         end
+    end else begin
+            slv_reg_D=pmu_regs_int;
     end
 end
 
@@ -412,11 +415,40 @@ end
             assume(0 == rstn_i);
          end
     end
-    
+    //AHB assumptions
+
+
     default clocking @(posedge clk_i); endclocking;
-    assert property (((hsel_i == 0) && f_past_valid && rstn_i==1 && $stable(rstn_i)) |=> (ahb_write_req == 0));
-    assert property (((hsel_i == 1) && f_past_valid && rstn_i==1 && $stable(rstn_i)) |=> (ahb_write_req == 1));
-    assert property (((hsel_i == 1) && f_past_valid && rstn_i==1 && $stable(rstn_i)) |-> (ahb_write_req == 0));
+    //If the peripheral is not selected there is no chance to issue a write
+    assert property (((hsel_i == 0) && f_past_valid 
+                    ) 
+                    |=> (ahb_write_req == 0));
+
+    //If htrans_i is not iddle or busy and  there is a write. ahb_write_req is
+    //one in the next cycle unless there is a reset in the next cycle
+    assert property (((hsel_i == 1) && f_past_valid && rstn_i==1 && $stable(rstn_i) 
+                    && (htrans_i!=TRANS_IDLE && htrans_i!=TRANS_BUSY)
+                    && (hwrite_i==1)
+                    )
+                    |=> (ahb_write_req == 1) || rstn_i==0);
+    // If event 8 is low and current transaction is not a write, counter is
+    // stable
+    assert property ((events_i[8]==0 && $stable(events_i[8]) &&
+                    ahb_write_req==0
+                     )
+                     |=> $stable(slv_reg[9]) ||
+                         (slv_reg[9]==($past(slv_reg[9])+1)) 
+                         || $past(rstn_i)==1);
+
+    //*** TODO: Rewrite as a single assertion ***/
+    //Can a counter report something different to 0 if no write and no event
+    //is active? No
+    //assume property (slv_index!=9 && events_i[8]==0);
+    //assume we are not in selftest
+    //assume property (slv_index==0 |-> hwdata_i[31:30] == 0);
+    //assert property (slv_reg[9]==0);
+
+
 `endif
 
 endmodule

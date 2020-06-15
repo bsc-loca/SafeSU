@@ -289,6 +289,8 @@ end
 //----------------------------------------------
 //------------- Counters instance
 //----------------------------------------------
+//TODO: What happen if we is active but no write is done to the range of the
+//counters?
     PMU_counters # (
 		.REG_WIDTH	(REG_WIDTH),
 		.N_COUNTERS	(N_COUNTERS)
