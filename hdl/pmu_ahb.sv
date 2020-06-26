@@ -98,7 +98,7 @@
     (* MARK_DEBUG = "TRUE" *) wire [2:0] debug_hsize_i     ;       
     (* MARK_DEBUG = "TRUE" *) wire [2:0] debug_hburst_i    ;       
     (* MARK_DEBUG = "TRUE" *) wire [HDATA_WIDTH-1:0] debug_hwdata_i    ;       
-    (* MARK_DEBUG = "TRUE" *) wire debug_hprot_i     ;       
+    (* MARK_DEBUG = "TRUE" *) wire [3:0] debug_hprot_i     ;       
     (* MARK_DEBUG = "TRUE" *) wire debug_hreadyi_i   ;       
     (* MARK_DEBUG = "TRUE" *) wire debug_hmastlock_i ;       
     (* MARK_DEBUG = "TRUE" *) wire debug_hreadyo_o   ;       
@@ -440,14 +440,44 @@ end
                          (slv_reg[9]==($past(slv_reg[9])+1)) 
                          || $past(rstn_i)==1);
 
-    //*** TODO: Rewrite as a single assertion ***/
-    //Can a counter report something different to 0 if no write and no event
-    //is active? No
-    //assume property (slv_index!=9 && events_i[8]==0);
-    //assume we are not in selftest
-    //assume property (slv_index==0 |-> hwdata_i[31:30] == 0);
-    //assert property (slv_reg[9]==0);
+    // If there is no write and no reset the slv_Regs used by the counters can
+    // only decrease due to an overflow
+        //posible resets of counters
+    sequence no_counter_reset;
+        (rstn_i == 1) && (slv_reg[0][1] == 0);
+    endsequence
+    sequence counter_reset;
+        (rstn_i == 0) || (slv_reg[0][1] == 1);
+    endsequence
+        //There is no pending write or it is not valid
+    sequence no_ahb_write;
+        //since ahb is pipelined i check for the last addres phase
+        ($past(hsel_i)==0) || ($past(hwrite_i)==0); 
+    endsequence
+        //Register 1, assigned to counter 0 can't decrease
+    sequence no_decrease_counter(n);
+        slv_reg[n+1] >= $past(slv_reg[n+1]);
+    endsequence
+        //Register 1, can decrease at overflow
+    sequence overflow_counter(n);
+        $past(slv_reg[n+1]) == 32'hffffffff;
+    endsequence
+        //check property for all pmu registers.
+        //TODO: Do we actually want to check all ? Takes 6 minutes each. 
+    generate
+        genvar i;
+        for (i=0;i<PMU_COUNTERS;i++) begin
+        assert property (
+            no_ahb_write and no_counter_reset 
+            |=> no_decrease_counter(i) or counter_reset or overflow_counter(i)
+            );
+        end
+    endgenerate
 
+    //TODO: If counters cant decrease by their own what explains that we read
+    //incoherent values out of the pmu? AHB properties? Does it fail to read
+    //when only one core is available? Does only happen in multicore? What if 
+    //nops are inserted after each read? 
 
 `endif
 

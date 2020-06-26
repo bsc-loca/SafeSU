@@ -1,11 +1,29 @@
+[tasks]
+bmc
+cover
+
 [options]
-mode bmc
-#append 10
+bmc: 
+    mode bmc
+    depth 40
+#append 6 
+--
+cover:
+    mode cover
+    depth 40
+    append 2 
+--
 
 [engines]
-#smtbmc boolector
+bmc: 
+smtbmc boolector
 smtbmc
-#abc bmc3
+abc bmc3
+--
+cover:
+smtbmc boolector
+smtbmc
+--
 
 #SystemVerilog
 [script]

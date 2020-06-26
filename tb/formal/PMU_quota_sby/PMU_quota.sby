@@ -5,11 +5,11 @@ cover
 [options]
 bmc: 
     mode bmc
+    depth 12
 --
 cover:
     mode cover
-    depth 40
-    append 2 
+    depth 12
 --
 
 [engines]
