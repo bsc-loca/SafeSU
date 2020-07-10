@@ -226,8 +226,12 @@
     //quota    
     assign quota_softrst_i = regs_i [BASE_CFG][4];
     // Register never set by PMU, only written by master
-    assign regs_o[BASE_CFG:END_CFG] = regs_i[BASE_CFG:END_CFG];
-    
+    genvar y;
+    generate
+        for(y=BASE_CFG;y<=END_CFG;y++) begin
+               assign regs_o[y] = regs_i[y];
+        end
+    endgenerate
     //---- Counter registers
     genvar x;
     generate
@@ -319,7 +323,6 @@ end
 		.softrst_i          (overflow_softrst_i),
 		.en_i               (overflow_en_i),
         .counter_regs_i     (counter_regs_o),
-        //TODO WIP
         .over_intr_mask_i   (overflow_intr_mask_i[0][N_COUNTERS-1:0]), 
         .intr_overflow_o    (intr_overflow_o), 
         .over_intr_vect_o   (overflow_intr_vect_o[0][N_COUNTERS-1:0])
@@ -415,7 +418,6 @@ end
         .events_i               (MCCU_events_int),
         .quota_i                (regs_i[BASE_MCCU_LIMITS:END_MCCU_LIMITS]),//One register per core
         .update_quota_i         (MCCU_update_quota_int),//Software map
-        //.quota_o                (regs_o[BASE_MCCU_QUOTA:END_MCCU_QUOTA]),//write back to a read register
         .quota_o                (regs_o[BASE_MCCU_QUOTA:END_MCCU_QUOTA]),//write back to a read register
         .events_weights_i       (MCCU_events_weights_int),//core_events times WEIGHTS_WIDTH registers
         .interruption_quota_o   (MCCU_intr_up)//N_CORES output signals Add this to top or single toplevel interrupt and an interrupt vector that identifies the source?
