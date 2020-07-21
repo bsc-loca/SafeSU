@@ -136,8 +136,13 @@
                 // (((....)-1)/(...)+1) is equivalent to ceil
         localparam N_RDC_WEIGHTS = 0, 
         localparam END_RDC_WEIGHTS = END_MCCU_WEIGHTS,
+            // Watermark for each one of the available events
+        localparam BASE_RDC_WATERMARK = END_RDC_VECT + 1,
+                // (((....)-1)/(...)+1) is equivalent to ceil
+        localparam N_RDC_WATERMARK = (((MCCU_N_CORES*MCCU_N_EVENTS*MCCU_WEIGHTS_WIDTH)-1)/REG_WIDTH+1),
+        localparam END_RDC_WATERMARK = BASE_RDC_WATERMARK + N_RDC_WATERMARK -1,
             // General parameters feature  
-        localparam N_RDC_REGS = (N_RDC_WEIGHTS + N_RDC_VECT_REGS) * RDC,
+        localparam N_RDC_REGS = (N_RDC_WEIGHTS + N_RDC_VECT_REGS+N_RDC_WATERMARK) * RDC,
         
         //---- Total of registers used
         localparam integer TOTAL_NREGS =
@@ -170,7 +175,6 @@
     //----------------------------------------------
     // VIVADO: list of debug signals for ILA 
     //----------------------------------------------     
-    //`define ILA_DEBUG_PMU_RAW                                 
     `ifdef ILA_DEBUG_PMU_RAW                                                           
     (* MARK_DEBUG = "TRUE" *) logic [REG_WIDTH-1:0] debug_regs_i [0:TOTAL_NREGS-1];
     (* MARK_DEBUG = "TRUE" *) logic [REG_WIDTH-1:0] debug_regs_o [0:TOTAL_NREGS-1]; 
@@ -189,7 +193,6 @@
     assign debug_intr_quota_o = intr_quota_o;                                       
     assign debug_intr_MCCU_o = intr_MCCU_o;                                         
     assign debug_intr_RDC_o = intr_RDC_o;                                           
-                                                                                    
     `endif                                                                          
       
 //----------------------------------------------
@@ -209,7 +212,9 @@
     //---- Overflow interruption  signals
     wire [N_COUNTERS-1:0] overflow_intr_mask_i [0 : N_OVERFLOW_MASK_REGS-1]; 
     wire [N_COUNTERS-1:0] overflow_intr_vect_o [0 : N_OVERFLOW_VECT_REGS-1];
-     
+    //---- RDC watermark signals
+    wire [MCCU_WEIGHTS_WIDTH-1:0] MCCU_watermark_int [0:MCCU_N_CORES-1]
+                                                     [0:MCCU_N_EVENTS-1];
 //----------------------------------------------
 //------------- Map registers from wrapper to slave functions
 //----------------------------------------------
@@ -261,6 +266,18 @@
     assign regs_o[BASE_MCCU_LIMITS:END_MCCU_LIMITS] = regs_i[BASE_MCCU_LIMITS:END_MCCU_LIMITS];
     assign regs_o[BASE_MCCU_WEIGHTS:END_MCCU_WEIGHTS] = regs_i[BASE_MCCU_WEIGHTS:END_MCCU_WEIGHTS];
     //---- Request Duration Counter (RDC) registers 
+        //core_0
+    assign regs_o[BASE_RDC_WATERMARK][MCCU_WEIGHTS_WIDTH-1:0] = MCCU_watermark_int [0][0] ;
+    assign regs_o[BASE_RDC_WATERMARK][2*MCCU_WEIGHTS_WIDTH-1:MCCU_WEIGHTS_WIDTH] = MCCU_watermark_int [0][1];
+        //core_1
+    assign regs_o[BASE_RDC_WATERMARK][3*MCCU_WEIGHTS_WIDTH-1:2*MCCU_WEIGHTS_WIDTH] = MCCU_watermark_int [1][0];
+    assign regs_o[BASE_RDC_WATERMARK][4*MCCU_WEIGHTS_WIDTH-1:3*MCCU_WEIGHTS_WIDTH] = MCCU_watermark_int [1][1] ;
+        //core_2
+    assign regs_o[BASE_RDC_WATERMARK+1][MCCU_WEIGHTS_WIDTH-1:0] = MCCU_watermark_int [2][0] ;
+    assign regs_o[BASE_RDC_WATERMARK+1][2*MCCU_WEIGHTS_WIDTH-1:MCCU_WEIGHTS_WIDTH] = MCCU_watermark_int [2][1] ;
+        //core_3
+    assign regs_o[BASE_RDC_WATERMARK+1][3*MCCU_WEIGHTS_WIDTH-1:2*MCCU_WEIGHTS_WIDTH] = MCCU_watermark_int [3][0] ;
+    assign regs_o[BASE_RDC_WATERMARK+1][4*MCCU_WEIGHTS_WIDTH-1:3*MCCU_WEIGHTS_WIDTH] = MCCU_watermark_int [3][1] ;
 
 //----------------------------------------------
 //------------- Selftest configuration
@@ -372,13 +389,13 @@ end
         //be hardcoded to specific corssbars outputs
     wire [MCCU_N_EVENTS-1:0] MCCU_events_int[0:MCCU_N_CORES-1];
         //core_0
-    assign MCCU_events_int [0] = {{events_int[0]},{events_int[1]}};
+    assign MCCU_events_int [0] = {{events_int[1]},{events_int[0]}};
         //core_1
-    assign MCCU_events_int [1] = {{events_int[2]},{events_int[3]}};
+    assign MCCU_events_int [1] = {{events_int[3]},{events_int[2]}};
         //core_2
-    assign MCCU_events_int [2] = {{events_int[4]},{events_int[5]}};
+    assign MCCU_events_int [2] = {{events_int[5]},{events_int[4]}};
         //core_3
-    assign MCCU_events_int [3] = {{events_int[6]},{events_int[7]}};
+    assign MCCU_events_int [3] = {{events_int[7]},{events_int[6]}};
         
     //NON-PARAMETRIC This can be autogenenerated TODO     
     wire [MCCU_WEIGHTS_WIDTH-1:0] MCCU_events_weights_int [0:MCCU_N_CORES-1]
@@ -450,6 +467,7 @@ end
     wire RDC_softrst;
     assign RDC_softrst = regs_i[BASE_MCCU_CFG][7];
     
+    
     RDC #(
         // Width of data registers
         .DATA_WIDTH     (REG_WIDTH),
@@ -468,7 +486,9 @@ end
         // interruption signaling a signal has exceed the expected maximum request time
         .interruption_rdc_o(intr_RDC_o),
         // vector with offending signals. One hot encoding. Cleared when MCCU is disabled.
-        .interruption_vector_rdc_o(interruption_rdc_o)
+        .interruption_vector_rdc_o(interruption_rdc_o),
+        //maximum pulse length of a given core event
+        .watermark_o(MCCU_watermark_int) 
     );
 /////////////////////////////////////////////////////////////////////////////////
 //

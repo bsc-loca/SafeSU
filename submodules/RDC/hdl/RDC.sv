@@ -22,9 +22,9 @@
 		// Width of weights registers
 		parameter integer WEIGHTS_WIDTH	= 8,
         //Cores. Change this may break Verilator TB
-        parameter integer N_CORES       =2,
+        parameter integer N_CORES       =4,
         //Signals per core. Change this may break Verilator TB
-        parameter integer CORE_EVENTS   =4
+        parameter integer CORE_EVENTS   =2
 	)
 	(
 		input wire clk_i,
@@ -42,7 +42,11 @@
         //Event longer than specified weight , single bit
         output wire interruption_rdc_o,
         //Interruption vector to indicate signal exceeding weight
-        output reg [CORE_EVENTS-1:0] interruption_vector_rdc_o [0:N_CORES-1]
+        output reg [CORE_EVENTS-1:0] interruption_vector_rdc_o [0:N_CORES-1],
+        //High watermark for each event of a given core.
+        output logic [WEIGHTS_WIDTH-1:0] watermark_o [0:N_CORES-1]
+                                                    [0:CORE_EVENTS-1]
+
     );
     
 //-------------Adders with reset
@@ -55,21 +59,30 @@
     //Each clock cycle if the input signal (events_i) for a given counter is
     //high at the positive edge of the clock the counter increases
     localparam N_COUNTERS = CORE_EVENTS * N_CORES;
+    //reg [WEIGHTS_WIDTH-1 : 0] max_value [0 : N_COUNTERS-1];
     reg [WEIGHTS_WIDTH-1 : 0] max_value [0 : N_COUNTERS-1];
     //I need a bit to hold the interruption state until RCD is reset on
     //disabled once the interrupt is risen
     reg past_interruption_rdc_o;
-    genvar k;
+    genvar x;
+    genvar y;
     generate
-    for (k=0; k<N_COUNTERS; k=k+1) begin : generated_counter
-        always_ff @(posedge clk_i, negedge rstn_i) begin
-            if(!rstn_i)
-                max_value[k] <={WEIGHTS_WIDTH{1'b0}};
-            else begin
-                if(!enable_i || !events_i[k/CORE_EVENTS][k/N_CORES])
-                    max_value[k] <={WEIGHTS_WIDTH{1'b0}};
-                else if(events_i[k/CORE_EVENTS][k/N_CORES] & enable_i)
-                    max_value[k] <= max_value[k]+1;
+    for(x=0;x<N_CORES;x++) begin
+        for(y=0;y<CORE_EVENTS;y++) begin
+            always_ff @(posedge clk_i, negedge rstn_i) begin
+                if(!rstn_i)
+                    max_value[CORE_EVENTS*x+y] <={WEIGHTS_WIDTH{1'b0}};
+                else begin
+                    if(enable_i && events_i[x][y]) begin
+                        if(max_value[CORE_EVENTS*x+y]=={WEIGHTS_WIDTH{1'b1}}) begin
+                            max_value[CORE_EVENTS*x+y] <= max_value[CORE_EVENTS*x+y];
+                        end else begin
+                            max_value[CORE_EVENTS*x+y] <= max_value[CORE_EVENTS*x+y]+1'b1;
+                        end
+                    end else begin
+                        max_value[CORE_EVENTS*x+y] <={WEIGHTS_WIDTH{1'b0}};
+                    end
+                end
             end
         end
     end
@@ -80,8 +93,6 @@
     Interruption is only generated if the  MCCU is enabled
     ----------*/
     wire [CORE_EVENTS-1:0] interruption_vector_int [0:N_CORES-1];
-    genvar x;
-    genvar y;
     generate
     for(x=0;x<N_CORES;x++) begin
         for(y=0;y<CORE_EVENTS;y++) begin
@@ -127,23 +138,93 @@
    
     //output interrupt if new interrupt or already on interrupt state
     assign interruption_rdc_o = (|unpacked_vector_rdc_int) || past_interruption_rdc_o;
-    `ifdef ASSERTIONS
+//-------------Watermark registers
+    logic [WEIGHTS_WIDTH-1 : 0] watermark_int [0 : N_COUNTERS-1];
+    genvar q;
+    generate
+    for (q=0; q<N_COUNTERS; q=q+1) begin : generated_watermark
+        always_ff @(posedge clk_i, negedge rstn_i) begin
+            if(!rstn_i) begin
+                watermark_int[q] <={WEIGHTS_WIDTH{1'b0}};
+            end else begin
+                if(!enable_i) begin
+                    watermark_int[q] <= watermark_int[q];
+                end else begin
+                    if (watermark_int[q] < max_value[q] )
+                    watermark_int[q] <= max_value[q];
+                end
+            end
+        end
+    end
+    endgenerate
+    
+    genvar n;
+    // n for iterate over cores
+    // q to iterate over signals
+    for (n=0; n<N_CORES; n=n+1) begin
+        for (q=0; q<CORE_EVENTS; q=q+1) begin
+            assign watermark_o[n][q] = watermark_int[n*CORE_EVENTS+q];
+        end
+    end
+/////////////////////////////////////////////////////////////////////////////////
+//
+// Formal Verification section begins here.
+//
+////////////////////////////////////////////////////////////////////////////////
+`ifdef	FORMAL
     //auxiliar registers
     reg f_past_valid ;
     initial f_past_valid = 1'b0;
     //Set f_past_valid after first clock cycle
     always@( posedge clk_i )
         f_past_valid <= 1'b1;
-    //Check that interrupt can only be removed by user or reset
-    integer sum_interruption_vector_rdc_o;
-    assign sum_interruption_vector_rdc_o = interruption_vector_rdc_o.sum();
-    /*
-    always@(posedge clk_i) begin
-        if(rstn_i && f_past_valid && enable_i)
-            //TODO: This assertion keeps failing. check again
-           assert (interruption_vector_rdc_o.sum()>=$past(interruption_vector_rdc_o.sum()));
+   
+    //assume that if f_past is not valid you have to reset
+    always @(*) begin
+		if(0 == f_past_valid) begin
+            assume(0 == rstn_i);
+         end
     end
-    */
-    `endif
+    
+    default clocking @(posedge clk_i); endclocking   
+    //Check that counters never overflows 
+    for(x=0;x<N_CORES;x++) begin
+        for(y=0;y<CORE_EVENTS;y++) begin
+            assert property (max_value[CORE_EVENTS*x+y]=={WEIGHTS_WIDTH{1'b1}} 
+                 and events_i[x][y]==1 and enable_i |=> 
+                 max_value[CORE_EVENTS*x+y]=={WEIGHTS_WIDTH{1'b1}} or rstn_i);
+        end
+    end
+      
+    //Check that counters get to 0 in the next cycle if a signal is low
+    for(x=0;x<N_CORES;x++) begin
+        for(y=0;y<CORE_EVENTS;y++) begin
+            assert property (events_i[x][y]==0 |=>  max_value[CORE_EVENTS*x+y]==0); 
+        end
+    end
+    
+    //Check that counters are map to the correct signals
+    for(x=0;x<N_CORES;x++) begin
+        for(y=0;y<CORE_EVENTS;y++) begin
+            assert property (events_i[x][y]==1 and enable_i==1 and rstn_i==1 
+                            |=> max_value[CORE_EVENTS*x+y] == {WEIGHTS_WIDTH{1'b1}} or 
+                            max_value[CORE_EVENTS*x+y]== $past(max_value[CORE_EVENTS*x+y])+1
+                            or rstn_i==0 or enable_i ==0 ); 
+        end
+    end
+    
+    for(x=0;x<N_CORES;x++) begin
+        for(y=0;y<CORE_EVENTS;y++) begin
+            cover property ((watermark_int[CORE_EVENTS*x+y] ==8'h10));
+        end
+    end
+    
+    //The counter can get to 0 without reset or disable the enable
+    cover property ( f_past_valid and enable_i==1 and rstn_i==1 and events_i[0][0]==1
+                    and $stable(enable_i) and $stable(rstn_i) and $stable(events_i[0][0])
+                    |=> events_i[0][0]==0 and $stable(enable_i) and $stable(rstn_i)
+                    ); 
+
+`endif
 endmodule
 `default_nettype wire

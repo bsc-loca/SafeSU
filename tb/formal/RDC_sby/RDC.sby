@@ -1,0 +1,34 @@
+[tasks]
+bmc
+cover
+
+[options]
+bmc: 
+    mode bmc
+    depth 50
+--
+cover:
+    mode cover
+    depth 50
+--
+
+[engines]
+bmc: 
+smtbmc boolector
+smtbmc
+#abc bmc3
+--
+cover:
+smtbmc boolector
+smtbmc
+--
+
+#SystemVerilog
+[script]
+verific -vlog-define FORMAL
+verific -sv RDC.sv
+verific -import -extnets -all RDC
+prep -top RDC
+
+[files]
+../../../submodules/RDC/hdl/RDC.sv
