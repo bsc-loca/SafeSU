@@ -35,15 +35,12 @@
     // -- PMU specific parameters
         // Cores connected to MCCU
         localparam MCCU_N_CORES = 4,
-		// Total amount of registers
-        parameter integer N_REGS = 28, 
+		// Total amount of registers 
+        parameter integer N_REGS = 43, 
         // Number of configuration registers
         localparam PMU_CFG = 1,
         // Number of counters
-        localparam PMU_COUNTERS = 9,
-        //TODO: for now it is hardcoded but this may be calculated given the
-        //features, n_cores and N_events in the future
-        localparam PMU_TOTAL_REGS = N_REGS
+        localparam PMU_COUNTERS = 24
 	)
 	(
          input wire rstn_i,
@@ -320,7 +317,6 @@ end
 //----------------------------------------------
 //------------- PMU_raw instance
 //----------------------------------------------
-    //assert(PMU_TOTAL_REGS == N_REGS);
     wire [REG_WIDTH-1:0] pmu_regs_int [0:N_REGS-1];
     wire ahb_write_req;
     assign ahb_write_req = address_phase.write && address_phase.select;
