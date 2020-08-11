@@ -430,7 +430,7 @@ end
     )
     inst_MCCU(
         .clk_i                  (clk_i),
-        .rstn_i                 (rstn_i || MCCU_softrst),
+        .rstn_i                 (rstn_i && !MCCU_softrst),//active low
         .enable_i               (MCCU_enable_int),// Software map
         .events_i               (MCCU_events_int),
         .quota_i                (regs_i[BASE_MCCU_LIMITS:END_MCCU_LIMITS]),//One register per core
@@ -479,7 +479,7 @@ end
         .CORE_EVENTS    (RDC_N_EVENTS)
     ) inst_RDC(
         .clk_i                  (clk_i),
-        .rstn_i                 (rstn_i || RDC_softrst ),
+        .rstn_i                 (rstn_i && !RDC_softrst ), //active low
         .enable_i               (RDC_enable_int),// Software map
         .events_i               (MCCU_events_int),
         .events_weights_i       (MCCU_events_weights_int),

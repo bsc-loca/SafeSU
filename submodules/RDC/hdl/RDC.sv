@@ -89,15 +89,16 @@
     endgenerate
 
     /*----------
-    Generate interruptions if the pulse width of a signal exceeds the
-    Interruption is only generated if the  MCCU is enabled
+    Generate interruptions if the pulse width of a signal is equal or  exceeds
+    the event wheight.
+    Interruption is only generated if the  RDC is enabled
     ----------*/
     wire [CORE_EVENTS-1:0] interruption_vector_int [0:N_CORES-1];
     generate
     for(x=0;x<N_CORES;x++) begin
         for(y=0;y<CORE_EVENTS;y++) begin
             assign interruption_vector_int[x][y] = 
-                            (max_value[(x*CORE_EVENTS)+y]>events_weights_i[x][y])?
+                            (max_value[(x*CORE_EVENTS)+y]>=events_weights_i[x][y])?
                             1'b1 : 1'b0;
         end
     end
