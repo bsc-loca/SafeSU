@@ -1,4 +1,4 @@
-$1
+#$1
 
 if [ -z "$1" ]
 then
@@ -12,5 +12,5 @@ else
       vmap work $PWD/MCCU
       vlog +acc=rn +incdir+../../hdl/ ../../hdl/*.sv tb_MCCU.sv
       vmake MCCU/ > Makefile
-      vsim work.tb_MCCU $1 -do "run 40000"
+      vsim work.tb_MCCU $1 -do "do save_wave.do"
 fi

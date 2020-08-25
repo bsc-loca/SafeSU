@@ -206,7 +206,7 @@
             Add quotas of all active signals. The ones that are not
             enabled are 0. The quotas in  ccc_suma_int[i] are added at every
             cycle independently of the enable signal, but ccc_suma_int will
-            only be substracted to the quota id MCCU is enabled
+            only be substracted to the quota if MCCU is enabled
             ----------*/ 
             for (i=0; i<N_CORES; i=i+1) begin : AddEventsWeights
                 tmp_ccc_suma_int=0;
