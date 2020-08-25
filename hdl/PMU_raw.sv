@@ -366,8 +366,8 @@ end
 //----------------------------------------------
 //------------- MCCU instance
 //----------------------------------------------
-    wire MCCU_enable_int;
-    assign MCCU_enable_int = regs_i[BASE_MCCU_CFG][0];
+    /*wire MCCU_enable_int;
+    assign MCCU_enable_int = regs_i[BASE_MCCU_CFG][0];*/
     
     wire MCCU_softrst;
     assign MCCU_softrst = regs_i[BASE_MCCU_CFG][1];
@@ -417,6 +417,26 @@ end
     wire MCCU_intr_up [MCCU_N_CORES-1:0];
     assign intr_MCCU_o = {{MCCU_intr_up[3]},{MCCU_intr_up[2]}
                         ,{MCCU_intr_up[1]},{MCCU_intr_up[0]}};
+    
+    //register enable to solve Hazards
+    reg MCCU_rstn;
+    always @(posedge clk_i, negedge rstn_i) begin: MCCU_glitchless_rstn
+            if (!rstn_i) begin
+                MCCU_rstn <= 0;
+            end else begin
+                MCCU_rstn <= rstn_i && !MCCU_softrst;
+            end
+    end
+    
+    //register enable to solve Hazards
+    reg MCCU_enable_int;
+    always @(posedge clk_i, negedge rstn_i) begin: MCCU_glitchless_enable
+            if (!rstn_i) begin
+                MCCU_enable_int <= 0;
+            end else begin
+                MCCU_enable_int <= regs_i[BASE_MCCU_CFG][0];
+            end
+    end
 
     MCCU # (
         // Width of data registers
@@ -430,7 +450,7 @@ end
     )
     inst_MCCU(
         .clk_i                  (clk_i),
-        .rstn_i                 (rstn_i && !MCCU_softrst),//active low
+        .rstn_i                 (MCCU_rstn),//active low
         .enable_i               (MCCU_enable_int),// Software map
         .events_i               (MCCU_events_int),
         .quota_i                (regs_i[BASE_MCCU_LIMITS:END_MCCU_LIMITS]),//One register per core

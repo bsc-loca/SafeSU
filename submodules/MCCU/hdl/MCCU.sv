@@ -87,7 +87,7 @@
         /*----------
         Reset 
         ----------*/
-        if(0 == rstn_i) begin
+        if(rstn_i == 1'b0 ) begin
             /*----------
             Async reset Quota
             ----------*/
