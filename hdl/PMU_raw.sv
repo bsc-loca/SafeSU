@@ -255,16 +255,40 @@
         end
     endgenerate
         // Register never set by PMU, only written by master
-    assign regs_o[BASE_OVERFLOW_MASK:END_OVERFLOW_MASK] = regs_i[BASE_OVERFLOW_MASK:END_OVERFLOW_MASK];
+    generate
+        for(x=0;x<N_OVERFLOW_MASK_REGS;x++) begin
+            assign regs_o[BASE_OVERFLOW_MASK+x] = regs_i[BASE_OVERFLOW_MASK+x];
+        end
+    endgenerate
     //---- Quota interruption  registers
         // Register never set by PMU, only written by master
-    assign regs_o[BASE_QUOTA_MASK:END_QUOTA_MASK] = regs_i[BASE_QUOTA_MASK:END_QUOTA_MASK];
-    assign regs_o[BASE_QUOTA_LIMIT:END_QUOTA_LIMIT] = regs_i[BASE_QUOTA_LIMIT:END_QUOTA_LIMIT];
+    generate
+        for(x=0;x<N_QUOTA_MASK_REGS;x++) begin
+            assign regs_o[BASE_QUOTA_MASK+x] = regs_i[BASE_QUOTA_MASK+x];
+        end
+    endgenerate
+    generate
+        for(x=0;x<N_QUOTA_LIMIT_REGS;x++) begin
+            assign regs_o[BASE_QUOTA_LIMIT+x] = regs_i[BASE_QUOTA_LIMIT+x];
+        end
+    endgenerate
     //---- MCCU  registers
         // Register never set by PMU, only written by master
-    assign regs_o[BASE_MCCU_CFG:END_MCCU_CFG] = regs_i[BASE_MCCU_CFG:END_MCCU_CFG];
-    assign regs_o[BASE_MCCU_LIMITS:END_MCCU_LIMITS] = regs_i[BASE_MCCU_LIMITS:END_MCCU_LIMITS];
-    assign regs_o[BASE_MCCU_WEIGHTS:END_MCCU_WEIGHTS] = regs_i[BASE_MCCU_WEIGHTS:END_MCCU_WEIGHTS];
+    generate
+        for(x=0;x<N_MCCU_CFG;x++) begin
+            assign regs_o[BASE_MCCU_CFG+x] = regs_i[BASE_MCCU_CFG+x];
+        end
+    endgenerate
+    generate
+        for(x=0;x<N_MCCU_LIMITS;x++) begin
+            assign regs_o[BASE_MCCU_LIMITS+x] = regs_i[BASE_MCCU_LIMITS+x];
+        end
+    endgenerate
+    generate
+        for(x=0;x<N_MCCU_WEIGHTS;x++) begin
+            assign regs_o[BASE_MCCU_WEIGHTS+x] = regs_i[BASE_MCCU_WEIGHTS+x];
+        end
+    endgenerate
     //---- Request Duration Counter (RDC) registers 
         //core_0
     assign regs_o[BASE_RDC_WATERMARK][MCCU_WEIGHTS_WIDTH-1:0] = MCCU_watermark_int [0][0] ;
