@@ -1,0 +1,13 @@
+\newpage
+\section{General purpose of the module}
+
+This module shall detect if an overflow of a given counter is about to happen, if any counter reaches the maximum value an interrupt shall be risen by the overflow module. Only one interrupt is required, the counter causing the interrupt shall be identified by a signal called overflow interrupt vector (over\_intr\_vect\_o) that will encode in one-hot fashion the offending counter or counters.\\
+\\
+Overflow detection shall be optional for each individual counter, hardware for overflow detection shall be present for all the counters but software shall be able to control through an overflow interrupt mask (over\_intr\_mask\_i) what counters can actually generate an interrupt.\\
+\\
+A dedicated enable signal shall be provided. Enable is active high.\\
+\\
+Interrupt can not be active if the unit is disabled. The unit is considered enabled if the unit is not in hard or soft reset and the enable is high.\\
+\\
+The whole unit shall use combinational logic, inputs and outputs are registered externally at the rising edge of the clock. The required inputs and outputs will be wires, names, types and default sizes are provided in section \ref{interface}.\\
+\\

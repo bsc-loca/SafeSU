@@ -1,0 +1,9 @@
+\section{What could not happen}
+
+All signals except registers used to track previous state of the interrupts shall not be registered.\\
+\\
+Interruptions shall be low while the unit is in reset.\\
+\\
+Overflow interruption vector shall not decrease in value unless the unit is reset or soft-reset.\\
+\\
+The overflow interruption shall not decrease unless the  unit is reset or soft-reset.

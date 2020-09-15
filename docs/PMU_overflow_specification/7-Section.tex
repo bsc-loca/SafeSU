@@ -1,0 +1,12 @@
+\section{Behavior}
+
+The module identifies the overflow of a counter by performing an and reduction of the incoming counter signals. Detected overflowing counters will only be signaled to the output after applying a bit by bit and operation between the detected overflow signal and the current overflow mask.\\
+\\
+The unit is considered disabled when rstn\_i is 0 or softrst\_i is 1 or en\_i is 0.\\
+\\
+The previous state of the interrupt vector is stored to prevent missing the interrupt once the counter overflows. The output interrupt is te result of an or reduction of the masked overflow signals (masked\_overflow) and the past interruption vector (past\_intr\_vect) if the unit is enabled, otherwise the output is 0. In other words, if any bit in the past interruption vector or masked overflow signals the interuption while the unit is active the interrupt is active.\\
+\\
+\subsection{Packages and structures}
+
+No packages and structures are used in this module.
+
