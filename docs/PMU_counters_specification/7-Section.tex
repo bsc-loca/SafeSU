@@ -1,0 +1,9 @@
+\section{Behavior}
+The module uses generate loops to parametrically implement the amount of counters required. The output of the adders is stored in slv\_reg. the adder takes the last value of the counter (slv\_reg[n]) and adds one to it if the unit is enabled and the event n is active. Events and counters share the same index, meaning that event[0] will map to  slv\_reg[0].\\
+\\
+The outputs of the adders are stored in slv\_reg. If counters need to be updated externally the write enable signal (we\_i) will be high. When we\_i is high the input regs\_i will be bypassed to regs\_o ignoring the current value of the counters, also each slv\_reg will be updated with regs\_i rather than the ouput of the adders.\\
+\\
+\subsection{Packages and structures}
+
+No packages and structures are used in this module.
+

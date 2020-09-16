@@ -1,7 +1,7 @@
 //-----------------------------------------------------
 // ProjectName: LEON3_kc705_pmu
-// Function   : Submodule of the PMU to handle counters 
-// Description: This module is contains the adders and registers for the PMU
+// Function   : Submodule of the PMU to handle event counters 
+// Description: This module contains the adders and registers for the PMU
 //              the registers are exposed through the interface to the modules
 //              other modules of the PMU and passed through to the PMU wrapper
 //              through the module PMU_raw
