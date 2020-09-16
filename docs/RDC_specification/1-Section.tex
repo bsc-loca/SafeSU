@@ -1,0 +1,5 @@
+\newpage
+\section{General purpose of the module}
+RDC stands by request duration counter. The purpose of this unit is track the length of a given event. At the core we assume that there are two types of events that are feed in to the PMU. On one hand there are single clock events, where each cycle that they are high means that a new event has occurred, and example of it would be instruction count for instance. On the other hand we have multiple-cycle events, in this case the event is risen at the begging of a given condition and remains high until the condition has finished, counting effectively the cycles that such condition is high rather than the number of events. An example of a multiple-cycle event would be the cache hold signal, that indicates the time the cache is waiting to get a response from memory.\\
+\\
+The RDC implements a mechanism to measure the length of multiple-cycle events and control that the length of a given event is not exceeded. If an event exceeds the set length an interruption is risen. A single interruption is provided for the whole unit. 

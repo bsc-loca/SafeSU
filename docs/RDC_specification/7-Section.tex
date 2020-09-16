@@ -1,0 +1,27 @@
+\section{Behavior}\label{behavior}
+
+\subsection{Pulse counters}
+The unit has a generate loop that will create for each input event of each core one counter, a max value hold register and update logic. While rstn\_is low the hold registers (max\_value) are set to 0.
+If the unit is enabled and the event assigned to the counter is active the counter will increase by one and the result will be stored in the hold register. If the event is 0 the hold register is reset to 0.\\
+\\
+Each counter has overflow protection.
+
+\subsection{Watermark}
+The watermark logic assigns one register for each event of each core called watermark\_int. At reset the register is set to 0. If the unit is not enabled the values of watermark\_int are keept unchanged. If the unit is active the current value of  watermark\_int is compared against the current value of the pulse counters (watermark\_int). When max\_value is larger than watermark\_int, the second is updated with the new value of the pulse counter (max\_value).\\
+\\ 
+
+\subsection{Interruption}
+The RDC provides one interruption (interruption\_vector\_rdc\_o) for the whole unit an one interruption vector (interruption\_vector\_int) for each core. The interruption vector encodes in one hot encoding the signal exceeding the pulse width, the LSB of the vector is maps to the signal 0 of each core, and the remaining bits are filled in ascending order with the following signals.\\
+\\
+The interruption logic checks for each signal if its corresponding  max\_value exceeds the respective events\_weights\_i. In other words if the current pulse been measured exceeds the weight currently assigned to it a bit in the interrupt vector of the corresponding core will be set to high.\\
+\\
+Interruptions are hold over time, until the init is disabled or reset. That is achieved by registering the output interruption vector (interruption\_vector\_rdc\_o) and applying an or operation between its past value and the current cycle internal interruption vector (interruption\_vector\_int).\\
+\\
+To decide if the RDC interruption needs to be risen all the interruption vectors are or-reduced along a bit that stores the previous state of the interrupt.
+
+
+
+\subsection{Packages and structures}
+
+No packages and structures are used in this module.
+

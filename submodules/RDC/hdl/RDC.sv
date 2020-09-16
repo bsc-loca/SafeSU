@@ -59,7 +59,6 @@
     //Each clock cycle if the input signal (events_i) for a given counter is
     //high at the positive edge of the clock the counter increases
     localparam N_COUNTERS = CORE_EVENTS * N_CORES;
-    //reg [WEIGHTS_WIDTH-1 : 0] max_value [0 : N_COUNTERS-1];
     reg [WEIGHTS_WIDTH-1 : 0] max_value [0 : N_COUNTERS-1];
     //I need a bit to hold the interruption state until RCD is reset on
     //disabled once the interrupt is risen
