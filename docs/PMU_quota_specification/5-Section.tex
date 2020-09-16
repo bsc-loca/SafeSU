@@ -1,0 +1,9 @@
+\section{Reset behavior}
+
+The module contains two reset signals. One synchronous active high reset enabled by software called softrst\_i, the other is the global reset, called rstn\_i it is asynchronous and active low.\\
+\\
+Any reset when active shall clear any internal register and set them to 0. Interruptions shall become inactive while the unit is in reset.
+
+
+
+

@@ -1,0 +1,7 @@
+\section{Special cases, corner cases}
+
+If the quota mask is changed the state-machine that adds the content of the counters shall jump to reset. This will discard the previous addition and start over.\\
+\\
+The number of N\_COUNTERS shall remain reasonable for each specific implementation of the PMU, large values will increase the latency between the quota been exceeded and the trigger of the interrupt.\\
+\\
+If the values feed into the unit through counter\_value\_i overflow there is the chance that they overflow after been added to suma\_int. As a result the interrupt of quota may trigger but the values of the counters at that instant may be lower than the limit of quota.

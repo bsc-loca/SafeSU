@@ -1,0 +1,10 @@
+\newpage
+\section{General purpose of the module}
+
+This module checks the content of the counters selected by the mask register. The value of the selected counters is added and compared against the quota limit register. If the total quota 
+is exceeded then an interrupt is risen. A single interrupt is generated for this module.\\
+\\
+To account for a given event a 1 must be set to the Quota mask register. When the mask is 0 the value is not accounted for the quota.\\
+\\
+The addition of counters is sequential, therefore you could notice up to N cycles (where N is the number of counters) from the point that the quota is exceeded until the point where the interrupt is risen.\\
+\\

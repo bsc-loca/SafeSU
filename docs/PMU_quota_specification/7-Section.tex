@@ -1,0 +1,23 @@
+\section{Behavior}
+\subsection{Counter masking}
+Counters are only added to compute towards consumed quota if the corresponding bit is active in the quota\_mask\_i signal. This signals is one-hot encoded, the LSB corresponds to the counter 0 and the MSB to the last counter.\\
+\\
+The mask bit for each counter is replicated to match the reg\_width. An and mask is applied between the replicated signal and the incomming counter value (counter\_value\_i). The outcome is routed to  masked\_counter\_value\_int. If the unit is in reset  masked\_counter\_value\_int entries remain 0.\\
+\\
+\subsection{Sequential addition}
+In order to minimize resources a single adder is used and values of counters are added sequentially.\\
+\\
+Three structures are needed. First we have a \textbf{mask change detection} mechanism, the current mask is stored when the unit is active and compared against the previous value, if the stored mask (old\_mask) is different than the incoming mask (quota\_mask\_i) a one bit signal called new\_mask is set high. The second block is a simple \textbf{control state machine}, if we are in reset or a new mask is detected the state jumps to 0, otherwise the state increase each cycle. When the state machine count (state\_int) reaches the N\_COUNTERS value it is set back to 0. Finally we have the actual\textbf{ sequential addition of counters}, it is stored in suma\_int. If the unit is in reset the addition is set to 0, if a new mask or the state-machine in the second block is 0 the addition is set to 0. Otherwise suma\_int adds its previous value to masked\_counter\_value\_int[n], where n is the value of the state-machine in block two minus one (state\_int-1).
+
+\subsection{Interruption}
+The interruption control is simple. It holds the previous state of the interrupt in a register called hold\_intr\_quota. This register is set to 0 at reset, otherwise it applies an or operation between its previous value and the current interrupt output (intr\_quota\_o).\\
+\\
+The output interrupt (intr\_quota\_o) is high if the sequential addition of counters (suma\_int) is larger than the input quota limit (quota\_limit\_i) or the interrupt was triggered since the last reset (hold\_intr\_quota is high).\\
+\\
+To clear the interrupt a soft or hard reset shall be performed.\\
+\\
+
+\subsection{Packages and structures}
+
+No packages and structures are used in this module.
+

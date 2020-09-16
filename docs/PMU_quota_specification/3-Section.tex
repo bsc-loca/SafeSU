@@ -1,0 +1,12 @@
+\section{Parameters}
+\label{chapter3}
+This module requires two integer parameters.REG\_WIDTH and N\_COUNTERS. \\
+\textbf{REG\_WIDTH} defines the number of bits that a counter has.\\
+\textbf{N\_COUNTERS} defines the amount of counters that are available in the PMU.\\
+\\
+Given the previous parameters the unit shall generate correct RTL without any manual modification to the source code.\\
+\\
+A local parameter called max\_width sets the width of the internal adder. max\_width shall guaranty that the addition of all counters will not overflow the internal counter.
+
+%The instance of this module takes no parameters, signal widths are hard-coded to match the SoC.
+%Internal parameters and structures such as signals for requests and responses of the caches are imported from drac\_pkg.
