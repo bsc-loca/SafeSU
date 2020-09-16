@@ -35,8 +35,7 @@ module PMU_quota #
 		parameter integer N_COUNTERS	= 9,
         //Localparameters
         //TODO: extend if needed more control
-        //localparam max_width = $clog2(N_COUNTERS)+REG_WIDTH
-        localparam max_width = REG_WIDTH
+        localparam max_width = $clog2(N_COUNTERS)+REG_WIDTH
 	)
 	(
 		// Global Clock Signal
@@ -51,7 +50,7 @@ module PMU_quota #
         // Input wire from wrapper with the maximum allowed quota consumption
             //Quota is calculated with the
             //sum_all_counters (counter_value_i[n] * counter_quota_mask_i[n]) 
-        input wire [max_width-1:0] quota_limit_i,
+        input wire [REG_WIDTH-1:0] quota_limit_i,
         // Input quota interrupt mask. Only counters with their corresponding
             // mask interrupt set to high can be added to compute towards the
             // total quota that triggers the interrupt
@@ -195,12 +194,14 @@ module PMU_quota #
                     );
     */
     // Count up, count 0 and count up again. Interrupt shall be stable 
-    cover property (
+/*Disabled after change the maximum quota to REG_WIDTH from max_width
+ * cover property (
                     ($past(suma_int,1)=={max_width{1'b1}})
                     &&($past(suma_int,2)=={max_width{1'b0}})
                     &&($past(suma_int,3)=={max_width{1'b1}})
                     &&(rstn_i == 1) &&(softrst_i == 0)
                     );
+*/
     // The interruption can't fall once it is risen unless the unit is
     // softreset 
     assert property ($rose(intr_quota_o) |-> ($past(softrst_i)||$past(rstn_i)));
