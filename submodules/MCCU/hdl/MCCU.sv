@@ -2,7 +2,9 @@
 // ProjectName: PMU research 
 // Function   : Implementation of Maximum-Contention Control Unit (MCCU): 
 //              ResourceAccess Count and Contention Time Enforcement.
-// Description: Mechanism assigns  
+// Description: Mechanism that estimates the contention caused for each event,
+//              the contention caused is substracted from the asigned quota.
+//              When the quota is 0 an interrupt is risen.
 // Coder      : G.Cabo
 // References : https://upcommons.upc.edu/handle/2117/133656
 
@@ -60,7 +62,7 @@
     //avoid width mismatch when add: OVERFLOW_PROT + WEIGHTS_WIDTH
     localparam O_W_0PAD = OVERFLOW_PROT-WEIGHTS_WIDTH;
     
-    //internal registers
+    //internal signals
     reg [DATA_WIDTH-1:0] quota_int [0:N_CORES-1];//Quota set by external registers
     wire [WEIGHTS_WIDTH-1:0] events_weights_int [0:N_CORES-1] [0:CORE_EVENTS-1];
     reg [OVERFLOW_PROT-1:0] ccc_suma_int [0:N_CORES-1];//Addition of current cycle
@@ -73,7 +75,7 @@
     integer debug_tmp = 0;
     `endif
     /*----------
-    Generate one mechanism to monitor te quota for each of the cores in the
+    Generate one mechanism to monitor the quota for each of the cores in the
     SOC,
     ----------*/
     integer i;
@@ -244,8 +246,8 @@
         end 
     end
     /*----------
-    Set weights of events, as this module is used whith an 
-    axi-lite wrapper the values are already registered 
+    Set weights of events, as this module is used whith a 
+    wrapper the values are already registered 
     outside and only need to be forwarded without register them internally.
     Apply the event as a mask. If the event is inactive in the current cycle
     0 is forwarded in events_weights_int for that event.

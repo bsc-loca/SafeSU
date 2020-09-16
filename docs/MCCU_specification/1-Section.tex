@@ -1,0 +1,7 @@
+\newpage
+\section{General purpose of the module}
+MCCU stands for maximum-contention control unit, and aims to measure resource access an enforce the maximum contention produced for different cores in a multi-core system. Further details about the initial concept are provided by the paper \href{https://upcommons.upc.edu/handle/2117/133656}{Maximum-Contention Control Unit (MCCU): Resource Access Count and Contention Time Enforcement}, implementation may vary.\\
+\\ 
+The MCCU is allowed to assign individual quotas for each core. The quota value represent the number of clock cycles that the corresponding core is allowed to cause contention over other cores. At setup the user assigns weights to each one of the MCCU signals, the content of the weight would be the average or worst contention that a given event can cause over other cores, is up to the user to set the appropiate value for the end application. While the unit is enabled, at each clock cycle checks all the active events and adds its corresponding weights. In the same cycle the result of the weight addition is subtracted from the core quota. When the quota is about to reach 0 an interrupt is risen.\\
+\\
+Interruptions can be handled individually for each core, rather than relaying on a monitor core, but that is dependent of the target platform. 

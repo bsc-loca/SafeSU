@@ -1,0 +1,9 @@
+\section{Parameters}
+\label{chapter3}
+This unit uses several parameters. \textbf{DATA\_WIDTH} defines the size of the data registers.\\
+\textbf{WEIGHTS\_WIDTH} defines the size of the registers that store the estimated contention that a given event causes.\textbf{ N\_CORES} is used to configured to replicate the internal logic of the RDC to support several cores. \textbf{CORE\_EVENTS} sets the number of events that are track for each core.\\
+\\
+Internal parameters are used to perform padding between signals of different width when need to be used together. Such local parameter are\textbf{ O\_D\_0PAD, D\_W\_0PAD, O\_W\_0PAD }further details are provided in the source code comments. \\
+\\
+Given the previous parameters the unit shall generate correct RTL without any manual modification to the source code.\\
+\\

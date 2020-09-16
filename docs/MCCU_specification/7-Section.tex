@@ -1,0 +1,24 @@
+\section{Behavior}\label{behavior}
+ext subsections describe the different functional states of the unit and interruption capabilities.
+\subsection{Quota update}
+The unit requires a synchronization mechanism with the wrapper since the available quota is registered at the top level and internally. Such synchronization is done through an update signal (\textbf{update\_quota\_i}) provided by the module that instances the MCCU. Each quota for each core has an individual update bit. \textbf{If the unit is active and the update bit is active}  the interal quota (\textbf{quota\_int}) takes the input quota (quota\_int). Having an external quota that remains constant and an internal quota allows the developers to see the actual quota consumed and the initial quota without having to keep track in software.\\
+\\
+\subsection{IDLE state}
+If MCCU is inactive and the update bit is not active \textbf{(!enable\_i \&\& update\_quota\_i[i])} the internal quota remains the same than in the previous cycle.
+
+\subsection{Active without update}\label{awou}
+When the unit is active state and no quota update is required \textbf{(enable\_i \&\& !update\_quota\_i[i])} the internal quota (\textbf{quota\_int}) is set to either the current quota minus the addition of weights of the active events (\textbf{ccc\_suma\_int}) or if an underflow is going to be produced, it is set to 0.
+
+\subsection{Active without update}
+If the unit is active but the update bit is set high (\textbf{enable\_i \&\& update\_quota\_i[i]}) the same operation of section \ref{awou} is performed, but instead of subtracting to the last quota, the incoming quota (quota\_i[i]) is used instead.
+ 
+\subsection{Interruptions}
+Interruptions are generated  when the  unit is enabled and not in reset. Even if the reset is not explicitly guarded, while the unit is in reset the comparison among the current addition of active weights (\textbf{ccc\_suma\_int}) and the internal quota (\textbf{quota\_int}) will not cause an interrupt. If ccc\_suma\_int[i] is larger than quota\_int[i] the interruption will rise for core i. 
+
+\subsection{Addition of weights}
+The addition of weights is done in two steps, first the event will set if the weight needs to be added or not. To do so an internal signal called \textbf{events\_weights\_int} is used. If the event is active events\_weights\_int will contain the weight forwarded for the value in \textbf{events\_weights\_i} otherwise the value will be 0. events\_weights\_int is always added together in a single cycle and the result is finally stored in \textbf{ccc\_suma\_int}. 
+
+\subsection{Packages and structures}
+
+No packages and structures are used in this module.
+
