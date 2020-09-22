@@ -1,0 +1,4 @@
+\section{What could not happen}
+The clock of this module (\textbf{clk\_i}) shall be the same than the clock of the modules that generate the events. If the clock does not come from the same source events are not guaranteed to be registered. If the clock is faster events will be duplicated. If the clock is slower the events will not register.\\
+\\
+No special restrictions have been considered other than specified  in section \ref{behavior}

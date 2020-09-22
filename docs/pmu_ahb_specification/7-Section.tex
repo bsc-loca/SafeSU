@@ -1,0 +1,23 @@
+\section{Behavior}\label{behavior}
+
+\subsection{ AHB registers}
+The internal registers are generated parametrically based in \textbf{REG\_WIDTH} and \textbf{N\_REGS}. They are named \textbf{slv\_reg} and the input and output of such registers are named \textbf{slv\_reg\_D} and \textbf{slv\_reg\_Q}. At reset the values become 0.\\
+\\
+\subsection{AHB control logic}
+The control logic is divided in several elements. Since  AHB is a pipelined protocol we have two phases, named address and data. While in address phase the transaction gets started by the slave, on data phase the content of the writes or reads is transferred.\\
+\\
+In address phase, we check \textbf{htrans\_i} in combinational logic to determine if the state of the bus transfer (\textbf{IDLE, BUSY, NONSEQUENTIAL, SEQUENTIAL}) and if the slave is selected. The output of this logic is the signal named \textbf{next}.Then a small state machine that registers the required inputs to handle a transfer. The state of the machine is given by \textbf{next}. The  signals from the bus are stored several registers defined as the packed structure \textbf{address\_phase}. It has a select,  write and address\_phase fields.\\
+\\
+In the data phase of the transference we have combinational logic to determine the memory position from our register bank that needs to be accessed, and assign the data required to \textbf{dread\_slave} or \textbf{dwrite\_slave} depending on the transaction. Reads are taken  from \textbf{slv\_reg\_Q}. Bussy and IDLE states put fix values in the dwrite\_slave and dread\_slave signals to ease detection of any bug, since such values shall never be used unless there is a bug in the module.\\
+\\
+\subsection{Slave registers update}
+The slave registers need to be sync between the PMU\_raw submodule and the SoC. If there where no logic to manage conflicts between updates of the counters by the PMU features and the incoming writes the register values may become inconsistent. In order to prevent this issue, when there is an incoming write \textbf{slv\_reg\_Q} and \textbf{slv\_reg\_D} \textbf{slv\_reg\_D}, allowing to register the new value and passing to the submodules the most updated value for such register. If no write transaction is active the pmu updates the registers with the signal \textbf{pmu\_regs\_int}.
+
+\subsection{Packages and structures}
+
+No packages are used.\\
+\\
+A single structure is used. It is named pmu\_regs\_int and it contains one bit to record bus select, bus  writes, and the address for the incoming request.\\
+\\
+Structures and typedef could be used more extensively to handle Types of bursts, Type of transfers, Type of Ready outputs, etc...
+

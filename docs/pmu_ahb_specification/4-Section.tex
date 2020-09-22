@@ -1,0 +1,72 @@
+\section{Interface}\label{interface}
+\label{chapter 4}
+
+\begin{table}[ht]
+	\scriptsize
+	\centering
+	\begin{tabular}{llllll}
+		\hline
+		Port Name & Direction & Width & Index & Comment & Comment Source
+		\\
+		\hline
+		rstn\_i & INPUT & 1 & Clock & Width of registers data bus & module port
+		\\
+		clk\_i & INPUT & 1 & - & - & -\\
+		hsel\_i & INPUT & 1 & - & Slave select & module port
+		\\
+		hreadyi\_i & INPUT & 1 & - & Previous transfer done & module port
+		\\
+		haddr\_i & INPUT & 32 & [31:0] & Address bus & module port
+		\\
+		hwrite\_i & INPUT & 1 & - & Read/write & module port
+		\\
+		htrans\_i & INPUT & 2 & [1:0] & Transfer type & module port
+		\\
+		hsize\_i & INPUT & 3 & [2:0] & Transfer size & module port
+		\\
+		hburst\_i & INPUT & 3 & [2:0] & Burst type & module port
+		\\
+		hwdata\_i & INPUT & 32 & [31:0] & Write data bus & module port
+		\\
+		hprot\_i & INPUT & 4 & [3:0] & Portection control & module port
+		\\
+		hmastlock\_i & INPUT & 1 & - & Locked access & module port
+		\\
+		hreadyo\_o & OUTPUT & 1 & - & Trasfer done & module port
+		\\
+		hresp\_o & OUTPUT & 2 & [1:0] & response type & module port
+		\\
+		hrdata\_o & OUTPUT & 32 & [31:0] & Read data bus & module port
+		\\
+		events\_i & INPUT & 24 & [23:0] & PMU input events6 & module port
+		\\
+		intr\_overflow\_o & OUTPUT & 1 & - & Overflow interruption & module port
+		\\
+		intr\_quota\_o & OUTPUT & 1 & - & Quota interruption & module port
+		\\
+		intr\_MCCU\_o & OUTPUT & 4 & [3:0] & MCCU interruptions & module port
+		\\
+		intr\_RDC\_o & OUTPUT & 1 & - & RDC interruption & module port
+		\\
+		\hline
+	\end{tabular}
+	\caption{Ports of module pmu\_ahb}
+	\label{port:pmu\_ahb}
+\end{table}
+
+Interface signals of the module are listed in table \ref{port:RDC}
+
+%TODO
+%\begin{table}[H]
+%	\centering
+%	\begin{tabular}{lllll}
+%		\hline
+%		Port\_Name                      & Direction & Width & Index      & Description \\
+%		\hline
+%		CLK                             & INPUT     & 1     & -          & Main clock, up to 200MHz      \\
+%		RST                             & INPUT     & 1     & -          & Hard reset. Active LOW     \\
+%		SOFT\_RST                       & INPUT     & 1     & -          & Soft reset. Active LOW       \\
+%		RESET\_ADDRESS                  & INPUT     & 40    & -          & Inital address of PC after soft or hard reset       \\
+%		CSR\_RW\_RDATA                  & INPUT     & 64    & -          & -       \\
+%	\end{tabular}
+%\end{table}
