@@ -1,0 +1,31 @@
+\section{Behavior}\label{behavior}
+
+\subsection{Self-test}
+While the unit can be easily verified on simulations by feeding specific test patterns, on a hardware implementation is much harder to do without some hardware support. Self-test is important to verify that the software behaves correctly, but also to assure that there are no discrepancies with the simulation.\\
+\\
+To perform a simple self-test the unit uses two bits of the configuration registers to change between four operation modes. \textbf{NO\_SELF\_TEST} (0b00), \textbf{ALL\_ACTIVE} (0b01), \textbf{ALL\_OFF} (0b10), \textbf{ONE\_ON} (0b11). This configuration modes allow, respectively, to pass through the events of the SoC, active all events, disable all events or active  only event 0.\\
+\\ 
+\subsection{Counters}
+Events an I/O signals are passed through without changes.
+
+\subsection{Overflow}
+Only active signals are passed through. If N\_COUNTERS larger than REG\_WIDTH it will need modifications to route \textbf{overflow\_intr\_mask\_i} and \textbf{overflow\_intr\_vect\_o}.
+
+\subsection{Quota}
+Only active signals are passed through. If N\_COUNTERS larger than REG\_WIDTH it will need modifications to route \textbf{quota\_mask\_i}.
+
+\subsection{MCCU}
+Events are routed through an internal signal called \textbf{MCCU\_events\_int}. The MCCU will route part of the signals of the SoC, so the number of the counters can be smaller. It is defined by \textbf{MCCU\_N\_CORES} and \textbf{MCCU\_N\_EVENTS}.\\
+Since the signal\textbf{MCCU\_softrst} may have glitches, \textbf{MCCU\_rstn} is synchronized to avoid such conditions and unpredictable resets on MCCU.\\
+\\
+\textbf{MCCU\_update\_quota\_int},\textbf{MCCU\_events\_int}\textbf{MCCU\_events\_weights\_int} and \textbf{intr\_MCCU\_o} are not parametric. If a change is performed to MCCU\_N\_CORES or MCCU\_N\_EVENTS minor adjustmens will be required.
+
+\subsection{RDC}
+Only active signals are passed through. If N\_COUNTERS larger than REG\_WIDTH it will need modifications to route \textbf{interruption\_rdc\_o}. \\
+\\
+The events and weight signals are shared with the MCCU. Therefore both functions must be present in the PMU or the MCCU code to route \textbf{MCCU\_events\_weights\_int} and \textbf{MCCU\_events\_weights\_int} shall be duplicated.
+
+\subsection{Packages and structures}
+
+No packages and structures are used in this module.
+

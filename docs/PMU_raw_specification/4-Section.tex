@@ -1,0 +1,52 @@
+\section{Interface}\label{interface}
+\label{chapter 4}
+
+\begin{table}[ht]
+	\scriptsize
+	\centering
+	\begin{tabular}{llllll}
+		\hline
+		Port Name & Direction & Width & Index & Comment & Comment Source
+		\\
+		\hline
+		clk\_i & INPUT & 1 & - & Global Clock Signal & module port
+		\\
+		rstn\_i & INPUT & 1 & - & Global Reset Signal. This Signal... & module port
+		\\
+		regs\_i & INPUT & 896 & [0:27][31:0] & Input registers & module port
+		\\
+		regs\_o & OUTPUT & 896 & [0:27][31:0] & Output registers & -\\
+		wrapper\_we\_i & INPUT & 1 & - & Write counters from regs\_i & module port
+		\\
+		events\_i & INPUT & 9 & [8:0] & Event signals & module port
+		\\
+		intr\_overflow\_o & OUTPUT & 1 & - & Overflow interruption & module port
+		\\
+		intr\_quota\_o & OUTPUT & 1 & - & Quota interruption & module port
+		\\
+		intr\_MCCU\_o & OUTPUT & 4 & [3:0] & MCCU interruption  & module port
+		\\
+		intr\_RDC\_o & OUTPUT & 1 & - & RDC interruption  & module port
+		\\
+		\hline
+	\end{tabular}
+	\caption{Ports of module PMU\_raw and default widths}
+	\label{port:PMU_raw}
+\end{table}
+
+Interface signals of the module are listed in table \ref{port:PMU_raw}
+
+%TODO
+%\begin{table}[H]
+%	\centering
+%	\begin{tabular}{lllll}
+%		\hline
+%		Port\_Name                      & Direction & Width & Index      & Description \\
+%		\hline
+%		CLK                             & INPUT     & 1     & -          & Main clock, up to 200MHz      \\
+%		RST                             & INPUT     & 1     & -          & Hard reset. Active LOW     \\
+%		SOFT\_RST                       & INPUT     & 1     & -          & Soft reset. Active LOW       \\
+%		RESET\_ADDRESS                  & INPUT     & 40    & -          & Inital address of PC after soft or hard reset       \\
+%		CSR\_RW\_RDATA                  & INPUT     & 64    & -          & -       \\
+%	\end{tabular}
+%\end{table}

@@ -1,0 +1,7 @@
+\newpage
+\section{General purpose of the module}
+PMU\_raw is an interface agnostic module that integrates all the features of the PMU based on the instance parameters. This module will instance the sub-modules that implement the MCCU, RDC, quota, counters and overflow when needed. Based on the input parameters it will generate the memory map of the PMU and each feature. This will allow to automatically connect most of the signals and extract the values of  each parameter after elaboration to generate C drivers for the unit.\\
+\\
+Given that the unit will act as a middle module between the features and the top level that will implement the control logic for the bus protocol of the SoC or Core that integrates the PMU, this module will pass through most of the signals.\\
+\\
+In addition to the routing the unit implements a self-test feature that allows to bypass the  event input and help to check that the software and hardware behave correctly.
