@@ -1,7 +1,36 @@
 \section{Interface}\label{interface}
 \label{chapter 4}
+\begin{table}[ht]
+	\scriptsize
+	\centering
+	\begin{tabular}{llllll}
+		\hline
+		Port Name & Direction & Width & Index & Comment & Comment Source
+		\\
+		\hline
+		clk\_i & INPUT & 1 & - & Global Clock Signal & module port
+		\\
+		rstn\_i & INPUT & 1 & - & Global Reset Signal. This Signal... & module port
+		\\
+		softrst\_i & INPUT & 1 & - & Active HIGH & module port
+		\\
+		en\_i & INPUT & 1 & - & Active HIGH & module port
+		\\
+		counter\_regs\_i & INPUT & 288 & [0:8][31:0] & Input wire from wrapper containi... & module port
+		\\
+		over\_intr\_mask\_i & INPUT & 9 & [8:0] & updated either & module port
+		\\
+		intr\_overflow\_o & OUTPUT & 1 & - & Global interrupt overflow & module port
+		\\
+		over\_intr\_vect\_o & OUTPUT & 9 & [8:0] & Output of the Overflow interrupt... & module port
+		\\
+		\hline
+	\end{tabular}
+	\caption{Ports of module PMU\_overflow}
+	\label{port:PMU_overflow}
+\end{table}
 
-Interface signals of the module are listed in the table below.
+Interface signals of the module are listed in table \ref{port:PMU_overflow}
 
 %TODO
 %\begin{table}[H]

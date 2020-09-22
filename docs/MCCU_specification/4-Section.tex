@@ -1,7 +1,36 @@
 \section{Interface}\label{interface}
 \label{chapter 4}
+\begin{table}[ht]
+	\scriptsize
+	\centering
+	\begin{tabular}{llllll}
+		\hline
+		Port Name & Direction & Width & Index & Comment & Comment Source
+		\\
+		\hline
+		clk\_i & INPUT & 1 & - & Width of data registers & module port
+		\\
+		rstn\_i & INPUT & 1 & - & Active low asyncronous reset. It... & module port
+		\\
+		enable\_i & INPUT & 1 & - & can be generated & module port
+		\\
+		events\_i & INPUT & 8 & [0:1][3:0] & Monitored events that can genera... & module port
+		\\
+		quota\_i & INPUT & 64 & [0:1][31:0] & Quota for each of the cores, int... & module port
+		\\
+		update\_quota\_i & INPUT & 2 & [0:1] & Update quota. Set quota\_int to t... & module port
+		\\
+		quota\_o & OUTPUT & 64 & [0:1][31:0] & Internal quota available & module port
+		\\
+		events\_weights\_i & INPUT & 64 & [0:1][0:3][7:0] & internally registered, set by so... & module port
+		\\
+		\hline
+	\end{tabular}
+	\caption{Ports of module MCCU}
+	\label{port:MCCU}
+\end{table}
 
-Interface signals of the module are listed in the table below.
+Interface signals of the module are listed in table \ref{port:MCCU}
 
 %TODO
 %\begin{table}[H]

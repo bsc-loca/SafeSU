@@ -1,7 +1,36 @@
 \section{Interface}\label{interface}
 \label{chapter 4}
 
-Interface signals of the module are listed in the table below.
+\begin{table}[ht]
+	\scriptsize
+	\centering
+	\begin{tabular}{llllll}
+		\hline
+		Port Name & Direction & Width & Index & Comment & Comment Source
+		\\
+		\hline
+		clk\_i & INPUT & 1 & - & Global Clock Signal & module port
+		\\
+		rstn\_i & INPUT & 1 & - & Global Reset Signal. This Signal... & module port
+		\\
+		counter\_value\_i & INPUT & 288 & [0:8][31:0] & Input wire from wrapper containi... & module port
+		\\
+		softrst\_i & INPUT & 1 & - & Active HIGH & module port
+		\\
+		quota\_limit\_i & INPUT & 32 & [31:0] & sum\_all\_counters (counter\_value\_... & module port
+		\\
+		quota\_mask\_i & INPUT & 9 & [8:0] & total quota that triggers the in... & module port
+		\\
+		intr\_quota\_o & OUTPUT & 1 & - & Interrupt quota & module port
+		\\
+		\hline
+
+	\end{tabular}
+	\caption{Ports of module PMU\_quota}
+			\label{port:PMU_quota}
+\end{table}
+
+Interface signals of the module are listed in table \ref{port:PMU_quota}
 
 %TODO
 %\begin{table}[H]
