@@ -2,7 +2,7 @@
 \section{General purpose of the module}
 This module is the top level for the application specific PMU. 
 It implements an AHB slave interface that connects with any compliant master with a 32 wide amba bus.
-Wider buses can be used with minimal modifications, for more detail on this matter check AMBA AHB specification \cite{TODO}, section 6.2.1.\\
+Wider buses can be used with minimal modifications, for more detail on this matter check AMBA AHB 5 specification \cite{AHB5-20Jul}, section 6.3.1.\\
 %http://www.eecs.umich.edu/courses/eecs373/readings/ARM_IHI0033A_AMBA_AHB-Lite_SPEC.pdf
 \\
 The module has a set of registers that are synchronized between the interface agnostic PMU and the SoC. Writes to the registers are updated to internal registers of each PMU feature if needed.
