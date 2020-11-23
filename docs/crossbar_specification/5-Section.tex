@@ -1,0 +1,8 @@
+\section{Reset behavior}
+
+When reset is active (LOW), internal registers are set to 0. In the next cycle outputs of the crossbar will become 0.\\
+When reset is not active (HIGH) input signals selected by the configuration fields are routed to the output. Since outputs are registered, we see one cycle of latency.
+
+
+
+

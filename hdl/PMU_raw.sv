@@ -2,7 +2,7 @@
 // ProjectName: LEON3_kc705_pmu
 // Function   : Integrate PMU features under one module
 // Description: Interface agnostic implementation of the  PMU. Values of the
-//              PMU are registered in this module.
+//              PMU are not registered in this module.
 //              
 //              This module is responsible of configure the memory map, handle
 //              write / read syncronization with a higher level module that
@@ -32,6 +32,8 @@
 		parameter integer REG_WIDTH	= 32,
 		// Amount of counters
 		parameter integer N_COUNTERS	= 9,
+		// Amount of SoC events going through the crossbar
+		parameter integer N_SOC_EV	= 32,
 		// Configuration registers
 		parameter integer N_CONF_REGS	= 1,
 
@@ -46,6 +48,8 @@
 		localparam integer MCCU	= 1, //Yes/No
 		//---- RDC - Request Duration Counters
 		localparam integer RDC	= 1, //Yes/No
+		//---- Crossbar
+		localparam integer CROSSBAR	= 1, //Yes/No
        
         // *** Memory map related features
         
@@ -143,11 +147,21 @@
         localparam END_RDC_WATERMARK = BASE_RDC_WATERMARK + N_RDC_WATERMARK -1,
             // General parameters feature  
         localparam N_RDC_REGS = (N_RDC_WEIGHTS + N_RDC_VECT_REGS+N_RDC_WATERMARK) * RDC,
+        //---- CROSSBAR registers and parameters.
+            // General parameters feature
+        localparam CROSSBAR_INPUTS = N_SOC_EV,
+        localparam CROSSBAR_OUTPUTS = N_COUNTERS,
+        //number of bits for each configuration field
+        localparam CROSSBAR_CFG_BITS= $clog2(CROSSBAR_INPUTS),
+        localparam BASE_CROSSBAR = END_RDC_WATERMARK +1,
+        localparam N_CROSSBAR_CFG =((CROSSBAR_OUTPUTS*CROSSBAR_CFG_BITS-1)/REG_WIDTH+1) * CROSSBAR,
+        localparam END_CROSSBAR = BASE_CROSSBAR + N_CROSSBAR_CFG - 1,
+        localparam N_CROSSBAR_REGS = N_CROSSBAR_CFG,
         
         //---- Total of registers used
         localparam integer TOTAL_NREGS =
                                     N_COUNTERS + N_CONF_REGS + N_OVERFLOW_REGS
-                                    +N_QUOTA_REGS + N_MCCU_REGS + N_RDC_REGS
+                                    +N_QUOTA_REGS + N_MCCU_REGS + N_RDC_REGS + N_CROSSBAR_REGS
 	)
 	(
 		// Global Clock Signal
@@ -162,7 +176,7 @@
         // uploads the content with external values
         input wire wrapper_we_i,
         // Event signals
-        input wire [N_COUNTERS-1:0] events_i,
+        input wire [N_SOC_EV-1:0] events_i,
         //interruption rises when one of the counters overflows
         output wire intr_overflow_o,
         //interruption rises when overall events quota is exceeded 
@@ -179,7 +193,7 @@
     (* MARK_DEBUG = "TRUE" *) logic [REG_WIDTH-1:0] debug_regs_i [0:TOTAL_NREGS-1];
     (* MARK_DEBUG = "TRUE" *) logic [REG_WIDTH-1:0] debug_regs_o [0:TOTAL_NREGS-1]; 
     (* MARK_DEBUG = "TRUE" *) wire debug_wrapper_we_i;              
-    (* MARK_DEBUG = "TRUE" *) wire [N_COUNTERS-1:0] debug_events_i;                 
+    (* MARK_DEBUG = "TRUE" *) wire [N_SOC_EV-1:0] debug_events_i;                 
     (* MARK_DEBUG = "TRUE" *) wire debug_intr_overflow_o;                 
     (* MARK_DEBUG = "TRUE" *) wire debug_intr_quota_o;                           
     (* MARK_DEBUG = "TRUE" *) wire [MCCU_N_CORES-1:0] debug_intr_MCCU_o;            
@@ -304,6 +318,57 @@
     assign regs_o[BASE_RDC_WATERMARK+1][4*MCCU_WEIGHTS_WIDTH-1:3*MCCU_WEIGHTS_WIDTH] = MCCU_watermark_int [3][1] ;
 
 //----------------------------------------------
+//------------- Crossbar 
+//----------------------------------------------
+logic [CROSSBAR_CFG_BITS-1:0]crossbar_cfg [0:CROSSBAR_OUTPUTS-1]; 
+logic [CROSSBAR_OUTPUTS-1:0] crossbar_o;
+logic [N_CROSSBAR_CFG*REG_WIDTH-1:0] concat_cfg_crossbar;
+
+//Concatenate all the registers to have easier access with missaligned registers 
+integer i;
+always_comb begin
+    for (i=0; i < N_CROSSBAR_CFG; i++) begin
+       concat_cfg_crossbar[i*REG_WIDTH+:REG_WIDTH] = regs_i[BASE_CROSSBAR+i]; 
+    end
+end
+
+//map configuration fields to each mux
+genvar q; // each Crossbar output
+generate
+    for (q=0;q<CROSSBAR_OUTPUTS;q++) begin
+        assign crossbar_cfg[q] = concat_cfg_crossbar [q*CROSSBAR_CFG_BITS+:CROSSBAR_CFG_BITS];
+    end
+endgenerate
+
+//Unpack crossbar inputs
+logic unpacked_cbi_int[0:CROSSBAR_INPUTS-1];
+
+generate
+    for(q=0;q<CROSSBAR_INPUTS;q++) begin
+        assign unpacked_cbi_int[q] = events_i[q];
+    end
+endgenerate
+//Pack crossbar output
+logic unpacked_cbo_int [0:CROSSBAR_OUTPUTS-1] ;
+generate
+    for(q=0;q<CROSSBAR_OUTPUTS;q++) begin
+        assign crossbar_o[q] = unpacked_cbo_int[q];
+    end
+endgenerate
+
+//Crossbar instance
+crossbar # (
+		.N_OUT	(CROSSBAR_OUTPUTS),
+		.N_IN	(CROSSBAR_INPUTS)
+	)
+inst_cross   (
+		.clk_i(clk_i),
+		.rstn_i(rstn_i),
+        .vector_i(unpacked_cbi_int),
+        .vector_o(unpacked_cbo_int),
+        .cfg_i(crossbar_cfg)
+    );
+//----------------------------------------------
 //------------- Selftest configuration
 //----------------------------------------------
 logic [N_COUNTERS-1:0] events_int;
@@ -316,7 +381,7 @@ localparam ONE_ON = 2'b11;
 always_comb begin
     case (selftest_mode)
         NO_SELF_TEST : begin
-            events_int = events_i;
+            events_int = crossbar_o;
         end
         ALL_ACTIVE : begin
             events_int = {N_COUNTERS{1'b1}};
@@ -413,13 +478,13 @@ end
         //be hardcoded to specific corssbars outputs
     wire [MCCU_N_EVENTS-1:0] MCCU_events_int[0:MCCU_N_CORES-1];
         //core_0
-    assign MCCU_events_int [0] = {{events_int[5]},{events_int[12]}};
+    assign MCCU_events_int [0] = {{events_int[0]},{events_int[1]}};
         //core_1
-    assign MCCU_events_int [1] = {{events_int[6]},{events_int[9]}};
+    assign MCCU_events_int [1] = {{events_int[2]},{events_int[3]}};
         //core_2
-    assign MCCU_events_int [2] = {{events_int[7]},{events_int[10]}};
+    assign MCCU_events_int [2] = {{events_int[4]},{events_int[5]}};
         //core_3
-    assign MCCU_events_int [3] = {{events_int[8]},{events_int[11]}};
+    assign MCCU_events_int [3] = {{events_int[6]},{events_int[7]}};
         
     //NON-PARAMETRIC This can be autogenenerated TODO     
     wire [MCCU_WEIGHTS_WIDTH-1:0] MCCU_events_weights_int [0:MCCU_N_CORES-1]

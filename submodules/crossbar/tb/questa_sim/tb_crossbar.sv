@@ -32,9 +32,9 @@ module tb_crossbar();
 //***Signals***
     reg     tb_clk_i ;
     reg     tb_rstn_i ;
-    reg     tb_vector_i [0:TB_SOC_EVENTS];
-    wire     tb_vector_o [0:TB_PMU_EVENTS];
-    reg     [N_BITS_CFG:0] tb_cfg_i  [0:TB_PMU_EVENTS]; 
+    reg     tb_vector_i [0:TB_SOC_EVENTS-1];
+    wire     tb_vector_o [0:TB_PMU_EVENTS-1];
+    reg     [N_BITS_CFG-1:0] tb_cfg_i  [0:TB_PMU_EVENTS-1]; 
 //store name of test for easier debug of waveform
 reg[64*8:0] tb_test_name;
 reg tb_fail = 0;
@@ -133,8 +133,8 @@ task automatic init_sim;
             // try all the input and output combinations
             integer i; //inputs iterator
             integer j; // output iterator
-            for(i=0;i<=TB_SOC_EVENTS;i++) begin
-                for(j=0;j<=TB_PMU_EVENTS;j++) begin
+            for(i=0;i<TB_SOC_EVENTS;i++) begin
+                for(j=0;j<TB_PMU_EVENTS;j++) begin
                     route_ito(i,j,rval);
                     test_fail = rval + test_fail;
                 end

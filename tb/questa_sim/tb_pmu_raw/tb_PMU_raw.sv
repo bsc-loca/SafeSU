@@ -28,16 +28,17 @@ module tb_PMU_raw();
 //***DUT parameters***    
     parameter TB_DATA_WIDTH = 32;
     parameter TB_N_COUNTERS = 24;
+	parameter TB_N_SOC_EV	= 32;
     parameter TB_N_CFG = 1;
     parameter TB_N_CORES= 4;
     //WARNIGN: if N_counters or cores change this value needs to change
-    parameter TB_TOTAL_NREGS= 43;
+    parameter TB_TOTAL_NREGS= 47;
     
 //***Signals***
     reg     tb_clk_i ;
     reg     tb_rstn_i ;
-    reg  [TB_N_COUNTERS-1:0] tb_events_i;
-    reg  [TB_DATA_WIDTH-1:0] tb_regs_i [0:TB_TOTAL_NREGS-1];
+    reg  [TB_N_SOC_EV-1:0] tb_events_i;
+    logic  [TB_DATA_WIDTH-1:0] tb_regs_i [0:TB_TOTAL_NREGS-1];
     wire  [TB_DATA_WIDTH-1:0] tb_regs_o [0:TB_TOTAL_NREGS-1];
     reg tb_wrapper_we_i;
     wire tb_intr_overflow_o;
@@ -52,6 +53,7 @@ reg tb_fail = 0;
     PMU_raw #(
 		.REG_WIDTH(TB_DATA_WIDTH),
 		.N_COUNTERS(TB_N_COUNTERS),
+		.N_SOC_EV(32),
 		.N_CONF_REGS(TB_N_CFG)
 	)dut_PMU_raw (
 		.clk_i(tb_clk_i),
@@ -139,6 +141,84 @@ task automatic test_MCCU_1;
         #CLK_PERIOD;
     end
 endtask
+//***task automatic route_ito***
+    // This taks takes two parameters. First parameter
+    // is the input event. The second parameter is the 
+    // selected output. The function enables the input
+    // sets the configuration register and checks if
+    // the signal reaches the output.
+//NOT-PARAMETRIC: fails if input parameters change
+    // Valid for REG_WIDTH=32 N_COUNTERS=24 N_CONF_REGS=1  
+    //All functions enabled (Overflo,Quota,MCCU,RDC,Crossbar), RDC and MCCU parameters equal
+    // MCCU_WEIGHTS_WIDTH=8 MCCU_N_CORES=4 MCCU_N_EVENTS=2 CROSSBAR_INPUTS=32
+localparam CROSSBAR_CFG_BITS= $clog2(TB_N_SOC_EV);
+localparam BASE_CROSSBAR = 43;
+localparam N_CROSSBAR_CFG = 4;
+logic [TB_N_SOC_EV-1:0] unpack_crossbar_cfg [0:TB_N_COUNTERS];
+logic [N_CROSSBAR_CFG*TB_DATA_WIDTH-1:0] concat_cfg_crossbar;
+//Map unpacked configuration registers to concatenation
+integer i;
+always_comb begin
+    for (i=0; i < TB_N_COUNTERS; i++) begin
+       concat_cfg_crossbar[CROSSBAR_CFG_BITS*i+:CROSSBAR_CFG_BITS] = unpack_crossbar_cfg[i];
+    end
+end
+//Map concatenation to configuration registers
+integer j;
+always_comb begin
+    for (j=0; j < N_CROSSBAR_CFG; j++) begin
+       tb_regs_i[BASE_CROSSBAR+j]=concat_cfg_crossbar[j*TB_DATA_WIDTH+:TB_DATA_WIDTH];
+    end
+end
+// Now we can drive unpack_crossbar_cfg with route_ito and get the values in tb_regs_i without
+    //any conversion
+    task automatic route_ito (input int in, out, output int tb_fail);
+        begin
+            tb_test_name="route_ito";
+            //set all other signals to 0
+            tb_events_i <='{default:0};
+            //enable signal that we want to route
+            #CLK_PERIOD;
+            tb_events_i[in] = 1;
+            //clear previous configuration
+            unpack_crossbar_cfg <= '{default:0};
+            #CLK_PERIOD;
+            //set new configuration
+            unpack_crossbar_cfg[out] <= in;
+            #CLK_PERIOD;
+            #CLK_PERIOD;
+            //check if the output signal is enabled
+            if(dut_PMU_raw.unpacked_cbo_int[out]!=1) begin
+                tb_fail = 1; 
+                `START_RED_PRINT
+                $error("FAIL.%d routed to %d. Expected output value is 1", in, out); 
+                `END_COLOR_PRINT
+            end
+
+        end
+    endtask 
+//***test all routing combinations crossbar
+    task automatic test_crossbar;
+        begin
+            integer rval;
+            integer test_fail;
+            // try all the input and output combinations
+            integer i; //inputs iterator
+            integer j; // output iterator
+            for(i=0;i<TB_N_SOC_EV;i++) begin
+                for(j=0;j<TB_N_COUNTERS;j++) begin
+                    route_ito(i,j,rval);
+                    test_fail = rval + test_fail;
+                end
+            end
+            if (test_fail == 0) begin
+                `START_GREEN_PRINT
+                $error("PASS routing tests"); 
+                `END_COLOR_PRINT
+            end
+        end
+    endtask 
+
 
 //***task automatic test_sim***
     task automatic test_sim;
@@ -162,10 +242,14 @@ endtask
 
 //***init_sim***
     initial begin
+        integer retv;
         init_sim();
         init_dump();
         reset_dut();
         test_sim();
+        //Disable PMU and selftest modes
+        write_reg(0,32'h00000000);
+        test_crossbar;
         $finish;
     end
 
