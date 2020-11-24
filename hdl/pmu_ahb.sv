@@ -41,6 +41,8 @@
         localparam PMU_CFG = 1,
         // Number of counters
         localparam PMU_COUNTERS = 24
+        // Number of SoC events
+        localparam N_SOC_EV = 32
 	)
 	(
          input wire rstn_i,
@@ -73,7 +75,7 @@
         // read data bus
         output wire [HDATA_WIDTH-1:0] hrdata_o,
     // -- PMU specific signales
-        input wire [PMU_COUNTERS-1:0] events_i,
+        input wire [N_SOC_EV-1:0] events_i,
         //interruption rises when one of the counters overflows
         output wire intr_overflow_o,
         //interruption rises when overal events quota is exceeded 
@@ -100,7 +102,7 @@
     (* MARK_DEBUG = "TRUE" *) wire debug_hreadyo_o   ;       
     (* MARK_DEBUG = "TRUE" *) wire [1:0] debug_hresp_o     ;       
     (* MARK_DEBUG = "TRUE" *) wire [HDATA_WIDTH-1:0] debug_hrdata_o    ;       
-    (* MARK_DEBUG = "TRUE" *) wire [PMU_COUNTERS-1:0] debug_events_i   ;        
+    (* MARK_DEBUG = "TRUE" *) wire [N_SOC_EV-1:0] debug_events_i   ;        
     (* MARK_DEBUG = "TRUE" *) wire debug_intr_overflow_o;    
     (* MARK_DEBUG = "TRUE" *) wire debug_intr_quota_o;       
     (* MARK_DEBUG = "TRUE" *) wire [MCCU_N_CORES-1:0] debug_intr_MCCU_o;        
@@ -324,6 +326,7 @@ end
     PMU_raw #(
 		.REG_WIDTH(REG_WIDTH),
 		.N_COUNTERS(PMU_COUNTERS),
+		.N_SOC_EV(N_SOC_EV),
 		.N_CONF_REGS(PMU_CFG)
 	)inst_pmu_raw (
 		.clk_i(clk_i),

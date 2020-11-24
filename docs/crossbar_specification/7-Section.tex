@@ -1,0 +1,13 @@
+\section{Behavior}
+The unit allows to route N input signals in to M output signals. Unused inputs are unconnected.\\
+\\
+The crossbar routes the signals based on the values of cfg\_i. Each output has one configuration field that indicates the input that is routing. The value for the configuration field of each output matches the the position in vector\_i of the signal that you want to route through.\\
+Each configuration field takes\textit{ \$clog2(N)} bits. In the default integration with PMU\_raw the fields are\textbf{ contiguous and consecutive} to each other. Due to this arrangement it may be the case for \textbf{configuration fields to not be aligned with data words} of the target processor or cross address boundaries. It is up to the software developers to provide function calls to handle this scenarios.\\
+\\
+Outputs of the crossbar are registered.
+
+
+\subsection{Packages and structures}
+
+No packages and structures are used in this module.
+

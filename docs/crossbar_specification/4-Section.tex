@@ -1,0 +1,43 @@
+\section{Interface}\label{interface}
+\label{chapter 4}
+
+\begin{table}[ht]
+	\scriptsize
+	\centering
+	\begin{tabular}{llllll}
+		\hline
+		Port Name & Direction & Width & Index & Comment & Comment Source
+		\\
+		\hline
+		clk\_i & INPUT & 1 & - & Global clock signal & module port
+		\\
+		rstn\_i & INPUT & 1 & - & Global active low reset signal & module port
+		\\
+		vector\_i & INPUT & 32 & [0:31] & Input vector & module port
+		\\
+		vector\_o & OUTPUT & 24 & [0:23] & Output vector & module port
+		\\
+		cfg\_i & INPUT & 120 & [0:23][4:0] & Configuration registers & module port
+		\\
+		\hline
+	\end{tabular}
+	\caption{Ports of module crossbar}
+	\label{port:crossbar}
+\end{table}
+
+Interface signals of the module are listed in table \ref{port:crossbar}. Default parameter values are used for width and Index fields but they may change for each implementation.
+
+%TODO
+%\begin{table}[H]
+%	\centering
+%	\begin{tabular}{lllll}
+%		\hline
+%		Port\_Name                      & Direction & Width & Index      & Description \\
+%		\hline
+%		CLK                             & INPUT     & 1     & -          & Main clock, up to 200MHz      \\
+%		RST                             & INPUT     & 1     & -          & Hard reset. Active LOW     \\
+%		SOFT\_RST                       & INPUT     & 1     & -          & Soft reset. Active LOW       \\
+%		RESET\_ADDRESS                  & INPUT     & 40    & -          & Inital address of PC after soft or hard reset       \\
+%		CSR\_RW\_RDATA                  & INPUT     & 64    & -          & -       \\
+%	\end{tabular}
+%\end{table}

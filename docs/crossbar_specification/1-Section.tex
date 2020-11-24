@@ -1,0 +1,10 @@
+\newpage
+\section{General purpose of the module}
+
+This module allows to map N inputs from the SoC in to M counters without restrictions.
+All SoC signals can be routed to each counter of the PMU.\\
+\\
+Note that even if the amount of inputs is smaller than the amount of counters it is still interesting to have the crossbar since it allows to map any event to counters that support advanced capabilities such as the MCCU and RDC. At the moment to identify if a counter has MCCU or RDC support is required to check the source code of PMU\_raw.sv in order to see the assignments. By default the quad-core configuration with two events for each core maps this features to events 0 to 7.\\
+\\
+
+

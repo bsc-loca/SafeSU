@@ -37,25 +37,25 @@ module crossbar #
 		// Global Reset Signal. This Signal is Active LOW
 		input wire  rstn_i,
         // Input vector
-        input logic vector_i [0:N_IN] ,
-        // Input vector
-        output logic vector_o [0:N_OUT],
+        input logic vector_i [0:N_IN-1] ,
+        // Output vector
+        output logic vector_o [0:N_OUT-1],
         // Configuration
-        input wire [N_BITS_CFG:0] cfg_i [0:N_OUT]
+        input logic [N_BITS_CFG-1:0] cfg_i [0:N_OUT-1]
 	);
+    
     genvar x;
-
     //Model muxes
-    logic mux_int[0:N_OUT];
+    logic mux_int[0:N_OUT-1];
     generate
-        for(x=0;x<=N_OUT;x++) begin : mux
+        for(x=0;x<N_OUT;x++) begin : mux
             //Assign the input based on the configuration value
             assign mux_int[x]=vector_i[(cfg_i [x])];
         end
     endgenerate
     //Register output and assign muxes output
     generate
-        for(x=0;x<=N_OUT;x++) begin : reg_out
+        for(x=0;x<N_OUT;x++) begin : reg_out
             always_ff @(posedge clk_i, negedge rstn_i) begin
                     if (!rstn_i) begin
                         vector_o[x] <= 0;
@@ -76,5 +76,5 @@ module crossbar #
 `endif
 
 endmodule
-
 `default_nettype wire //allow compatibility with legacy code and xilinx ip
+

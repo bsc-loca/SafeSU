@@ -1,0 +1,5 @@
+\section{Parameters}
+\label{chapter3}
+This module requires two integer parameters. \textbf{N\_IN} defines the number of inputs provided by the SoC.
+\textbf{N\_OUT} defines the number of outputs of the Crossbar and matches the amount of counters in the PMU.\\
+The amount of bits required for each configuration field of each output is stored in the local parameter \textbf{N\_BITS\_CFG} and its value is the ceiling of the base 2 logarithm of N\_IN.
