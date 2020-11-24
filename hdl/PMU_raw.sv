@@ -577,12 +577,25 @@ end
         //spare bits on RDC_VECT
     assign regs_o[BASE_RDC_VECT][REG_WIDTH-1:8] = '{default:0} ;
     
-    wire RDC_enable_int;
-    assign RDC_enable_int = regs_i[BASE_MCCU_CFG][6];
-    
-    wire RDC_softrst;
-    assign RDC_softrst = regs_i[BASE_MCCU_CFG][7];
-    
+   //register enable to solve Hazards
+    reg RDC_rstn;
+    always @(posedge clk_i, negedge rstn_i) begin: RDC_glitchless_rstn
+            if (!rstn_i) begin
+                RDC_rstn <= 0;
+            end else begin
+                RDC_rstn <= rstn_i && !regs_i[BASE_MCCU_CFG][7];
+            end
+    end
+     
+    //register enable to solve Hazards
+    reg RDC_enable_int;
+    always @(posedge clk_i, negedge rstn_i) begin: RDC_glitchless_enable
+            if (!rstn_i) begin
+                RDC_enable_int <= 0;
+            end else begin
+                RDC_enable_int <= regs_i[BASE_MCCU_CFG][6];
+            end
+    end 
     
     RDC #(
         // Width of data registers
@@ -595,7 +608,7 @@ end
         .CORE_EVENTS    (RDC_N_EVENTS)
     ) inst_RDC(
         .clk_i                  (clk_i),
-        .rstn_i                 (rstn_i && !RDC_softrst ), //active low
+        .rstn_i                 (RDC_rstn), //active low
         .enable_i               (RDC_enable_int),// Software map
         .events_i               (MCCU_events_int),
         .events_weights_i       (MCCU_events_weights_int),

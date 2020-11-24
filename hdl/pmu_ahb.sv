@@ -23,26 +23,25 @@
 `endif
 	module pmu_ahb #
 	(
-        parameter haddr = 0,                                                  
-        parameter hmask  = 0,                                           
+        parameter integer haddr = 0,                                                  
+        parameter integer hmask  = 0,                                           
 		// Width of registers data bus
         parameter integer REG_WIDTH = 32,
-        //haddr width
-        localparam integer HADDR_WIDTH = 32,
-        //hdata width
-        localparam integer HDATA_WIDTH = 32,
-        //Required for MCCU interrupts
-    // -- PMU specific parameters
-        // Cores connected to MCCU
-        localparam MCCU_N_CORES = 4,
-		// Total amount of registers 
-        parameter integer N_REGS = 43, 
-        // Number of configuration registers
-        localparam PMU_CFG = 1,
         // Number of counters
-        localparam PMU_COUNTERS = 24,
+        parameter integer PMU_COUNTERS = 24,
         // Number of SoC events
-        localparam N_SOC_EV = 32
+	parameter integer N_SOC_EV = 32,
+	// Total amount of registers (use ahb_pmu_mem_map.ods) 
+        parameter integer N_REGS = 47, 
+	// -- Local parameters
+		//haddr width
+        localparam integer HADDR_WIDTH = 32,
+		//hdata width
+        localparam integer HDATA_WIDTH = 32,
+		// Cores connected to MCCU
+        localparam MCCU_N_CORES = 4,
+		// Number of configuration registers
+        localparam PMU_CFG = 1
 	)
 	(
          input wire rstn_i,
