@@ -40,7 +40,7 @@
         // Number of configuration registers
         localparam PMU_CFG = 1,
         // Number of counters
-        localparam PMU_COUNTERS = 24
+        localparam PMU_COUNTERS = 24,
         // Number of SoC events
         localparam N_SOC_EV = 32
 	)

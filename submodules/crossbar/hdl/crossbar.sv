@@ -37,11 +37,11 @@ module crossbar #
 		// Global Reset Signal. This Signal is Active LOW
 		input wire  rstn_i,
         // Input vector
-        input logic vector_i [0:N_IN-1] ,
+        input var vector_i [0:N_IN-1] ,
         // Output vector
         output logic vector_o [0:N_OUT-1],
         // Configuration
-        input logic [N_BITS_CFG-1:0] cfg_i [0:N_OUT-1]
+        input var [N_BITS_CFG-1:0] cfg_i [0:N_OUT-1]
 	);
     
     genvar x;

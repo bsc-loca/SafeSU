@@ -323,6 +323,13 @@
 logic [CROSSBAR_CFG_BITS-1:0]crossbar_cfg [0:CROSSBAR_OUTPUTS-1]; 
 logic [CROSSBAR_OUTPUTS-1:0] crossbar_o;
 logic [N_CROSSBAR_CFG*REG_WIDTH-1:0] concat_cfg_crossbar;
+    
+//Drive outputs that are never set by the PMU    
+    generate
+        for(y=BASE_CROSSBAR;y<=END_CROSSBAR;y++) begin
+               assign regs_o[y] = regs_i[y];
+        end
+    endgenerate
 
 //Concatenate all the registers to have easier access with missaligned registers 
 integer i;
