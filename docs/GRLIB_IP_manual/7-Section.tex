@@ -1,0 +1,42 @@
+\section{Instantiation}
+An example design is provided in the context of SELENE and De-RISC. Integration examples of earlier releases of the unit along LEON3MP can be provided under demand.\\
+\\
+\belowcaptionskip=-10pt
+\begin{lstlisting}[label=ins-prot,caption=SafePMU instance example for gpp\_sys,style=vhdl]
+-- Include BSC library
+library bsc;
+use bsc.pmu_module.all;
+
+--Provide a non-overlaping hsidx
+constant hsidx_pmu : integer := 6;
+
+--Update the hsidx of the next slave
+constant nextslv      : integer := hsidx_pmu + 1;
+
+--Declare events  and signals of interest. They may change 
+--for each use case. Route such events to  pmu_events,
+--ccs_contention and ccs_latency ports
+
+--Instance of the unit
+
+PMU_inst : ahb_wrapper
+generic map(
+ncpu   => CFG_NCPU,
+hindex => hsidx_pmu,
+haddr  => 16#801#,
+hmask  => 16#FFF#
+)
+port map(
+rst                => rstn,
+clk                => clkm,
+pmu_events         => pmu_events,
+ccs_contention     => ccs_contention,
+ccs_latency        => ccs_latency,
+ahbsi              => ahbsi,
+ahbso              => ahbso(hsidx_pmu));
+
+\end{lstlisting}
+Given the development status of the module and drivers it is recommended to not modify the internal parameters of the module.\\
+
+\end{document}
+

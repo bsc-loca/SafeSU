@@ -1,0 +1,29 @@
+\section{Configuration options}
+\label{chapter 4}
+Table \ref{generics} shows the configuration parameters exposed by \textit{ahb\_wrapper.vhd}. Given the current development status, changes to the configuration options may require manual modifications to internal modules and software drivers. Future releases will expose parameters to enable individual PMU features and allow for more flexibility.\\
+\\
+\begin{table}[H]
+	\caption{Configuration options (VHDL ports)}
+	\label{generics}
+	\centering
+	\begin{small}
+		\begin{tabular}{|l|l|l|l|}
+			\hline
+			\textbf{Generic} & \textbf{Function}  & \textbf{Allowed range}  & \textbf{Default}\\
+			\hline
+			HADDR & AHB base address &0 to 16\#fff\# & 0\\
+			\hline
+			HMASK & AHB address mask &0 to 16\#fff\# & 16\#fff\#\\
+			\hline
+			N\_REGS & Total of accessible registers & 2 to 64 & 43\\
+			\hline
+			PMU\_COUNTERS & Number of generic counters. Same as crossbar outputs& 1 to 32 &24 \\
+			\hline
+			N\_SOC\_EV &SoC signals. Inputs to the crossbar& 1 to 64 & 32 \\
+			\hline
+			REG\_WIDTH &Size of registers and counters & 32 \textbf{or} 64 & 32 \\
+			\hline
+		
+		\end{tabular}
+	\end{small}
+\end{table}
