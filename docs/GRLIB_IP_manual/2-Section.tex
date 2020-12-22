@@ -9,10 +9,10 @@ The unit is compatible with GRLIB \textit{plug\&play}(P\&P). Vendor and device's
 %distinction bteen CCS and regular signals
 In its default implementation, the unit provides up to 32 input events. Each one of the events can be routed to any mechanism of the module through the crossbar.\\
 \\
-Table \ref{t_ev} shows the inputs and mapping to the crossbar input for the current \href{https://gitlab.bsc.es/selene/selene-hardware/-/merge_requests/2}{SELENE release}. The number of signals and arrangements may change in the upcoming versions. \\
+Table \ref{table:t_ev} shows the inputs and mapping to the crossbar input for the current \href{https://gitlab.bsc.es/selene/selene-hardware/-/merge_requests/2}{SELENE release}. The number of signals and arrangements may change in the upcoming versions. \\
 \begin{table}[H]
 	\caption{SELENE default input events}
-	\label{table:ev}
+	\label{table:t_ev}
 	\centering
 	\begin{footnotesize}
 	\begin{tabular}{|l|l|l|l|l|}
@@ -140,9 +140,9 @@ As a usage example, suppose the user wants to route the signal \textit{pmu\_even
 	\regfield{Output 12[3:0]}{4}{28}{{00}}
 	\regfield{Output 11}{5}{23}{{00}}
 	\regfield{Output 10}{5}{18}{{00}}
-	\regfield{Output 7}{5}{3}{{00}}
 	\regfield{Output 9}{5}{13}{{00}}
 	\regfield{Output 8}{5}{8}{{00}}
+	\regfield{Output 7}{5}{3}{{00}}
 	\regfield{Output 6 [4:2]}{3}{0}{{00}}
 	\reglabel{Reset value}\regnewline
 \end{register}
