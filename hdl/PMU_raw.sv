@@ -485,13 +485,13 @@ end
         //be hardcoded to specific corssbars outputs
     wire [MCCU_N_EVENTS-1:0] MCCU_events_int[0:MCCU_N_CORES-1];
         //core_0
-    assign MCCU_events_int [0] = {{events_int[0]},{events_int[1]}};
+    assign MCCU_events_int [0] = {{events_int[1]},{events_int[0]}};
         //core_1
-    assign MCCU_events_int [1] = {{events_int[2]},{events_int[3]}};
+    assign MCCU_events_int [1] = {{events_int[3]},{events_int[2]}};
         //core_2
-    assign MCCU_events_int [2] = {{events_int[4]},{events_int[5]}};
+    assign MCCU_events_int [2] = {{events_int[5]},{events_int[4]}};
         //core_3
-    assign MCCU_events_int [3] = {{events_int[6]},{events_int[7]}};
+    assign MCCU_events_int [3] = {{events_int[7]},{events_int[6]}};
         
     //NON-PARAMETRIC This can be autogenenerated TODO     
     wire [MCCU_WEIGHTS_WIDTH-1:0] MCCU_events_weights_int [0:MCCU_N_CORES-1]
