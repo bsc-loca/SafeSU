@@ -1,0 +1,212 @@
+--Crossbar
+
+\regfield{Output 6 [1:0]}{2}{30}{{00}}
+\regfield{Output 5}{5}{25}{{00}}
+\regfield{Output 4}{5}{20}{{00}}
+\regfield{Output 3}{5}{15}{{00}}
+\regfield{Output 2}{5}{10}{{00}}
+\regfield{Output 1}{5}{5}{{00}}
+\regfield{Output 0}{5}{0}{{00}}
+
+\regfield{Output 12[3:0]}{4}{28}{{00}}
+\regfield{Output 11}{5}{23}{{00}}
+\regfield{Output 10}{5}{18}{{00}}
+\regfield{Output 7}{5}{3}{{00}}
+\regfield{Output 9}{5}{13}{{00}}
+\regfield{Output 8}{5}{8}{{00}}
+\regfield{Output 6 [4:2]}{3}{0}{{00}}
+
+\regfield{Output 19 [0:0]}{1}{31}{{00}}
+\regfield{Output 18}{5}{26}{{00}}
+\regfield{Output 17}{5}{21}{{00}}
+\regfield{Output 16}{5}{16}{{00}}
+\regfield{Output 15}{5}{11}{{00}}
+\regfield{Output 14}{5}{6}{{00}}
+\regfield{Output 13}{5}{1}{{00}}
+\regfield{Output 12[4:4]}{1}{0}{{00}}
+
+\regfield{Reserved}{3}{29}{{x}}
+\regfield{Output 24}{5}{24}{{00}}
+\regfield{Output 23}{5}{19}{{00}}
+\regfield{Output 22}{5}{14}{{00}}
+\regfield{Output 21}{5}{9}{{00}}
+\regfield{Output 20}{5}{4}{{00}}
+\regfield{Output 19[4:1]}{4}{0}{{00}}
+
+--OVERFLOW
+
+\begin{register}{H}{Overflow interrupt enable mask}{0x064}
+	\label{over_cfg0}
+     \regfield{Reserved}{8}{24}{{x}}
+     \regfield{Input 23}{1}{23}{{00}}
+     \regfield{Input 22}{1}{22}{{00}}
+     \regfield{Input 21}{1}{21}{{00}}
+     \regfield{Input 20}{1}{20}{{00}}
+     \regfield{Input 19}{1}{19}{{00}}
+     \regfield{Input 18}{1}{18}{{00}}
+     \regfield{Input 17}{1}{17}{{00}}
+     \regfield{Input 16}{1}{16}{{00}}
+     \regfield{Input 15}{1}{15}{{00}}
+     \regfield{Input 14}{1}{14}{{00}}
+     \regfield{Input 13}{1}{13}{{00}}
+     \regfield{Input 12}{1}{12}{{00}}
+     \regfield{Input 11}{1}{11}{{00}}
+     \regfield{Input 10}{1}{10}{{00}}
+     \regfield{Input 9}{1}{9}{{00}}
+     \regfield{Input 8}{1}{8}{{00}}
+     \regfield{Input 7}{1}{7}{{00}}
+     \regfield{Input 6}{1}{6}{{00}}
+     \regfield{Input 5}{1}{5}{{00}}
+     \regfield{Input 4}{1}{4}{{00}}
+     \regfield{Input 3}{1}{3}{{00}}
+     \regfield{Input 2}{1}{2}{{00}}
+     \regfield{Input 1}{1}{1}{{00}}
+     \regfield{Input 0}{1}{0}{{00}}
+	\reglabel{Reset value}\regnewline
+\end{register}
+
+\begin{register}{H}{Overflow interrupt vector }{0x068}
+	\label{over_cfg1}
+     \regfield{Reserved}{8}{24}{{x}}
+     \regfield{Input 23}{1}{23}{{00}}
+     \regfield{Input 22}{1}{22}{{00}}
+     \regfield{Input 21}{1}{21}{{00}}
+     \regfield{Input 20}{1}{20}{{00}}
+     \regfield{Input 19}{1}{19}{{00}}
+     \regfield{Input 18}{1}{18}{{00}}
+     \regfield{Input 17}{1}{17}{{00}}
+     \regfield{Input 16}{1}{16}{{00}}
+     \regfield{Input 15}{1}{15}{{00}}
+     \regfield{Input 14}{1}{14}{{00}}
+     \regfield{Input 13}{1}{13}{{00}}
+     \regfield{Input 12}{1}{12}{{00}}
+     \regfield{Input 11}{1}{11}{{00}}
+     \regfield{Input 10}{1}{10}{{00}}
+     \regfield{Input 9}{1}{9}{{00}}
+     \regfield{Input 8}{1}{8}{{00}}
+     \regfield{Input 7}{1}{7}{{00}}
+     \regfield{Input 6}{1}{6}{{00}}
+     \regfield{Input 5}{1}{5}{{00}}
+     \regfield{Input 4}{1}{4}{{00}}
+     \regfield{Input 3}{1}{3}{{00}}
+     \regfield{Input 2}{1}{2}{{00}}
+     \regfield{Input 1}{1}{1}{{00}}
+     \regfield{Input 0}{1}{0}{{00}}
+	\reglabel{Reset value}\regnewline
+\end{register}
+
+--Quota
+Deprecated feature
+
+--MCCU
+\begin{register}{H}{MCCU main configuration}{0x074}
+	\label{MCCU_cfg}
+    \regfield{Reserved}{25}{8}{{x}}
+    \regfield{Soft reset RDC}{1}{7}{{0}}
+    \regfield{Enable RDC}{1}{6}{{0}}
+    \regfield{Update Quota Core 3}{1}{5}{{0}}
+    \regfield{Update Quota Core 2}{1}{4}{{0}}
+    \regfield{Update Quota Core 1}{1}{3}{{0}}
+    \regfield{Update Quota Core 0}{1}{2}{{0}}
+    \regfield{Soft reset MCCU}{1}{1}{{0}}
+    \regfield{Enable reset MCCU}{1}{0}{{0}}
+	\reglabel{Reset value}\regnewline
+\end{register}
+
+\begin{figure}[H]
+	\begin{center}
+		\regfieldb{0x078}{32}{0}
+		\reglabelb{Core 0} \\
+		\regfieldb{0x07c}{32}{0}
+		\reglabelb{Core 1} \\
+		\regfieldb{0x080}{32}{0}
+		\reglabelb{Core 2} \\
+		\regfieldb{0x084}{32}{0}
+		\reglabelb{Core 3} \\
+		\end{center}
+	\caption{MCCU Quota limits for each core}\label{fig:MCCU_lim}
+\end{figure}
+
+\begin{figure}[H]
+	\begin{center}
+		\regfieldb{0x088}{32}{0}
+		\reglabelb{Core 0} \\
+		\regfieldb{0x08c}{32}{0}
+		\reglabelb{Core 1} \\
+		\regfieldb{0x090}{32}{0}
+		\reglabelb{Core 2} \\
+		\regfieldb{0x094}{32}{0}
+		\reglabelb{Core 3} \\
+		\end{center}
+	\caption{MCCU Current remaning Quota for each core}\label{fig:MCCU_ava}
+\end{figure}
+
+\begin{register}{H}{MCCU event weights register 0 (shared with RDC)}{0x098}
+	\label{MCCU_weight0}
+    \regfield{Input 3}{8}{24}{{00}}
+    \regfield{Input 2}{8}{16}{{00}}
+    \regfield{Input 1}{8}{8}{{00}}
+    \regfield{Input 0}{8}{0}{{00}}
+	\reglabel{Reset value}\regnewline
+\end{register}
+
+
+\begin{register}{H}{MCCU event weights register 1 (shared with RDC)}{0x09c}
+	\label{MCCU_weight1}
+    \regfield{Input 7}{8}{24}{{00}}
+    \regfield{Input 6}{8}{16}{{00}}
+    \regfield{Input 5}{8}{8}{{00}}
+    \regfield{Input 4}{8}{0}{{00}}
+	\reglabel{Reset value}\regnewline
+\end{register}
+
+--RDC
+
+\begin{register}{H}{RDC interrupt vector}{0x0a0}
+	\label{RDC_intrv}
+    \regfield{Reserved}{28}{4}{{x}}
+    \regfield{Core 3}{1}{3}{{00}}
+    \regfield{Core 2}{1}{2}{{00}}
+    \regfield{Core 1}{1}{1}{{00}}
+    \regfield{Core 0}{1}{0}{{00}}
+	\reglabel{Reset value}\regnewline
+\end{register}
+
+\begin{register}{H}{RDC event weights register 0 (shared with MCCU)}{0x098}
+	\label{RDC_weight0}
+    \regfield{Input 3}{8}{24}{{00}}
+    \regfield{Input 2}{8}{16}{{00}}
+    \regfield{Input 1}{8}{8}{{00}}
+    \regfield{Input 0}{8}{0}{{00}}
+	\reglabel{Reset value}\regnewline
+\end{register}
+
+
+\begin{register}{H}{RDC event weights register 1 (shared with MCCU)}{0x09c}
+	\label{RDC_weight1}
+    \regfield{Input 7}{8}{24}{{00}}
+    \regfield{Input 6}{8}{16}{{00}}
+    \regfield{Input 5}{8}{8}{{00}}
+    \regfield{Input 4}{8}{0}{{00}}
+	\reglabel{Reset value}\regnewline
+\end{register}
+
+\begin{register}{H}{RDC watermark register 0}{0x0a4}
+	\label{RDC_water0}
+    \regfield{Input 3}{8}{24}{{00}}
+    \regfield{Input 2}{8}{16}{{00}}
+    \regfield{Input 1}{8}{8}{{00}}
+    \regfield{Input 0}{8}{0}{{00}}
+	\reglabel{Reset value}\regnewline
+\end{register}
+
+
+\begin{register}{H}{RDC watermark register 1}{0x0a8}
+	\label{RDC_water1}
+    \regfield{Input 7}{8}{24}{{00}}
+    \regfield{Input 6}{8}{16}{{00}}
+    \regfield{Input 5}{8}{8}{{00}}
+    \regfield{Input 4}{8}{0}{{00}}
+	\reglabel{Reset value}\regnewline
+\end{register}
+
