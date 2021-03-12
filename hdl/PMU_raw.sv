@@ -551,7 +551,7 @@ end
 
     //register enable to solve Hazards
     reg MCCU_rstn;
-    always @(posedge clk_i, negedge rstn_i) begin: MCCU_glitchless_rstn
+    always @(posedge clk_i) begin: MCCU_glitchless_rstn
             if (!rstn_i) begin
                 MCCU_rstn <= 0;
             end else begin
@@ -561,7 +561,7 @@ end
     
     //register enable to solve Hazards
     reg MCCU_enable_int;
-    always @(posedge clk_i, negedge rstn_i) begin: MCCU_glitchless_enable
+    always @(posedge clk_i) begin: MCCU_glitchless_enable
             if (!rstn_i) begin
                 MCCU_enable_int <= 0;
             end else begin
@@ -610,7 +610,7 @@ end
     
    //register enable to solve Hazards
     reg RDC_rstn;
-    always @(posedge clk_i, negedge rstn_i) begin: RDC_glitchless_rstn
+    always @(posedge clk_i) begin: RDC_glitchless_rstn
             if (!rstn_i) begin
                 RDC_rstn <= 0;
             end else begin
@@ -621,7 +621,7 @@ end
      
     //register enable to solve Hazards
     reg RDC_enable_int;
-    always @(posedge clk_i, negedge rstn_i) begin: RDC_glitchless_enable
+    always @(posedge clk_i) begin: RDC_glitchless_enable
             if (!rstn_i) begin
                 RDC_enable_int <= 0;
             end else begin

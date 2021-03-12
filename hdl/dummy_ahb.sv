@@ -147,7 +147,7 @@ var struct packed{
     
     assign slv_reg_Q = slv_reg;
 
-    always_ff @(posedge clk_i, negedge rstn_i) begin
+    always_ff @(posedge clk_i) begin
         if(rstn_i == 1'b0 ) begin
             slv_reg<='{default:0};
         end else begin 
@@ -186,7 +186,7 @@ always_comb begin
     endcase
 end
 // address phase - register required inputs
-always_ff @(posedge clk_i, negedge rstn_i) begin
+always_ff @(posedge clk_i) begin
     if(rstn_i == 1'b0 ) begin
         //initialize all the structure to  0 at reset
         address_phase <= '{default:0};
@@ -217,7 +217,7 @@ always_ff @(posedge clk_i, negedge rstn_i) begin
 end
 
 //data phase - state update
-always_ff @(posedge clk_i, negedge rstn_i) begin
+always_ff @(posedge clk_i) begin
     if(rstn_i == 1'b0 ) begin
         state<=TRANS_IDLE;
     end else begin 

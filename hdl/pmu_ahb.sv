@@ -188,7 +188,7 @@ var struct packed{
     logic [REG_WIDTH-1:0] slv_reg_D [0:N_REGS-1];
     logic [REG_WIDTH-1:0] slv_reg_Q [0:N_REGS-1];
 
-    always_ff @(posedge clk_i, negedge rstn_i) begin
+    always_ff @(posedge clk_i) begin
         if(rstn_i == 1'b0 ) begin
             slv_reg<='{default:0};
         end else begin 
@@ -231,7 +231,7 @@ always_comb begin
     endcase
 end
 // address phase - register required inputs
-always_ff @(posedge clk_i, negedge rstn_i) begin
+always_ff @(posedge clk_i) begin
     if(rstn_i == 1'b0 ) begin
         //initialize all the structure to  0 at reset
         address_phase <= '{default:0};
@@ -260,7 +260,7 @@ always_ff @(posedge clk_i, negedge rstn_i) begin
 end
 
 //data phase - state update
-always_ff @(posedge clk_i, negedge rstn_i) begin
+always_ff @(posedge clk_i) begin
     if(rstn_i == 1'b0 ) begin
         state <= TRANS_IDLE;
     end else begin 

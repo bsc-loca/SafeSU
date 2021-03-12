@@ -244,7 +244,7 @@
 	// S_AXI_AWVALID_i and S_AXI_WVALID_i are asserted. axi_awready is
 	// de-asserted when reset is low.
 
-	always @( posedge S_AXI_ACLK_i, negedge S_AXI_ARESETN_i)
+	always @( posedge S_AXI_ACLK_i)
 	begin
 	  if ( S_AXI_ARESETN_i == 1'b0 )
 	    begin
@@ -278,7 +278,7 @@
 	// This process is used to latch the address when both 
 	// S_AXI_AWVALID_i and S_AXI_WVALID_i are valid. 
 
-	always @( posedge S_AXI_ACLK_i, negedge S_AXI_ARESETN_i)
+	always @( posedge S_AXI_ACLK_i)
 	begin
 	  if ( S_AXI_ARESETN_i == 1'b0 )
 	    begin
@@ -299,7 +299,7 @@
 	// S_AXI_AWVALID_i and S_AXI_WVALID_i are asserted. axi_wready is 
 	// de-asserted when reset is low. 
 
-	always @( posedge S_AXI_ACLK_i, negedge S_AXI_ARESETN_i)
+	always @( posedge S_AXI_ACLK_i)
 	begin
 	  if ( S_AXI_ARESETN_i == 1'b0 )
 	    begin
@@ -331,7 +331,7 @@
 	// and the slave is ready to accept the write address and write data.
 	assign slv_reg_wren = axi_wready && S_AXI_WVALID_i && axi_awready && S_AXI_AWVALID_i;
 
-	always @( posedge S_AXI_ACLK_i, negedge S_AXI_ARESETN_i )
+	always @( posedge S_AXI_ACLK_i)
 	begin
 	  if ( S_AXI_ARESETN_i == 1'b0 )
 	    begin : reset_all
@@ -434,7 +434,7 @@
 	// This marks the acceptance of address and indicates the status of 
 	// write transaction.
 
-	always @( posedge S_AXI_ACLK_i, negedge S_AXI_ARESETN_i)
+	always @( posedge S_AXI_ACLK_i)
 	begin
 	  if ( S_AXI_ARESETN_i == 1'b0 )
 	    begin
@@ -468,7 +468,7 @@
 	// The read address is also latched when S_AXI_ARVALID_i is 
 	// asserted. axi_araddr is reset to zero on reset assertion.
 
-	always @( posedge S_AXI_ACLK_i, negedge S_AXI_ARESETN_i )
+	always @( posedge S_AXI_ACLK_i)
 	begin
 	  if ( S_AXI_ARESETN_i == 1'b0 )
 	    begin
@@ -499,7 +499,7 @@
 	// bus and axi_rresp indicates the status of read transaction.axi_rvalid 
 	// is deasserted on reset (active low). axi_rresp and axi_rdata are 
 	// cleared to zero on reset (active low).  
-	always @( posedge S_AXI_ACLK_i, negedge S_AXI_ARESETN_i )
+	always @( posedge S_AXI_ACLK_i)
 	begin
 	  if ( S_AXI_ARESETN_i == 1'b0 )
 	    begin
@@ -549,7 +549,7 @@
           end
     end
 	// Output register or memory read data
-	always @( posedge S_AXI_ACLK_i, negedge S_AXI_ARESETN_i )
+	always @( posedge S_AXI_ACLK_i)
 	begin
 	  if ( S_AXI_ARESETN_i == 1'b0 )
 	    begin
@@ -578,7 +578,7 @@
     genvar k;
     generate
     for (k=0; k<N_COUNTERS; k=k+1) begin : generated_counter
-        always @(posedge S_AXI_ACLK_i, negedge S_AXI_ARESETN_i) begin
+        always @(posedge S_AXI_ACLK_i) begin
             if(!S_AXI_ARESETN_i)
                 slv_reg[k] <={C_S_AXI_DATA_WIDTH{1'b0}};
             else begin

@@ -31,7 +31,7 @@
 	)
 	(
 		input wire clk_i,
-        //Active low asyncronous reset. It can have hardware or software source
+        //Active low syncronous reset. It can have hardware or software source
 		input wire rstn_i,
 		//Active high enable. If enabled quota can decrease and interruptions
         //can be generated
@@ -81,7 +81,7 @@
     integer i;
     integer j;
 //    generate begin : GeneratedQuotaMonitor
-    always @(posedge clk_i, negedge rstn_i) begin: AsyncReset
+    always @(posedge clk_i) begin: syncReset
         /*----------
         Auxiliar variables
         ----------*/
@@ -91,19 +91,19 @@
         ----------*/
         if(rstn_i == 1'b0 ) begin
             /*----------
-            Async reset Quota
+            sync reset Quota
             ----------*/
             for (i=0; i<N_CORES; i=i+1) begin : ResetQuota
                 quota_int[i] <={DATA_WIDTH{1'b0}}; 
             end
             /*----------
-            Async reset current cycle consumed quota
+            sync reset current cycle consumed quota
             ----------*/
             for (i=0; i<N_CORES; i=i+1) begin : ResetCCCQuota
                 ccc_suma_int[i] <={OVERFLOW_PROT{1'b0}}; 
             end
             /*----------
-            Async reset debug registers
+            sync reset debug registers
             ----------*/
             `ifdef DEBUG
             debug_ccc_suma_int <= {OVERFLOW_PROT{1'b0}};
@@ -320,7 +320,7 @@ Section of Formal propperties, valid for SBY
       the signal for a given weight is not active the current cycle.
     --------------*/  
     //Auxiliar logic to compute sum of all signals and consumed quota
-    always@( posedge clk_i, negedge rstn_i ) begin
+    always@( posedge clk_i) begin
         f_sum_weights =0; //initialize to 0 and add events_weights_int
         if(rstn_i) begin // reset disabled
                 for (i=0; i<N_CORES; i=i+1) begin

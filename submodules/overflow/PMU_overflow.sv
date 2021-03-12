@@ -77,7 +77,7 @@ module PMU_overflow #
     //hold the interruption vector until unit is reseted
     logic [N_COUNTERS-1:0] past_intr_vect;
     
-    always @(posedge clk_i, negedge rstn_i) begin
+    always @(posedge clk_i) begin
         if(rstn_i == 1'b0 ) begin
             past_intr_vect<='{default:0};
         end else begin

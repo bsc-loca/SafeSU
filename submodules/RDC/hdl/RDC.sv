@@ -28,7 +28,7 @@
 	)
 	(
 		input wire clk_i,
-        //Active low asyncronous reset. It can have hardware or software source
+        //Active low syncronous reset. It can have hardware or software source
 		input wire rstn_i,
 		//Active high enable. If enabled MaxValue can increase and interruptions
         //can be generated
@@ -68,7 +68,7 @@
     generate
     for(x=0;x<N_CORES;x++) begin
         for(y=0;y<CORE_EVENTS;y++) begin
-            always_ff @(posedge clk_i, negedge rstn_i) begin
+            always_ff @(posedge clk_i) begin
                 if(!rstn_i)
                     max_value[CORE_EVENTS*x+y] <={WEIGHTS_WIDTH{1'b0}};
                 else begin
@@ -104,7 +104,7 @@
     endgenerate
     
     //Register the output of comparison, to identify offending signal
-    always @(posedge clk_i, negedge rstn_i) begin
+    always @(posedge clk_i) begin
             if(!rstn_i)
                 interruption_vector_rdc_o <='{default:{CORE_EVENTS{1'b0}}};
             else if (!enable_i)
@@ -127,7 +127,7 @@
     end
     endgenerate
     //Update past_interruption_rdc_o
-    always @(posedge clk_i, negedge rstn_i) begin
+    always @(posedge clk_i) begin
             if(!rstn_i)
                 past_interruption_rdc_o <= 1'b0;
             else if (!enable_i)
@@ -143,7 +143,7 @@
     genvar q;
     generate
     for (q=0; q<N_COUNTERS; q=q+1) begin : generated_watermark
-        always_ff @(posedge clk_i, negedge rstn_i) begin
+        always_ff @(posedge clk_i) begin
             if(!rstn_i) begin
                 watermark_int[q] <={WEIGHTS_WIDTH{1'b0}};
             end else begin

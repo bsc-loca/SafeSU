@@ -62,7 +62,7 @@ module PMU_counters #
     generate
     for (i=0; i<N_COUNTERS; i=i+1) begin
         assign adder_out[i] = (events_i[i] & en_i)? slv_reg[i]+1:slv_reg[i];
-        always @(posedge clk_i, negedge rstn_i) begin
+        always @(posedge clk_i) begin
             if(rstn_i == 1'b0 ) begin
                     slv_reg[i] <='{default:0};
             end else begin

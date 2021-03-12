@@ -87,7 +87,7 @@ module PMU_quota #
     // state_int shall  jump to reset state if the mask changes
     wire new_mask;
     reg [N_COUNTERS-1:0] old_mask;
-    always_ff @(posedge clk_i, negedge rstn_i) begin
+    always_ff @(posedge clk_i) begin
         if(rstn_i == 1'b0 ) begin
             old_mask <= {N_COUNTERS{1'b0}};
         end else if(softrst_i) begin 
@@ -106,7 +106,7 @@ module PMU_quota #
         // ...
     localparam N_BITS_STATES =$clog2(N_COUNTERS+1);
     reg [N_BITS_STATES-1:0] state_int;
-    always_ff @(posedge clk_i, negedge rstn_i) begin
+    always_ff @(posedge clk_i) begin
         integer i;
         if(rstn_i == 1'b0 ) begin
                 state_int <={N_BITS_STATES{1'b0}};
@@ -125,7 +125,7 @@ module PMU_quota #
 
     localparam padding0 = max_width - REG_WIDTH;
     reg [max_width-1:0] suma_int;
-    always_ff @(posedge clk_i, negedge rstn_i) begin
+    always_ff @(posedge clk_i) begin
         integer i;
         if(rstn_i == 1'b0 ) begin
                 suma_int <={max_width{1'b0}};
@@ -144,7 +144,7 @@ module PMU_quota #
 
     //Hold the state of the interruption
     reg hold_intr_quota;
-    always_ff @(posedge clk_i, negedge rstn_i) begin
+    always_ff @(posedge clk_i) begin
         if(rstn_i == 1'b0 ) begin
                 hold_intr_quota <= 1'b0; 
         end else begin
