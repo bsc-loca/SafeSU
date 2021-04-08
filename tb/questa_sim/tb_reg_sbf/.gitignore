@@ -1,0 +1,6 @@
+reg_sbf
+Makefile
+modelsim.ini
+test.vcd
+transcript
+vsim.wlf
