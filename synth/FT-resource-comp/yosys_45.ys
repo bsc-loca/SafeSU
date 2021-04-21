@@ -1,0 +1,31 @@
+#read file
+verific -sv instances.sv
+verific -sv ../../submodules/seu_ip/reg_sbf.sv
+verific -sv ../../submodules/seu_ip/way3_voter.sv
+verific -import instances
+prep -top instances
+
+#high-level
+proc; opt; fsm; opt; memory; opt
+
+#internal cell library
+techmap; opt
+
+
+#mapping flip-flops to mycells.lib
+#TODO: Replace absolute path libraries by a variable
+dfflibmap -liberty /home/gcabo/PDKs/FreePDK45/osu_soc/lib/files/gscl45nm.lib
+
+#mapping logic to mycells.lib
+#abc -liberty mycells.lib
+#TODO: Replace absolute path libraries by a variable
+abc -D 10  -constr synth.constr -liberty /home/gcabo/PDKs/FreePDK45/osu_soc/lib/files/gscl45nm.lib
+#get area
+#TODO: Replace absolute path libraries by a variable
+stat -liberty /home/gcabo/PDKs/FreePDK45/osu_soc/lib/files/gscl45nm.lib
+
+#cleanup
+clean
+
+#write synthsized design
+write_verilog synth.v

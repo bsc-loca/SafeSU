@@ -1,0 +1,1018 @@
+
+ /----------------------------------------------------------------------------\
+ |                                                                            |
+ |  yosys -- Yosys Open SYnthesis Suite -- Symbiotic EDA Edition [20190521A ] |
+ |                                                                            |
+ |  Copyright (C) 2012 - 2019 Symbiotic GmbH                                  |
+ |                                                                            |
+ |  Licensed to: Symbiotic EDA Eval License Program                           |
+ |  Licensee contact: office@symbioticeda.com                                 |
+ |                                                                            |
+ \----------------------------------------------------------------------------/
+
+ Yosys 0.8+472 (git sha1 c907899, clang 3.8.0-2ubuntu4 -fPIC -Os)
+
+[license] Signature verified.
+[license] License cache is hot.
+
+-- Running command `read -define YOSYS_7' --
+
+1. Executing VERIFIC (loading SystemVerilog and VHDL designs using Verific).
+Built with Verific Apr19_SW_Release, released at Wed May  1 16:05:25 2019.
+
+-- Executing script file `yosys_45.ys' --
+
+2. Executing VERIFIC (loading SystemVerilog and VHDL designs using Verific).
+Built with Verific Apr19_SW_Release, released at Wed May  1 16:05:25 2019.
+VERIFIC-COMMENT [VERI-1482] Analyzing Verilog file '../../hdl/AXI_PMU.sv'
+
+3. Executing VERIFIC (loading SystemVerilog and VHDL designs using Verific).
+Built with Verific Apr19_SW_Release, released at Wed May  1 16:05:25 2019.
+VERIFIC-COMMENT [VERI-1482] Analyzing Verilog file '../../hdl/AXI_PMU_interface_v1_0_S00_AXI.sv'
+
+4. Executing VERIFIC (loading SystemVerilog and VHDL designs using Verific).
+Built with Verific Apr19_SW_Release, released at Wed May  1 16:05:25 2019.
+VERIFIC-COMMENT [VERI-1482] Analyzing Verilog file '../../submodules/MCCU/hdl/MCCU.sv'
+
+5. Executing VERIFIC (loading SystemVerilog and VHDL designs using Verific).
+Built with Verific Apr19_SW_Release, released at Wed May  1 16:05:25 2019.
+VERIFIC-COMMENT [VERI-1482] Analyzing Verilog file '../../submodules/RDC/hdl/RDC.sv'
+
+6. Executing VERIFIC (loading SystemVerilog and VHDL designs using Verific).
+Built with Verific Apr19_SW_Release, released at Wed May  1 16:05:25 2019.
+Adding Verilog module 'AXI_PMU' to elaboration queue.
+Running hier_tree::Elaborate().
+VERIFIC-INFO [VERI-1018] ../../hdl/AXI_PMU.sv:11: compiling module 'AXI_PMU'
+VERIFIC-WARNING [VERI-1216] ../../hdl/AXI_PMU.sv:172: index 1 is out of range [0:0] for 'MCCU_int_o'
+VERIFIC-INFO [VERI-1018] ../../hdl/AXI_PMU_interface_v1_0_S00_AXI.sv:24: compiling module 'AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0)'
+VERIFIC-WARNING [VDB-1002] ../../hdl/AXI_PMU_interface_v1_0_S00_AXI.sv:207: net 'intr_rdc_o' does not have a driver
+Importing module AXI_PMU.
+Importing module AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).
+
+7. Executing PREP pass.
+
+7.1. Executing HIERARCHY pass (managing design hierarchy).
+
+7.1.1. Analyzing design hierarchy..
+Top module:  \AXI_PMU
+Used module:     \AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0)
+
+7.1.2. Analyzing design hierarchy..
+Top module:  \AXI_PMU
+Used module:     \AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0)
+Removed 0 unused modules.
+
+7.2. Executing PROC pass (convert processes to netlists).
+
+7.2.1. Executing PROC_CLEAN pass (remove empty switches from decision trees).
+Cleaned up 0 empty switches.
+
+7.2.2. Executing PROC_RMDEAD pass (remove dead branches from decision trees).
+Removed a total of 0 dead cases.
+
+7.2.3. Executing PROC_INIT pass (extract init attributes).
+
+7.2.4. Executing PROC_ARST pass (detect async resets in processes).
+
+7.2.5. Executing PROC_MUX pass (convert decision trees to multiplexers).
+
+7.2.6. Executing PROC_DLATCH pass (convert process syncs to latches).
+
+7.2.7. Executing PROC_DFF pass (convert process syncs to FFs).
+
+7.2.8. Executing PROC_CLEAN pass (remove empty switches from decision trees).
+Cleaned up 0 empty switches.
+
+7.3. Executing OPT_EXPR pass (perform const folding).
+Optimizing module AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).
+<suppressed ~22 debug messages>
+Optimizing module AXI_PMU.
+
+7.4. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0)..
+Finding unused cells or wires in module \AXI_PMU..
+Removed 3 unused cells and 130 unused wires.
+<suppressed ~22 debug messages>
+
+7.5. Executing CHECK pass (checking for obvious problems).
+checking module AXI_PMU..
+checking module AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0)..
+Warning: Wire AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).\int_rdc_o is used but has no driver.
+Warning: Wire AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).\MCCU_int_o is used but has no driver.
+found and reported 2 problems.
+
+7.6. Executing OPT pass (performing simple optimizations).
+
+7.6.1. Executing OPT_EXPR pass (perform const folding).
+Optimizing module AXI_PMU.
+Optimizing module AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).
+
+7.6.2. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\AXI_PMU'.
+Finding identical cells in module `\AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0)'.
+Removed a total of 0 cells.
+
+7.6.3. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
+Running muxtree optimizer on module \AXI_PMU..
+  Creating internal representation of mux trees.
+  No muxes found in this module.
+Running muxtree optimizer on module \AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0)..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Removed 0 multiplexer ports.
+<suppressed ~57 debug messages>
+
+7.6.4. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
+  Optimizing cells in module \AXI_PMU.
+  Optimizing cells in module \AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).
+Performed a total of 0 changes.
+
+7.6.5. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\AXI_PMU'.
+Finding identical cells in module `\AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0)'.
+Removed a total of 0 cells.
+
+7.6.6. Executing OPT_RMDFF pass (remove dff with constant values).
+Promoting init spec \q_2 = 0 to constant driver in module AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).
+Promoting init spec \q = 0 to constant driver in module AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).
+Promoting init spec \generated_overflow.j = 0 to constant driver in module AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).
+Promoting init spec \generated_overflow.overflow_bit.a = 0 to constant driver in module AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).
+Promoted 4 init specs to constant drivers.
+
+7.6.7. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \AXI_PMU..
+Finding unused cells or wires in module \AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0)..
+
+7.6.8. Executing OPT_EXPR pass (perform const folding).
+Optimizing module AXI_PMU.
+Optimizing module AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).
+
+7.6.9. Rerunning OPT passes. (Maybe there is more to do..)
+
+7.6.10. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
+Running muxtree optimizer on module \AXI_PMU..
+  Creating internal representation of mux trees.
+  No muxes found in this module.
+Running muxtree optimizer on module \AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0)..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Removed 0 multiplexer ports.
+<suppressed ~57 debug messages>
+
+7.6.11. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
+  Optimizing cells in module \AXI_PMU.
+  Optimizing cells in module \AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).
+Performed a total of 0 changes.
+
+7.6.12. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\AXI_PMU'.
+Finding identical cells in module `\AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0)'.
+Removed a total of 0 cells.
+
+7.6.13. Executing OPT_RMDFF pass (remove dff with constant values).
+
+7.6.14. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \AXI_PMU..
+Finding unused cells or wires in module \AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0)..
+
+7.6.15. Executing OPT_EXPR pass (perform const folding).
+Optimizing module AXI_PMU.
+Optimizing module AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).
+
+7.6.16. Finished OPT passes. (There is nothing left to do.)
+
+7.7. Executing WREDUCE pass (reducing word size of cells).
+Removed top 4 bits (of 5) from port A of cell AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).$verific$LessThan_1265$../../hdl/AXI_PMU_interface_v1_0_S00_AXI.sv:541$577 ($lt).
+Removed top 4 bits (of 5) from port B of cell AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).$verific$equal_1270$../../hdl/AXI_PMU_interface_v1_0_S00_AXI.sv:543$582 ($eq).
+Removed top 3 bits (of 5) from port B of cell AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).$verific$equal_1272$../../hdl/AXI_PMU_interface_v1_0_S00_AXI.sv:543$584 ($eq).
+Removed top 3 bits (of 5) from port B of cell AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).$verific$equal_1274$../../hdl/AXI_PMU_interface_v1_0_S00_AXI.sv:543$586 ($eq).
+Removed top 2 bits (of 5) from port B of cell AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).$verific$equal_1276$../../hdl/AXI_PMU_interface_v1_0_S00_AXI.sv:543$588 ($eq).
+Removed top 2 bits (of 5) from port B of cell AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).$verific$equal_1278$../../hdl/AXI_PMU_interface_v1_0_S00_AXI.sv:543$590 ($eq).
+Removed top 2 bits (of 5) from port B of cell AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).$verific$equal_1280$../../hdl/AXI_PMU_interface_v1_0_S00_AXI.sv:543$592 ($eq).
+Removed top 2 bits (of 5) from port B of cell AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).$verific$equal_1282$../../hdl/AXI_PMU_interface_v1_0_S00_AXI.sv:543$594 ($eq).
+Removed top 1 bits (of 5) from port B of cell AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).$verific$equal_1284$../../hdl/AXI_PMU_interface_v1_0_S00_AXI.sv:543$596 ($eq).
+Removed top 1 bits (of 5) from port B of cell AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).$verific$equal_1286$../../hdl/AXI_PMU_interface_v1_0_S00_AXI.sv:543$598 ($eq).
+Removed top 1 bits (of 5) from port B of cell AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).$verific$equal_1288$../../hdl/AXI_PMU_interface_v1_0_S00_AXI.sv:543$600 ($eq).
+Removed top 1 bits (of 5) from port B of cell AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).$verific$equal_1290$../../hdl/AXI_PMU_interface_v1_0_S00_AXI.sv:543$602 ($eq).
+Removed top 1 bits (of 5) from port B of cell AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).$verific$equal_1292$../../hdl/AXI_PMU_interface_v1_0_S00_AXI.sv:543$604 ($eq).
+Removed top 1 bits (of 5) from port B of cell AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).$verific$equal_1294$../../hdl/AXI_PMU_interface_v1_0_S00_AXI.sv:543$606 ($eq).
+Removed top 1 bits (of 5) from port B of cell AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).$verific$equal_1296$../../hdl/AXI_PMU_interface_v1_0_S00_AXI.sv:543$608 ($eq).
+Removed top 1 bits (of 5) from port B of cell AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).$verific$equal_1298$../../hdl/AXI_PMU_interface_v1_0_S00_AXI.sv:543$610 ($eq).
+Removed top 31 bits (of 32) from port B of cell AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).$verific$add_1331$../../hdl/AXI_PMU_interface_v1_0_S00_AXI.sv:586$638 ($add).
+Removed top 31 bits (of 32) from port B of cell AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).$verific$add_1463$../../hdl/AXI_PMU_interface_v1_0_S00_AXI.sv:586$644 ($add).
+Removed top 31 bits (of 32) from port B of cell AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).$verific$add_1595$../../hdl/AXI_PMU_interface_v1_0_S00_AXI.sv:586$650 ($add).
+Removed top 31 bits (of 32) from port B of cell AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).$verific$add_1727$../../hdl/AXI_PMU_interface_v1_0_S00_AXI.sv:586$656 ($add).
+Removed top 31 bits (of 32) from port B of cell AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).$verific$add_1859$../../hdl/AXI_PMU_interface_v1_0_S00_AXI.sv:586$662 ($add).
+Removed top 31 bits (of 32) from port B of cell AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).$verific$add_1991$../../hdl/AXI_PMU_interface_v1_0_S00_AXI.sv:586$668 ($add).
+Removed top 31 bits (of 32) from port B of cell AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).$verific$add_2123$../../hdl/AXI_PMU_interface_v1_0_S00_AXI.sv:586$674 ($add).
+Removed top 31 bits (of 32) from port B of cell AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).$verific$add_2255$../../hdl/AXI_PMU_interface_v1_0_S00_AXI.sv:586$680 ($add).
+Removed top 31 bits (of 32) from port B of cell AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).$verific$add_2387$../../hdl/AXI_PMU_interface_v1_0_S00_AXI.sv:586$686 ($add).
+Removed top 31 bits (of 32) from port B of cell AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).$verific$add_2519$../../hdl/AXI_PMU_interface_v1_0_S00_AXI.sv:586$692 ($add).
+Removed top 31 bits (of 32) from port B of cell AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).$verific$add_2651$../../hdl/AXI_PMU_interface_v1_0_S00_AXI.sv:586$698 ($add).
+Removed top 31 bits (of 32) from port B of cell AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).$verific$add_2783$../../hdl/AXI_PMU_interface_v1_0_S00_AXI.sv:586$704 ($add).
+Removed top 31 bits (of 32) from port B of cell AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).$verific$add_2915$../../hdl/AXI_PMU_interface_v1_0_S00_AXI.sv:586$710 ($add).
+Removed top 31 bits (of 32) from port B of cell AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).$verific$add_3047$../../hdl/AXI_PMU_interface_v1_0_S00_AXI.sv:586$716 ($add).
+Removed top 31 bits (of 32) from port B of cell AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).$verific$add_3179$../../hdl/AXI_PMU_interface_v1_0_S00_AXI.sv:586$722 ($add).
+Removed top 31 bits (of 32) from port B of cell AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).$verific$add_3311$../../hdl/AXI_PMU_interface_v1_0_S00_AXI.sv:586$728 ($add).
+Removed top 31 bits (of 32) from port B of cell AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).$verific$add_3443$../../hdl/AXI_PMU_interface_v1_0_S00_AXI.sv:586$734 ($add).
+Removed top 31 bits (of 32) from port B of cell AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).$verific$add_3575$../../hdl/AXI_PMU_interface_v1_0_S00_AXI.sv:586$740 ($add).
+Removed top 31 bits (of 32) from port B of cell AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).$verific$add_3707$../../hdl/AXI_PMU_interface_v1_0_S00_AXI.sv:586$746 ($add).
+Removed top 32 bits (of 64) from port A of cell AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).$verific$LessThan_3913$../../hdl/AXI_PMU_interface_v1_0_S00_AXI.sv:647$791 ($lt).
+Removed top 14 bits (of 64) from port B of cell AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).$verific$LessThan_3913$../../hdl/AXI_PMU_interface_v1_0_S00_AXI.sv:647$791 ($lt).
+Removed top 1 bits (of 33) from port A of cell AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).$verific$add_3916$../../hdl/AXI_PMU_interface_v1_0_S00_AXI.sv:655$794 ($add).
+Removed top 2 bits (of 34) from port A of cell AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).$verific$add_3917$../../hdl/AXI_PMU_interface_v1_0_S00_AXI.sv:655$795 ($add).
+Removed top 3 bits (of 35) from port A of cell AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).$verific$add_3918$../../hdl/AXI_PMU_interface_v1_0_S00_AXI.sv:655$796 ($add).
+Removed top 4 bits (of 36) from port A of cell AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).$verific$add_3919$../../hdl/AXI_PMU_interface_v1_0_S00_AXI.sv:655$797 ($add).
+Removed top 5 bits (of 37) from port A of cell AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).$verific$add_3920$../../hdl/AXI_PMU_interface_v1_0_S00_AXI.sv:655$798 ($add).
+Removed top 6 bits (of 38) from port A of cell AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).$verific$add_3921$../../hdl/AXI_PMU_interface_v1_0_S00_AXI.sv:655$799 ($add).
+Removed top 7 bits (of 39) from port A of cell AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).$verific$add_3922$../../hdl/AXI_PMU_interface_v1_0_S00_AXI.sv:655$800 ($add).
+Removed top 8 bits (of 40) from port A of cell AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).$verific$add_3923$../../hdl/AXI_PMU_interface_v1_0_S00_AXI.sv:655$801 ($add).
+Removed top 9 bits (of 41) from port A of cell AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).$verific$add_3924$../../hdl/AXI_PMU_interface_v1_0_S00_AXI.sv:655$802 ($add).
+Removed top 10 bits (of 42) from port A of cell AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).$verific$add_3925$../../hdl/AXI_PMU_interface_v1_0_S00_AXI.sv:655$803 ($add).
+Removed top 11 bits (of 43) from port A of cell AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).$verific$add_3926$../../hdl/AXI_PMU_interface_v1_0_S00_AXI.sv:655$804 ($add).
+Removed top 12 bits (of 44) from port A of cell AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).$verific$add_3927$../../hdl/AXI_PMU_interface_v1_0_S00_AXI.sv:655$805 ($add).
+Removed top 13 bits (of 45) from port A of cell AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).$verific$add_3928$../../hdl/AXI_PMU_interface_v1_0_S00_AXI.sv:655$806 ($add).
+Removed top 14 bits (of 46) from port A of cell AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).$verific$add_3929$../../hdl/AXI_PMU_interface_v1_0_S00_AXI.sv:655$807 ($add).
+Removed top 15 bits (of 47) from port A of cell AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).$verific$add_3930$../../hdl/AXI_PMU_interface_v1_0_S00_AXI.sv:655$808 ($add).
+Removed top 16 bits (of 48) from port A of cell AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).$verific$add_3931$../../hdl/AXI_PMU_interface_v1_0_S00_AXI.sv:655$809 ($add).
+Removed top 17 bits (of 49) from port A of cell AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).$verific$add_3932$../../hdl/AXI_PMU_interface_v1_0_S00_AXI.sv:655$810 ($add).
+Removed top 27 bits (of 32) from wire AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).decode_read.read_address.
+Removed top 14 bits (of 64) from wire AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).generated_quota.suma.
+Removed top 3 bits (of 32) from wire AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).generated_quota.values_count[18].
+
+7.8. Executing MEMORY_DFF pass (merging $dff cells to $memrd and $memwr).
+
+7.9. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \AXI_PMU..
+Finding unused cells or wires in module \AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0)..
+Removed 0 unused cells and 2 unused wires.
+<suppressed ~1 debug messages>
+
+7.10. Executing MEMORY_COLLECT pass (generating $mem cells).
+
+7.11. Executing OPT pass (performing simple optimizations).
+
+7.11.1. Executing OPT_EXPR pass (perform const folding).
+Optimizing module AXI_PMU.
+Optimizing module AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).
+
+7.11.2. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\AXI_PMU'.
+Finding identical cells in module `\AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0)'.
+Removed a total of 0 cells.
+
+7.11.3. Executing OPT_RMDFF pass (remove dff with constant values).
+
+7.11.4. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \AXI_PMU..
+Finding unused cells or wires in module \AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0)..
+
+7.11.5. Finished fast OPT passes.
+
+7.12. Printing statistics.
+
+=== AXI_PMU ===
+
+   Number of wires:                 45
+   Number of wire bits:            142
+   Number of public wires:          45
+   Number of public wire bits:     142
+   Number of memories:               0
+   Number of memory bits:            0
+   Number of processes:              0
+   Number of cells:                  1
+     AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0)      1
+
+=== AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0) ===
+
+   Number of wires:                409
+   Number of wire bits:           7786
+   Number of public wires:         103
+   Number of public wire bits:    2098
+   Number of memories:               0
+   Number of memory bits:            0
+   Number of processes:              0
+   Number of cells:                349
+     $add                           37
+     $and                           57
+     $dff                           37
+     $eq                            32
+     $logic_not                      1
+     $lt                             3
+     $mux                          175
+     $not                            6
+     $or                             1
+
+=== design hierarchy ===
+
+   AXI_PMU                           1
+     AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0)      1
+
+   Number of wires:                454
+   Number of wire bits:           7928
+   Number of public wires:         148
+   Number of public wire bits:    2240
+   Number of memories:               0
+   Number of memory bits:            0
+   Number of processes:              0
+   Number of cells:                349
+     $add                           37
+     $and                           57
+     $dff                           37
+     $eq                            32
+     $logic_not                      1
+     $lt                             3
+     $mux                          175
+     $not                            6
+     $or                             1
+
+7.13. Executing CHECK pass (checking for obvious problems).
+checking module AXI_PMU..
+checking module AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0)..
+Warning: Wire AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).\int_rdc_o is used but has no driver.
+Warning: Wire AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).\MCCU_int_o is used but has no driver.
+found and reported 2 problems.
+
+8. Executing PROC pass (convert processes to netlists).
+
+8.1. Executing PROC_CLEAN pass (remove empty switches from decision trees).
+Cleaned up 0 empty switches.
+
+8.2. Executing PROC_RMDEAD pass (remove dead branches from decision trees).
+Removed a total of 0 dead cases.
+
+8.3. Executing PROC_INIT pass (extract init attributes).
+
+8.4. Executing PROC_ARST pass (detect async resets in processes).
+
+8.5. Executing PROC_MUX pass (convert decision trees to multiplexers).
+
+8.6. Executing PROC_DLATCH pass (convert process syncs to latches).
+
+8.7. Executing PROC_DFF pass (convert process syncs to FFs).
+
+8.8. Executing PROC_CLEAN pass (remove empty switches from decision trees).
+Cleaned up 0 empty switches.
+
+9. Executing OPT pass (performing simple optimizations).
+
+9.1. Executing OPT_EXPR pass (perform const folding).
+Optimizing module AXI_PMU.
+Optimizing module AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).
+
+9.2. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\AXI_PMU'.
+Finding identical cells in module `\AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0)'.
+Removed a total of 0 cells.
+
+9.3. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
+Running muxtree optimizer on module \AXI_PMU..
+  Creating internal representation of mux trees.
+  No muxes found in this module.
+Running muxtree optimizer on module \AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0)..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Removed 0 multiplexer ports.
+<suppressed ~57 debug messages>
+
+9.4. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
+  Optimizing cells in module \AXI_PMU.
+  Optimizing cells in module \AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).
+Performed a total of 0 changes.
+
+9.5. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\AXI_PMU'.
+Finding identical cells in module `\AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0)'.
+Removed a total of 0 cells.
+
+9.6. Executing OPT_RMDFF pass (remove dff with constant values).
+
+9.7. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \AXI_PMU..
+Finding unused cells or wires in module \AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0)..
+
+9.8. Executing OPT_EXPR pass (perform const folding).
+Optimizing module AXI_PMU.
+Optimizing module AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).
+
+9.9. Finished OPT passes. (There is nothing left to do.)
+
+10. Executing FSM pass (extract and optimize FSM).
+
+10.1. Executing FSM_DETECT pass (finding FSMs in design).
+Not marking AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).axi_bresp as FSM state register:
+    Register is connected to module port.
+    Users of register don't seem to benefit from recoding.
+Not marking AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).axi_rresp as FSM state register:
+    Register is connected to module port.
+    Users of register don't seem to benefit from recoding.
+
+10.2. Executing FSM_EXTRACT pass (extracting FSM from design).
+
+10.3. Executing FSM_OPT pass (simple optimizations of FSMs).
+
+10.4. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \AXI_PMU..
+Finding unused cells or wires in module \AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0)..
+
+10.5. Executing FSM_OPT pass (simple optimizations of FSMs).
+
+10.6. Executing FSM_RECODE pass (re-assigning FSM state encoding).
+
+10.7. Executing FSM_INFO pass (dumping all available information on FSM cells).
+
+10.8. Executing FSM_MAP pass (mapping FSMs to basic logic).
+
+11. Executing OPT pass (performing simple optimizations).
+
+11.1. Executing OPT_EXPR pass (perform const folding).
+Optimizing module AXI_PMU.
+Optimizing module AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).
+
+11.2. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\AXI_PMU'.
+Finding identical cells in module `\AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0)'.
+Removed a total of 0 cells.
+
+11.3. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
+Running muxtree optimizer on module \AXI_PMU..
+  Creating internal representation of mux trees.
+  No muxes found in this module.
+Running muxtree optimizer on module \AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0)..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Removed 0 multiplexer ports.
+<suppressed ~57 debug messages>
+
+11.4. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
+  Optimizing cells in module \AXI_PMU.
+  Optimizing cells in module \AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).
+Performed a total of 0 changes.
+
+11.5. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\AXI_PMU'.
+Finding identical cells in module `\AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0)'.
+Removed a total of 0 cells.
+
+11.6. Executing OPT_RMDFF pass (remove dff with constant values).
+
+11.7. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \AXI_PMU..
+Finding unused cells or wires in module \AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0)..
+
+11.8. Executing OPT_EXPR pass (perform const folding).
+Optimizing module AXI_PMU.
+Optimizing module AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).
+
+11.9. Finished OPT passes. (There is nothing left to do.)
+
+12. Executing MEMORY pass.
+
+12.1. Executing MEMORY_DFF pass (merging $dff cells to $memrd and $memwr).
+
+12.2. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \AXI_PMU..
+Finding unused cells or wires in module \AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0)..
+
+12.3. Executing MEMORY_SHARE pass (consolidating $memrd/$memwr cells).
+
+12.4. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \AXI_PMU..
+Finding unused cells or wires in module \AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0)..
+
+12.5. Executing MEMORY_COLLECT pass (generating $mem cells).
+
+12.6. Executing MEMORY_MAP pass (converting $mem cells to logic and flip-flops).
+
+13. Executing OPT pass (performing simple optimizations).
+
+13.1. Executing OPT_EXPR pass (perform const folding).
+Optimizing module AXI_PMU.
+Optimizing module AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).
+
+13.2. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\AXI_PMU'.
+Finding identical cells in module `\AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0)'.
+Removed a total of 0 cells.
+
+13.3. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
+Running muxtree optimizer on module \AXI_PMU..
+  Creating internal representation of mux trees.
+  No muxes found in this module.
+Running muxtree optimizer on module \AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0)..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Removed 0 multiplexer ports.
+<suppressed ~57 debug messages>
+
+13.4. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
+  Optimizing cells in module \AXI_PMU.
+  Optimizing cells in module \AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).
+Performed a total of 0 changes.
+
+13.5. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\AXI_PMU'.
+Finding identical cells in module `\AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0)'.
+Removed a total of 0 cells.
+
+13.6. Executing OPT_RMDFF pass (remove dff with constant values).
+
+13.7. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \AXI_PMU..
+Finding unused cells or wires in module \AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0)..
+
+13.8. Executing OPT_EXPR pass (perform const folding).
+Optimizing module AXI_PMU.
+Optimizing module AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).
+
+13.9. Finished OPT passes. (There is nothing left to do.)
+
+14. Executing TECHMAP pass (map to technology primitives).
+
+14.1. Executing Verilog-2005 frontend: <techmap.v>
+Parsing Verilog input from `<techmap.v>' to AST representation.
+Generating RTLIL representation for module `\_90_simplemap_bool_ops'.
+Generating RTLIL representation for module `\_90_simplemap_reduce_ops'.
+Generating RTLIL representation for module `\_90_simplemap_logic_ops'.
+Generating RTLIL representation for module `\_90_simplemap_compare_ops'.
+Generating RTLIL representation for module `\_90_simplemap_various'.
+Generating RTLIL representation for module `\_90_simplemap_registers'.
+Generating RTLIL representation for module `\_90_shift_ops_shr_shl_sshl_sshr'.
+Generating RTLIL representation for module `\_90_shift_shiftx'.
+Generating RTLIL representation for module `\_90_fa'.
+Generating RTLIL representation for module `\_90_lcu'.
+Generating RTLIL representation for module `\_90_alu'.
+Generating RTLIL representation for module `\_90_macc'.
+Generating RTLIL representation for module `\_90_alumacc'.
+Generating RTLIL representation for module `\$__div_mod_u'.
+Generating RTLIL representation for module `\$__div_mod'.
+Generating RTLIL representation for module `\_90_div'.
+Generating RTLIL representation for module `\_90_mod'.
+Generating RTLIL representation for module `\_90_pow'.
+Generating RTLIL representation for module `\_90_pmux'.
+Generating RTLIL representation for module `\_90_lut'.
+Successfully finished Verilog frontend.
+
+14.2. Continuing TECHMAP pass.
+Using extmapper simplemap for cells of type $not.
+Using extmapper simplemap for cells of type $and.
+Using extmapper simplemap for cells of type $mux.
+Using extmapper simplemap for cells of type $dff.
+Using extmapper simplemap for cells of type $eq.
+Running "alumacc" on wrapper $extern:wrap:$lt:A_SIGNED=0:A_WIDTH=1:B_SIGNED=0:B_WIDTH=5:Y_WIDTH=1:394426c56d1a028ba8fdd5469b163e04011def47.
+Using template $extern:wrap:$lt:A_SIGNED=0:A_WIDTH=1:B_SIGNED=0:B_WIDTH=5:Y_WIDTH=1:394426c56d1a028ba8fdd5469b163e04011def47 for cells of type $extern:wrap:$lt:A_SIGNED=0:A_WIDTH=1:B_SIGNED=0:B_WIDTH=5:Y_WIDTH=1:394426c56d1a028ba8fdd5469b163e04011def47.
+Running "alumacc" on wrapper $extern:wrap:$lt:A_SIGNED=0:A_WIDTH=5:B_SIGNED=0:B_WIDTH=5:Y_WIDTH=1:394426c56d1a028ba8fdd5469b163e04011def47.
+Using template $extern:wrap:$lt:A_SIGNED=0:A_WIDTH=5:B_SIGNED=0:B_WIDTH=5:Y_WIDTH=1:394426c56d1a028ba8fdd5469b163e04011def47 for cells of type $extern:wrap:$lt:A_SIGNED=0:A_WIDTH=5:B_SIGNED=0:B_WIDTH=5:Y_WIDTH=1:394426c56d1a028ba8fdd5469b163e04011def47.
+Using extmapper simplemap for cells of type $logic_not.
+Running "alumacc" on wrapper $extern:wrap:$add:A_SIGNED=0:A_WIDTH=32:B_SIGNED=0:B_WIDTH=1:Y_WIDTH=32:394426c56d1a028ba8fdd5469b163e04011def47.
+Using template $extern:wrap:$add:A_SIGNED=0:A_WIDTH=32:B_SIGNED=0:B_WIDTH=1:Y_WIDTH=32:394426c56d1a028ba8fdd5469b163e04011def47 for cells of type $extern:wrap:$add:A_SIGNED=0:A_WIDTH=32:B_SIGNED=0:B_WIDTH=1:Y_WIDTH=32:394426c56d1a028ba8fdd5469b163e04011def47.
+Using extmapper simplemap for cells of type $or.
+Running "alumacc" on wrapper $extern:wrap:$lt:A_SIGNED=0:A_WIDTH=32:B_SIGNED=0:B_WIDTH=50:Y_WIDTH=1:394426c56d1a028ba8fdd5469b163e04011def47.
+Using template $extern:wrap:$lt:A_SIGNED=0:A_WIDTH=32:B_SIGNED=0:B_WIDTH=50:Y_WIDTH=1:394426c56d1a028ba8fdd5469b163e04011def47 for cells of type $extern:wrap:$lt:A_SIGNED=0:A_WIDTH=32:B_SIGNED=0:B_WIDTH=50:Y_WIDTH=1:394426c56d1a028ba8fdd5469b163e04011def47.
+Running "alumacc" on wrapper $extern:wrap:$add:A_SIGNED=0:A_WIDTH=32:B_SIGNED=0:B_WIDTH=32:Y_WIDTH=33:394426c56d1a028ba8fdd5469b163e04011def47.
+Using template $extern:wrap:$add:A_SIGNED=0:A_WIDTH=32:B_SIGNED=0:B_WIDTH=32:Y_WIDTH=33:394426c56d1a028ba8fdd5469b163e04011def47 for cells of type $extern:wrap:$add:A_SIGNED=0:A_WIDTH=32:B_SIGNED=0:B_WIDTH=32:Y_WIDTH=33:394426c56d1a028ba8fdd5469b163e04011def47.
+Running "alumacc" on wrapper $extern:wrap:$add:A_SIGNED=0:A_WIDTH=32:B_SIGNED=0:B_WIDTH=33:Y_WIDTH=34:394426c56d1a028ba8fdd5469b163e04011def47.
+Using template $extern:wrap:$add:A_SIGNED=0:A_WIDTH=32:B_SIGNED=0:B_WIDTH=33:Y_WIDTH=34:394426c56d1a028ba8fdd5469b163e04011def47 for cells of type $extern:wrap:$add:A_SIGNED=0:A_WIDTH=32:B_SIGNED=0:B_WIDTH=33:Y_WIDTH=34:394426c56d1a028ba8fdd5469b163e04011def47.
+Running "alumacc" on wrapper $extern:wrap:$add:A_SIGNED=0:A_WIDTH=32:B_SIGNED=0:B_WIDTH=34:Y_WIDTH=35:394426c56d1a028ba8fdd5469b163e04011def47.
+Using template $extern:wrap:$add:A_SIGNED=0:A_WIDTH=32:B_SIGNED=0:B_WIDTH=34:Y_WIDTH=35:394426c56d1a028ba8fdd5469b163e04011def47 for cells of type $extern:wrap:$add:A_SIGNED=0:A_WIDTH=32:B_SIGNED=0:B_WIDTH=34:Y_WIDTH=35:394426c56d1a028ba8fdd5469b163e04011def47.
+Running "alumacc" on wrapper $extern:wrap:$add:A_SIGNED=0:A_WIDTH=32:B_SIGNED=0:B_WIDTH=35:Y_WIDTH=36:394426c56d1a028ba8fdd5469b163e04011def47.
+Using template $extern:wrap:$add:A_SIGNED=0:A_WIDTH=32:B_SIGNED=0:B_WIDTH=35:Y_WIDTH=36:394426c56d1a028ba8fdd5469b163e04011def47 for cells of type $extern:wrap:$add:A_SIGNED=0:A_WIDTH=32:B_SIGNED=0:B_WIDTH=35:Y_WIDTH=36:394426c56d1a028ba8fdd5469b163e04011def47.
+Running "alumacc" on wrapper $extern:wrap:$add:A_SIGNED=0:A_WIDTH=32:B_SIGNED=0:B_WIDTH=36:Y_WIDTH=37:394426c56d1a028ba8fdd5469b163e04011def47.
+Using template $extern:wrap:$add:A_SIGNED=0:A_WIDTH=32:B_SIGNED=0:B_WIDTH=36:Y_WIDTH=37:394426c56d1a028ba8fdd5469b163e04011def47 for cells of type $extern:wrap:$add:A_SIGNED=0:A_WIDTH=32:B_SIGNED=0:B_WIDTH=36:Y_WIDTH=37:394426c56d1a028ba8fdd5469b163e04011def47.
+Running "alumacc" on wrapper $extern:wrap:$add:A_SIGNED=0:A_WIDTH=32:B_SIGNED=0:B_WIDTH=37:Y_WIDTH=38:394426c56d1a028ba8fdd5469b163e04011def47.
+Using template $extern:wrap:$add:A_SIGNED=0:A_WIDTH=32:B_SIGNED=0:B_WIDTH=37:Y_WIDTH=38:394426c56d1a028ba8fdd5469b163e04011def47 for cells of type $extern:wrap:$add:A_SIGNED=0:A_WIDTH=32:B_SIGNED=0:B_WIDTH=37:Y_WIDTH=38:394426c56d1a028ba8fdd5469b163e04011def47.
+Running "alumacc" on wrapper $extern:wrap:$add:A_SIGNED=0:A_WIDTH=32:B_SIGNED=0:B_WIDTH=38:Y_WIDTH=39:394426c56d1a028ba8fdd5469b163e04011def47.
+Using template $extern:wrap:$add:A_SIGNED=0:A_WIDTH=32:B_SIGNED=0:B_WIDTH=38:Y_WIDTH=39:394426c56d1a028ba8fdd5469b163e04011def47 for cells of type $extern:wrap:$add:A_SIGNED=0:A_WIDTH=32:B_SIGNED=0:B_WIDTH=38:Y_WIDTH=39:394426c56d1a028ba8fdd5469b163e04011def47.
+Running "alumacc" on wrapper $extern:wrap:$add:A_SIGNED=0:A_WIDTH=32:B_SIGNED=0:B_WIDTH=39:Y_WIDTH=40:394426c56d1a028ba8fdd5469b163e04011def47.
+Using template $extern:wrap:$add:A_SIGNED=0:A_WIDTH=32:B_SIGNED=0:B_WIDTH=39:Y_WIDTH=40:394426c56d1a028ba8fdd5469b163e04011def47 for cells of type $extern:wrap:$add:A_SIGNED=0:A_WIDTH=32:B_SIGNED=0:B_WIDTH=39:Y_WIDTH=40:394426c56d1a028ba8fdd5469b163e04011def47.
+Running "alumacc" on wrapper $extern:wrap:$add:A_SIGNED=0:A_WIDTH=32:B_SIGNED=0:B_WIDTH=40:Y_WIDTH=41:394426c56d1a028ba8fdd5469b163e04011def47.
+Using template $extern:wrap:$add:A_SIGNED=0:A_WIDTH=32:B_SIGNED=0:B_WIDTH=40:Y_WIDTH=41:394426c56d1a028ba8fdd5469b163e04011def47 for cells of type $extern:wrap:$add:A_SIGNED=0:A_WIDTH=32:B_SIGNED=0:B_WIDTH=40:Y_WIDTH=41:394426c56d1a028ba8fdd5469b163e04011def47.
+Running "alumacc" on wrapper $extern:wrap:$add:A_SIGNED=0:A_WIDTH=32:B_SIGNED=0:B_WIDTH=41:Y_WIDTH=42:394426c56d1a028ba8fdd5469b163e04011def47.
+Using template $extern:wrap:$add:A_SIGNED=0:A_WIDTH=32:B_SIGNED=0:B_WIDTH=41:Y_WIDTH=42:394426c56d1a028ba8fdd5469b163e04011def47 for cells of type $extern:wrap:$add:A_SIGNED=0:A_WIDTH=32:B_SIGNED=0:B_WIDTH=41:Y_WIDTH=42:394426c56d1a028ba8fdd5469b163e04011def47.
+Running "alumacc" on wrapper $extern:wrap:$add:A_SIGNED=0:A_WIDTH=32:B_SIGNED=0:B_WIDTH=42:Y_WIDTH=43:394426c56d1a028ba8fdd5469b163e04011def47.
+Using template $extern:wrap:$add:A_SIGNED=0:A_WIDTH=32:B_SIGNED=0:B_WIDTH=42:Y_WIDTH=43:394426c56d1a028ba8fdd5469b163e04011def47 for cells of type $extern:wrap:$add:A_SIGNED=0:A_WIDTH=32:B_SIGNED=0:B_WIDTH=42:Y_WIDTH=43:394426c56d1a028ba8fdd5469b163e04011def47.
+Running "alumacc" on wrapper $extern:wrap:$add:A_SIGNED=0:A_WIDTH=32:B_SIGNED=0:B_WIDTH=43:Y_WIDTH=44:394426c56d1a028ba8fdd5469b163e04011def47.
+Using template $extern:wrap:$add:A_SIGNED=0:A_WIDTH=32:B_SIGNED=0:B_WIDTH=43:Y_WIDTH=44:394426c56d1a028ba8fdd5469b163e04011def47 for cells of type $extern:wrap:$add:A_SIGNED=0:A_WIDTH=32:B_SIGNED=0:B_WIDTH=43:Y_WIDTH=44:394426c56d1a028ba8fdd5469b163e04011def47.
+Running "alumacc" on wrapper $extern:wrap:$add:A_SIGNED=0:A_WIDTH=32:B_SIGNED=0:B_WIDTH=44:Y_WIDTH=45:394426c56d1a028ba8fdd5469b163e04011def47.
+Using template $extern:wrap:$add:A_SIGNED=0:A_WIDTH=32:B_SIGNED=0:B_WIDTH=44:Y_WIDTH=45:394426c56d1a028ba8fdd5469b163e04011def47 for cells of type $extern:wrap:$add:A_SIGNED=0:A_WIDTH=32:B_SIGNED=0:B_WIDTH=44:Y_WIDTH=45:394426c56d1a028ba8fdd5469b163e04011def47.
+Running "alumacc" on wrapper $extern:wrap:$add:A_SIGNED=0:A_WIDTH=32:B_SIGNED=0:B_WIDTH=45:Y_WIDTH=46:394426c56d1a028ba8fdd5469b163e04011def47.
+Using template $extern:wrap:$add:A_SIGNED=0:A_WIDTH=32:B_SIGNED=0:B_WIDTH=45:Y_WIDTH=46:394426c56d1a028ba8fdd5469b163e04011def47 for cells of type $extern:wrap:$add:A_SIGNED=0:A_WIDTH=32:B_SIGNED=0:B_WIDTH=45:Y_WIDTH=46:394426c56d1a028ba8fdd5469b163e04011def47.
+Running "alumacc" on wrapper $extern:wrap:$add:A_SIGNED=0:A_WIDTH=32:B_SIGNED=0:B_WIDTH=46:Y_WIDTH=47:394426c56d1a028ba8fdd5469b163e04011def47.
+Using template $extern:wrap:$add:A_SIGNED=0:A_WIDTH=32:B_SIGNED=0:B_WIDTH=46:Y_WIDTH=47:394426c56d1a028ba8fdd5469b163e04011def47 for cells of type $extern:wrap:$add:A_SIGNED=0:A_WIDTH=32:B_SIGNED=0:B_WIDTH=46:Y_WIDTH=47:394426c56d1a028ba8fdd5469b163e04011def47.
+Running "alumacc" on wrapper $extern:wrap:$add:A_SIGNED=0:A_WIDTH=32:B_SIGNED=0:B_WIDTH=47:Y_WIDTH=48:394426c56d1a028ba8fdd5469b163e04011def47.
+Using template $extern:wrap:$add:A_SIGNED=0:A_WIDTH=32:B_SIGNED=0:B_WIDTH=47:Y_WIDTH=48:394426c56d1a028ba8fdd5469b163e04011def47 for cells of type $extern:wrap:$add:A_SIGNED=0:A_WIDTH=32:B_SIGNED=0:B_WIDTH=47:Y_WIDTH=48:394426c56d1a028ba8fdd5469b163e04011def47.
+Running "alumacc" on wrapper $extern:wrap:$add:A_SIGNED=0:A_WIDTH=32:B_SIGNED=0:B_WIDTH=48:Y_WIDTH=49:394426c56d1a028ba8fdd5469b163e04011def47.
+Using template $extern:wrap:$add:A_SIGNED=0:A_WIDTH=32:B_SIGNED=0:B_WIDTH=48:Y_WIDTH=49:394426c56d1a028ba8fdd5469b163e04011def47 for cells of type $extern:wrap:$add:A_SIGNED=0:A_WIDTH=32:B_SIGNED=0:B_WIDTH=48:Y_WIDTH=49:394426c56d1a028ba8fdd5469b163e04011def47.
+Running "alumacc" on wrapper $extern:wrap:$add:A_SIGNED=0:A_WIDTH=32:B_SIGNED=0:B_WIDTH=49:Y_WIDTH=50:394426c56d1a028ba8fdd5469b163e04011def47.
+Using template $extern:wrap:$add:A_SIGNED=0:A_WIDTH=32:B_SIGNED=0:B_WIDTH=49:Y_WIDTH=50:394426c56d1a028ba8fdd5469b163e04011def47 for cells of type $extern:wrap:$add:A_SIGNED=0:A_WIDTH=32:B_SIGNED=0:B_WIDTH=49:Y_WIDTH=50:394426c56d1a028ba8fdd5469b163e04011def47.
+Using template $paramod\_90_alu\A_SIGNED=0\B_SIGNED=0\A_WIDTH=1\B_WIDTH=5\Y_WIDTH=5 for cells of type $alu.
+Using template $paramod\_90_alu\A_SIGNED=0\B_SIGNED=0\A_WIDTH=5\B_WIDTH=5\Y_WIDTH=5 for cells of type $alu.
+Using template $paramod\_90_alu\A_SIGNED=0\B_SIGNED=0\A_WIDTH=1\B_WIDTH=32\Y_WIDTH=32 for cells of type $alu.
+Using template $paramod\_90_alu\A_SIGNED=0\B_SIGNED=0\A_WIDTH=32\B_WIDTH=32\Y_WIDTH=33 for cells of type $alu.
+Using template $paramod\_90_alu\A_SIGNED=0\B_SIGNED=0\A_WIDTH=32\B_WIDTH=33\Y_WIDTH=34 for cells of type $alu.
+Using template $paramod\_90_alu\A_SIGNED=0\B_SIGNED=0\A_WIDTH=32\B_WIDTH=34\Y_WIDTH=35 for cells of type $alu.
+Using template $paramod\_90_alu\A_SIGNED=0\B_SIGNED=0\A_WIDTH=32\B_WIDTH=35\Y_WIDTH=36 for cells of type $alu.
+Using template $paramod\_90_alu\A_SIGNED=0\B_SIGNED=0\A_WIDTH=32\B_WIDTH=36\Y_WIDTH=37 for cells of type $alu.
+Using template $paramod\_90_alu\A_SIGNED=0\B_SIGNED=0\A_WIDTH=32\B_WIDTH=37\Y_WIDTH=38 for cells of type $alu.
+Using template $paramod\_90_alu\A_SIGNED=0\B_SIGNED=0\A_WIDTH=32\B_WIDTH=38\Y_WIDTH=39 for cells of type $alu.
+Using template $paramod\_90_alu\A_SIGNED=0\B_SIGNED=0\A_WIDTH=32\B_WIDTH=39\Y_WIDTH=40 for cells of type $alu.
+Using template $paramod\_90_alu\A_SIGNED=0\B_SIGNED=0\A_WIDTH=32\B_WIDTH=40\Y_WIDTH=41 for cells of type $alu.
+Using template $paramod\_90_alu\A_SIGNED=0\B_SIGNED=0\A_WIDTH=32\B_WIDTH=41\Y_WIDTH=42 for cells of type $alu.
+Using template $paramod\_90_alu\A_SIGNED=0\B_SIGNED=0\A_WIDTH=32\B_WIDTH=42\Y_WIDTH=43 for cells of type $alu.
+Using template $paramod\_90_alu\A_SIGNED=0\B_SIGNED=0\A_WIDTH=32\B_WIDTH=43\Y_WIDTH=44 for cells of type $alu.
+Using template $paramod\_90_alu\A_SIGNED=0\B_SIGNED=0\A_WIDTH=32\B_WIDTH=44\Y_WIDTH=45 for cells of type $alu.
+Using template $paramod\_90_alu\A_SIGNED=0\B_SIGNED=0\A_WIDTH=32\B_WIDTH=45\Y_WIDTH=46 for cells of type $alu.
+Using template $paramod\_90_alu\A_SIGNED=0\B_SIGNED=0\A_WIDTH=32\B_WIDTH=46\Y_WIDTH=47 for cells of type $alu.
+Using template $paramod\_90_alu\A_SIGNED=0\B_SIGNED=0\A_WIDTH=32\B_WIDTH=47\Y_WIDTH=48 for cells of type $alu.
+Using template $paramod\_90_alu\A_SIGNED=0\B_SIGNED=0\A_WIDTH=32\B_WIDTH=48\Y_WIDTH=49 for cells of type $alu.
+Using template $paramod\_90_alu\A_SIGNED=0\B_SIGNED=0\A_WIDTH=32\B_WIDTH=49\Y_WIDTH=50 for cells of type $alu.
+Using template $paramod\_90_alu\A_SIGNED=0\B_SIGNED=0\A_WIDTH=32\B_WIDTH=50\Y_WIDTH=50 for cells of type $alu.
+Using extmapper simplemap for cells of type $xor.
+Using template $paramod\_90_lcu\WIDTH=5 for cells of type $lcu.
+Using extmapper simplemap for cells of type $pos.
+Using template $paramod\_90_lcu\WIDTH=32 for cells of type $lcu.
+Using template $paramod\_90_lcu\WIDTH=33 for cells of type $lcu.
+Using template $paramod\_90_lcu\WIDTH=34 for cells of type $lcu.
+Using template $paramod\_90_lcu\WIDTH=35 for cells of type $lcu.
+Using template $paramod\_90_lcu\WIDTH=36 for cells of type $lcu.
+Using template $paramod\_90_lcu\WIDTH=37 for cells of type $lcu.
+Using template $paramod\_90_lcu\WIDTH=38 for cells of type $lcu.
+Using template $paramod\_90_lcu\WIDTH=39 for cells of type $lcu.
+Using template $paramod\_90_lcu\WIDTH=40 for cells of type $lcu.
+Using template $paramod\_90_lcu\WIDTH=41 for cells of type $lcu.
+Using template $paramod\_90_lcu\WIDTH=42 for cells of type $lcu.
+Using template $paramod\_90_lcu\WIDTH=43 for cells of type $lcu.
+Using template $paramod\_90_lcu\WIDTH=44 for cells of type $lcu.
+Using template $paramod\_90_lcu\WIDTH=45 for cells of type $lcu.
+Using template $paramod\_90_lcu\WIDTH=46 for cells of type $lcu.
+Using template $paramod\_90_lcu\WIDTH=47 for cells of type $lcu.
+Using template $paramod\_90_lcu\WIDTH=48 for cells of type $lcu.
+Using template $paramod\_90_lcu\WIDTH=49 for cells of type $lcu.
+Using template $paramod\_90_lcu\WIDTH=50 for cells of type $lcu.
+No more expansions possible.
+<suppressed ~11672 debug messages>
+
+15. Executing OPT pass (performing simple optimizations).
+
+15.1. Executing OPT_EXPR pass (perform const folding).
+Optimizing module AXI_PMU.
+Optimizing module AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).
+<suppressed ~6453 debug messages>
+
+15.2. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\AXI_PMU'.
+Finding identical cells in module `\AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0)'.
+<suppressed ~393 debug messages>
+Removed a total of 131 cells.
+
+15.3. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
+Running muxtree optimizer on module \AXI_PMU..
+  Creating internal representation of mux trees.
+  No muxes found in this module.
+Running muxtree optimizer on module \AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0)..
+  Creating internal representation of mux trees.
+  No muxes found in this module.
+Removed 0 multiplexer ports.
+
+15.4. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
+  Optimizing cells in module \AXI_PMU.
+  Optimizing cells in module \AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).
+Performed a total of 0 changes.
+
+15.5. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\AXI_PMU'.
+Finding identical cells in module `\AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0)'.
+Removed a total of 0 cells.
+
+15.6. Executing OPT_RMDFF pass (remove dff with constant values).
+
+15.7. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \AXI_PMU..
+Finding unused cells or wires in module \AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0)..
+Removed 1608 unused cells and 2787 unused wires.
+<suppressed ~1609 debug messages>
+
+15.8. Executing OPT_EXPR pass (perform const folding).
+Optimizing module AXI_PMU.
+Optimizing module AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).
+
+15.9. Rerunning OPT passes. (Maybe there is more to do..)
+
+15.10. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
+Running muxtree optimizer on module \AXI_PMU..
+  Creating internal representation of mux trees.
+  No muxes found in this module.
+Running muxtree optimizer on module \AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0)..
+  Creating internal representation of mux trees.
+  No muxes found in this module.
+Removed 0 multiplexer ports.
+
+15.11. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
+  Optimizing cells in module \AXI_PMU.
+  Optimizing cells in module \AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).
+Performed a total of 0 changes.
+
+15.12. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\AXI_PMU'.
+Finding identical cells in module `\AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0)'.
+Removed a total of 0 cells.
+
+15.13. Executing OPT_RMDFF pass (remove dff with constant values).
+
+15.14. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \AXI_PMU..
+Finding unused cells or wires in module \AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0)..
+
+15.15. Executing OPT_EXPR pass (perform const folding).
+Optimizing module AXI_PMU.
+Optimizing module AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0).
+
+15.16. Finished OPT passes. (There is nothing left to do.)
+
+16. Executing DFFLIBMAP pass (mapping DFF cells to sequential cells from liberty file).
+  cell DFFNEGX1 (noninv, pins=3, area=7.98) is a direct match for cell type $_DFF_N_.
+  cell DFFPOSX1 (noninv, pins=3, area=7.98) is a direct match for cell type $_DFF_P_.
+  cell DFFSR (noninv, pins=5, area=10.32) is a direct match for cell type $_DFFSR_PNN_.
+  create mapping for $_DFFSR_PPN_ from mapping for $_DFFSR_PNN_.
+  create mapping for $_DFFSR_PNP_ from mapping for $_DFFSR_PNN_.
+  create mapping for $_DFFSR_PPP_ from mapping for $_DFFSR_PNP_.
+  create mapping for $_DFFSR_NNN_ from mapping for $_DFFSR_PNN_.
+  create mapping for $_DFFSR_NPN_ from mapping for $_DFFSR_NNN_.
+  create mapping for $_DFFSR_NNP_ from mapping for $_DFFSR_NNN_.
+  create mapping for $_DFFSR_NPP_ from mapping for $_DFFSR_NNP_.
+  create mapping for $_DFF_NN0_ from mapping for $_DFFSR_NNN_.
+  create mapping for $_DFF_NN1_ from mapping for $_DFFSR_NNN_.
+  create mapping for $_DFF_NP0_ from mapping for $_DFFSR_NPP_.
+  create mapping for $_DFF_NP1_ from mapping for $_DFFSR_NPP_.
+  create mapping for $_DFF_PN0_ from mapping for $_DFFSR_PNN_.
+  create mapping for $_DFF_PN1_ from mapping for $_DFFSR_PNN_.
+  create mapping for $_DFF_PP0_ from mapping for $_DFFSR_PPP_.
+  create mapping for $_DFF_PP1_ from mapping for $_DFFSR_PPP_.
+  final dff cell mappings:
+    DFFNEGX1 _DFF_N_ (.CLK( C), .D( D), .Q( Q));
+    DFFPOSX1 _DFF_P_ (.CLK( C), .D( D), .Q( Q));
+    DFFSR _DFF_NN0_ (.CLK(~C), .D( D), .Q( Q), .R( R), .S( 1));
+    DFFSR _DFF_NN1_ (.CLK(~C), .D( D), .Q( Q), .R( 1), .S( R));
+    DFFSR _DFF_NP0_ (.CLK(~C), .D( D), .Q( Q), .R(~R), .S( 1));
+    DFFSR _DFF_NP1_ (.CLK(~C), .D( D), .Q( Q), .R( 1), .S(~R));
+    DFFSR _DFF_PN0_ (.CLK( C), .D( D), .Q( Q), .R( R), .S( 1));
+    DFFSR _DFF_PN1_ (.CLK( C), .D( D), .Q( Q), .R( 1), .S( R));
+    DFFSR _DFF_PP0_ (.CLK( C), .D( D), .Q( Q), .R(~R), .S( 1));
+    DFFSR _DFF_PP1_ (.CLK( C), .D( D), .Q( Q), .R( 1), .S(~R));
+    DFFSR _DFFSR_NNN_ (.CLK(~C), .D( D), .Q( Q), .R( R), .S( S));
+    DFFSR _DFFSR_NNP_ (.CLK(~C), .D( D), .Q( Q), .R(~R), .S( S));
+    DFFSR _DFFSR_NPN_ (.CLK(~C), .D( D), .Q( Q), .R( R), .S(~S));
+    DFFSR _DFFSR_NPP_ (.CLK(~C), .D( D), .Q( Q), .R(~R), .S(~S));
+    DFFSR _DFFSR_PNN_ (.CLK( C), .D( D), .Q( Q), .R( R), .S( S));
+    DFFSR _DFFSR_PNP_ (.CLK( C), .D( D), .Q( Q), .R(~R), .S( S));
+    DFFSR _DFFSR_PPN_ (.CLK( C), .D( D), .Q( Q), .R( R), .S(~S));
+    DFFSR _DFFSR_PPP_ (.CLK( C), .D( D), .Q( Q), .R(~R), .S(~S));
+Mapping DFF cells in module `\AXI_PMU':
+Mapping DFF cells in module `\AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0)':
+  mapped 884 $_DFF_P_ cells to \DFFPOSX1 cells.
+
+17. Executing ABC pass (technology mapping using ABC).
+
+17.1. Extracting gate netlist of module `\AXI_PMU' to `<abc-temp-dir>/input.blif'..
+Extracted 0 gates and 0 wires to a netlist network with 0 inputs and 0 outputs.
+Don't call ABC as there is nothing to map.
+Removing temp directory.
+
+17.2. Extracting gate netlist of module `\AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0)' to `<abc-temp-dir>/input.blif'..
+Extracted 11520 gates and 12477 wires to a netlist network with 955 inputs and 885 outputs.
+
+17.2.1. Executing ABC.
+Running ABC command: <yosys-exe-dir>/yosys-abc -s -f <abc-temp-dir>/abc.script 2>&1
+ABC: ABC command line: "source <abc-temp-dir>/abc.script".
+ABC: 
+ABC: + read_blif <abc-temp-dir>/input.blif 
+ABC: + read_lib -w /home/gcabo/PDKs/FreePDK45/osu_soc/lib/files/gscl45nm.lib 
+ABC: Parsing finished successfully.  Parsing time =     0.00 sec
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "DFFNEGX1".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "DFFPOSX1".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "DFFSR".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "LATCH".
+ABC: Scl_LibertyReadGenlib() skipped three-state cell "TBUFX1".
+ABC: Scl_LibertyReadGenlib() skipped three-state cell "TBUFX2".
+ABC: Library "gscl45nm" from "/home/gcabo/PDKs/FreePDK45/osu_soc/lib/files/gscl45nm.lib" has 25 cells (6 skipped: 4 seq; 2 tri-state; 0 no func; 0 dont_use).  Time =     0.00 sec
+ABC: Memory =    0.36 MB. Time =     0.00 sec
+ABC: Warning: Detected 2 multi-output gates (for example, "FAX1").
+ABC: + read_constr -v /home/gcabo/BSC/bsc_pmu/synth/PMU_configs/synth.constr 
+ABC: Setting driving cell to be "INVX1".
+ABC: Setting output load to be 0.015000.
+ABC: + strash 
+ABC: + ifraig 
+ABC: + scorr 
+ABC: Warning: The network is combinational (run "fraig" or "fraig_sweep").
+ABC: + dc2 
+ABC: + dretime 
+ABC: + retime -D 10 
+ABC: + strash 
+ABC: + &get -n 
+ABC: + &dch -f 
+ABC: + &nf -D 10 
+ABC: + &put 
+ABC: + buffer 
+ABC: + upsize -D 10 
+ABC: + dnsize -D 10 
+ABC: + stime -p 
+ABC: WireLoad = "none"  Gates =   8106 (  9.5 %)   Cap =  5.7 ff (  8.8 %)   Area =    22571.92 ( 82.4 %)   Delay =  4720.14 ps  ( 17.5 %)               
+ABC: Path  0 --     174 : 0    3 pi      A =   0.00  Df =  14.3   -0.5 ps  S =  26.6 ps  Cin =  0.0 ff  Cout =   7.3 ff  Cmax =   0.0 ff  G =    0  
+ABC: Path  1 --    5994 : 1    1 INVX1   A =   1.41  Df =  28.5   -4.8 ps  S =  14.8 ps  Cin =  1.5 ff  Cout =   3.0 ff  Cmax = 238.8 ff  G =  199  
+ABC: Path  2 --    5995 : 3    9 NOR3X1  A =   2.82  Df = 130.2  -21.9 ps  S = 126.0 ps  Cin =  3.1 ff  Cout =  17.8 ff  Cmax =  96.9 ff  G =  559  
+ABC: Path  3 --    6040 : 2    3 NAND2X1 A =   1.88  Df = 184.1  -19.0 ps  S =  69.5 ps  Cin =  2.0 ff  Cout =  10.3 ff  Cmax =   0.0 ff  G =  502  
+ABC: Path  4 --    6112 : 2    2 OR2X2   A =   2.82  Df = 239.3  -15.1 ps  S =  28.0 ps  Cin =  2.3 ff  Cout =   7.7 ff  Cmax = 519.7 ff  G =  323  
+ABC: Path  5 --    6115 : 3    2 OAI21X1 A =   2.82  Df = 300.2  -47.8 ps  S =  67.9 ps  Cin =  2.5 ff  Cout =   7.7 ff  Cmax = 229.4 ff  G =  304  
+ABC: Path  6 --    6147 : 2    4 XNOR2X1 A =   4.69  Df = 376.5  -23.7 ps  S =  89.3 ps  Cin =  5.1 ff  Cout =  12.8 ff  Cmax = 228.3 ff  G =  239  
+ABC: Path  7 --    6148 : 2    2 XOR2X1  A =   4.69  Df = 452.9  -25.4 ps  S =  71.0 ps  Cin =  5.3 ff  Cout =   8.3 ff  Cmax = 223.3 ff  G =  151  
+ABC: Path  8 --    6257 : 2    4 XNOR2X1 A =   4.69  Df = 541.0  -25.8 ps  S =  87.1 ps  Cin =  5.1 ff  Cout =  12.4 ff  Cmax = 228.3 ff  G =  233  
+ABC: Path  9 --    6258 : 2    2 XOR2X1  A =   4.69  Df = 617.1  -25.5 ps  S =  70.8 ps  Cin =  5.3 ff  Cout =   8.3 ff  Cmax = 223.3 ff  G =  151  
+ABC: Path 10 --    6361 : 2    4 XNOR2X1 A =   4.69  Df = 705.2  -25.8 ps  S =  87.1 ps  Cin =  5.1 ff  Cout =  12.4 ff  Cmax = 228.3 ff  G =  233  
+ABC: Path 11 --    6362 : 2    2 XOR2X1  A =   4.69  Df = 781.4  -25.5 ps  S =  70.9 ps  Cin =  5.3 ff  Cout =   8.3 ff  Cmax = 223.3 ff  G =  151  
+ABC: Path 12 --    6575 : 2    4 XNOR2X1 A =   4.69  Df = 869.4  -27.6 ps  S =  87.1 ps  Cin =  5.1 ff  Cout =  12.4 ff  Cmax = 228.3 ff  G =  233  
+ABC: Path 13 --    6576 : 2    2 XOR2X1  A =   4.69  Df = 945.6  -25.5 ps  S =  70.9 ps  Cin =  5.3 ff  Cout =   8.3 ff  Cmax = 223.3 ff  G =  151  
+ABC: Path 14 --    6707 : 2    4 XNOR2X1 A =   4.69  Df =1033.7  -27.6 ps  S =  87.1 ps  Cin =  5.1 ff  Cout =  12.4 ff  Cmax = 228.3 ff  G =  233  
+ABC: Path 15 --    6708 : 2    2 XOR2X1  A =   4.69  Df =1109.8  -25.5 ps  S =  70.9 ps  Cin =  5.3 ff  Cout =   8.3 ff  Cmax = 223.3 ff  G =  151  
+ABC: Path 16 --    6915 : 2    4 XNOR2X1 A =   4.69  Df =1197.9  -27.6 ps  S =  87.1 ps  Cin =  5.1 ff  Cout =  12.4 ff  Cmax = 228.3 ff  G =  233  
+ABC: Path 17 --    7018 : 2    2 XOR2X1  A =   4.69  Df =1274.1  -25.5 ps  S =  70.9 ps  Cin =  5.3 ff  Cout =   8.3 ff  Cmax = 223.3 ff  G =  151  
+ABC: Path 18 --    7059 : 2    4 XNOR2X1 A =   4.69  Df =1362.1  -29.3 ps  S =  87.1 ps  Cin =  5.1 ff  Cout =  12.4 ff  Cmax = 228.3 ff  G =  233  
+ABC: Path 19 --    7244 : 2    2 XOR2X1  A =   4.69  Df =1438.3  -25.5 ps  S =  70.9 ps  Cin =  5.3 ff  Cout =   8.3 ff  Cmax = 223.3 ff  G =  151  
+ABC: Path 20 --    7309 : 2    4 XNOR2X1 A =   4.69  Df =1526.4  -31.1 ps  S =  87.1 ps  Cin =  5.1 ff  Cout =  12.4 ff  Cmax = 228.3 ff  G =  233  
+ABC: Path 21 --    7310 : 2    2 XOR2X1  A =   4.69  Df =1602.5  -25.5 ps  S =  70.8 ps  Cin =  5.3 ff  Cout =   8.3 ff  Cmax = 223.3 ff  G =  151  
+ABC: Path 22 --    7492 : 2    4 XNOR2X1 A =   4.69  Df =1690.6  -31.1 ps  S =  87.1 ps  Cin =  5.1 ff  Cout =  12.4 ff  Cmax = 228.3 ff  G =  233  
+ABC: Path 23 --    7493 : 2    2 XOR2X1  A =   4.69  Df =1766.8  -25.5 ps  S =  70.9 ps  Cin =  5.3 ff  Cout =   8.3 ff  Cmax = 223.3 ff  G =  151  
+ABC: Path 24 --    7769 : 2    4 XNOR2X1 A =   4.69  Df =1854.8  -31.1 ps  S =  87.1 ps  Cin =  5.1 ff  Cout =  12.4 ff  Cmax = 228.3 ff  G =  233  
+ABC: Path 25 --    7770 : 2    2 XOR2X1  A =   4.69  Df =1931.0  -25.5 ps  S =  70.9 ps  Cin =  5.3 ff  Cout =   8.3 ff  Cmax = 223.3 ff  G =  151  
+ABC: Path 26 --    8037 : 2    4 XNOR2X1 A =   4.69  Df =2017.5  -29.6 ps  S =  84.8 ps  Cin =  5.1 ff  Cout =  11.9 ff  Cmax = 228.3 ff  G =  228  
+ABC: Path 27 --    8038 : 2    2 XOR2X1  A =   4.69  Df =2093.5  -25.6 ps  S =  70.9 ps  Cin =  5.3 ff  Cout =   8.3 ff  Cmax = 223.3 ff  G =  151  
+ABC: Path 28 --    8374 : 2    4 XNOR2X1 A =   4.69  Df =2181.5  -31.1 ps  S =  87.1 ps  Cin =  5.1 ff  Cout =  12.4 ff  Cmax = 228.3 ff  G =  233  
+ABC: Path 29 --    8375 : 2    2 XOR2X1  A =   4.69  Df =2257.7  -25.5 ps  S =  70.9 ps  Cin =  5.3 ff  Cout =   8.3 ff  Cmax = 223.3 ff  G =  151  
+ABC: Path 30 --    8552 : 2    4 XNOR2X1 A =   4.69  Df =2345.8  -31.1 ps  S =  87.1 ps  Cin =  5.1 ff  Cout =  12.4 ff  Cmax = 228.3 ff  G =  233  
+ABC: Path 31 --    8553 : 2    2 XOR2X1  A =   4.69  Df =2422.0  -25.5 ps  S =  70.8 ps  Cin =  5.3 ff  Cout =   8.3 ff  Cmax = 223.3 ff  G =  151  
+ABC: Path 32 --    8820 : 2    4 XNOR2X1 A =   4.69  Df =2510.0  -31.1 ps  S =  87.1 ps  Cin =  5.1 ff  Cout =  12.4 ff  Cmax = 228.3 ff  G =  233  
+ABC: Path 33 --    8821 : 2    2 XOR2X1  A =   4.69  Df =2586.2  -25.5 ps  S =  70.8 ps  Cin =  5.3 ff  Cout =   8.3 ff  Cmax = 223.3 ff  G =  151  
+ABC: Path 34 --    9009 : 2    4 XNOR2X1 A =   4.69  Df =2674.2  -31.1 ps  S =  87.1 ps  Cin =  5.1 ff  Cout =  12.4 ff  Cmax = 228.3 ff  G =  233  
+ABC: Path 35 --    9010 : 2    2 XOR2X1  A =   4.69  Df =2750.4  -25.5 ps  S =  70.8 ps  Cin =  5.3 ff  Cout =   8.3 ff  Cmax = 223.3 ff  G =  151  
+ABC: Path 36 --    9299 : 2    4 XNOR2X1 A =   4.69  Df =2838.5  -32.9 ps  S =  87.1 ps  Cin =  5.1 ff  Cout =  12.4 ff  Cmax = 228.3 ff  G =  233  
+ABC: Path 37 --    9300 : 2    2 XOR2X1  A =   4.69  Df =2914.6  -25.5 ps  S =  70.8 ps  Cin =  5.3 ff  Cout =   8.3 ff  Cmax = 223.3 ff  G =  151  
+ABC: Path 38 --    9505 : 2    2 XNOR2X1 A =   4.69  Df =2988.4  -26.0 ps  S =  66.0 ps  Cin =  5.1 ff  Cout =   8.0 ff  Cmax = 228.3 ff  G =  147  
+ABC: Path 39 --    9506 : 2    2 XOR2X1  A =   4.69  Df =3062.5  -26.4 ps  S =  71.3 ps  Cin =  5.3 ff  Cout =   8.3 ff  Cmax = 223.3 ff  G =  151  
+ABC: Path 40 --    9508 : 3    2 AOI21X1 A =   2.82  Df =3122.9  -12.1 ps  S =  56.7 ps  Cin =  2.6 ff  Cout =   8.4 ff  Cmax =   0.0 ff  G =  312  
+ABC: Path 41 --    9510 : 3    2 OAI21X1 A =   2.82  Df =3172.6  -15.3 ps  S =  66.6 ps  Cin =  2.5 ff  Cout =   7.7 ff  Cmax = 229.4 ff  G =  304  
+ABC: Path 42 --    9515 : 3    2 AOI21X1 A =   2.82  Df =3216.0   -4.6 ps  S =  56.8 ps  Cin =  2.6 ff  Cout =   8.4 ff  Cmax =   0.0 ff  G =  312  
+ABC: Path 43 --    9517 : 3    2 OAI21X1 A =   2.82  Df =3275.0  -23.8 ps  S =  69.3 ps  Cin =  2.5 ff  Cout =   8.3 ff  Cmax = 229.4 ff  G =  326  
+ABC: Path 44 --    9519 : 3    2 AOI21X1 A =   2.82  Df =3322.9  -18.3 ps  S =  56.9 ps  Cin =  2.6 ff  Cout =   8.4 ff  Cmax =   0.0 ff  G =  312  
+ABC: Path 45 --    9521 : 3    2 OAI21X1 A =   2.82  Df =3384.6  -45.6 ps  S =  67.7 ps  Cin =  2.5 ff  Cout =   7.7 ff  Cmax = 229.4 ff  G =  304  
+ABC: Path 46 --    9527 : 3    2 AOI21X1 A =   2.82  Df =3423.8  -26.6 ps  S =  56.7 ps  Cin =  2.6 ff  Cout =   8.4 ff  Cmax =   0.0 ff  G =  312  
+ABC: Path 47 --    9529 : 3    2 OAI21X1 A =   2.82  Df =3487.6  -55.1 ps  S =  69.5 ps  Cin =  2.5 ff  Cout =   8.4 ff  Cmax = 229.4 ff  G =  329  
+ABC: Path 48 --    9531 : 3    2 AOI21X1 A =   2.82  Df =3535.5  -49.6 ps  S =  56.7 ps  Cin =  2.6 ff  Cout =   8.4 ff  Cmax =   0.0 ff  G =  312  
+ABC: Path 49 --    9533 : 3    2 OAI21X1 A =   2.82  Df =3599.3  -64.7 ps  S =  69.5 ps  Cin =  2.5 ff  Cout =   8.4 ff  Cmax = 229.4 ff  G =  329  
+ABC: Path 50 --    9535 : 3    2 AOI21X1 A =   2.82  Df =3647.2  -59.2 ps  S =  56.7 ps  Cin =  2.6 ff  Cout =   8.4 ff  Cmax =   0.0 ff  G =  312  
+ABC: Path 51 --    9537 : 3    2 OAI21X1 A =   2.82  Df =3711.0  -64.8 ps  S =  69.5 ps  Cin =  2.5 ff  Cout =   8.4 ff  Cmax = 229.4 ff  G =  329  
+ABC: Path 52 --    9539 : 3    2 AOI21X1 A =   2.82  Df =3758.9  -59.3 ps  S =  56.7 ps  Cin =  2.6 ff  Cout =   8.4 ff  Cmax =   0.0 ff  G =  312  
+ABC: Path 53 --    9541 : 3    2 OAI21X1 A =   2.82  Df =3820.6  -59.1 ps  S =  66.4 ps  Cin =  2.5 ff  Cout =   7.7 ff  Cmax = 229.4 ff  G =  304  
+ABC: Path 54 --    9547 : 3    2 AOI21X1 A =   2.82  Df =3859.5  -39.1 ps  S =  56.8 ps  Cin =  2.6 ff  Cout =   8.4 ff  Cmax =   0.0 ff  G =  312  
+ABC: Path 55 --    9549 : 3    2 OAI21X1 A =   2.82  Df =3923.0  -59.6 ps  S =  69.1 ps  Cin =  2.5 ff  Cout =   8.3 ff  Cmax = 229.4 ff  G =  326  
+ABC: Path 56 --    9551 : 3    2 AOI21X1 A =   2.82  Df =3970.8  -45.5 ps  S =  56.9 ps  Cin =  2.6 ff  Cout =   8.4 ff  Cmax =   0.0 ff  G =  312  
+ABC: Path 57 --    9553 : 3    2 OAI21X1 A =   2.82  Df =4034.4  -59.3 ps  S =  69.1 ps  Cin =  2.5 ff  Cout =   8.3 ff  Cmax = 229.4 ff  G =  326  
+ABC: Path 58 --    9555 : 3    2 AOI21X1 A =   2.82  Df =4082.2  -45.2 ps  S =  56.9 ps  Cin =  2.6 ff  Cout =   8.4 ff  Cmax =   0.0 ff  G =  312  
+ABC: Path 59 --    9557 : 3    2 OAI21X1 A =   2.82  Df =4145.8  -73.5 ps  S =  70.4 ps  Cin =  2.5 ff  Cout =   8.3 ff  Cmax = 229.4 ff  G =  326  
+ABC: Path 60 --    9559 : 3    2 AOI21X1 A =   2.82  Df =4193.8  -45.2 ps  S =  56.9 ps  Cin =  2.6 ff  Cout =   8.4 ff  Cmax =   0.0 ff  G =  312  
+ABC: Path 61 --    9561 : 3    2 OAI21X1 A =   2.82  Df =4254.7  -62.4 ps  S =  65.2 ps  Cin =  2.5 ff  Cout =   7.5 ff  Cmax = 229.4 ff  G =  291  
+ABC: Path 62 --    9562 : 2    2 AND2X2  A =   2.82  Df =4293.8  -46.4 ps  S =  18.7 ps  Cin =  1.8 ff  Cout =   5.2 ff  Cmax = 505.1 ff  G =  279  
+ABC: Path 63 --    9565 : 3    1 OAI21X1 A =   2.82  Df =4310.7  -25.2 ps  S =  40.4 ps  Cin =  2.5 ff  Cout =   2.0 ff  Cmax = 229.4 ff  G =   80  
+ABC: Path 64 --    9566 : 2    2 NAND2X1 A =   1.88  Df =4341.0  -24.0 ps  S =  64.1 ps  Cin =  2.0 ff  Cout =   8.3 ff  Cmax =   0.0 ff  G =  401  
+ABC: Path 65 --    9568 : 3    2 AOI21X1 A =   2.82  Df =4387.6  -14.4 ps  S =  56.6 ps  Cin =  2.6 ff  Cout =   8.4 ff  Cmax =   0.0 ff  G =  312  
+ABC: Path 66 --    9570 : 3    2 OAI21X1 A =   2.82  Df =4451.2  -24.2 ps  S =  69.2 ps  Cin =  2.5 ff  Cout =   8.3 ff  Cmax = 229.4 ff  G =  326  
+ABC: Path 67 --    9572 : 3    2 AOI21X1 A =   2.82  Df =4499.0  -18.7 ps  S =  56.9 ps  Cin =  2.6 ff  Cout =   8.4 ff  Cmax =   0.0 ff  G =  312  
+ABC: Path 68 --    9574 : 3    2 OAI21X1 A =   2.82  Df =4562.6  -19.2 ps  S =  69.1 ps  Cin =  2.5 ff  Cout =   8.3 ff  Cmax = 229.4 ff  G =  326  
+ABC: Path 69 --    9575 : 2    2 XNOR2X1 A =   4.69  Df =4624.6  -19.7 ps  S =  49.1 ps  Cin =  5.1 ff  Cout =   4.5 ff  Cmax = 228.3 ff  G =   85  
+ABC: Path 70 --    9576 : 2    1 OR2X1   A =   2.35  Df =4674.5  -20.5 ps  S =  19.9 ps  Cin =  2.4 ff  Cout =   1.8 ff  Cmax =  70.0 ff  G =   74  
+ABC: Path 71 --    9705 : 2    1 AND2X2  A =   2.82  Df =4708.4  -20.9 ps  S =  10.5 ps  Cin =  1.8 ff  Cout =   2.7 ff  Cmax = 505.1 ff  G =  146  
+ABC: Path 72 --    9946 : 3    1 OAI21X1 A =   2.82  Df =4720.1   -0.7 ps  S =  33.3 ps  Cin =  2.5 ff  Cout =   0.0 ff  Cmax = 229.4 ff  G =    0  
+ABC: Start-point = pi173 (\slv_reg[24] [0]).  End-point = po884 (\int_quota_o).
+ABC: + write_blif <abc-temp-dir>/output.blif 
+
+17.2.2. Re-integrating ABC results.
+ABC RESULTS:            AND2X1 cells:     1255
+ABC RESULTS:            AND2X2 cells:       23
+ABC RESULTS:           AOI21X1 cells:      681
+ABC RESULTS:           AOI22X1 cells:      650
+ABC RESULTS:             BUFX2 cells:      582
+ABC RESULTS:             BUFX4 cells:        9
+ABC RESULTS:             INVX1 cells:      178
+ABC RESULTS:             INVX4 cells:        1
+ABC RESULTS:            MUX2X1 cells:        6
+ABC RESULTS:           NAND2X1 cells:      854
+ABC RESULTS:           NAND3X1 cells:      449
+ABC RESULTS:            NOR2X1 cells:      942
+ABC RESULTS:            NOR3X1 cells:      271
+ABC RESULTS:           OAI21X1 cells:      931
+ABC RESULTS:             OR2X1 cells:      164
+ABC RESULTS:             OR2X2 cells:        2
+ABC RESULTS:           XNOR2X1 cells:      759
+ABC RESULTS:            XOR2X1 cells:      349
+ABC RESULTS:        internal signals:    10637
+ABC RESULTS:           input signals:      955
+ABC RESULTS:          output signals:      885
+Removing temp directory.
+
+18. Printing statistics.
+
+=== AXI_PMU ===
+
+   Number of wires:                 45
+   Number of wire bits:            142
+   Number of public wires:          45
+   Number of public wire bits:     142
+   Number of memories:               0
+   Number of memory bits:            0
+   Number of processes:              0
+   Number of cells:                  1
+     AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0)      1
+
+   Area for cell type \AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0) is unknown!
+
+=== AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0) ===
+
+   Number of wires:              12887
+   Number of wire bits:          23400
+   Number of public wires:         103
+   Number of public wire bits:    2098
+   Number of memories:               0
+   Number of memory bits:            0
+   Number of processes:              0
+   Number of cells:               8990
+     AND2X1                       1255
+     AND2X2                         23
+     AOI21X1                       681
+     AOI22X1                       650
+     BUFX2                         582
+     BUFX4                           9
+     DFFPOSX1                      884
+     INVX1                         178
+     INVX4                           1
+     MUX2X1                          6
+     NAND2X1                       854
+     NAND3X1                       449
+     NOR2X1                        942
+     NOR3X1                        271
+     OAI21X1                       931
+     OR2X1                         164
+     OR2X2                           2
+     XNOR2X1                       759
+     XOR2X1                        349
+
+   Chip area for module '\AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0)': 29624.562500
+
+=== design hierarchy ===
+
+   AXI_PMU                           1
+     AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0)      1
+
+   Number of wires:              12932
+   Number of wire bits:          23542
+   Number of public wires:         148
+   Number of public wire bits:    2240
+   Number of memories:               0
+   Number of memory bits:            0
+   Number of processes:              0
+   Number of cells:               8990
+     AND2X1                       1255
+     AND2X2                         23
+     AOI21X1                       681
+     AOI22X1                       650
+     BUFX2                         582
+     BUFX4                           9
+     DFFPOSX1                      884
+     INVX1                         178
+     INVX4                           1
+     MUX2X1                          6
+     NAND2X1                       854
+     NAND3X1                       449
+     NOR2X1                        942
+     NOR3X1                        271
+     OAI21X1                       931
+     OR2X1                         164
+     OR2X2                           2
+     XNOR2X1                       759
+     XOR2X1                        349
+
+   Chip area for top module '\AXI_PMU': 29624.562500
+
+Removed 0 unused cells and 4679 unused wires.
+
+19. Executing Verilog backend.
+Dumping module `\AXI_PMU'.
+Dumping module `\AXI_PMU_interface_v1_0_S00_AXI(N_COUNTERS=19,N_CONF_REGS=5,OVERFLOW=0,MCCU=0)'.
+
+Warnings: 4 unique messages, 6 total
+End of script. Logfile hash: 0d29320f65
+CPU: user 6.03s system 0.03s, MEM: 214.90 MB total, 95.24 MB resident
+Yosys 0.8+472 (git sha1 c907899, clang 3.8.0-2ubuntu4 -fPIC -Os)
+Time spent: 16% 33x opt_merge (0 sec), 13% 33x opt_clean (0 sec), ...

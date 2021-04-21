@@ -28,11 +28,11 @@ module way3_voter #
 	)
 	(
 		// Input 0
-        input logic [IN_WIDTH-1:0] in0,
+        input wire logic [IN_WIDTH-1:0] in0,
 		// Input 1
-        input logic [IN_WIDTH-1:0] in1,
+        input wire logic [IN_WIDTH-1:0] in1,
 		// Input 2
-        input logic [IN_WIDTH-1:0] in2,
+        input wire logic [IN_WIDTH-1:0] in2,
 		// Voted output
         output logic [IN_WIDTH-1:0] out,
 		// One discrepance - recovered
