@@ -13,6 +13,5 @@ wait
 echo "1/1 runs done"
 echo "Done! Reporting area & cycle time"
 cd logs
-ack "Chip area for top module "
-ack "Delay "
+ack "netlist of module"\|"Delay"\|"area"
 cd ..

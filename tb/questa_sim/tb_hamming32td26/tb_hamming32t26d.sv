@@ -16,13 +16,13 @@
 `include "colors.vh"
 //***Headers***
 //***Test bench***
-module tb_hamming16t11d();
+module tb_hamming32t26d();
 //***Parameters***
     parameter CLK_PERIOD      = 8;
     parameter CLK_HALF_PERIOD = CLK_PERIOD / 2;
     parameter CLK_QUARTER_PERIOD = CLK_HALF_PERIOD/ 2;
-    localparam TB_DATA_WIDTH = 11;
-    localparam TB_HAM_WIDTH = 16;//Width od data with Hamming check bits
+    localparam TB_DATA_WIDTH = 26;
+    localparam TB_HAM_WIDTH = 32;//Width of data with Hamming check bits
 //***DUT parameters***    
     reg     tb_clk_i;
     reg     tb_rstn_i;
@@ -42,8 +42,8 @@ reg[64*8:0] tb_test_name;
 reg tb_fail = 0;
 //***Modules***
 //encoder
-hamming16t11d_enc#(
-)dut_hamming16t11d_enc (
+hamming32t26d_enc#(
+)dut_hamming32t26d_enc (
     .data_i(tb_din_i),
     .hv_o(prot_reg_d)
 );
@@ -57,8 +57,8 @@ end
 end
 assign prot_reg_q = prot_reg;
 //decoder
-hamming16t11d_dec#(
-)dut_hamming16t11d_dec (
+hamming32t26d_dec#(
+)dut_hamming32t26d_dec (
     .data_o(tb_dout_o),
     .hv_i(prot_reg_q),
     .ded_error_o(tb_ded_error_o)
@@ -107,8 +107,8 @@ endtask
 task automatic init_dump;
     begin
         $dumpfile("test.vcd");
-        $dumpvars(0,dut_hamming16t11d_enc);
-        $dumpvars(0,dut_hamming16t11d_dec);
+        $dumpvars(0,dut_hamming32t26d_enc);
+        $dumpvars(0,dut_hamming32t26d_dec);
     end
 endtask 
 
@@ -119,9 +119,9 @@ task automatic test_sim;
         $display("*** test_sim.");
         tb_test_name="test_sim";
         //**test***
-        test_no_sbf(5000,temp);
-        test_sbf(5000,temp);
-        test_dbf(5000,temp);
+        test_no_sbf(500,temp);
+        test_sbf(500,temp);
+        test_dbf(500,temp);
         //check results
         if(temp!=1) begin
             tb_fail = 1; 
@@ -168,7 +168,7 @@ task automatic test_no_sbf(input int n_tries, output int rval);
     end
 endtask 
 //***task automatic ***
-// Generates random valid hamming vectors (16,11)
+// Generates random valid hamming vectors (32,26)
 task automatic rnd_hamming (output logic [TB_HAM_WIDTH-1:0] hv);
     begin
     logic [TB_HAM_WIDTH-1:0] tmp = $urandom();
@@ -184,12 +184,45 @@ task automatic rnd_hamming (output logic [TB_HAM_WIDTH-1:0] hv);
     hv[13] =tmp[8];
     hv[14] =tmp[9];
     hv[15] =tmp[10];
+    hv[17] =tmp[11];
+    hv[18] =tmp[12];
+    hv[19] =tmp[13];
+    hv[20] =tmp[14];
+    hv[21] =tmp[15];
+    hv[22] =tmp[16];
+    hv[23] =tmp[17];
+    hv[24] =tmp[18];
+    hv[25] =tmp[19];
+    hv[26] =tmp[20];
+    hv[27] =tmp[21];
+    hv[28] =tmp[22];
+    hv[29] =tmp[23];
+    hv[30] =tmp[24];
+    hv[31] =tmp[25];
     
-    hv[1] = ^{hv[3],hv[5],hv[7] ,hv[9],hv[11],hv[13],hv[15]};
-    hv[2] = ^{hv[3],hv[6],hv[7] ,hv[10],hv[11],hv[14],hv[15]};
-    hv[4] = ^{hv[5],hv[6],hv[7] ,hv[12],hv[13],hv[14],hv[15]};
-    hv[8] = ^{hv[9],hv[10],hv[11] ,hv[12],hv[13],hv[14],hv[15]};
-    hv[0] = ^hv[15:1];
+    hv[1] = ^{hv[3],hv[5],hv[7],
+                            hv[9],hv[11],hv[13],hv[15],
+                            hv[17],hv[19],hv[21],hv[23],
+                            hv[25],hv[27],hv[29],hv[31]};
+
+    hv[2] = ^{hv[3],hv[6],hv[7],
+                            hv[10],hv[11],hv[14],hv[15],
+                            hv[18],hv[19], hv[22],hv[23],
+                            hv[26],hv[27], hv[30],hv[31] };
+
+
+    hv[4] = ^{hv[5],hv[6],hv[7],
+                            hv[12],hv[13],hv[14],hv[15],
+                            hv[20],hv[21],hv[22],hv[23],
+                            hv[28],hv[29],hv[30],hv[31]};
+                            
+    hv[8] = ^{hv[9],hv[10],hv[11],hv[12],hv[13],hv[14],hv[15],
+                             hv[24],hv[25],hv[26],hv[27],hv[28],hv[29],hv[30],hv[31]};
+
+    hv[16] = ^{hv[17],hv[18],hv[19],hv[20],hv[21],hv[22],hv[23],
+                             hv[24],hv[25],hv[26],hv[27],hv[28],hv[29],hv[30],hv[31]};
+
+    hv[0] = ^hv[31:1];
     end
 endtask
 //***task automatic test_sbf***
@@ -210,7 +243,7 @@ task automatic test_sbf(input int n_tries, output int rval);
                 upset_value = valid_value ^ (1<< $urandom_range(0,TB_HAM_WIDTH-1));
             end
             //Assign input value
-            tb_din_i <= {valid_value[15:9],valid_value[7:5],valid_value[3]};
+            tb_din_i <= {valid_value[31:17],valid_value[15:9],valid_value[7:5],valid_value[3]};
             #CLK_PERIOD;
             //Force error within register
             trasient=1;
@@ -221,12 +254,10 @@ task automatic test_sbf(input int n_tries, output int rval);
             trasient=0;
             #CLK_PERIOD;
             //check for errors
-            tb_test_name="check_test_sbf";
             if(!($stable(tb_dout_o))||(tb_ded_error_o!=0)) begin
                 tmp=1;
                 $error("FAIL test_sbf.Some SBF have not been corrected or unexpected DED detected");
             end
-            tb_test_name="test_sbf";
             end
             //check results
             if(tmp!=0) begin

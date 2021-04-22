@@ -1,8 +1,8 @@
 //-----------------------------------------------------
 // ProjectName: De-RISC/SELENE
 // Function   : Single error corection, double error detection
-// Description: This module takes 11 bits of incomming data and computes the checkbits
-//              for Hamming codes.
+// Description: This module takes 16 bit hamming encoded package and 
+//              outputs the corrected data
 //
 // Coder      : G.Cabo
 // References : Ben Eater "What is error correction? Hamming codes in hardware" YT 
@@ -23,12 +23,6 @@ module hamming16t11d_dec #
 		localparam integer N_CHECKB	= $clog2(IN_WIDTH) //4
 	)
 	(
-		// Global Clock Signal
-		//input wire  clk_i,
-		// Global Reset Signal. This Signal is Active LOW
-		//input wire  rstn_i,
-		// Enable Signal.
-		//input wire  en_i,
 		// Corrected data
         output wire [IN_WIDTH-1:0] data_o,
 		// Hamming vector
@@ -36,31 +30,7 @@ module hamming16t11d_dec #
 		// Double error detection signal
         output wire ded_error_o
 	);
-    //logic [N_CHECKB-1:0] hcheck_int; // hamming parity bits
-    //logic ocheck_int; // Overall parity bit
-    //logic [IN_WIDTH-1:0] data_int; // Encoded data
-    /*
-    //Rearrange ingputs
-        //Data
-    assign data_int[0]=hv_i[3];
-    assign data_int[1]=hv_i[5];
-    assign data_int[2]=hv_i[6];
-    assign data_int[3]=hv_i[7];
-    assign data_int[4]=hv_i[9];
-    assign data_int[5]=hv_i[10];
-    assign data_int[6]=hv_i[11];
-    assign data_int[7]=hv_i[12];
-    assign data_int[8]=hv_i[13];
-    assign data_int[9]=hv_i[14];
-    assign data_int[10]=hv_i[15];
-        //Checkbits
-    assign ocheck_int=hv_i[0];
-    assign hcheck_int[0]=hv_i[1];
-    assign hcheck_int[1]=hv_i[2];
-    assign hcheck_int[2]=hv_i[4];
-    assign hcheck_int[3]=hv_i[8];
-    */
-    //Locate errors errors
+    //Locate errors
     logic [N_CHECKB-1:0] region_int;//Each parity  "region" and overall.
     assign region_int[0] = ^{hv_i[1],hv_i[3],hv_i[5],hv_i[7] ,hv_i[9],hv_i[11],hv_i[13],hv_i[15]};
     assign region_int[1] = ^{hv_i[2],hv_i[3],hv_i[6],hv_i[7] ,hv_i[10],hv_i[11],hv_i[14],hv_i[15]};

@@ -23,12 +23,6 @@ module hamming16t11d_enc #
 		localparam integer N_CHECKB	= $clog2(IN_WIDTH) //4
 	)
 	(
-		// Global Clock Signal
-		//input wire  clk_i,
-		// Global Reset Signal. This Signal is Active LOW
-		//input wire  rstn_i,
-		// Enable Signal.
-		//input wire  en_i,
 		// Signal at register input
         input wire [IN_WIDTH-1:0] data_i,
 		// Hamming vector
