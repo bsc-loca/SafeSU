@@ -265,16 +265,31 @@
     by how much the quota was exceeded. Interruption is only generated if the 
     MCCU is enabled
     ----------*/
+    wire interruption_quota_d[N_CORES-1:0];
+    reg interruption_quota_q[N_CORES-1:0];
+
     for(x=0; x<N_CORES; x=x+1)  begin: InterruptionQuota
-        assign interruption_quota_o[x] =
+        assign interruption_quota_d[x] =
                  !enable_i ? 1'b0:
                  (ccc_suma_int[x]>{{O_D_0PAD{1'b0}},quota_int[x]})? 1'b1:1'b0;
     end
+
+    for(x=0; x<N_CORES; x=x+1)  begin: InterruptionQuotaHold
+        always @(posedge clk_i) begin
+            if(rstn_i == 1'b0 ) begin
+                interruption_quota_q[x] <= '{default:'0};
+            end else begin
+                interruption_quota_q[x] <= interruption_quota_d[x] | interruption_quota_q[x];
+            end
+        end
+    end
+
+    assign interruption_quota_o = interruption_quota_q;
     `ifdef ASSERTIONS
     always @(posedge clk_i) begin
         for(integer x=0; x<N_CORES; x=x+1)  begin: InterruptionQuota
             if(quota_int[x]>ccc_suma_int[x])
-                assert (interruption_quota_o[x]==1'b0);
+                assert (interruption_quota_d[x]==1'b0);
         end
     end
     `endif
@@ -356,6 +371,7 @@ Section of Formal propperties, valid for SBY
                 assert(interruption_quota_o[k]==enable_i);
             end else begin
                 //interruption shall be disabled regardless of enable_i
+                //TODO: if we retain the previous state (hold interrupt) this does not apply
                 assert(interruption_quota_o[k]==1'b0);
             end
         end

@@ -6,7 +6,7 @@ then
       vmap work $PWD/MCCU
       vlog +acc=rn +incdir+../../hdl/ ../../hdl/*.sv tb_MCCU.sv
       vmake MCCU/ > Makefile
-      vsim work.tb_MCCU -do "view wave -new" -do "do wave.do" -do "run 40000"
+      vsim work.tb_MCCU -do "view wave -new" -do "do wave.do" -do "run -all"
 else
       vlib MCCU
       vmap work $PWD/MCCU

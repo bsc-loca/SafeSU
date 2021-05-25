@@ -109,6 +109,7 @@ task automatic init_sim;
         begin
             int tmp =0;
             disable_MCCU;
+            reset_dut;
             //rise all events
             if(events_i) begin 
                 rise_event(0,0);
@@ -417,6 +418,7 @@ task automatic init_sim;
     task automatic get_interrupt;
         input core_i;
         output int unsigned value_o;
+        #CLK_PERIOD
         value_o = tb_interruption_quota_o[core_i]; 
         $display("get quota of core: %d remaining quota: %d",core_i,value_o);
         if((core_i>TB_N_CORES)) begin
