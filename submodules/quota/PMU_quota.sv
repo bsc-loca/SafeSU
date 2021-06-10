@@ -158,7 +158,7 @@ module PMU_quota #
     
     //Check if quota is exceeded and generate interrupt or interrupt has been
     //previously triggered and never reseted
-    assign intr_quota_o = (suma_int > quota_limit_i )
+    assign intr_quota_o = (suma_int > max_width'(quota_limit_i) )
                         ? 1'b1 : hold_intr_quota;
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -60,6 +60,8 @@ reg tb_fail = 0;
         .N_REGS(TB_TOTAL_NREGS), 
         .MCCU_N_CORES(4),
 	    .N_SOC_EV (TB_N_SOC_EV)
+        .FT(1),
+        .N_REGS(47) 
 	)
     dut_pmu_ahb 
 	(
@@ -82,7 +84,8 @@ reg tb_fail = 0;
         .intr_overflow_o(),
         .intr_quota_o(),
         .intr_MCCU_o(),
-        .intr_RDC_o()
+        .intr_RDC_o(),
+        .intr_FT_o()
     );
 
 //***clk_gen***
@@ -96,6 +99,7 @@ reg tb_fail = 0;
             rstn_i <= 1'b0; 
             hsel_i = 0;
             htrans_i = 2'b00;
+            #CLK_PERIOD;
             #CLK_PERIOD;
             rstn_i <= 1'b1;
             #CLK_PERIOD;

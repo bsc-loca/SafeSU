@@ -97,8 +97,8 @@ module hamming32t26d_enc #
 //
 ////////////////////////////////////////////////////////////////////////////////
 `ifdef	FORMAL
-    assert (IN_WIDTH==26);
-    assert (N_CHECKB==5);
+//    assert (IN_WIDTH==26);
+//    assert (N_CHECKB==5);
 `endif
 
 endmodule

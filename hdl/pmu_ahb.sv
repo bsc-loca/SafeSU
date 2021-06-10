@@ -33,6 +33,8 @@
 	    parameter integer N_SOC_EV = 128,
 	// Total amount of registers (use ahb_pmu_mem_map.ods) 
         parameter integer N_REGS = 55, 
+        // Fault tolerance mechanisms (FT==0 -> FT disabled)
+        parameter integer FT  = 1,                                           
 	// -- Local parameters
 		//haddr width
         localparam integer HADDR_WIDTH = 32,
@@ -82,7 +84,9 @@
         // MCCU interruption for exceeded quota. One signal per core
         output wire [MCCU_N_CORES-1:0] intr_MCCU_o,
         // RDC (Request Duration Counter) interruption for exceeded quota
-        output wire intr_RDC_o
+        output wire intr_RDC_o,
+        // FT (Fault tolerance) interrupt, error detected but not recoverable
+        output wire intr_FT_o
     );
     //----------------------------------------------
     // VIVADO: list of debug signals for ILA 
@@ -184,17 +188,178 @@ var struct packed{
 //----------------------------------------------
 //------------- AHB registers
 //----------------------------------------------
+    wire [REG_WIDTH-1:0] pmu_regs_int [0:N_REGS-1];
+    logic [HDATA_WIDTH-1:0] dwrite_slave; //Data master to the register bank
+    logic [1:0] complete_transfer_status;
+    logic [HDATA_WIDTH-1:0] dread_slave; //response from slave
+    wire [$clog2(N_REGS)-1:0] slv_index;
     logic [REG_WIDTH-1:0] slv_reg [0:N_REGS-1];
     logic [REG_WIDTH-1:0] slv_reg_D [0:N_REGS-1];
     logic [REG_WIDTH-1:0] slv_reg_Q [0:N_REGS-1];
-
-    always_ff @(posedge clk_i) begin
-        if(rstn_i == 1'b0 ) begin
-            slv_reg<='{default:0};
-        end else begin 
-            slv_reg <= slv_reg_D;
+     
+    generate
+    if (FT==0) begin
+        always_ff @(posedge clk_i) begin
+            if(rstn_i == 1'b0 ) begin
+                slv_reg<='{default:0};
+            end else begin 
+                slv_reg <= slv_reg_D;
+            end
         end
+        //----------------------------------------------
+        //------------- Slave registers update
+        //----------------------------------------------
+
+        //Each cycle the values in slv_reg_D will be saved in slv_reg
+            //So if you want to update slv_reg the values for slv_reg_D shall be 
+            //assigned in this section
+            //If you add aditional logic that can change the values of the registers
+            //the next always block have to be modified to add the aditional
+            //conditions under which the slv_reg shall be updated
+        always_comb begin
+                //AHB write
+                //Write to slv registers if slave was selected & was a write. Else
+                //register the values given by pmu_raw
+                if(address_phase.write && address_phase.select) begin
+                    // get the values from the pmu_raw instance
+                    slv_reg_Q = slv_reg;
+                    slv_reg_Q [slv_index] = dwrite_slave;
+                    slv_reg_D = pmu_regs_int;
+                    slv_reg_D[slv_index] = dwrite_slave; 
+                end else begin
+                    slv_reg_D = pmu_regs_int;
+                    slv_reg_Q = slv_reg;
+                end
+        end 
+        assign intr_FT_o = 1'b0;
+    end else begin
+        //FT version of the registers
+            // Hamming bits, 6 for each 26 bits of data
+        localparam HAM_P=6;//protection bits
+        localparam HAM_D=26;//data bits
+        localparam HAM_M=HAM_P+HAM_D;//mesage bits
+        localparam N_HAM32_SLV= (((REG_WIDTH*N_REGS)+(HAM_D-1))/(HAM_D));
+            //interrupt FT error
+        wire  [N_HAM32_SLV-1:0] ift_slv; //interrupt fault tolerance mechanism
+            //"Flat" slv_reg Q and D signals
+        wire [N_HAM32_SLV*HAM_D-1:0] slv_reg_fti;//fault tolerance in
+        wire [N_HAM32_SLV*HAM_D-1:0] slv_reg_fto;//fault tolerance out
+        wire [REG_WIDTH-1:0] slv_reg_ufto [0:N_REGS-1];//unpacked fault tolerance out
+        wire [N_HAM32_SLV*HAM_D-1:0] slv_reg_pQ ;//protected output
+            //"Flat" hamming messages (Data+parity bits)
+        wire [(HAM_M*N_HAM32_SLV)-1:0] ham_mbits_D;
+        wire [(HAM_M*N_HAM32_SLV)-1:0] ham_mbits_Q;
+            //Registers for parity bits
+        logic [HAM_P*N_HAM32_SLV-1:0] ham_pbits;
+        //Feed and send flat assigment in to original format 
+        for (genvar i =0; i<N_REGS; i++) begin
+            //assign slv_register inputs to a flat hamming input
+            assign slv_reg_fti[(i+1)*REG_WIDTH-1:i*REG_WIDTH]=slv_reg_D[i][REG_WIDTH-1:0];
+        end
+        // SEC-DEC hamming on 26 bit data chunks
+        for (genvar i =0; i<(N_HAM32_SLV); i++) begin : slv_ham_enc
+            //encoder
+                //hv_o needs to inteleave protection and data bits
+            hamming32t26d_enc#(
+            )dut_hamming32t26d_enc (
+                .data_i(slv_reg_fti[(i+1)*HAM_D-1:i*HAM_D]),
+                .hv_o(ham_mbits_D[(i+1)*(HAM_M)-1:i*(HAM_M)])
+            );
+        end
+        //Feed data into original registers
+        for (genvar i =0; i<N_REGS; i++) begin
+            always_ff @(posedge clk_i) begin
+                if(rstn_i == 1'b0 ) begin
+                    slv_reg[i]<='{default:0};
+                end else begin
+                    //You could be using ham_mbits_D but code is longer
+                    //Some of the ham_mbits_D aren't needed
+                    slv_reg[i] <= slv_reg_fti[(i+1)*REG_WIDTH-1:REG_WIDTH*i];
+                end
+            end
+            assign slv_reg_pQ[(i+1)*REG_WIDTH-1:i*REG_WIDTH] = slv_reg[i];
+        end
+        // pad signals to fill an integer number of 26 bit chunks
+        for (genvar i =(N_REGS)*REG_WIDTH; i<N_HAM32_SLV*HAM_D; i++) begin
+            assign slv_reg_pQ[i] = 1'b0;
+            assign slv_reg_fti[i] = 1'b0;
+        end
+
+        //Feed encoded parity bits into extra registers
+        for (genvar i =0; i<N_HAM32_SLV; i++) begin
+            always_ff @(posedge clk_i) begin
+                if(rstn_i == 1'b0 ) begin
+                    ham_pbits[(i+1)*HAM_P-1:i*HAM_P]<='{default:0};
+                end else begin 
+                    ham_pbits[(i+1)*HAM_P-1:i*HAM_P]<={
+                                                      ham_mbits_D[i*HAM_M+16]
+                                                      ,ham_mbits_D[i*HAM_M+8]
+                                                      ,ham_mbits_D[i*HAM_M+4]
+                                                      ,ham_mbits_D[i*HAM_M+2]
+                                                      ,ham_mbits_D[i*HAM_M+1]
+                                                      ,ham_mbits_D[i*HAM_M+0]
+                                                     };
+                end
+            end
+            //Get flat registered messages
+            assign ham_mbits_Q [(i+1)*HAM_M-1:i*HAM_M] = {
+                                                        slv_reg_pQ[i*HAM_D+25:i*HAM_D+11]
+                                                        ,ham_pbits[i*HAM_P+5]
+                                                        ,slv_reg_pQ[i*HAM_D+10:i*HAM_D+4]
+                                                        ,ham_pbits[i*HAM_P+4]
+                                                        ,slv_reg_pQ[i*HAM_D+3:i*HAM_D+1]
+                                                        ,ham_pbits[i*HAM_P+3]
+                                                        ,slv_reg_pQ[i*HAM_D]
+                                                        ,ham_pbits[i*HAM_P+2]
+                                                        ,ham_pbits[i*HAM_P+1]
+                                                        ,ham_pbits[i*HAM_P]
+                                                        };
+        end
+        for (genvar i =0; i<N_HAM32_SLV; i++) begin : slv_ham_dec
+            //decoder
+            hamming32t26d_dec#(
+            )dut_hamming32t26d_dec (
+                .data_o(slv_reg_fto[(i+1)*HAM_D-1:i*HAM_D]),
+                .hv_i(ham_mbits_Q[(i+1)*HAM_M-1:i*HAM_M]),
+                .ded_error_o(ift_slv[i])
+            );
+        end
+        // get a packed 2d structure to assign slv_reg
+        for (genvar i =0; i<N_REGS; i++) begin
+            assign slv_reg_ufto[i]=slv_reg_fto[(i+1)*REG_WIDTH-1:i*REG_WIDTH];
+        end
+        //----------------------------------------------
+        //------------- Slave registers update
+        //----------------------------------------------
+
+        //Each cycle the values in slv_reg_D will be saved in slv_reg
+            //So if you want to update slv_reg the values for slv_reg_D shall be 
+            //assigned in this section
+            //If you add aditional logic that can change the values of the registers
+            //the next always block have to be modified to add the aditional
+            //conditions under which the slv_reg shall be updated
+        always_comb begin
+                //AHB write
+                //Write to slv registers if slave was selected & was a write. Else
+                //register the values given by pmu_raw
+                if(address_phase.write && address_phase.select) begin
+                    //Feed and send flat assigment in to original format 
+                        //assign flat hamming outputs to slv_reg_Q
+                    slv_reg_Q=slv_reg_ufto;
+                    slv_reg_Q [slv_index] = dwrite_slave;
+                    slv_reg_D = pmu_regs_int;
+                    slv_reg_D[slv_index] = dwrite_slave; 
+                end else begin
+                    slv_reg_D = pmu_regs_int;
+                    //Feed and send flat assigment in to original format 
+                        //assign flat hamming outputs to slv_reg_Q
+                    slv_reg_Q=slv_reg_ufto;
+                end
+        end 
+        //reduce all DED errors from hamming blocks to single interrupt
+        assign intr_FT_o = |ift_slv;
     end
+    endgenerate
 
 //----------------------------------------------
 //------------- AHB control logic
@@ -269,11 +434,7 @@ always_ff @(posedge clk_i) begin
 end
 
 //data phase - slave response
-wire [$clog2(N_REGS)-1:0] slv_index;
-logic [HDATA_WIDTH-1:0] dwrite_slave; //Data master to the register bank
 assign slv_index = address_phase.master_addr[$clog2(N_REGS)+1:2];
-logic [1:0] complete_transfer_status;
-logic [HDATA_WIDTH-1:0] dread_slave; //response from slave
 assign hrdata_o = dread_slave;
 
 assign hreadyo_o = complete_transfer_status [0];
@@ -318,7 +479,6 @@ end
 //----------------------------------------------
 //------------- PMU_raw instance
 //----------------------------------------------
-    wire [REG_WIDTH-1:0] pmu_regs_int [0:N_REGS-1];
     wire ahb_write_req;
     assign ahb_write_req = address_phase.write && address_phase.select;
     
@@ -341,33 +501,6 @@ end
         .intr_MCCU_o,
         .intr_RDC_o
 	);
-
-//----------------------------------------------
-//------------- Slave registers update
-//----------------------------------------------
-
-//Each cycle the values in slv_reg_D will be saved in slv_reg
-    //So if you want to update slv_reg the values for slv_reg_D shall be 
-    //assigned in this section
-    //If you add aditional logic that can change the values of the registers
-    //the next always block have to be modified to add the aditional
-    //conditions under which the slv_reg shall be updated
-
-always_comb begin
-    //AHB write
-    //Write to slv registers if slave was selected & was a write. Else
-    //register the values given by pmu_raw
-    if(address_phase.write && address_phase.select) begin
-        // get the values from the pmu_raw instance
-        slv_reg_Q = slv_reg;
-        slv_reg_Q [slv_index] = dwrite_slave;
-        slv_reg_D = pmu_regs_int;
-        slv_reg_D[slv_index] = dwrite_slave; 
-    end else begin
-        slv_reg_D = pmu_regs_int;
-        slv_reg_Q = slv_reg;
-    end
-end
 
 /////////////////////////////////////////////////////////////////////////////////
 //

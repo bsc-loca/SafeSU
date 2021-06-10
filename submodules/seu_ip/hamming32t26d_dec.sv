@@ -92,11 +92,8 @@ module hamming32t26d_dec #
 //
 ////////////////////////////////////////////////////////////////////////////////
 `ifdef	FORMAL
-    assert (IN_WIDTH==26);
-    assert (N_CHECKB==5);
+//    assert (IN_WIDTH==26);
+//    assert (N_CHECKB==5);
 `endif
-
 endmodule
-
 `default_nettype wire //allow compatibility with legacy code and xilinx ip
-

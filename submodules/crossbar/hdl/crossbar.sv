@@ -71,8 +71,7 @@ module crossbar #
 //
 ////////////////////////////////////////////////////////////////////////////////
 `ifdef	FORMAL
-    assert(N_IN >= N_OUT);
-
+//    assert(N_IN >= N_OUT);
 `endif
 
 endmodule

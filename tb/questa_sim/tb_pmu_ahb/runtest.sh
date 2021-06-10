@@ -3,7 +3,7 @@ TOP=../../..
       
 vlib pmu_ahb
 vmap work $PWD/pmu_ahb
-vlog +acc=rn +incdir+$TOP/hdl/ $TOP/hdl/pmu_ahb.sv $TOP/hdl/PMU_raw.sv $TOP/submodules/MCCU/hdl/* $TOP/submodules/crossbar/hdl/*.sv $TOP/submodules/RDC/hdl/*.sv $TOP/submodules/overflow/*.sv $TOP/submodules/quota/*.sv  $TOP/submodules/counters/*.sv  tb_pmu_ahb.sv ./colors.vh
+vlog +acc=rn +incdir+$TOP/hdl/ $TOP/hdl/pmu_ahb.sv $TOP/hdl/PMU_raw.sv $TOP/submodules/MCCU/hdl/* $TOP/submodules/crossbar/hdl/*.sv $TOP/submodules/RDC/hdl/*.sv $TOP/submodules/overflow/*.sv $TOP/submodules/quota/*.sv  $TOP/submodules/counters/*.sv  tb_pmu_ahb.sv ./colors.vh $TOP/submodules/seu_ip/hamming32t26d_*.sv
 vmake pmu_ahb/ > Makefile
 
 if [ -z "$1" ]

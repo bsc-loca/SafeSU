@@ -35,6 +35,9 @@ verific -sv PMU_overflow.sv
 verific -sv PMU_quota.sv
 verific -sv MCCU.sv
 verific -sv RDC.sv
+verific -sv hamming32t26d_enc.sv
+verific -sv hamming32t26d_dec.sv
+verific -sv crossbar.sv 
 verific -import -extnets -all pmu_ahb
 prep -top pmu_ahb
 
@@ -52,3 +55,6 @@ prep -top pmu_ahb
 ../../../submodules/quota/PMU_quota.sv
 ../../../submodules/MCCU/hdl/MCCU.sv
 ../../../submodules/RDC/hdl/RDC.sv
+../../../submodules/seu_ip/hamming32t26d_enc.sv
+../../../submodules/seu_ip/hamming32t26d_dec.sv
+../../../submodules/crossbar/hdl/crossbar.sv

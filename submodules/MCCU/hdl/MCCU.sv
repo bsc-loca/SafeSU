@@ -277,7 +277,7 @@
     for(x=0; x<N_CORES; x=x+1)  begin: InterruptionQuotaHold
         always @(posedge clk_i) begin
             if(rstn_i == 1'b0 ) begin
-                interruption_quota_q[x] <= '{default:'0};
+                interruption_quota_q[x] <= 1'b0;
             end else begin
                 interruption_quota_q[x] <= interruption_quota_d[x] | interruption_quota_q[x];
             end
