@@ -537,20 +537,12 @@ end
                     && (hwrite_i==1)
                     )
                     |=> (ahb_write_req == 1) || rstn_i==0);
-    // If event 8 is low and current transaction is not a write, counter is
-    // stable
-    assert property ((events_i[8]==0 && $stable(events_i[8]) &&
-                    ahb_write_req==0
-                     )
-                     |=> $stable(slv_reg[9]) ||
-                         (slv_reg[9]==($past(slv_reg[9])+1)) 
-                         || $past(rstn_i)==1);
 
     // If there is no write and no reset the slv_Regs used by the counters can
     // only decrease due to an overflow
         //posible resets of counters
     sequence no_counter_reset;
-        (rstn_i == 1) && (slv_reg[0][1] == 0);
+        f_past_valid && ($past(rstn_i) != 0) && (slv_reg[0][1] == 0);
     endsequence
     sequence counter_reset;
         (rstn_i == 0) || (slv_reg[0][1] == 1);
@@ -558,11 +550,11 @@ end
         //There is no pending write or it is not valid
     sequence no_ahb_write;
         //since ahb is pipelined i check for the last addres phase
-        ($past(hsel_i)==0) || ($past(hwrite_i)==0); 
+        f_past_valid && ($past(ahb_write_req==1'b0)); 
     endsequence
         //Register 1, assigned to counter 0 can't decrease
     sequence no_decrease_counter(n);
-        slv_reg[n+1] >= $past(slv_reg[n+1]);
+        (slv_reg[n+1] >= $past(slv_reg[n+1])) && f_past_valid;
     endsequence
         //Register 1, can decrease at overflow
     sequence overflow_counter(n);
@@ -580,11 +572,11 @@ end
         end
     endgenerate
 
-    //Base configuration register remains stables if there isn't a reset or
+    //Base configuration register remains stables if last cycle isn't a reset or
     //write
     assert property (
-        no_ahb_write and no_counter_reset 
-        |-> $stable(slv_reg_Q[0]) && $stable(pmu_regs_int[0]) && $stable(slv_reg[0])
+        (ahb_write_req==1'b0) and (rstn_i==1)
+        |=> $stable(slv_reg[0]) 
         );
     
     //TODO: If counters cant decrease by their own what explains that we read

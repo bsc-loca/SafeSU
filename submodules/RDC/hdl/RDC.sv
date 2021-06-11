@@ -192,7 +192,7 @@
         for(y=0;y<CORE_EVENTS;y++) begin
             assert property (max_value[CORE_EVENTS*x+y]=={WEIGHTS_WIDTH{1'b1}} 
                  and events_i[x][y]==1 and enable_i |=> 
-                 max_value[CORE_EVENTS*x+y]=={WEIGHTS_WIDTH{1'b1}} or rstn_i);
+                 max_value[CORE_EVENTS*x+y]=={WEIGHTS_WIDTH{1'b1}} or rstn_i==0);
         end
     end
       

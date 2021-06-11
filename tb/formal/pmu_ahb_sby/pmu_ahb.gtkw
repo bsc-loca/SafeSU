@@ -1,17 +1,16 @@
 [*]
 [*] GTKWave Analyzer v3.3.86 (w)1999-2017 BSI
-[*] Fri Jun 19 15:40:08 2020
+[*] Mon Jun 14 16:13:35 2021
 [*]
-[dumpfile] "/home/bscuser/BSC/grlib-gpl-2019-4-b4246-kc705/lib/bsc/ahb_pmu/bsc_pmu/tb/formal/pmu_ahb_sby/pmu_ahb/engine_1/trace.vcd"
-[dumpfile_mtime] "Fri Jun 19 15:34:43 2020"
-[dumpfile_size] 84191
-[savefile] "/home/bscuser/BSC/grlib-gpl-2019-4-b4246-kc705/lib/bsc/ahb_pmu/bsc_pmu/tb/formal/pmu_ahb_sby/pmu_ahb.gtkw"
+[dumpfile] "/home/gcabo/BSC/bsc_pmu/tb/formal/pmu_ahb_sby/pmu_ahb_bmc/engine_1/trace.vcd"
+[dumpfile_mtime] "Mon Jun 14 16:08:49 2021"
+[dumpfile_size] 154453
+[savefile] "/home/gcabo/BSC/bsc_pmu/tb/formal/pmu_ahb_sby/pmu_ahb.gtkw"
 [timestart] 0
-[size] 1920 1025
+[size] 1853 1025
 [pos] 22 22
 *-3.707499 40 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] pmu_ahb.
-[treeopen] pmu_ahb.inst_pmu_raw.
 [sst_width] 228
 [signals_width] 548
 [sst_expanded] 1
@@ -19,10 +18,8 @@
 @28
 [color] 1
 (30)pmu_ahb.slv_reg<1>[31:0]
-@29
 [color] 1
 pmu_ahb.rstn_i
-@28
 [color] 2
 pmu_ahb.hsel_i
 [color] 2
@@ -99,9 +96,6 @@ pmu_ahb.slv_reg<1>[31:0]
 -group_end
 @28
 pmu_ahb.inst_pmu_raw.clk_i
-@22
-pmu_ahb.inst_pmu_raw.events_i[8:0]
-@28
 pmu_ahb.hburst_i[2:0]
 pmu_ahb.hmastlock_i
 @22
@@ -291,19 +285,8 @@ pmu_ahb.slv_reg<9>[31:0]
 @28
 [color] 7
 pmu_ahb.ahb_write_req
-@800022
-pmu_ahb.inst_pmu_raw.events_i[8:0]
-@28
-[color] 7
-(0)pmu_ahb.inst_pmu_raw.events_i[8:0]
-(1)pmu_ahb.inst_pmu_raw.events_i[8:0]
-(2)pmu_ahb.inst_pmu_raw.events_i[8:0]
-(3)pmu_ahb.inst_pmu_raw.events_i[8:0]
-(4)pmu_ahb.inst_pmu_raw.events_i[8:0]
-(5)pmu_ahb.inst_pmu_raw.events_i[8:0]
-(6)pmu_ahb.inst_pmu_raw.events_i[8:0]
-(7)pmu_ahb.inst_pmu_raw.events_i[8:0]
-(8)pmu_ahb.inst_pmu_raw.events_i[8:0]
+@800200
+-pmu_ahb.inst_pmu_raw.events_i
 @1001200
 -group_end
 @c00200
@@ -384,317 +367,16 @@ pmu_ahb.slv_reg_Q<9>[31:0]
 @28
 pmu_ahb.inst_pmu_raw.inst_counters.clk_i
 pmu_ahb.inst_pmu_raw.inst_counters.en_i
-@800022
-pmu_ahb.inst_pmu_raw.inst_counters.events_i[8:0]
-@28
-(0)pmu_ahb.inst_pmu_raw.inst_counters.events_i[8:0]
-(1)pmu_ahb.inst_pmu_raw.inst_counters.events_i[8:0]
-(2)pmu_ahb.inst_pmu_raw.inst_counters.events_i[8:0]
-(3)pmu_ahb.inst_pmu_raw.inst_counters.events_i[8:0]
-(4)pmu_ahb.inst_pmu_raw.inst_counters.events_i[8:0]
-(5)pmu_ahb.inst_pmu_raw.inst_counters.events_i[8:0]
-(6)pmu_ahb.inst_pmu_raw.inst_counters.events_i[8:0]
-(7)pmu_ahb.inst_pmu_raw.inst_counters.events_i[8:0]
-(8)pmu_ahb.inst_pmu_raw.inst_counters.events_i[8:0]
+@800200
+-pmu_ahb.inst_pmu_raw.inst_counters.events_i
 @1001200
 -group_end
 @28
 pmu_ahb.inst_pmu_raw.inst_counters.f_past_valid
-@c00022
-pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-@28
-(0)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(1)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(2)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(3)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(4)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(5)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(6)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(7)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(8)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(9)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(10)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(11)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(12)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(13)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(14)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(15)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(16)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(17)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(18)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(19)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(20)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(21)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(22)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(23)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(24)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(25)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(26)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(27)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(28)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(29)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(30)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(31)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(32)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(33)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(34)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(35)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(36)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(37)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(38)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(39)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(40)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(41)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(42)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(43)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(44)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(45)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(46)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(47)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(48)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(49)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(50)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(51)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(52)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(53)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(54)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(55)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(56)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(57)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(58)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(59)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(60)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(61)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(62)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(63)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(64)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(65)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(66)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(67)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(68)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(69)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(70)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(71)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(72)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(73)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(74)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(75)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(76)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(77)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(78)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(79)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(80)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(81)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(82)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(83)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(84)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(85)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(86)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(87)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(88)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(89)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(90)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(91)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(92)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(93)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(94)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(95)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(96)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(97)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(98)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(99)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(100)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(101)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(102)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(103)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(104)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(105)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(106)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(107)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(108)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(109)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(110)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(111)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(112)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(113)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(114)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(115)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(116)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(117)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(118)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(119)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(120)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(121)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(122)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(123)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(124)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(125)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(126)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(127)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(128)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(129)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(130)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(131)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(132)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(133)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(134)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(135)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(136)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(137)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(138)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(139)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(140)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(141)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(142)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(143)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(144)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(145)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(146)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(147)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(148)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(149)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(150)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(151)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(152)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(153)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(154)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(155)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(156)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(157)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(158)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(159)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(160)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(161)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(162)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(163)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(164)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(165)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(166)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(167)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(168)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(169)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(170)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(171)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(172)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(173)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(174)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(175)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(176)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(177)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(178)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(179)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(180)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(181)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(182)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(183)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(184)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(185)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(186)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(187)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(188)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(189)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(190)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(191)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(192)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(193)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(194)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(195)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(196)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(197)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(198)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(199)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(200)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(201)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(202)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(203)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(204)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(205)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(206)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(207)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(208)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(209)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(210)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(211)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(212)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(213)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(214)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(215)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(216)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(217)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(218)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(219)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(220)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(221)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(222)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(223)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(224)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(225)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(226)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(227)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(228)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(229)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(230)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(231)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(232)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(233)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(234)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(235)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(236)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(237)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(238)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(239)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(240)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(241)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(242)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(243)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(244)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(245)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(246)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(247)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(248)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(249)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(250)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(251)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(252)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(253)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(254)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(255)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(256)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(257)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(258)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(259)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(260)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(261)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(262)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(263)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(264)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(265)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(266)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(267)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(268)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(269)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(270)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(271)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(272)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(273)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(274)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(275)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(276)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(277)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(278)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(279)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(280)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(281)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(282)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(283)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(284)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(285)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(286)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
-(287)pmu_ahb.inst_pmu_raw.inst_counters.regs_i[287:0]
+@c00200
+-pmu_ahb.inst_pmu_raw.inst_counters.regs_i
 @1401200
 -group_end
-@22
-pmu_ahb.inst_pmu_raw.inst_counters.regs_o[287:0]
 @28
 pmu_ahb.inst_pmu_raw.inst_counters.rstn_i
 @22
@@ -710,5 +392,55 @@ pmu_ahb.inst_pmu_raw.inst_counters.slv_reg<8>[31:0]
 @28
 pmu_ahb.inst_pmu_raw.inst_counters.softrst_i
 pmu_ahb.inst_pmu_raw.inst_counters.we_i
+[color] 2
+pmu_ahb.f_past_valid
+@22
+[color] 2
+pmu_ahb.inst_pmu_raw.inst_MCCU.quota_int<0>[31:0]
+[color] 2
+pmu_ahb.inst_pmu_raw.inst_MCCU.quota_int<1>[31:0]
+[color] 2
+pmu_ahb.inst_pmu_raw.inst_MCCU.quota_int<2>[31:0]
+[color] 2
+pmu_ahb.inst_pmu_raw.inst_MCCU.quota_int<3>[31:0]
+[color] 2
+pmu_ahb.inst_pmu_raw.inst_MCCU.ccc_suma_int<0>[8:0]
+[color] 2
+pmu_ahb.inst_pmu_raw.inst_MCCU.ccc_suma_int<1>[63:0]
+[color] 2
+pmu_ahb.inst_pmu_raw.inst_MCCU.ccc_suma_int<2>[63:0]
+[color] 2
+pmu_ahb.inst_pmu_raw.inst_MCCU.ccc_suma_int<3>[63:0]
+@28
+[color] 2
+pmu_ahb.inst_pmu_raw.inst_MCCU.enable_i
+@22
+pmu_ahb.inst_pmu_raw.inst_MCCU.interruption_quota_o[3:0]
+@28
+[color] 3
+pmu_ahb.hsel_i
+[color] 3
+pmu_ahb.rstn_i
+@22
+[color] 3
+pmu_ahb.slv_reg<0>[31:0]
+@28
+[color] 3
+pmu_ahb.hwrite_i
+[color] 3
+pmu_ahb.ahb_write_req
+@22
+pmu_ahb.dwrite_slave[31:0]
+@28
+pmu_ahb.ahb_write_req
+@23
+pmu_ahb.events_i[31:0]
+@28
+pmu_ahb.ahb_write_req
+pmu_ahb.f_past_valid
+@22
+pmu_ahb.slv_reg<9>[31:0]
+@28
+pmu_ahb.rstn_i
 [pattern_trace] 1
 [pattern_trace] 0

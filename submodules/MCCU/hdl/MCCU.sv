@@ -286,7 +286,7 @@
                 end
             end
         end
-        assign interruption_quota_o[x] = enable_i? interruption_quota_q[x] : 1'b0;
+        assign interruption_quota_o[x] = (enable_i && rstn_i) ? interruption_quota_q[x] : 1'b0;
     end
 
     `ifdef ASSERTIONS
@@ -361,25 +361,54 @@ Section of Formal propperties, valid for SBY
      * --------*/
     //Interruption can be only high if consumed quota is larger than
     //available quota and the MCCU is enabled
-    integer k;
+
+    default clocking @(posedge clk_i); endclocking;
+    
+    genvar k;
+    for(k=0;k<N_CORES;k++) begin
+    // If the unit is in reset or disabled the interrupts shall be 0 immediately.
+    assert property (
+                    (f_past_valid && (rstn_i==0 || enable_i==0))
+                    |->
+                    (!interruption_quota_o[k])
+                    );
+    // If an interrup is actrive it shall remain high unless there is a reset
+    assert property (
+                    (f_past_valid && (interruption_quota_o[k]==1'b1))
+                    |=>
+                    ($stable(interruption_quota_o[k]) || (!rstn_i || !enable_i))
+                    );
+
+    /// If unit is not in reset or disabled. When quota_int[k]<ccc_suma_int[k] the interrupt 
+        //shall rise in the next cycle
+
+    end 
+/*
     always @(posedge clk_i) begin
         for(k=0;k<N_CORES;k++) begin
-            if (f_past_valid) begin
-                if ($past(quota_int[k]<ccc_suma_int[k]) && enable_i) begin
+            if (f_past_valid && rstn_i) begin
+                if (($past(quota_int[k]<ccc_suma_int[k]) && enable_i)) begin
                     //The interruption shall be high
-                    assert(interruption_quota_o[k]==1'b1);
+                    assert(interruption_quota_[k]==1'b1);
                     //The interruption can only be high if the MCCU is enabled
                     assert(interruption_quota_o[k]==enable_i);
                 end else begin
-                    //interruption shall be disabled if not enabled
-                    if (enable_i== 0) begin
+                    //interruption shall be disabled if not enabled or unit in reset
+                    if (enable_i== 0 || rstn_i==0) begin
                         assert(interruption_quota_o[k]==1'b0);
+                    end else begin
+                        //if the interrup was high, hold it high
+                        if ($past(interruption_quota_o[k])==1'b1) begin
+                            assert(interruption_quota_o[k]==1'b1);
+                        end else begin
+                            assert(interruption_quota_o[k]==1'b0);
+                        end
                     end
                 end
             end
         end
     end
-    
+*/ 
 `endif
 endmodule
 `default_nettype wire //allow compatibility with legacy code and xilinx ip

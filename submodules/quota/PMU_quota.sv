@@ -1,4 +1,6 @@
 //-----------------------------------------------------
+//  DEPRECATED. DO NOT USE
+//-----------------------------------------------------
 // ProjectName: LEON3_kc705_pmu
 // Function   : Submodule of the PMU to handle quota consumption of a single
 //              core.
@@ -167,6 +169,7 @@ module PMU_quota #
 //
 ////////////////////////////////////////////////////////////////////////////////
 `ifdef	FORMAL
+    /*
     //auxiliar registers
     reg f_past_valid ;
     initial f_past_valid = 1'b0;
@@ -186,6 +189,7 @@ module PMU_quota #
    cover property (((quota_limit_i==5)[*5] |-> (intr_quota_o==1))); 
    // Set all the the events in the mask to one and keep it stable
    cover property ((quota_mask_i== {N_COUNTERS{1'b1}})[*5] |-> (intr_quota_o==1));
+   */
    // Roll over the max value of suma_int
    /*
    cover property (($past(suma_int)=={max_width{1'b1}})
@@ -204,6 +208,7 @@ module PMU_quota #
 */
     // The interruption can't fall once it is risen unless the unit is
     // softreset 
+    /*
     assert property ($rose(intr_quota_o) |-> ($past(softrst_i)||$past(rstn_i)));
     // The interruption shall be high eventually
     assert property (##[0:$] intr_quota_o );
@@ -214,7 +219,7 @@ module PMU_quota #
     // use all inputs. Roll over all the states of the addition once before
     // trigger an interrupt
     //TODO
-
+*/
 `endif
 
 endmodule
