@@ -279,12 +279,16 @@
             if(rstn_i == 1'b0 ) begin
                 interruption_quota_q[x] <= 1'b0;
             end else begin
-                interruption_quota_q[x] <= interruption_quota_d[x] | interruption_quota_q[x];
+                if(enable_i) begin
+                    interruption_quota_q[x] <= interruption_quota_d[x] | interruption_quota_q[x];
+                end else begin
+                    interruption_quota_q[x] <= 1'b0;
+                end
             end
         end
+        assign interruption_quota_o[x] = enable_i? interruption_quota_q[x] : 1'b0;
     end
 
-    assign interruption_quota_o = interruption_quota_q;
     `ifdef ASSERTIONS
     always @(posedge clk_i) begin
         for(integer x=0; x<N_CORES; x=x+1)  begin: InterruptionQuota
@@ -319,10 +323,10 @@ Section of Formal propperties, valid for SBY
     end
     /*--------------
       When reset (rstn_i)is active all internal registers shall be set to 0 in 
-      the same cycle.
+      the next cycle.
     --------------*/
-    always @(*) begin
-		if(0 == rstn_i) begin
+    always @(posedge clk_i) begin
+		if(0 == $past(rstn_i) && f_past_valid) begin
             assert(0 == quota_int.sum()); 
             assert(0 == ccc_suma_int.sum()); 
         end
@@ -345,16 +349,12 @@ Section of Formal propperties, valid for SBY
                 end
         end
     end
-    //assert that the addition of quotas consumed in the current cycle is 0 at 
-    //reset or equal to the internal weights.
+    //assert that the addition of quotas consumed in the current cycle
+    //equal to the internal weights.
     always @(posedge clk_i) begin
         if(rstn_i) begin
             assert(f_sum_weights == ccc_suma_int.sum());
-        end else begin
-            //This assertion is redundant but I left it here for help with
-            //understanding the previous assertion
-            assert(0 ==ccc_suma_int.sum());
-        end
+        end 
     end
     /*---------
      * checks when the interruption can be triggered
@@ -362,17 +362,20 @@ Section of Formal propperties, valid for SBY
     //Interruption can be only high if consumed quota is larger than
     //available quota and the MCCU is enabled
     integer k;
-    always @(*) begin
+    always @(posedge clk_i) begin
         for(k=0;k<N_CORES;k++) begin
-            if (quota_int[k]<ccc_suma_int[k] && enable_i) begin
-                //The interruption shall be high
-                assert(interruption_quota_o[k]==1'b1);
-                //The interruption can only be high if the MCCU is enabled
-                assert(interruption_quota_o[k]==enable_i);
-            end else begin
-                //interruption shall be disabled regardless of enable_i
-                //TODO: if we retain the previous state (hold interrupt) this does not apply
-                assert(interruption_quota_o[k]==1'b0);
+            if (f_past_valid) begin
+                if ($past(quota_int[k]<ccc_suma_int[k]) && enable_i) begin
+                    //The interruption shall be high
+                    assert(interruption_quota_o[k]==1'b1);
+                    //The interruption can only be high if the MCCU is enabled
+                    assert(interruption_quota_o[k]==enable_i);
+                end else begin
+                    //interruption shall be disabled if not enabled
+                    if (enable_i== 0) begin
+                        assert(interruption_quota_o[k]==1'b0);
+                    end
+                end
             end
         end
     end
