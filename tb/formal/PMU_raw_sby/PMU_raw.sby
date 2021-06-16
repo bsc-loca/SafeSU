@@ -26,6 +26,11 @@ verific -sv PMU_overflow.sv
 verific -sv PMU_quota.sv  
 verific -sv MCCU.sv  
 verific -sv RDC.sv
+verific -sv triple_reg.sv 
+verific -sv way3u2a_voter.sv
+verific -sv crossbar.sv 
+verific -sv way3ua_voter.sv
+verific -sv way3_voter.sv
 verific -import -extnets -all PMU_raw
 prep -top PMU_raw
 
@@ -41,4 +46,9 @@ prep -top PMU_raw
 ../../../submodules/overflow/PMU_overflow.sv 
 ../../../submodules/quota/PMU_quota.sv
 ../../../submodules/MCCU/hdl/MCCU.sv
+../../../submodules/seu_ip/way3_voter.sv
+../../../submodules/crossbar/hdl/crossbar.sv
+../../../submodules/seu_ip/way3ua_voter.sv
+../../../submodules/seu_ip/way3u2a_voter.sv
+../../../submodules/seu_ip/triple_reg.sv
 ../../../submodules/RDC/hdl/RDC.sv

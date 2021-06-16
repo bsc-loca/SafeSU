@@ -1,8 +1,8 @@
 #read file
 verific -sv instances.sv
-verific -sv triple_reg.sv
-verific -sv sbf_reg.sv
-verific -sv ham_reg.sv
+verific -sv ../../submodules/seu_ip/triple_reg.sv
+verific -sv ../../submodules/seu_ip/sbf_reg.sv
+verific -sv ../../submodules/seu_ip/ham_reg.sv
 verific -sv ../../submodules/seu_ip/reg_sbf.sv
 verific -sv ../../submodules/seu_ip/way3_voter.sv
 verific -sv ../../submodules/seu_ip/hamming16t11d_enc.sv

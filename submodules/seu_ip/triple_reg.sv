@@ -57,7 +57,7 @@ module triple_reg #
         end else begin
             trip0_preg <= trip_preg_d;
             trip1_preg <= trip_preg_d;
-            trip1_preg <= trip_preg_d;
+            trip2_preg <= trip_preg_d;
         end
     end
     

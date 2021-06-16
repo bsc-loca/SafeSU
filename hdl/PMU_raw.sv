@@ -36,6 +36,8 @@
 		parameter integer N_SOC_EV	= 32,
 		// Configuration registers
 		parameter integer N_CONF_REGS	= 1,
+        // Fault tolerance mechanisms (FT==0 -> FT disabled)
+        parameter integer FT  = 1,                                           
 
         //------------- Internal Parameters 
 		
@@ -619,7 +621,12 @@ end
             end
     end
      
+    
+    if (FT==0) begin
     //register enable to solve Hazards
+        // Does not nid replication since regs_i is already protected
+        // RDC_enable_int may be disabled for a single cycle but
+        // it will not be a permanent fault
     reg RDC_enable_int;
     always @(posedge clk_i) begin: RDC_glitchless_enable
             if (!rstn_i) begin
@@ -629,7 +636,6 @@ end
                 RDC_enable_int <= regs_i[BASE_MCCU_CFG][MCCU_N_CORES+2+1];
             end
     end 
-    
     RDC #(
         // Width of data registers
         .DATA_WIDTH     (REG_WIDTH),
@@ -652,6 +658,137 @@ end
         //maximum pulse length of a given core event
         .watermark_o(MCCU_watermark_int) 
     );
+    end else begin : Rdctrip
+    //register enable to solve Hazards
+        // Does not nid replication since regs_i is already protected
+        // RDC_enable_int may be disabled for a single cycle but
+        // it will not be a permanent fault
+    logic RDC_enable_int_D, RDC_enable_int_Q;
+    logic RDC_enable_fte1, RDC_enable_fte2;
+    triple_reg#(.IN_WIDTH(1)
+    )RDC_enable_trip(
+    .clk_i(clk_i),
+    .rstn_i(rstn_i),
+    .din_i(RDC_enable_int_D),
+    .dout_o(RDC_enable_int_Q),
+    .error1_o(RDC_enable_fte1), // ignore corrected errors
+    .error2_o(RDC_enable_fte2)
+    );
+
+    always @(posedge clk_i) begin: RDC_glitchless_enable
+            if (!rstn_i) begin
+                RDC_enable_int_D <= 0;
+            end else begin
+                RDC_enable_int_D <= regs_i[BASE_MCCU_CFG][6];
+            end
+    end 
+    
+    //Signals from instances to way3 voter
+        //inst
+    logic intr_RDC_ft0 ;
+    logic [MCCU_N_EVENTS-1:0] interruption_rdc_ft0 [0:MCCU_N_CORES-1];
+    logic [MCCU_WEIGHTS_WIDTH-1:0] MCCU_watermark_ft0 [0:MCCU_N_CORES-1]
+                                                     [0:MCCU_N_EVENTS-1];
+        //inst1
+    logic intr_RDC_ft1 ;
+    logic [MCCU_N_EVENTS-1:0] interruption_rdc_ft1 [0:MCCU_N_CORES-1];
+    logic [MCCU_WEIGHTS_WIDTH-1:0] MCCU_watermark_ft1 [0:MCCU_N_CORES-1]
+                                                     [0:MCCU_N_EVENTS-1];
+        //inst2
+    logic intr_RDC_ft2 ;
+    logic [MCCU_N_EVENTS-1:0] interruption_rdc_ft2 [0:MCCU_N_CORES-1];
+    logic [MCCU_WEIGHTS_WIDTH-1:0] MCCU_watermark_ft2 [0:MCCU_N_CORES-1]
+                                                     [0:MCCU_N_EVENTS-1];
+
+    //FT error detected signals
+    //Even when the error is corrected latent faults may be present on this signals
+        // and software shall clear them
+    logic    intr_RDC_fte1, interruption_rdc_fte1, MCCU_watermark_fte1; 
+    logic    intr_RDC_fte2, interruption_rdc_fte2, MCCU_watermark_fte2;
+    RDC #(
+        .DATA_WIDTH     (REG_WIDTH),
+        .WEIGHTS_WIDTH  (RDC_WEIGHTS_WIDTH),
+        .N_CORES        (RDC_N_CORES),
+        .CORE_EVENTS    (RDC_N_EVENTS)
+    ) inst_RDC(
+        .clk_i                  (clk_i),
+        .rstn_i                 (RDC_rstn), //active low
+        .enable_i               (RDC_enable_int_Q),// Software map
+        .events_i               (MCCU_events_int),
+        .events_weights_i       (MCCU_events_weights_int),
+        .interruption_rdc_o(intr_RDC_ft0),
+        .interruption_vector_rdc_o(interruption_rdc_ft0),
+        .watermark_o(MCCU_watermark_ft0) 
+    );
+    RDC #(
+        .DATA_WIDTH     (REG_WIDTH),
+        .WEIGHTS_WIDTH  (RDC_WEIGHTS_WIDTH),
+        .N_CORES        (RDC_N_CORES),
+        .CORE_EVENTS    (RDC_N_EVENTS)
+    ) inst1_RDC(
+        .clk_i                  (clk_i),
+        .rstn_i                 (RDC_rstn), //active low
+        .enable_i               (RDC_enable_int_Q),// Software map
+        .events_i               (MCCU_events_int),
+        .events_weights_i       (MCCU_events_weights_int),
+        .interruption_rdc_o(intr_RDC_ft1),
+        .interruption_vector_rdc_o(interruption_rdc_ft1),
+        .watermark_o(MCCU_watermark_ft1) 
+    );
+    RDC #(
+        .DATA_WIDTH     (REG_WIDTH),
+        .WEIGHTS_WIDTH  (RDC_WEIGHTS_WIDTH),
+        .N_CORES        (RDC_N_CORES),
+        .CORE_EVENTS    (RDC_N_EVENTS)
+    ) inst2_RDC(
+        .clk_i                  (clk_i),
+        .rstn_i                 (RDC_rstn), //active low
+        .enable_i               (RDC_enable_int_Q),// Software map
+        .events_i               (MCCU_events_int),
+        .events_weights_i       (MCCU_events_weights_int),
+        .interruption_rdc_o(intr_RDC_ft2),
+        .interruption_vector_rdc_o(interruption_rdc_ft2),
+        .watermark_o(MCCU_watermark_ft2) 
+    );
+    // intr_RDC_ft
+    way3_voter #(
+		.IN_WIDTH(1)
+	)intr_RDC_way3(
+        .in0(intr_RDC_ft0),
+        .in1(intr_RDC_ft1),
+        .in2(intr_RDC_ft2),
+        .out(intr_RDC_o),
+        .error1_o(intr_RDC_fte1),
+        .error2_o(intr_RDC_fte2)
+	);
+
+    // interruption_rdc_ft
+    way3ua_voter #(
+		.W(MCCU_N_EVENTS),
+		.U(MCCU_N_CORES)
+	)interruption_rdc_way3(
+        .in0(interruption_rdc_ft0),
+        .in1(interruption_rdc_ft1),
+        .in2(interruption_rdc_ft2),
+        .out(interruption_rdc_o),
+        .error1_o(interruption_rdc_fte1),
+        .error2_o(interruption_rdc_fte2)
+	);
+    // MCCU_watermark_ft
+    way3u2a_voter #(
+		.W(MCCU_WEIGHTS_WIDTH),
+		.U(MCCU_N_CORES),
+		.D(MCCU_N_EVENTS)
+	)watermark_way3(
+        .in0(MCCU_watermark_ft0),
+        .in1(MCCU_watermark_ft1),
+        .in2(MCCU_watermark_ft2),
+        .out(MCCU_watermark_int),
+        .error1_o(MCCU_watermark_fte1),
+        .error2_o(MCCU_watermark_fte2)
+	);
+
+    end
 /////////////////////////////////////////////////////////////////////////////////
 //
 // Formal Verification section begins here.

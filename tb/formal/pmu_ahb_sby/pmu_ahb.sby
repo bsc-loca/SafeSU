@@ -38,6 +38,11 @@ verific -sv RDC.sv
 verific -sv hamming32t26d_enc.sv
 verific -sv hamming32t26d_dec.sv
 verific -sv crossbar.sv 
+verific -sv way3u2a_voter.sv
+verific -sv way3ua_voter.sv
+verific -sv way3_voter.sv
+verific -sv triple_reg.sv 
+ 
 verific -import -extnets -all pmu_ahb
 prep -top pmu_ahb
 
@@ -57,4 +62,8 @@ prep -top pmu_ahb
 ../../../submodules/RDC/hdl/RDC.sv
 ../../../submodules/seu_ip/hamming32t26d_enc.sv
 ../../../submodules/seu_ip/hamming32t26d_dec.sv
+../../../submodules/seu_ip/way3_voter.sv
+../../../submodules/seu_ip/way3ua_voter.sv
+../../../submodules/seu_ip/way3u2a_voter.sv
+../../../submodules/seu_ip/triple_reg.sv
 ../../../submodules/crossbar/hdl/crossbar.sv

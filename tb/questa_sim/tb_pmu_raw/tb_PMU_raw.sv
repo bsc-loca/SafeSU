@@ -54,6 +54,7 @@ reg tb_fail = 0;
 		.REG_WIDTH(TB_DATA_WIDTH),
 		.N_COUNTERS(TB_N_COUNTERS),
 		.N_SOC_EV(32),
+        .FT(1),
 		.N_CONF_REGS(TB_N_CFG)
 	)dut_PMU_raw (
 		.clk_i(tb_clk_i),

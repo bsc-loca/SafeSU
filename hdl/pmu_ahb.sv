@@ -179,11 +179,66 @@ localparam TRANSFER_ERROR_RESP_2CYCLE = 2'b11;
 //------------- Data structures
 //----------------------------------------------
 var struct packed{
-    logic select;
-    logic write;
+    logic select_D, select_Q;
+    logic write_D, write_Q;
 //    logic master_ready;
-    logic [HADDR_WIDTH-1:0] master_addr;
+    logic [HADDR_WIDTH-1:0] master_addr_D, master_addr_Q;
 } address_phase;
+if (FT==0) begin
+    logic select, write;
+    logic [HADDR_WIDTH-1:0] master_addr;
+    always_ff @(posedge clk_i) begin
+        if (rstn_i==0) begin
+            select <= 1'b0;
+            write <= 1'b0;
+            master_addr <= '{default:0};
+        end else begin
+            select <= address_phase.select_D;
+            write <= address_phase. write_D;
+            master_addr <= address_phase.master_addr_D;
+        end
+    end
+    
+    always_comb begin
+        address_phase.select_Q = select;
+        address_phase.write_Q = write;
+        address_phase.master_addr_Q = master_addr;
+    end
+end else begin : Apft //Address phase FT
+    logic write_fte, select_fte, master_addr_fte;
+    
+    triple_reg#(.IN_WIDTH(1)
+    )write_trip(
+    .clk_i(clk_i),
+    .rstn_i(rstn_i),
+    .din_i(address_phase.write_D),
+    .dout_o(address_phase.write_Q),
+    .error1_o(), // ignore corrected errors
+    .error2_o(write_fte)
+    );
+    
+    triple_reg#(.IN_WIDTH(1)
+    )select_trip(
+    .clk_i(clk_i),
+    .rstn_i(rstn_i),
+    .din_i(address_phase.select_D),
+    .dout_o(address_phase.select_Q),
+    .error1_o(), // ignore corrected errors
+    .error2_o(select_fte)
+    );
+    
+    triple_reg#(.IN_WIDTH(HADDR_WIDTH)
+    )master_addr_trip(
+    .clk_i(clk_i),
+    .rstn_i(rstn_i),
+    .din_i(address_phase.master_addr_D),
+    .dout_o(address_phase.master_addr_Q),
+    .error1_o(), // ignore corrected errors
+    .error2_o(master_addr_fte)
+    );
+    
+end
+
 
 //----------------------------------------------
 //------------- AHB registers
@@ -220,7 +275,7 @@ var struct packed{
                 //AHB write
                 //Write to slv registers if slave was selected & was a write. Else
                 //register the values given by pmu_raw
-                if(address_phase.write && address_phase.select) begin
+                if(address_phase.write_Q && address_phase.select_Q) begin
                     // get the values from the pmu_raw instance
                     slv_reg_Q = slv_reg;
                     slv_reg_Q [slv_index] = dwrite_slave;
@@ -231,8 +286,7 @@ var struct packed{
                     slv_reg_Q = slv_reg;
                 end
         end 
-        assign intr_FT_o = 1'b0;
-    end else begin
+    end else begin : Slvft
         //FT version of the registers
             // Hamming bits, 6 for each 26 bits of data
         localparam HAM_P=6;//protection bits
@@ -242,7 +296,7 @@ var struct packed{
             //interrupt FT error
         wire  [N_HAM32_SLV-1:0] ift_slv; //interrupt fault tolerance mechanism
             //"Flat" slv_reg Q and D signals
-        wire [N_HAM32_SLV*HAM_D-1:0] slv_reg_fti;//fault tolerance in
+        wire [N_HAM32_SLV*HAM_D-1:0] slv_reg_fte;//fault tolerance in
         wire [N_HAM32_SLV*HAM_D-1:0] slv_reg_fto;//fault tolerance out
         wire [REG_WIDTH-1:0] slv_reg_ufto [0:N_REGS-1];//unpacked fault tolerance out
         wire [N_HAM32_SLV*HAM_D-1:0] slv_reg_pQ ;//protected output
@@ -254,15 +308,15 @@ var struct packed{
         //Feed and send flat assigment in to original format 
         for (genvar i =0; i<N_REGS; i++) begin
             //assign slv_register inputs to a flat hamming input
-            assign slv_reg_fti[(i+1)*REG_WIDTH-1:i*REG_WIDTH]=slv_reg_D[i][REG_WIDTH-1:0];
+            assign slv_reg_fte[(i+1)*REG_WIDTH-1:i*REG_WIDTH]=slv_reg_D[i][REG_WIDTH-1:0];
         end
         // SEC-DEC hamming on 26 bit data chunks
         for (genvar i =0; i<(N_HAM32_SLV); i++) begin : slv_ham_enc
             //encoder
                 //hv_o needs to inteleave protection and data bits
             hamming32t26d_enc#(
-            )dut_hamming32t26d_enc (
-                .data_i(slv_reg_fti[(i+1)*HAM_D-1:i*HAM_D]),
+            )slv_hamming32t26d_enc (
+                .data_i(slv_reg_fte[(i+1)*HAM_D-1:i*HAM_D]),
                 .hv_o(ham_mbits_D[(i+1)*(HAM_M)-1:i*(HAM_M)])
             );
         end
@@ -274,7 +328,7 @@ var struct packed{
                 end else begin
                     //You could be using ham_mbits_D but code is longer
                     //Some of the ham_mbits_D aren't needed
-                    slv_reg[i] <= slv_reg_fti[(i+1)*REG_WIDTH-1:REG_WIDTH*i];
+                    slv_reg[i] <= slv_reg_fte[(i+1)*REG_WIDTH-1:REG_WIDTH*i];
                 end
             end
             assign slv_reg_pQ[(i+1)*REG_WIDTH-1:i*REG_WIDTH] = slv_reg[i];
@@ -282,7 +336,7 @@ var struct packed{
         // pad signals to fill an integer number of 26 bit chunks
         for (genvar i =(N_REGS)*REG_WIDTH; i<N_HAM32_SLV*HAM_D; i++) begin
             assign slv_reg_pQ[i] = 1'b0;
-            assign slv_reg_fti[i] = 1'b0;
+            assign slv_reg_fte[i] = 1'b0;
         end
 
         //Feed encoded parity bits into extra registers
@@ -318,7 +372,7 @@ var struct packed{
         for (genvar i =0; i<N_HAM32_SLV; i++) begin : slv_ham_dec
             //decoder
             hamming32t26d_dec#(
-            )dut_hamming32t26d_dec (
+            )slv_hamming32t26d_dec (
                 .data_o(slv_reg_fto[(i+1)*HAM_D-1:i*HAM_D]),
                 .hv_i(ham_mbits_Q[(i+1)*HAM_M-1:i*HAM_M]),
                 .ded_error_o(ift_slv[i])
@@ -342,7 +396,7 @@ var struct packed{
                 //AHB write
                 //Write to slv registers if slave was selected & was a write. Else
                 //register the values given by pmu_raw
-                if(address_phase.write && address_phase.select) begin
+                if(address_phase.write_Q && address_phase.select_Q) begin
                     //Feed and send flat assigment in to original format 
                         //assign flat hamming outputs to slv_reg_Q
                     slv_reg_Q=slv_reg_ufto;
@@ -356,16 +410,121 @@ var struct packed{
                     slv_reg_Q=slv_reg_ufto;
                 end
         end 
-        //reduce all DED errors from hamming blocks to single interrupt
-        assign intr_FT_o = |ift_slv;
     end
     endgenerate
 
 //----------------------------------------------
 //------------- AHB control logic
 //----------------------------------------------
-logic [1:0] state, next;
+logic [1:0] next;
 
+if (FT==0) begin
+    logic [1:0] state;
+
+    //data phase - state update
+    always_ff @(posedge clk_i) begin
+        if(rstn_i == 1'b0 ) begin
+            state <= TRANS_IDLE;
+        end else begin 
+            state <= next;
+        end
+    end
+
+    always_comb begin
+    //NOTE: I don't expect any of the cafe beaf values in the registers if they do
+    //there is a bug
+        case (state)
+            TRANS_IDLE: begin
+                complete_transfer_status = TRANSFER_SUCCESS_COMPLETE; 
+                dwrite_slave = 32'hbeaf1d1e; 
+                dread_slave = 32'hcafe1d1e; 
+            end
+            TRANS_BUSY:begin
+                complete_transfer_status = TRANSFER_SUCCESS_COMPLETE; 
+                dwrite_slave = 32'hbeafb551; 
+                dread_slave = 32'hcafeb551; 
+            end
+            TRANS_NONSEQUENTIAL:begin
+                complete_transfer_status = TRANSFER_SUCCESS_COMPLETE; 
+                dwrite_slave = hwdata_i; 
+                if (!address_phase.write_Q) begin
+                    dread_slave = slv_reg_Q[slv_index];
+                end else begin
+                    dread_slave = 32'hcafe01a1;
+                end
+            end
+            TRANS_SEQUENTIAL:begin
+                complete_transfer_status = TRANSFER_SUCCESS_COMPLETE; 
+                dwrite_slave = hwdata_i; 
+                if (!address_phase.write_Q) begin
+                    dread_slave = slv_reg_Q[slv_index];
+                end else begin
+                    dread_slave = 32'hcafee1a1;
+                end
+            end
+        endcase
+    end
+end else begin : Stateft
+    //Fault tolerant implementation
+        //Triplication of next and state registers 
+    logic [1:0] state_D, state_Q;
+    logic state_fte; //fault tolerance errors
+    
+    //error1 signals a corrected error, safe to ignore
+    triple_reg#(.IN_WIDTH(2)
+    )state_trip(
+    .clk_i(clk_i),
+    .rstn_i(rstn_i),
+    .din_i(state_D),
+    .dout_o(state_Q),
+    .error1_o(),
+    .error2_o(state_fte)
+    );
+    
+    //data phase - state update
+    always_comb begin
+        if(rstn_i == 1'b0 ) begin
+            state_D = TRANS_IDLE;
+        end else begin 
+            state_D = next;
+        end
+    end
+
+    always_comb begin
+    //NOTE: I don't expect any of the cafe beaf values in the registers if they do
+    //there is a bug
+        case (state_Q)
+            TRANS_IDLE: begin
+                complete_transfer_status = TRANSFER_SUCCESS_COMPLETE; 
+                dwrite_slave = 32'hbeaf1d1e; 
+                dread_slave = 32'hcafe1d1e; 
+            end
+            TRANS_BUSY:begin
+                complete_transfer_status = TRANSFER_SUCCESS_COMPLETE; 
+                dwrite_slave = 32'hbeafb551; 
+                dread_slave = 32'hcafeb551; 
+            end
+            TRANS_NONSEQUENTIAL:begin
+                complete_transfer_status = TRANSFER_SUCCESS_COMPLETE; 
+                dwrite_slave = hwdata_i; 
+                if (!address_phase.write_Q) begin
+                    dread_slave = slv_reg_Q[slv_index];
+                end else begin
+                    dread_slave = 32'hcafe01a1;
+                end
+            end
+            TRANS_SEQUENTIAL:begin
+                complete_transfer_status = TRANSFER_SUCCESS_COMPLETE; 
+                dwrite_slave = hwdata_i; 
+                if (!address_phase.write_Q) begin
+                    dread_slave = slv_reg_Q[slv_index];
+                end else begin
+                    dread_slave = 32'hcafee1a1;
+                end
+            end
+        endcase
+    end
+end
 // address phase - state update 
 always_comb begin
     case (htrans_i)
@@ -395,98 +554,54 @@ always_comb begin
         end
     endcase
 end
+
 // address phase - register required inputs
-always_ff @(posedge clk_i) begin
-    if(rstn_i == 1'b0 ) begin
-        //initialize all the structure to  0 at reset
-        address_phase <= '{default:0};
-    end else begin
-        case (next) 
-            TRANS_IDLE:begin
-                address_phase.select <= hsel_i;
-                address_phase.write <= 0; 
-            end
-            TRANS_BUSY:begin
-                address_phase.select <= hsel_i;
-                address_phase.write <= 0;
-            end
-            TRANS_NONSEQUENTIAL:begin
-                address_phase.select <= hsel_i;
-                address_phase.write <= hwrite_i;
-                address_phase.master_addr <= haddr_i;
-            end
-            TRANS_SEQUENTIAL:begin
-                address_phase.select <= hsel_i;
-                address_phase.write <= hwrite_i;
-                address_phase.master_addr <= haddr_i;
-            end
-        endcase
-    end
+always_comb begin
+    case (next) 
+        TRANS_IDLE:begin
+            address_phase.select_D = hsel_i;
+            address_phase.write_D = 0; 
+            address_phase.master_addr_D = address_phase.master_addr_Q;
+        end
+        TRANS_BUSY:begin
+            address_phase.select_D = hsel_i;
+            address_phase.write_D = 0;
+            address_phase.master_addr_D = address_phase.master_addr_Q;
+        end
+        TRANS_NONSEQUENTIAL:begin
+            address_phase.select_D = hsel_i;
+            address_phase.write_D = hwrite_i;
+            address_phase.master_addr_D = haddr_i;
+        end
+        TRANS_SEQUENTIAL:begin
+            address_phase.select_D = hsel_i;
+            address_phase.write_D = hwrite_i;
+            address_phase.master_addr_D = haddr_i;
+        end
+    endcase
 end
 
-//data phase - state update
-always_ff @(posedge clk_i) begin
-    if(rstn_i == 1'b0 ) begin
-        state <= TRANS_IDLE;
-    end else begin 
-        state <= next;
-    end
-end
 
 //data phase - slave response
-assign slv_index = address_phase.master_addr[$clog2(N_REGS)+1:2];
+assign slv_index = address_phase.master_addr_Q[$clog2(N_REGS)+1:2];
 assign hrdata_o = dread_slave;
 
 assign hreadyo_o = complete_transfer_status [0];
 //TODO: review the amount of bits for hresp_o
 assign hresp_o = {{complete_transfer_status[1]},{complete_transfer_status[1]}};
 
-always_comb begin
-//NOTE: I don't expect any of the cafe beaf values in the registers if they do
-//there is a bug
-    case (state)
-        TRANS_IDLE: begin
-            complete_transfer_status = TRANSFER_SUCCESS_COMPLETE; 
-            dwrite_slave = 32'hbeaf1d1e; 
-            dread_slave = 32'hcafe1d1e; 
-        end
-        TRANS_BUSY:begin
-            complete_transfer_status = TRANSFER_SUCCESS_COMPLETE; 
-            dwrite_slave = 32'hbeafb551; 
-            dread_slave = 32'hcafeb551; 
-        end
-        TRANS_NONSEQUENTIAL:begin
-            complete_transfer_status = TRANSFER_SUCCESS_COMPLETE; 
-            dwrite_slave = hwdata_i; 
-            if (!address_phase.write) begin
-                dread_slave = slv_reg_Q[slv_index];
-            end else begin
-                dread_slave = 32'hcafe01a1;
-            end
-        end
-        TRANS_SEQUENTIAL:begin
-            complete_transfer_status = TRANSFER_SUCCESS_COMPLETE; 
-            dwrite_slave = hwdata_i; 
-            if (!address_phase.write) begin
-                dread_slave = slv_reg_Q[slv_index];
-            end else begin
-                dread_slave = 32'hcafee1a1;
-            end
-        end
-    endcase
-end
-
 //----------------------------------------------
 //------------- PMU_raw instance
 //----------------------------------------------
     wire ahb_write_req;
-    assign ahb_write_req = address_phase.write && address_phase.select;
+    assign ahb_write_req = address_phase.write_Q && address_phase.select_Q;
     
     PMU_raw #(
 		.REG_WIDTH(REG_WIDTH),
         .MCCU_N_CORES(MCCU_N_CORES),
 		.N_COUNTERS(PMU_COUNTERS),
 		.N_SOC_EV(N_SOC_EV),
+        .FT(FT),
 		.N_CONF_REGS(PMU_CFG)
 	)inst_pmu_raw (
 		.clk_i(clk_i),
@@ -502,6 +617,19 @@ end
         .intr_RDC_o
 	);
 
+//----------------------------------------------
+//------------- Generate intr_FT_o
+//----------------------------------------------
+if (FT == 0 ) begin
+        assign intr_FT_o = 1'b0;
+end else begin 
+        //Gather all the signals of uncorrected errors from FT scopes
+            // Codestyle. All scopes start with a capital letter
+        assign intr_FT_o = |{Slvft.ift_slv,
+                             Apft.write_fte,Apft.select_fte, Apft.master_addr_fte,
+                             Stateft.state_fte
+                             };
+end
 /////////////////////////////////////////////////////////////////////////////////
 //
 // Formal Verification section begins here.
@@ -550,7 +678,7 @@ end
         //There is no pending write or it is not valid
     sequence no_ahb_write;
         //since ahb is pipelined i check for the last addres phase
-        f_past_valid && ($past(ahb_write_req==1'b0)); 
+        f_past_valid && (ahb_write_req==1'b0); 
     endsequence
         //Register 1, assigned to counter 0 can't decrease
     sequence no_decrease_counter(n);
@@ -566,8 +694,8 @@ end
         genvar i;
         for (i=0;i<PMU_COUNTERS;i++) begin
         assert property (
-            no_ahb_write and no_counter_reset 
-            |=> no_decrease_counter(i) or counter_reset or overflow_counter(i)
+            no_ahb_write and (rstn_i==1) and (slv_reg[0][1] == 0)
+            |=> no_decrease_counter(i) or overflow_counter(i)
             );
         end
     endgenerate

@@ -2,149 +2,164 @@
 \section{Fail modes and proposed corrective actions}
 \label{chapter2}
 \subsection{General}
-\underline{Fail mode:} Single transient events on rstn\_i will upset the whole design, this applies to all modules with resets sensitive to falling edges of the reset. \textbf{Very high priority}.\\
+\begin{enumerate}
+\item \underline{Fail mode:} Single transient events on rstn\_i will upset the whole design, this applies to all modules with resets sensitive to falling edges of the reset. \textbf{Very high priority}.\\
 \underline{Corrective action:} Replace asynchronous reset with synchronous reset.\\
 \\
-\underline{Fail mode:} Event generators (Signal gathering on SoC) have not been hardened. Purely combinational  CCS signal generators that suffer a transient event have little consequences, counts may be out by one. CCS signals that depend on sequential logic may be analyzed on further detail, since upsets may cause prolonged misbehavior on the resulting event signal. \textbf{Medium priority}\\
+\item \underline{Fail mode:} Event generators (Signal gathering on SoC) have not been hardened. Purely combinational  CCS signal generators that suffer a transient event have little consequences, counts may be out by one. CCS signals that depend on sequential logic may be analyzed on further detail, since upsets may cause prolonged misbehavior on the resulting event signal. \textbf{Medium priority}\\
 \underline{Corrective action:} Protect sequential logic with fault detection and user correction or hardware error correction and recovery. Transient errors on combinational logic are allowed due to their overall low impact, given the low probability of errors. 
+\end{enumerate}
 
 \subsection{pmu\_ahb}
-\underline{Fail mode:} Failure on AHB external signals may cause miss behaviors thought the unit. Transient errors on data, address or control signals may cause miss configuration, incorrect lectures and invalid internal states. AHB external signals could be hardened by Cobham Gaisler. \textbf{Low priority}.\\
+\begin{enumerate}
+\item \underline{Fail mode:} Failure on AHB external signals may cause miss behaviors thought the unit. Transient errors on data, address or control signals may cause miss configuration, incorrect lectures and invalid internal states. AHB external signals could be hardened by Cobham Gaisler. \textbf{Low priority}.\\
 \underline{Corrective action:} The unit assumes good behavior, even after a fault, from external interfaces. Thus adequate fault detection or fault correction shall be provided by the SoC design.\\
 \\
-\underline{Fail mode:} Single event upset (SEU) on slv\_reg configuration registers (Any feature) may cause complete unit failure. At least registers in range BASE\_CFG, BASE\_MCCU\_CFG, BASE\_MCCU\_WEIGHTS, BASE\_CROSSBAR to their respective END range shall be protected. Error detection is required. \textbf{High priority.}\\
+\item \underline{Fail mode:} Single event upset (SEU) on slv\_reg configuration registers (Any feature) may cause complete unit failure. At least registers in range BASE\_CFG, BASE\_MCCU\_CFG, BASE\_MCCU\_WEIGHTS, BASE\_CROSSBAR to their respective END range shall be protected. Error detection is required. \textbf{High priority.}\\
 \underline{Corrective action:} In this case, either error detection or error correction is recommended. On a resource-restricted system, we could use a hash function that is updated at each cycle. If changes in the hash function are detected at any other time than after an AHB write transaction, the IP can signal an error interrupt.  When hardware resources are available, error correction is recommended through all configuration registers since it simplifies the use of the IP.\\
 \\
-\underline{Fail mode:} Single event upset (SEU) on slv\_reg result registers have different consequences depending on the instant of the event and the state of the system. Event upsets during a write request on BASE\_COUNTERS for instance may have a critical effect since it has effect over overflow interrupts, while the same upset on any idle state may be harmless since the upset will be cleared in the next cycle by the refresh of the unit. If only upsets on write are deem dangerous the issue can be handled by software forcing several reads after a write. The same happen for reads, temporal redundancy on software can mitigate the issue. Hardware solutions may be considered. \textbf{Priority medium}\\
+\item \underline{Fail mode:} Single event upset (SEU) on slv\_reg result registers have different consequences depending on the instant of the event and the state of the system. Event upsets during a write request on BASE\_COUNTERS for instance may have a critical effect since it has effect over overflow interrupts, while the same upset on any idle state may be harmless since the upset will be cleared in the next cycle by the refresh of the unit. If only upsets on write are deem dangerous the issue can be handled by software forcing several reads after a write. The same happen for reads, temporal redundancy on software can mitigate the issue. Hardware solutions may be considered. \textbf{Priority medium}\\
 \underline{Corrective action:} It is recommended to perform a read after each write to the PMU in order to detect transient errors on writes.\\
 \\
-\underline{Fail mode:} State machines depend on internally registered signals such as \textit{ state}, \textit{address\_phase.select}. Upsets may result on misbehavior regarding AHB protocol but also  internal updates. The number of bits seems to be small and hardware redundancy may be feasible. \textbf{Priority high}\\
+\item \underline{Fail mode:} State machines depend on internally registered signals such as \textit{ state}, \textit{address\_phase.select}. Upsets may result on misbehavior regarding AHB protocol but also  internal updates. The number of bits seems to be small and hardware redundancy may be feasible. \textbf{Priority high}\\
 \underline{Corrective action:} Due to the small number of signals, it is recommended to triplicate the registers and implement a voting mechanism that allows error correction.\\
  
-
+\end{enumerate}
 \subsection{PMU\_raw}
-\underline{Fail mode:} \textit{MCCU\_enable\_int} and \textit{RDC\_enable\_int} are internally registered. Reset is active low. While active, the values are updated each cycle based on the corresponding \textit{regs\_i} values. Given that \textit{regs\_i} has error detection against permanent errors on higher levels, transient faults may cause the unit to be disabled for a single cycle. \textbf{Priority Low}.\\
+\begin{enumerate}
+\item \underline{Fail mode:} \textit{MCCU\_enable\_int} and \textit{RDC\_enable\_int} are internally registered. Reset is active low. While active, the values are updated each cycle based on the corresponding \textit{regs\_i} values. Given that \textit{regs\_i} has error detection against permanent errors on higher levels, transient faults may cause the unit to be disabled for a single cycle. \textbf{Priority Low}.\\
 \underline{Corrective action:} Since a transient error will be self-corrected in the following cycles, and the consequences of the failures are not deemed catastrophic, additional protection can be ignored for most of the systems. In extreme cases, delayed sampling of the bus could be used to detect and recover from transients.\\
 \\
-\underline{Fail mode:} \textit{MCCU\_rstn} and \textit{RDC\_rstn} are internally registered. Reset is active low. While active, the values are updated each cycle based on the corresponding \textit{regs\_i} values and current reset state. Transient errors on \textit{regs\_i} during the clock's positive edge can cause the propagation of unexpected resets. \textbf{Priority high}.\\
+\item \underline{Fail mode:} \textit{MCCU\_rstn} and \textit{RDC\_rstn} are internally registered. Reset is active low. While active, the values are updated each cycle based on the corresponding \textit{regs\_i} values and current reset state. Transient errors on \textit{regs\_i} during the clock's positive edge can cause the propagation of unexpected resets. \textbf{Priority high}.\\
 \underline{Corrective action:} 
 Internally registered signals shall be replicated. Protection against transients on regs\_i can be provided by hardware at the driver side, detecting mismatches between the past output and the current output during periods without external updates. Another solution would be to add redundancy bits on the driver side and compare them at the receiver. On the receiver end, time-delayed sampling could be implemented. Only one mechanism is required.\\ 
 \\
-\underline{Fail mode:} The self-test configuration feature is implemented as a combinational block within this unit. While permanent failures are addressed at the signal source, the feature may still be affected by transient errors. If \textit{selftest\_mode} is disturbed, all the input events may take incorrect values for a single cycle. \textbf{Priority Low}.\\
+\item \underline{Fail mode:} The self-test configuration feature is implemented as a combinational block within this unit. While permanent failures are addressed at the signal source, the feature may still be affected by transient errors. If \textit{selftest\_mode} is disturbed, all the input events may take incorrect values for a single cycle. \textbf{Priority Low}.\\
 \underline{Corrective action:}
  Transient errors in these signals are a low priority since they will correct themselves. If transients need to be mitigated, error detection can be implemented at the driver side by checking that regs\_i remains stable unless a new ahb write to the corresponding slv\_reg registers occurs.
 \\
 \\
-\underline{Fail mode:} This module's primary purpose is signal routing, thus point-to-point connections between the ports of \textit{PMU\_raw} and each of the PMU features. Given the combinatorial nature of the circuit, transient faults can occur. Such fail modes shall be considered and mitigated at the signals destination.\\
+\item \underline{Fail mode:} This module's primary purpose is signal routing, thus point-to-point connections between the ports of \textit{PMU\_raw} and each of the PMU features. Given the combinatorial nature of the circuit, transient faults can occur. Such fail modes shall be considered and mitigated at the signals destination.\\
 \underline{Corrective action:} Consumers of PMU\_raw signals shall include transient error detection if needed. Detection/correction can be placed at the source or destination of the signals.\\
 \\
+\end{enumerate}
 \subsection{PMU\_counters}
-\underline{Fail mode:} \textit{Softrst\_i} transient errors can occur. The unit shall handle error detection internally. One error can reset all counters. \textbf{Priority High}.\\
+\begin{enumerate}
+\item \underline{Fail mode:} \textit{Softrst\_i} transient errors can occur. The unit shall handle error detection internally. One error can reset all counters. \textbf{Priority High}.\\
 \underline{Corrective action:} Provide redundant signals from the source of Softrst\_i and do error detection within the module.\\
 \\
-\underline{Fail mode:} \textit{en\_i} transient errors can occur. The unit shall handle error detection internally. One error can disable the counters for a single cycle. \textbf{Priority low}.\\
+\item \underline{Fail mode:} \textit{en\_i} transient errors can occur. The unit shall handle error detection internally. One error can disable the counters for a single cycle. \textbf{Priority low}.\\
 \underline{Corrective action:} 
 Given that normal operation will be recovered after the transient priority is low. Nevertheless, en\_i can be replicated at the source. Error correction mechanisms can be added if needed. \\
 \\
-\underline{Fail mode:} \textit{we\_i }transient errors can cause the unit to miss a user update to the counter values. Counter values are internally registered as \textit{sly\_reg} and mirrored in the wrapper interface (\textit{pmu\_ahb.sv}). Missing a we\_i may cause metastability. If \textit{we\_i} is altered, the new value is not bypassed. In this scenario, the contents of the mirror and internal registers diverge. This failure mode is hard to detect since the unit will always swap two values around the mirror and the internal register. \textbf{Priority high}.\\
+\item \underline{Fail mode:} \textit{we\_i }transient errors can cause the unit to miss a user update to the counter values. Counter values are internally registered as \textit{sly\_reg} and mirrored in the wrapper interface (\textit{pmu\_ahb.sv}). Missing a we\_i may cause metastability. If \textit{we\_i} is altered, the new value is not bypassed. In this scenario, the contents of the mirror and internal registers diverge. This failure mode is hard to detect since the unit will always swap two values around the mirror and the internal register. \textbf{Priority high}.\\
 \underline{Corrective action:}  Add a hardware check to detect if counter values decrease or increase by more than one without any reasonable cause such as reset, write, overflow. On a constrained system, error detection can be added by checking parity of the current value with a single-bit counter set and reset accordingly with the counter's initial values. As an alternative, extend the we\_i signal with error recovery mechanisms such as replication and voting.\\
 \\
+\end{enumerate}
 \subsection{crossbar}
+\begin{enumerate}
 
-\underline{Fail mode:} Transient errors on \textit{vector\_i} may cause routing faults. Input events may end up assigned to the incorrect output for a single cycle.\textbf{ Priority low}.\\
+\item \underline{Fail mode:} Transient errors on \textit{vector\_i} may cause routing faults. Input events may end up assigned to the incorrect output for a single cycle.\textbf{ Priority low}.\\
 \underline{Corrective action:} 
 Since transients shall occur at the clock's rising edge to allow the counters to register incorrect events, and the consequence is adding or dropping one event occurrence, priority is low. If needed, resource-constrained systems could compare a hash of vector\_i could be recorded and compared with the source register after each cycle. When an error is detected, the unit could sign an interrupt.\\
 \\
-\underline{Fail mode:} \textit{vector\_o} is internally registered. Values are updated at each cycle. Upsets may cause an incorrect output for a single cycle, but the failure will be cleared afterward. \textbf{Priority low}.\\
+\item \underline{Fail mode:} \textit{vector\_o} is internally registered. Values are updated at each cycle. Upsets may cause an incorrect output for a single cycle, but the failure will be cleared afterward. \textbf{Priority low}.\\
 \underline{Corrective action:} Since vector\_o is updated at each cycle, no further action shall be taken to correct the upsets. Upsets may cause a single event to have an unreliable value for a single cycle. Software safety margins shall account for such small tolerances.\\
 \\
+\end{enumerate}
 \subsection{MCCU}
-\underline{Fail mode:} Transient errors on\textit{ enable\_i} may cause unintended updates of \textit{quota\_int} or missing updates. Propagation of transient errors on \textit{interruption\_quota\_o}. \textbf{Priority medium}.\\
+\begin{enumerate}
+\item \underline{Fail mode:} Transient errors on\textit{ enable\_i} may cause unintended updates of \textit{quota\_int} or missing updates. Propagation of transient errors on \textit{interruption\_quota\_o}. \textbf{Priority medium}.\\
 \underline{Corrective action:} \textit{ enable\_i} could be replicated or registered and compared with the source in the following cycle.\\
 \\
-\underline{Fail mode:} Transient errors on \textit{events\_i} may cause \textit{events\_weights\_int} to have an incorrect value. This propagates to \textit{ccc\_suma\_int} and \textit{interruption\_quota\_o}. As far as failures are uncommon enough, faults can be absorbed by the margins implemented on the MCCU quota limits. \textbf{Priority Low}.\\
+\item \underline{Fail mode:} Transient errors on \textit{events\_i} may cause \textit{events\_weights\_int} to have an incorrect value. This propagates to \textit{ccc\_suma\_int} and \textit{interruption\_quota\_o}. As far as failures are uncommon enough, faults can be absorbed by the margins implemented on the MCCU quota limits. \textbf{Priority Low}.\\
 \underline{Corrective action:} Upsets may cause a single event to have an unreliable value for a single cycle. Software safety margins shall account for such small tolerances.\\
 \\
-\underline{Fail mode:} \textit{quota\_i} can suffer from transient errors. If such an error happens while \textit{enable\_i} is low and \textit{update\_quota\_i} is high, \underline{Fail mode:} \textit{quota\_int} will get miss configured. Users can detect faults by reading \textit{quota\_o}. A transient error may cause incorrect interrupts.\textbf{ Priority medium. }\\
+\item \underline{Fail mode:} \textit{quota\_i} can suffer from transient errors. If such an error happens while \textit{enable\_i} is low and \textit{update\_quota\_i} is high, \underline{Fail mode:} \textit{quota\_int} will get miss configured. Users can detect faults by reading \textit{quota\_o}. A transient error may cause incorrect interrupts.\textbf{ Priority medium. }\\
 \underline{Corrective action:} Configuration registers shall be read after a wite on the software side to ensure correct configuration. \\
 \\
-\underline{Fail mode:} \textit{quota\_int} is an internal register. It is forwarded to top modules with \textit{quota\_o}. \textit{quota\_int} can suffer permanent faults that are not cleared automatically. This failure mode may result in interrupts not triggering or triggering early. \textbf{Priority High}.\\
+\item \underline{Fail mode:} \textit{quota\_int} is an internal register. It is forwarded to top modules with \textit{quota\_o}. \textit{quota\_int} can suffer permanent faults that are not cleared automatically. This failure mode may result in interrupts not triggering or triggering early. \textbf{Priority High}.\\
 \underline{Corrective action:}  Replicating the internal register  \textit{quota\_int} has a low overhead. Two instances will provide error detection, but tree instances are recommended, allowing for seamless recovery if a failure occurs.\\
 \\
-\textit{update\_quota\_i} transient errors can result in incorrect configurations due to unexpected or dropped updates. Misconfiguration affects \textit{quota\_int} and thus the resulting interrupts.\textbf{ Priority high.}\\
+\item \underline{Fail mode:}\textit{update\_quota\_i} transient errors can result in incorrect configurations due to unexpected or dropped updates. Misconfiguration affects \textit{quota\_int} and thus the resulting interrupts.\textbf{ Priority high.}\\
 \underline{Corrective action:}\\
 \\
-\underline{Fail mode:} \textit{quota\_o} is a wire that takes the value of \textit{quota\_int}. Given that \textit{quota\_int} is protected against permanent upsets, a transient error on the output line may cause incorrect readings for a single cycle.\textit{ Quota\_o} is not used as a control signal and does not affect interrupt generation. \textbf{Priority low}.\\
+\item \underline{Fail mode:} \textit{quota\_o} is a wire that takes the value of \textit{quota\_int}. Given that \textit{quota\_int} is protected against permanent upsets, a transient error on the output line may cause incorrect readings for a single cycle.\textit{ Quota\_o} is not used as a control signal and does not affect interrupt generation. \textbf{Priority low}.\\
 \underline{Corrective action:} \textit{quota\_o} is signaled to the user-accessible registers to provide more information. Several readings could be performed in quick succession and determine if there was an update. Note that the values will be updated at each cycle if the unit is active. If transients over this signal are a real concern for a particular implementation, hardware error detection is recommended. \\
 \\
-\underline{Fail mode:} \textit{events\_weights\_i} determines the contention impact of each MCCU input event. The source of this signal is the register bank in \textit{pmu\_ahb.sv}, and the source registers shall protect it against persistent errors. Transient errors could disturb the value of the weight for one signal. Such an event would cause quota mismatches of \textpm 128 cycles over the intended value for a single event upsets.  \textbf{Priority Low}.\\
+\item \underline{Fail mode:} \textit{events\_weights\_i} determines the contention impact of each MCCU input event. The source of this signal is the register bank in \textit{pmu\_ahb.sv}, and the source registers shall protect it against persistent errors. Transient errors could disturb the value of the weight for one signal. Such an event would cause quota mismatches of \textpm 128 cycles over the intended value for a single event upsets.  \textbf{Priority Low}.\\
 \underline{Corrective action:} Since the source register would have error detection and correction, transient errors would have a small effect. Software shall account for sporadical errors within the safety margins of the application. \\
 \\
-\underline{Fail mode:} \textit{ccc\_suma\_int} contains the addition of all active events at a particular cycle. The value is updated at every cycle based on the incoming events and weights. The value is used to determine the interrupt value and remaining quota. Errors could significantly change the available quota if the bit-flip occurs on the MSB or trigger unintended interrupts. The potential severity of the error depends on the number of input events and the register's width. \textbf{Priority High}.\\
+\item \underline{Fail mode:} \textit{ccc\_suma\_int} contains the addition of all active events at a particular cycle. The value is updated at every cycle based on the incoming events and weights. The value is used to determine the interrupt value and remaining quota. Errors could significantly change the available quota if the bit-flip occurs on the MSB or trigger unintended interrupts. The potential severity of the error depends on the number of input events and the register's width. \textbf{Priority High}.\\
 \underline{Corrective action:} It is recommended to add error detection or correction by replication of the register.\\
 \\
+\end{enumerate}
 \subsection{PMU\_overflow}
+\begin{enumerate}
 
-\underline{Fail mode:} \textit{softrst\_i} is signaled from a register outside the module. A permanent fault on this signal can render the unit disabled or rise unexpected interrupts. Permanent failures shall be prevented at the source register. \textbf{Priority High}.\\
+\item \underline{Fail mode:} \textit{softrst\_i} is signaled from a register outside the module. A permanent fault on this signal can render the unit disabled or rise unexpected interrupts. Permanent failures shall be prevented at the source register. \textbf{Priority High}.\\
 \underline{Corrective action:} Source register shall provide error detection or correction based on its particular implementation.\\
 \\
-\underline{Fail mode:} \textit{softrst\_i} transient errors can clear the interruption vector if the error aligns with the clock's positive edge. \textbf{Priority Low}\\
+\item \underline{Fail mode:} \textit{softrst\_i} transient errors can clear the interruption vector if the error aligns with the clock's positive edge. \textbf{Priority Low}\\
 \underline{Corrective action:} Reset signals could add redundancy bit to determine the intended value regardless of an upset.  Error recovery is recommended.\\
 \\
-\underline{Fail mode:} \textit{en\_i }is signaled from a register outside the module. A permanent fault on this signal can render the unit disabled or rise unexpected interrupts. Permanent failures shall be prevented at the source register. \textbf{Priority High.}\\
+\item \underline{Fail mode:} \textit{en\_i }is signaled from a register outside the module. A permanent fault on this signal can render the unit disabled or rise unexpected interrupts. Permanent failures shall be prevented at the source register. \textbf{Priority High.}\\
 \underline{Corrective action:} Enable signals could add redundancy bit to determine the intended value regardless of an upset. Error recovery is recommended.\\
 \\
-\underline{Fail mode:} \textit{en\_i} transient errors can cause glitches on interrupts. Since\textit{ en\_i} determines the value of \textit{unit\_disabled} and, consequently, the value of \textit{intr\_overflow\_o} and \textit{over\_intr\_vect\_o} . \textbf{Priority Low}\\
+\item \underline{Fail mode:} \textit{en\_i} transient errors can cause glitches on interrupts. Since\textit{ en\_i} determines the value of \textit{unit\_disabled} and, consequently, the value of \textit{intr\_overflow\_o} and \textit{over\_intr\_vect\_o} . \textbf{Priority Low}\\
 \underline{Corrective action:} Add redundancy bit to determine the intended value regardless of an upset. Recovery is recommended over detection to avoid conflicts of priority between interrupts.\\
 \\
-\underline{Fail mode:} \textit{counter\_regs\_i} can suffer from transient errors, and as a consequence, trigger or hide overflow signals. Most of the temporal errors would result in harmless scenarios that will correct themselves in the following cycles. Nevertheless, there is the potential to miss an overflow if the transient occurs while the counter reaches the maximum value, such scenario may but have severe effects. \textbf{Priority medium}.\\
+\item \underline{Fail mode:} \textit{counter\_regs\_i} can suffer from transient errors, and as a consequence, trigger or hide overflow signals. Most of the temporal errors would result in harmless scenarios that will correct themselves in the following cycles. Nevertheless, there is the potential to miss an overflow if the transient occurs while the counter reaches the maximum value, such scenario may but have severe effects. \textbf{Priority medium}.\\
 \underline{Corrective action:}\\
 \\
-\underline{Fail mode:} \textit{over\_intr\_mask\_i} is signaled from a register outside the module. A permanent fault on this signal can render the unit disabled or rise unexpected interrupts. \textbf{ Priority high}.\\
+\item \underline{Fail mode:} \textit{over\_intr\_mask\_i} is signaled from a register outside the module. A permanent fault on this signal can render the unit disabled or rise unexpected interrupts. \textbf{ Priority high}.\\
 \underline{Corrective action:} Permanent failures shall be prevented at the source register.\\
 \\
-\underline{Fail mode:} \textit{over\_intr\_mask\_i}  transient errors can cause glitches on interrupts. Transient errors can change the values of \textit{past\_intr\_vect} (inducing a permanent error) by enabling overflow detection on signals that are not intended to be monitored. The transient shall occur at the clock's rising edge and trigger quota monitoring on a counter about to overflow. \textbf{Priority medium}.\\
+\item \underline{Fail mode:} \textit{over\_intr\_mask\_i}  transient errors can cause glitches on interrupts. Transient errors can change the values of \textit{past\_intr\_vect} (inducing a permanent error) by enabling overflow detection on signals that are not intended to be monitored. The transient shall occur at the clock's rising edge and trigger quota monitoring on a counter about to overflow. \textbf{Priority medium}.\\
 \underline{Corrective action:} The failure mode is considered unlikely, and results on a fail safe scenario that could be handled by software. If needed hardware error detection can be added to \textit{over\_intr\_mask\_i} by checking a hash of the signal and the source register.\\
 \\
-\underline{Fail mode:} overflow transient errors can cause glitches on interrupts. Transient errors can change the values of\textit{ past\_intr\_vect} (inducing a permanent error) by recording unexpected interrupts on monitored counters. An error shall align with a positive edge of the clock. \textbf{Priority medium}.\\
+\item \underline{Fail mode:} overflow transient errors can cause glitches on interrupts. Transient errors can change the values of\textit{ past\_intr\_vect} (inducing a permanent error) by recording unexpected interrupts on monitored counters. An error shall align with a positive edge of the clock. \textbf{Priority medium}.\\
 \underline{Corrective action:} Overflow signal could be replicated and voted. Since it is one bit width for each counter hardware cost shall be acceptable.\\
 \\
-\underline{Fail mode:} \textit{unit\_disabled} transient errors can cause glitches on interrupts. Since it determines the value of \textit{intr\_overflow\_o} and \textit{over\_intr\_vect\_o} with combinational logic. \textbf{Priority low}.\\
+\item \underline{Fail mode:} \textit{unit\_disabled} transient errors can cause glitches on interrupts. Since it determines the value of \textit{intr\_overflow\_o} and \textit{over\_intr\_vect\_o} with combinational logic. \textbf{Priority low}.\\
 \underline{Corrective action:} Interrupts remain high until they are cleared by software. Thus, a transient error may delay the actions of the processor by a cycle but will not cause significant consequences. No action is required.\\
 \\
-\underline{Fail mode:} \textit{intr\_overflow\_o} and \textit{over\_intr\_vect\_o} are susceptible to transients and can generate glitches on interrupt lines. \textbf{Priority low}.\\
+\item \underline{Fail mode:} \textit{intr\_overflow\_o} and \textit{over\_intr\_vect\_o} are susceptible to transients and can generate glitches on interrupt lines. \textbf{Priority low}.\\
 \underline{Corrective action:}  Interrupts remain high until they are cleared by software. Thus, a transient error may delay the actions of the processor by a cycle but will not cause significant consequences. No action is required.\\
 \\
+\end{enumerate}
 \subsection{RDC}
-\underline{Fail mode:} \textit{enable\_i}  is signaled from a register outside the module. A permanent fault on this signal can render the unit disabled or rise unexpected interrupts. Permanent failures shall be prevented at the source register. \textbf{Priority High}.\\
+\begin{enumerate}
+\item \underline{Fail mode:} \textit{enable\_i}  is signaled from a register outside the module. A permanent fault on this signal can render the unit disabled or rise unexpected interrupts. Permanent failures shall be prevented at the source register. \textbf{Priority High}.\\
 \underline{Corrective action:} Fault-tolerance shall be granted by the source of the signal.\\
 \\
-\underline{Fail mode:} \textit{enable\_i} transient errors can cause permanent errors on \textit{interruption\_vector\_rdc\_o}, \textit{past\_interruption\_rdc\_o} ,\textit{ max\_value} and \textit{watermark\_int} if transients align with the clock. \textbf{Priority high}.\\
+\item \underline{Fail mode:} \textit{enable\_i} transient errors can cause permanent errors on \textit{interruption\_vector\_rdc\_o}, \textit{past\_interruption\_rdc\_o} ,\textit{ max\_value} and \textit{watermark\_int} if transients align with the clock. \textbf{Priority high}.\\
 \underline{Corrective action:} Enable signals could add redundancy bit to determine the intended value regardless of an upset. Error recovery is recommended.\\
 \\
-\underline{Fail mode:} \textit{events\_i} transient errors can cause discrepancies on \textit{max\_value}.  After a transient, depending on its nature,  \textit{max\_value} can contain the value of two consecutive events or a fraction of the actual event. As a consequence, \textit{watermark\_int} and \textit{interruption\_vector\_int} may be disturbed. Transients must align with the positive edge of the clock. \textbf{Priority low}.\\
+\item \underline{Fail mode:} \textit{events\_i} transient errors can cause discrepancies on \textit{max\_value}.  After a transient, depending on its nature,  \textit{max\_value} can contain the value of two consecutive events or a fraction of the actual event. As a consequence, \textit{watermark\_int} and \textit{interruption\_vector\_int} may be disturbed. Transients must align with the positive edge of the clock. \textbf{Priority low}.\\
 \underline{Corrective action:} Disturbances on the events would need to align with an exceedance of the event's max value to cause a problem. Most of the systems shall be able to accommodate such failure safely. Otherwise, events\_i shall be hardened at the source.\\
 \\
-\underline{Fail mode:} \textit{events\_weights\_i}, given protection against permanent faults on the source register, can suffer transient errors that may produce glitches on \textit{interruption\_vector\_int}.\textbf{ Priority low}.\\
+\item \underline{Fail mode:} \textit{events\_weights\_i}, given protection against permanent faults on the source register, can suffer transient errors that may produce glitches on \textit{interruption\_vector\_int}.\textbf{ Priority low}.\\
 \underline{Corrective action:} A glitch on events\_weights\_i can delay interrupts for one cycle or trigger an unexpected RDC interrupt. Overall the failure will be harmless, but it will require processing an additional interrupt. No corrective measures are required. \\
 \\
-\underline{Fail mode:} \textit{interruption\_rdc\_o }can suffer transients that will generate a glitch on the interrupt line. \textbf{Priority low}.\\
+\item \underline{Fail mode:} \textit{interruption\_rdc\_o }can suffer transients that will generate a glitch on the interrupt line. \textbf{Priority low}.\\
 \underline{Corrective action:} 
 Overall the failure will be harmless, but it will require processing an unexpected interrupt. No corrective measures are needed. \\
 \\
-\underline{Fail mode:} \textit{interruption\_vector\_rdc\_o} can suffer of permanent faults. The current value of the signal depends on the previous, so faults have the potential to remain present over time. \textbf{Priority high}.\\
+\item \underline{Fail mode:} \textit{interruption\_vector\_rdc\_o} can suffer of permanent faults. The current value of the signal depends on the previous, so faults have the potential to remain present over time. \textbf{Priority high}.\\
 \underline{Corrective action:} Given the size of  interruption\_vector\_rdc\_o it is recommended to add triple redundancy to enable error recovery.\\
 \\
-\underline{Fail mode:} \textit{watermark\_o }is a wire coming from register\textit{ watermark\_int}. Bitflips on the second register can produce permanent faults if the resulting value is higher than \textit{max\_value}. This may lead to incorrect profiling. \textbf{Priority High}.\\
+\item \underline{Fail mode:} \textit{watermark\_o }is a wire coming from register\textit{ watermark\_int}. Bitflips on the second register can produce permanent faults if the resulting value is higher than \textit{max\_value}. This may lead to incorrect profiling. \textbf{Priority High}.\\
 \underline{Corrective action:} Error detection by duplicating the watermark registers is recommended.\\
 \\
-\underline{Fail mode:} \textit{past\_interruption\_rdc\_o} is a registered signal, and holds the previous state of the RDC interrupt. Its content can be affected by transients on \textit{rstn\_i} and \textit{enable\_i}. The error could clear RDC interrupts without user notice. \textbf{Priority medium}.\\
+\item \underline{Fail mode:} \textit{past\_interruption\_rdc\_o} is a registered signal, and holds the previous state of the RDC interrupt. Its content can be affected by transients on \textit{rstn\_i} and \textit{enable\_i}. The error could clear RDC interrupts without user notice. \textbf{Priority medium}.\\
 \underline{Corrective action:} Given the small size, adding error correction with redundancy and a voting mechanism is recommended.\\
 \\
-\underline{Fail mode:} \textit{max\_value} is an internal register. Its value depends on the previous value of its own. It has the potential to hold permanent upsets. Such fail mode could cause  \textit{interruption\_rdc\_o} to become active and induce errors on the watermark register. \textbf{Priority high}.\\
+\item \underline{Fail mode:} \textit{max\_value} is an internal register. Its value depends on the previous value of its own. It has the potential to hold permanent upsets. Such fail mode could cause  \textit{interruption\_rdc\_o} to become active and induce errors on the watermark register. \textbf{Priority high}.\\
 \underline{Corrective action:} max\_value can only transition from its current value to the value plus one or to zero. So most upsets can be detected if a different transition is detected. Once the error is detected an interrupt can be signaled.\\
 \\
-\underline{Fail mode:} \textit{interruption\_vector\_int} is an internal wire. Upsets on the signal can induce permanent upsets on \textit{interruption\_vector\_rdc\_o} if they occur at the rising edge of the clock. \textbf{ Priority low}.\\
+\item \underline{Fail mode:} \textit{interruption\_vector\_int} is an internal wire. Upsets on the signal can induce permanent upsets on \textit{interruption\_vector\_rdc\_o} if they occur at the rising edge of the clock. \textbf{ Priority low}.\\
 \underline{Corrective action:} 
 Given a failure in this signal, the most likely scenario is to trigger an unexpected interrupt or delay by one a legitimate interrupt. Both results can be accommodated by most of the systems, and no further action is required.\\
 \\
+\end{enumerate}
