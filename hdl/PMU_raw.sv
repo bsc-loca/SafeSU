@@ -186,7 +186,11 @@
         // MCCU interruption for exceeded quota. One signal per core
         output wire [MCCU_N_CORES-1:0] intr_MCCU_o,
         // RDC (Request Duration Counter) interruption for exceeded quota
-        output wire intr_RDC_o
+        output wire intr_RDC_o,
+        // FT (Fault tolerance) interrupt, error detected and recovered
+        output wire intr_FT1_o,
+        // FT (Fault tolerance) interrupt, error detected but not recoverable
+        output wire intr_FT2_o
 	);
     //----------------------------------------------
     // VIVADO: list of debug signals for ILA 
@@ -788,6 +792,26 @@ end
         .error2_o(MCCU_watermark_fte2)
 	);
 
+    end
+    //----------------------------------------------
+    //------------- Generate intr_FT_o
+    //----------------------------------------------
+    if (FT == 0 ) begin
+            assign intr_FT1_o = 1'b0;
+            assign intr_FT2_o = 1'b0;
+    end else begin 
+            //Gather all the signals of corrected errors from FT scopes
+                // Codestyle. All scopes start with a capital letter
+            assign intr_FT1_o = |{
+                                Rdctrip.MCCU_watermark_fte1,Rdctrip.intr_RDC_fte1,
+                                Rdctrip.interruption_rdc_fte1,Rdctrip.RDC_enable_fte1
+                                 };
+            //Gather all the signals of uncorrected errors from FT scopes
+                // Codestyle. All scopes start with a capital letter
+            assign intr_FT2_o = |{
+                                Rdctrip.MCCU_watermark_fte2,Rdctrip.intr_RDC_fte2,
+                                Rdctrip.interruption_rdc_fte2,Rdctrip.RDC_enable_fte2
+                                 };
     end
 /////////////////////////////////////////////////////////////////////////////////
 //

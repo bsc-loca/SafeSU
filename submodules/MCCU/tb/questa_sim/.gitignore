@@ -1,0 +1,6 @@
+MCCU/
+MCCU_test.vcd
+Makefile
+modelsim.ini
+transcript
+vsim.wlf

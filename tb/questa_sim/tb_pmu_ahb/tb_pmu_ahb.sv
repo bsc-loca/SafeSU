@@ -85,7 +85,8 @@ reg tb_fail = 0;
         .intr_quota_o(),
         .intr_MCCU_o(),
         .intr_RDC_o(),
-        .intr_FT_o()
+        .intr_FT1_o(),
+        .intr_FT2_o()
     );
 
 //***clk_gen***

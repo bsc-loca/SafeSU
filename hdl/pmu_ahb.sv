@@ -85,8 +85,10 @@
         output wire [MCCU_N_CORES-1:0] intr_MCCU_o,
         // RDC (Request Duration Counter) interruption for exceeded quota
         output wire intr_RDC_o,
+        // FT (Fault tolerance) interrupt, error detected and recovered
+        output wire intr_FT1_o,
         // FT (Fault tolerance) interrupt, error detected but not recoverable
-        output wire intr_FT_o
+        output wire intr_FT2_o
     );
     //----------------------------------------------
     // VIVADO: list of debug signals for ILA 
@@ -205,7 +207,8 @@ if (FT==0) begin
         address_phase.master_addr_Q = master_addr;
     end
 end else begin : Apft //Address phase FT
-    logic write_fte, select_fte, master_addr_fte;
+    logic write_fte1, select_fte1, master_addr_fte1;
+    logic write_fte2, select_fte2, master_addr_fte2;
     
     triple_reg#(.IN_WIDTH(1)
     )write_trip(
@@ -213,8 +216,8 @@ end else begin : Apft //Address phase FT
     .rstn_i(rstn_i),
     .din_i(address_phase.write_D),
     .dout_o(address_phase.write_Q),
-    .error1_o(), // ignore corrected errors
-    .error2_o(write_fte)
+    .error1_o(write_fte1), // ignore corrected errors
+    .error2_o(write_fte2)
     );
     
     triple_reg#(.IN_WIDTH(1)
@@ -223,8 +226,8 @@ end else begin : Apft //Address phase FT
     .rstn_i(rstn_i),
     .din_i(address_phase.select_D),
     .dout_o(address_phase.select_Q),
-    .error1_o(), // ignore corrected errors
-    .error2_o(select_fte)
+    .error1_o(select_fte1), // ignore corrected errors
+    .error2_o(select_fte2)
     );
     
     triple_reg#(.IN_WIDTH(HADDR_WIDTH)
@@ -233,8 +236,8 @@ end else begin : Apft //Address phase FT
     .rstn_i(rstn_i),
     .din_i(address_phase.master_addr_D),
     .dout_o(address_phase.master_addr_Q),
-    .error1_o(), // ignore corrected errors
-    .error2_o(master_addr_fte)
+    .error1_o(master_addr_fte1), // ignore corrected errors
+    .error2_o(master_addr_fte2)
     );
     
 end
@@ -468,7 +471,7 @@ end else begin : Stateft
     //Fault tolerant implementation
         //Triplication of next and state registers 
     logic [1:0] state_D, state_Q;
-    logic state_fte; //fault tolerance errors
+    logic state_fte1, state_fte2; //fault tolerance errors
     
     //error1 signals a corrected error, safe to ignore
     triple_reg#(.IN_WIDTH(2)
@@ -477,8 +480,8 @@ end else begin : Stateft
     .rstn_i(rstn_i),
     .din_i(state_D),
     .dout_o(state_Q),
-    .error1_o(),
-    .error2_o(state_fte)
+    .error1_o(state_fte1),
+    .error2_o(state_fte2)
     );
     
     //data phase - state update
@@ -595,6 +598,7 @@ assign hresp_o = {{complete_transfer_status[1]},{complete_transfer_status[1]}};
 //----------------------------------------------
     wire ahb_write_req;
     assign ahb_write_req = address_phase.write_Q && address_phase.select_Q;
+    logic pmu_raw_FT1, pmu_raw_FT2;
     
     PMU_raw #(
 		.REG_WIDTH(REG_WIDTH),
@@ -609,6 +613,8 @@ assign hresp_o = {{complete_transfer_status[1]},{complete_transfer_status[1]}};
         .regs_i(slv_reg_Q),
         .regs_o(pmu_regs_int),
         .wrapper_we_i(ahb_write_req),
+        .intr_FT1_o(pmu_raw_FT1),
+        .intr_FT2_o(pmu_raw_FT2),
         //on pourpose .name connections
         .events_i,
         .intr_overflow_o,
@@ -621,13 +627,21 @@ assign hresp_o = {{complete_transfer_status[1]},{complete_transfer_status[1]}};
 //------------- Generate intr_FT_o
 //----------------------------------------------
 if (FT == 0 ) begin
-        assign intr_FT_o = 1'b0;
+        assign intr_FT1_o = 1'b0;
+        assign intr_FT2_o = 1'b0;
 end else begin 
+        //Gather all the signals of corrected errors from FT scopes
+            // Codestyle. All scopes start with a capital letter
+        assign intr_FT1_o = |{Apft.write_fte1,Apft.select_fte1, Apft.master_addr_fte1,
+                             Stateft.state_fte1,
+                             pmu_raw_FT1
+                             };
         //Gather all the signals of uncorrected errors from FT scopes
             // Codestyle. All scopes start with a capital letter
-        assign intr_FT_o = |{Slvft.ift_slv,
-                             Apft.write_fte,Apft.select_fte, Apft.master_addr_fte,
-                             Stateft.state_fte
+        assign intr_FT2_o = |{Slvft.ift_slv,
+                             Apft.write_fte2,Apft.select_fte2, Apft.master_addr_fte2,
+                             Stateft.state_fte2,
+                             pmu_raw_FT2
                              };
 end
 /////////////////////////////////////////////////////////////////////////////////
