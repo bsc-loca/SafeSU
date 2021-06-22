@@ -12,7 +12,7 @@ rm -f  $LOG
 # Go to target folder 
 cd ../tb/questa_sim/ || exit 1
 # Declare folders of tests to be executed
-declare -a StringArray=("tb_axi_pmu/" "tb_pmu_ahb/" "tb_pmu_raw/")
+declare -a StringArray=("tb_axi_pmu/" "tb_pmu_ahb/" "tb_pmu_raw/" "tb_com_tr/" "tb_hamming16td11/" "tb_hamming32td26/" "tb_reg_sbf/")
 
 # Iterate the string array using for loop
 for val in ${StringArray[@]}; do

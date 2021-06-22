@@ -2,4 +2,5 @@ junk
 hdl/PMU_raw/
 *.swp
 hdl/tmp*
-
+*.questa.log
+*.lquesta.log
