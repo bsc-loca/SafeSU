@@ -30,6 +30,7 @@ module tb_MCCU();
     parameter TB_WEIGHTS_WIDTH = 8;
     parameter TB_N_CORES = 4;
     parameter TB_CORE_EVENTS = 2;
+    parameter FT = 0;
 //***Signals***
     reg     tb_clk_i ;
     reg     tb_rstn_i ;
@@ -49,6 +50,7 @@ reg tb_fail = 0;
         .DATA_WIDTH(TB_DATA_WIDTH),
         .WEIGHTS_WIDTH(TB_WEIGHTS_WIDTH),
         .N_CORES(TB_N_CORES),
+        .FT(FT),
         .CORE_EVENTS(TB_CORE_EVENTS)
     )
         dut_MCCU(
@@ -60,6 +62,8 @@ reg tb_fail = 0;
         .update_quota_i(tb_update_quota_i),
         .quota_o (tb_quota_o),
         .events_weights_i(tb_events_weights_i),
+        .intr_FT1_o(),
+        .intr_FT2_o(),
         .interruption_quota_o(tb_interruption_quota_o)
     );
 
@@ -455,6 +459,8 @@ task automatic init_sim;
         
         tb_test_name={"t_weigths_ev_quota(10,0,0,0);"};
         test_weigths_ev_quota(10,0,0,0);
+        
+        $display("FT = %d",FT);
         $finish;
     end
 /*
