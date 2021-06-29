@@ -45,7 +45,7 @@ Internally registered signals shall be replicated. Protection against transients
 \end{enumerate}
 \subsection{PMU\_counters}
 \begin{enumerate}
-\item \underline{Fail mode:} \textit{Softrst\_i} transient errors can occur. The unit shall handle error detection internally. One error can reset all counters. \textbf{Priority High}.\\
+\item \underline{Fail mode:} \textit{Softrst\_i} transient errors can occur. The unit shall handle error detection internally. One error can reset all counters. \textbf{Priority Medium}.\\
 \underline{Corrective action:} Provide redundant signals from the source of Softrst\_i and do error detection within the module.\\
 \\
 \item \underline{Fail mode:} \textit{en\_i} transient errors can occur. The unit shall handle error detection internally. One error can disable the counters for a single cycle. \textbf{Priority low}.\\
