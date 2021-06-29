@@ -14,7 +14,7 @@
 
 [license] Signature verified.
 [license] License is for an online pool.
-[license] 1565 monthly credits (391 hours) left.
+[license] 1529 monthly credits (382 hours) left.
 [license] 400 extra credits (100 hours) left.
 [license] Successfully checked out online license
 
@@ -31,15 +31,15 @@ VERIFIC-COMMENT [VERI-1482] Analyzing Verilog file 'instances.sv'
 
 3. Executing VERIFIC (loading SystemVerilog and VHDL designs using Verific).
 Built with Verific Apr19_SW_Release, released at Wed May  1 16:05:25 2019.
-VERIFIC-COMMENT [VERI-1482] Analyzing Verilog file 'triple_reg.sv'
+VERIFIC-COMMENT [VERI-1482] Analyzing Verilog file '../../submodules/seu_ip/triple_reg.sv'
 
 4. Executing VERIFIC (loading SystemVerilog and VHDL designs using Verific).
 Built with Verific Apr19_SW_Release, released at Wed May  1 16:05:25 2019.
-VERIFIC-COMMENT [VERI-1482] Analyzing Verilog file 'sbf_reg.sv'
+VERIFIC-COMMENT [VERI-1482] Analyzing Verilog file '../../submodules/seu_ip/sbf_reg.sv'
 
 5. Executing VERIFIC (loading SystemVerilog and VHDL designs using Verific).
 Built with Verific Apr19_SW_Release, released at Wed May  1 16:05:25 2019.
-VERIFIC-COMMENT [VERI-1482] Analyzing Verilog file 'ham_reg.sv'
+VERIFIC-COMMENT [VERI-1482] Analyzing Verilog file '../../submodules/seu_ip/ham_reg.sv'
 
 6. Executing VERIFIC (loading SystemVerilog and VHDL designs using Verific).
 Built with Verific Apr19_SW_Release, released at Wed May  1 16:05:25 2019.
@@ -67,20 +67,20 @@ Adding Verilog module 'instances' to elaboration queue.
 Running hier_tree::Elaborate().
 VERIFIC-INFO [VERI-1018] instances.sv:20: compiling module 'instances'
 VERIFIC-INFO [VERI-1018] ../../submodules/seu_ip/com_tr.sv:21: compiling module 'com_tr(IN_WIDTH=11)'
-VERIFIC-INFO [VERI-1018] triple_reg.sv:16: compiling module 'triple_reg(IN_WIDTH=11)'
+VERIFIC-INFO [VERI-1018] ../../submodules/seu_ip/triple_reg.sv:16: compiling module 'triple_reg(IN_WIDTH=11)'
 VERIFIC-INFO [VERI-1018] ../../submodules/seu_ip/way3_voter.sv:24: compiling module 'way3_voter(IN_WIDTH=11)'
-VERIFIC-INFO [VERI-1018] sbf_reg.sv:16: compiling module 'sbf_reg(IN_WIDTH=11)'
+VERIFIC-INFO [VERI-1018] ../../submodules/seu_ip/sbf_reg.sv:16: compiling module 'sbf_reg(IN_WIDTH=11)'
 VERIFIC-INFO [VERI-1018] ../../submodules/seu_ip/reg_sbf.sv:26: compiling module 'reg_sbf(IN_WIDTH=11)'
-VERIFIC-INFO [VERI-1018] ham_reg.sv:16: compiling module 'ham_reg'
+VERIFIC-INFO [VERI-1018] ../../submodules/seu_ip/ham_reg.sv:16: compiling module 'ham_reg'
 VERIFIC-INFO [VERI-1018] ../../submodules/seu_ip/hamming16t11d_enc.sv:18: compiling module 'hamming16t11d_enc'
 VERIFIC-INFO [VERI-1018] ../../submodules/seu_ip/hamming16t11d_dec.sv:18: compiling module 'hamming16t11d_dec'
 Importing module instances.
 Importing module com_tr(IN_WIDTH=11).
 Importing module sbf_reg(IN_WIDTH=11).
 Importing module triple_reg(IN_WIDTH=11).
+Importing module ham_reg.
 Importing module way3_voter(IN_WIDTH=11).
 Importing module reg_sbf(IN_WIDTH=11).
-Importing module ham_reg.
 Importing module hamming16t11d_enc.
 Importing module hamming16t11d_dec.
 
@@ -136,12 +136,11 @@ Cleaned up 0 empty switches.
 Optimizing module hamming16t11d_dec.
 <suppressed ~1 debug messages>
 Optimizing module hamming16t11d_enc.
-Optimizing module ham_reg.
 Optimizing module reg_sbf(IN_WIDTH=11).
 <suppressed ~1 debug messages>
 Optimizing module way3_voter(IN_WIDTH=11).
+Optimizing module ham_reg.
 Optimizing module triple_reg(IN_WIDTH=11).
-<suppressed ~2 debug messages>
 Optimizing module sbf_reg(IN_WIDTH=11).
 Optimizing module com_tr(IN_WIDTH=11).
 Optimizing module instances.
@@ -149,15 +148,15 @@ Optimizing module instances.
 12.4. Executing OPT_CLEAN pass (remove unused cells and wires).
 Finding unused cells or wires in module \hamming16t11d_dec..
 Finding unused cells or wires in module \hamming16t11d_enc..
-Finding unused cells or wires in module \ham_reg..
 Finding unused cells or wires in module \reg_sbf(IN_WIDTH=11)..
 Finding unused cells or wires in module \way3_voter(IN_WIDTH=11)..
+Finding unused cells or wires in module \ham_reg..
 Finding unused cells or wires in module \triple_reg(IN_WIDTH=11)..
 Finding unused cells or wires in module \sbf_reg(IN_WIDTH=11)..
 Finding unused cells or wires in module \com_tr(IN_WIDTH=11)..
 Finding unused cells or wires in module \instances..
-Removed 2 unused cells and 219 unused wires.
-<suppressed ~23 debug messages>
+Removed 1 unused cells and 217 unused wires.
+<suppressed ~22 debug messages>
 
 12.5. Executing CHECK pass (checking for obvious problems).
 checking module com_tr(IN_WIDTH=11)..
@@ -193,9 +192,9 @@ Finding identical cells in module `\instances'.
 Finding identical cells in module `\reg_sbf(IN_WIDTH=11)'.
 Finding identical cells in module `\sbf_reg(IN_WIDTH=11)'.
 Finding identical cells in module `\triple_reg(IN_WIDTH=11)'.
-<suppressed ~3 debug messages>
+<suppressed ~6 debug messages>
 Finding identical cells in module `\way3_voter(IN_WIDTH=11)'.
-Removed a total of 1 cells.
+Removed a total of 2 cells.
 
 12.6.3. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
 Running muxtree optimizer on module \com_tr(IN_WIDTH=11)..
@@ -233,11 +232,11 @@ Running muxtree optimizer on module \way3_voter(IN_WIDTH=11)..
   Evaluating internal representation of mux trees.
   Analyzing evaluation results.
 Removed 0 multiplexer ports.
-<suppressed ~21 debug messages>
+<suppressed ~20 debug messages>
 
 12.6.4. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
   Optimizing cells in module \com_tr(IN_WIDTH=11).
-    New input vector for $reduce_or cell $verific$reduce_or_12$../../submodules/seu_ip/com_tr.sv:62$90: { $verific$n56$84 [0] $verific$n56$84 [1] $verific$n56$84 [2] $verific$n56$84 [3] $verific$n56$84 [4] $verific$n56$84 [5] $verific$n56$84 [6] $verific$n56$84 [7] $verific$n56$84 [8] $verific$n56$84 [9] $verific$n56$84 [10] }
+    New input vector for $reduce_or cell $verific$reduce_or_12$../../submodules/seu_ip/com_tr.sv:62$89: { $verific$n56$83 [0] $verific$n56$83 [1] $verific$n56$83 [2] $verific$n56$83 [3] $verific$n56$83 [4] $verific$n56$83 [5] $verific$n56$83 [6] $verific$n56$83 [7] $verific$n56$83 [8] $verific$n56$83 [9] $verific$n56$83 [10] }
   Optimizing cells in module \com_tr(IN_WIDTH=11).
   Optimizing cells in module \ham_reg.
   Optimizing cells in module \hamming16t11d_dec.
@@ -323,7 +322,7 @@ Running muxtree optimizer on module \way3_voter(IN_WIDTH=11)..
   Evaluating internal representation of mux trees.
   Analyzing evaluation results.
 Removed 0 multiplexer ports.
-<suppressed ~21 debug messages>
+<suppressed ~20 debug messages>
 
 12.6.11. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
   Optimizing cells in module \com_tr(IN_WIDTH=11).
@@ -376,10 +375,10 @@ Optimizing module way3_voter(IN_WIDTH=11).
 12.6.16. Finished OPT passes. (There is nothing left to do.)
 
 12.7. Executing WREDUCE pass (reducing word size of cells).
-Removed top 2 bits (of 4) from port A of cell hamming16t11d_dec.$verific$equal_11$../../submodules/seu_ip/hamming16t11d_dec.sv:75$331 ($eq).
-Removed top 1 bits (of 4) from port A of cell hamming16t11d_dec.$verific$equal_14$../../submodules/seu_ip/hamming16t11d_dec.sv:76$334 ($eq).
-Removed top 1 bits (of 4) from port A of cell hamming16t11d_dec.$verific$equal_17$../../submodules/seu_ip/hamming16t11d_dec.sv:77$337 ($eq).
-Removed top 1 bits (of 4) from port A of cell hamming16t11d_dec.$verific$equal_20$../../submodules/seu_ip/hamming16t11d_dec.sv:78$340 ($eq).
+Removed top 2 bits (of 4) from port A of cell hamming16t11d_dec.$verific$equal_11$../../submodules/seu_ip/hamming16t11d_dec.sv:45$326 ($eq).
+Removed top 1 bits (of 4) from port A of cell hamming16t11d_dec.$verific$equal_14$../../submodules/seu_ip/hamming16t11d_dec.sv:46$329 ($eq).
+Removed top 1 bits (of 4) from port A of cell hamming16t11d_dec.$verific$equal_17$../../submodules/seu_ip/hamming16t11d_dec.sv:47$332 ($eq).
+Removed top 1 bits (of 4) from port A of cell hamming16t11d_dec.$verific$equal_20$../../submodules/seu_ip/hamming16t11d_dec.sv:48$335 ($eq).
 
 12.8. Executing MEMORY_DFF pass (merging $dff cells to $memrd and $memwr).
 
@@ -529,10 +528,10 @@ Finding unused cells or wires in module \way3_voter(IN_WIDTH=11)..
 
 === sbf_reg(IN_WIDTH=11) ===
 
-   Number of wires:                 10
-   Number of wire bits:             60
-   Number of public wires:           9
-   Number of public wire bits:      49
+   Number of wires:                  9
+   Number of wire bits:             59
+   Number of public wires:           8
+   Number of public wire bits:      48
    Number of memories:               0
    Number of memory bits:            0
    Number of processes:              0
@@ -543,16 +542,16 @@ Finding unused cells or wires in module \way3_voter(IN_WIDTH=11)..
 
 === triple_reg(IN_WIDTH=11) ===
 
-   Number of wires:                 18
-   Number of wire bits:            138
+   Number of wires:                 17
+   Number of wire bits:            127
    Number of public wires:          16
    Number of public wire bits:     116
    Number of memories:               0
    Number of memory bits:            0
    Number of processes:              0
-   Number of cells:                  5
-     $dff                            2
-     $mux                            2
+   Number of cells:                  3
+     $dff                            1
+     $mux                            1
      way3_voter(IN_WIDTH=11)         1
 
 === way3_voter(IN_WIDTH=11) ===
@@ -582,18 +581,18 @@ Finding unused cells or wires in module \way3_voter(IN_WIDTH=11)..
      triple_reg(IN_WIDTH=11)         1
        way3_voter(IN_WIDTH=11)       1
 
-   Number of wires:                117
-   Number of wire bits:            593
-   Number of public wires:          76
-   Number of public wire bits:     467
+   Number of wires:                115
+   Number of wire bits:            581
+   Number of public wires:          75
+   Number of public wire bits:     466
    Number of memories:               0
    Number of memory bits:            0
    Number of processes:              0
-   Number of cells:                 77
+   Number of cells:                 75
      $and                            1
-     $dff                            8
+     $dff                            7
      $eq                            14
-     $mux                           24
+     $mux                           23
      $ne                             1
      $not                           13
      $reduce_bool                    1
@@ -695,7 +694,7 @@ Running muxtree optimizer on module \way3_voter(IN_WIDTH=11)..
   Evaluating internal representation of mux trees.
   Analyzing evaluation results.
 Removed 0 multiplexer ports.
-<suppressed ~21 debug messages>
+<suppressed ~20 debug messages>
 
 14.4. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
   Optimizing cells in module \com_tr(IN_WIDTH=11).
@@ -722,8 +721,6 @@ Finding identical cells in module `\way3_voter(IN_WIDTH=11)'.
 Removed a total of 0 cells.
 
 14.6. Executing OPT_RMDFF pass (remove dff with constant values).
-Removing $verific$trip2_preg_reg$triple_reg.sv:62$137 ($dff) from module triple_reg(IN_WIDTH=11).
-Replaced 1 DFF cells.
 
 14.7. Executing OPT_CLEAN pass (remove unused cells and wires).
 Finding unused cells or wires in module \com_tr(IN_WIDTH=11)..
@@ -735,8 +732,6 @@ Finding unused cells or wires in module \reg_sbf(IN_WIDTH=11)..
 Finding unused cells or wires in module \sbf_reg(IN_WIDTH=11)..
 Finding unused cells or wires in module \triple_reg(IN_WIDTH=11)..
 Finding unused cells or wires in module \way3_voter(IN_WIDTH=11)..
-Removed 1 unused cells and 1 unused wires.
-<suppressed ~2 debug messages>
 
 14.8. Executing OPT_EXPR pass (perform const folding).
 Optimizing module com_tr(IN_WIDTH=11).
@@ -749,95 +744,7 @@ Optimizing module sbf_reg(IN_WIDTH=11).
 Optimizing module triple_reg(IN_WIDTH=11).
 Optimizing module way3_voter(IN_WIDTH=11).
 
-14.9. Rerunning OPT passes. (Maybe there is more to do..)
-
-14.10. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
-Running muxtree optimizer on module \com_tr(IN_WIDTH=11)..
-  Creating internal representation of mux trees.
-  Evaluating internal representation of mux trees.
-  Analyzing evaluation results.
-Running muxtree optimizer on module \ham_reg..
-  Creating internal representation of mux trees.
-  Evaluating internal representation of mux trees.
-  Analyzing evaluation results.
-Running muxtree optimizer on module \hamming16t11d_dec..
-  Creating internal representation of mux trees.
-  Evaluating internal representation of mux trees.
-  Analyzing evaluation results.
-Running muxtree optimizer on module \hamming16t11d_enc..
-  Creating internal representation of mux trees.
-  No muxes found in this module.
-Running muxtree optimizer on module \instances..
-  Creating internal representation of mux trees.
-  No muxes found in this module.
-Running muxtree optimizer on module \reg_sbf(IN_WIDTH=11)..
-  Creating internal representation of mux trees.
-  Evaluating internal representation of mux trees.
-  Analyzing evaluation results.
-Running muxtree optimizer on module \sbf_reg(IN_WIDTH=11)..
-  Creating internal representation of mux trees.
-  Evaluating internal representation of mux trees.
-  Analyzing evaluation results.
-Running muxtree optimizer on module \triple_reg(IN_WIDTH=11)..
-  Creating internal representation of mux trees.
-  Evaluating internal representation of mux trees.
-  Analyzing evaluation results.
-Running muxtree optimizer on module \way3_voter(IN_WIDTH=11)..
-  Creating internal representation of mux trees.
-  Evaluating internal representation of mux trees.
-  Analyzing evaluation results.
-Removed 0 multiplexer ports.
-<suppressed ~20 debug messages>
-
-14.11. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
-  Optimizing cells in module \com_tr(IN_WIDTH=11).
-  Optimizing cells in module \ham_reg.
-  Optimizing cells in module \hamming16t11d_dec.
-  Optimizing cells in module \hamming16t11d_enc.
-  Optimizing cells in module \instances.
-  Optimizing cells in module \reg_sbf(IN_WIDTH=11).
-  Optimizing cells in module \sbf_reg(IN_WIDTH=11).
-  Optimizing cells in module \triple_reg(IN_WIDTH=11).
-  Optimizing cells in module \way3_voter(IN_WIDTH=11).
-Performed a total of 0 changes.
-
-14.12. Executing OPT_MERGE pass (detect identical cells).
-Finding identical cells in module `\com_tr(IN_WIDTH=11)'.
-Finding identical cells in module `\ham_reg'.
-Finding identical cells in module `\hamming16t11d_dec'.
-Finding identical cells in module `\hamming16t11d_enc'.
-Finding identical cells in module `\instances'.
-Finding identical cells in module `\reg_sbf(IN_WIDTH=11)'.
-Finding identical cells in module `\sbf_reg(IN_WIDTH=11)'.
-Finding identical cells in module `\triple_reg(IN_WIDTH=11)'.
-Finding identical cells in module `\way3_voter(IN_WIDTH=11)'.
-Removed a total of 0 cells.
-
-14.13. Executing OPT_RMDFF pass (remove dff with constant values).
-
-14.14. Executing OPT_CLEAN pass (remove unused cells and wires).
-Finding unused cells or wires in module \com_tr(IN_WIDTH=11)..
-Finding unused cells or wires in module \ham_reg..
-Finding unused cells or wires in module \hamming16t11d_dec..
-Finding unused cells or wires in module \hamming16t11d_enc..
-Finding unused cells or wires in module \instances..
-Finding unused cells or wires in module \reg_sbf(IN_WIDTH=11)..
-Finding unused cells or wires in module \sbf_reg(IN_WIDTH=11)..
-Finding unused cells or wires in module \triple_reg(IN_WIDTH=11)..
-Finding unused cells or wires in module \way3_voter(IN_WIDTH=11)..
-
-14.15. Executing OPT_EXPR pass (perform const folding).
-Optimizing module com_tr(IN_WIDTH=11).
-Optimizing module ham_reg.
-Optimizing module hamming16t11d_dec.
-Optimizing module hamming16t11d_enc.
-Optimizing module instances.
-Optimizing module reg_sbf(IN_WIDTH=11).
-Optimizing module sbf_reg(IN_WIDTH=11).
-Optimizing module triple_reg(IN_WIDTH=11).
-Optimizing module way3_voter(IN_WIDTH=11).
-
-14.16. Finished OPT passes. (There is nothing left to do.)
+14.9. Finished OPT passes. (There is nothing left to do.)
 
 15. Executing FSM pass (extract and optimize FSM).
 
@@ -1488,8 +1395,8 @@ ABC: Scl_LibertyReadGenlib() skipped sequential cell "DFFSR".
 ABC: Scl_LibertyReadGenlib() skipped sequential cell "LATCH".
 ABC: Scl_LibertyReadGenlib() skipped three-state cell "TBUFX1".
 ABC: Scl_LibertyReadGenlib() skipped three-state cell "TBUFX2".
-ABC: Library "gscl45nm" from "/home/gcabo/PDKs/FreePDK45/osu_soc/lib/files/gscl45nm.lib" has 25 cells (6 skipped: 4 seq; 2 tri-state; 0 no func; 0 dont_use).  Time =     0.00 sec
-ABC: Memory =    0.36 MB. Time =     0.00 sec
+ABC: Library "gscl45nm" from "/home/gcabo/PDKs/FreePDK45/osu_soc/lib/files/gscl45nm.lib" has 25 cells (6 skipped: 4 seq; 2 tri-state; 0 no func; 0 dont_use).  Time =     0.01 sec
+ABC: Memory =    0.36 MB. Time =     0.01 sec
 ABC: Warning: Detected 2 multi-output gates (for example, "FAX1").
 ABC: + read_constr -v /home/gcabo/BSC/bsc_pmu/synth/FT-resource-comp/synth.constr 
 ABC: Setting driving cell to be "INVX1".
@@ -1515,7 +1422,7 @@ ABC: Path  0 --       2 : 0    1 pi     A =   0.00  Df =   3.1   -3.1 ps  S =  1
 ABC: Path  1 --      34 : 1    7 BUFX2  A =   2.35  Df =  56.4   -7.1 ps  S =  42.3 ps  Cin =  1.5 ff  Cout =  17.8 ff  Cmax = 518.7 ff  G = 1078  
 ABC: Path  2 --      36 : 1   10 BUFX4  A =   2.82  Df =  99.6   -7.7 ps  S =  32.7 ps  Cin =  3.9 ff  Cout =  22.9 ff  Cmax = 999.3 ff  G =  531  
 ABC: Path  3 --      37 : 2    1 AND2X1 A =   2.35  Df = 126.6  -11.2 ps  S =  23.7 ps  Cin =  2.1 ff  Cout =   0.0 ff  Cmax = 137.4 ff  G =    0  
-ABC: Start-point = pi1 (\rstn_i).  End-point = po1 ($verific$n22$226 [2]).
+ABC: Start-point = pi1 (\rstn_i).  End-point = po1 ($verific$n22$184 [2]).
 ABC: + write_blif <abc-temp-dir>/output.blif 
 
 22.2.2. Re-integrating ABC results.
@@ -1755,7 +1662,7 @@ ABC: WireLoad = "none"  Gates =     12 (  8.3 %)   Cap =  2.1 ff ( 43.3 %)   Are
 ABC: Path  0 --       2 : 0    2 pi     A =   0.00  Df =  11.6   -2.5 ps  S =  22.8 ps  Cin =  0.0 ff  Cout =   5.8 ff  Cmax =   0.0 ff  G =    0  
 ABC: Path  1 --      25 : 1   10 BUFX4  A =   2.82  Df =  62.6  -15.6 ps  S =  30.6 ps  Cin =  3.9 ff  Cout =  22.9 ff  Cmax = 999.3 ff  G =  531  
 ABC: Path  2 --      26 : 2    1 AND2X1 A =   2.35  Df =  89.8  -19.4 ps  S =  23.7 ps  Cin =  2.1 ff  Cout =   0.0 ff  Cmax = 137.4 ff  G =    0  
-ABC: Start-point = pi1 (\rstn_i).  End-point = po1 ($verific$n18$93 [2]).
+ABC: Start-point = pi1 (\rstn_i).  End-point = po1 ($verific$n18$92 [2]).
 ABC: + write_blif <abc-temp-dir>/output.blif 
 
 22.7.2. Re-integrating ABC results.
@@ -1809,7 +1716,7 @@ ABC: WireLoad = "none"  Gates =     12 (  8.3 %)   Cap =  2.1 ff ( 43.3 %)   Are
 ABC: Path  0 --       2 : 0    2 pi     A =   0.00  Df =  11.6   -2.5 ps  S =  22.8 ps  Cin =  0.0 ff  Cout =   5.8 ff  Cmax =   0.0 ff  G =    0  
 ABC: Path  1 --      25 : 1   10 BUFX4  A =   2.82  Df =  62.6  -15.6 ps  S =  30.6 ps  Cin =  3.9 ff  Cout =  22.9 ff  Cmax = 999.3 ff  G =  531  
 ABC: Path  2 --      26 : 2    1 AND2X1 A =   2.35  Df =  89.8  -19.4 ps  S =  23.7 ps  Cin =  2.1 ff  Cout =   0.0 ff  Cmax = 137.4 ff  G =    0  
-ABC: Start-point = pi1 (\rstn_i).  End-point = po1 ($verific$n54$126 [2]).
+ABC: Start-point = pi1 (\rstn_i).  End-point = po1 ($verific$n54$124 [2]).
 ABC: + write_blif <abc-temp-dir>/output.blif 
 
 22.8.2. Re-integrating ABC results.
@@ -2010,10 +1917,10 @@ Removing temp directory.
 
 === sbf_reg(IN_WIDTH=11) ===
 
-   Number of wires:                 34
-   Number of wire bits:             84
-   Number of public wires:           9
-   Number of public wire bits:      49
+   Number of wires:                 33
+   Number of wire bits:             83
+   Number of public wires:           8
+   Number of public wire bits:      48
    Number of memories:               0
    Number of memory bits:            0
    Number of processes:              0
@@ -2084,10 +1991,10 @@ Removing temp directory.
      triple_reg(IN_WIDTH=11)         1
        way3_voter(IN_WIDTH=11)       1
 
-   Number of wires:                595
-   Number of wire bits:           1186
-   Number of public wires:          76
-   Number of public wire bits:     467
+   Number of wires:                594
+   Number of wire bits:           1185
+   Number of public wires:          75
+   Number of public wire bits:     466
    Number of memories:               0
    Number of memory bits:            0
    Number of processes:              0
@@ -2124,7 +2031,7 @@ Dumping module `\sbf_reg(IN_WIDTH=11)'.
 Dumping module `\triple_reg(IN_WIDTH=11)'.
 Dumping module `\way3_voter(IN_WIDTH=11)'.
 
-End of script. Logfile hash: da7a9e268d
-CPU: user 0.30s system 0.01s, MEM: 304.51 MB total, 27.38 MB resident
+End of script. Logfile hash: fa5a648f9f
+CPU: user 0.29s system 0.03s, MEM: 304.53 MB total, 26.78 MB resident
 Yosys 0.8+472 (git sha1 c907899, clang 3.8.0-2ubuntu4 -fPIC -Os)
-Time spent: 18% 15x opt_expr (0 sec), 16% 14x opt_merge (0 sec), ...
+Time spent: 19% 14x opt_expr (0 sec), 16% 13x opt_merge (0 sec), ...

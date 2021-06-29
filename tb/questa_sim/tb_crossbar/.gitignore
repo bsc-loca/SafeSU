@@ -1,6 +1,6 @@
-MCCU/
-MCCU_test.vcd
+crossbar
 Makefile
 modelsim.ini
+test.vcd
 transcript
 vsim.wlf

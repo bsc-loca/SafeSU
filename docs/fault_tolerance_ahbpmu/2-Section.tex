@@ -81,8 +81,8 @@ Since transients shall occur at the clock's rising edge to allow the counters to
 \item \underline{Fail mode:} \textit{quota\_int} is an internal register. It is forwarded to top modules with \textit{quota\_o}. \textit{quota\_int} can suffer permanent faults that are not cleared automatically. This failure mode may result in interrupts not triggering or triggering early. \textbf{Priority High}.\\
 \underline{Corrective action:}  Replicating the internal register  \textit{quota\_int} has a low overhead. Two instances will provide error detection, but tree instances are recommended, allowing for seamless recovery if a failure occurs.\\
 \\
-\item \underline{Fail mode:}\textit{update\_quota\_i} transient errors can result in incorrect configurations due to unexpected or dropped updates. Misconfiguration affects \textit{quota\_int} and thus the resulting interrupts.\textbf{ Priority high.}\\
-\underline{Corrective action:}\\
+\item \underline{Fail mode:}\textit{update\_quota\_i} transient errors can result in incorrect configurations due to unexpected or dropped updates. Misconfiguration affects \textit{quota\_int} and thus the resulting interrupts.\textbf{ Low priority.}\\
+\underline{Corrective action:} Software can read quota\_o values after each write to ensure no transients have occurred.\\
 \\
 \item \underline{Fail mode:} \textit{quota\_o} is a wire that takes the value of \textit{quota\_int}. Given that \textit{quota\_int} is protected against permanent upsets, a transient error on the output line may cause incorrect readings for a single cycle.\textit{ Quota\_o} is not used as a control signal and does not affect interrupt generation. \textbf{Priority low}.\\
 \underline{Corrective action:} \textit{quota\_o} is signaled to the user-accessible registers to provide more information. Several readings could be performed in quick succession and determine if there was an update. Note that the values will be updated at each cycle if the unit is active. If transients over this signal are a real concern for a particular implementation, hardware error detection is recommended. \\

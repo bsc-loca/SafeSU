@@ -574,7 +574,7 @@ end
                 MCCU_enable_int <= regs_i[BASE_MCCU_CFG][0];
             end
     end
-
+    logic MCCU_intr_FT1, MCCU_intr_FT2; 
     MCCU # (
         // Width of data registers
         .DATA_WIDTH     (REG_WIDTH),
@@ -582,6 +582,8 @@ end
         .WEIGHTS_WIDTH  (MCCU_WEIGHTS_WIDTH),
         //Cores. Change this may break Verilator TB
         .N_CORES        (MCCU_N_CORES),
+        // Fault tolerance mechanisms (FT==0 -> FT disabled)
+        .FT (FT),
         //Signals per core. Change this may break Verilator TB
         .CORE_EVENTS    (MCCU_N_EVENTS)
     )
@@ -594,6 +596,8 @@ end
         .update_quota_i         (MCCU_update_quota_int),//Software map
         .quota_o                (regs_o[BASE_MCCU_QUOTA:END_MCCU_QUOTA]),//write back to a read register
         .events_weights_i       (MCCU_events_weights_int),//core_events times WEIGHTS_WIDTH registers
+        .intr_FT1_o             (MCCU_intr_FT1),
+        .intr_FT2_o             (MCCU_intr_FT2),
         .interruption_quota_o   (MCCU_intr_up)//N_CORES output signals Add this to top or single toplevel interrupt and an interrupt vector that identifies the source?
                                    // Individual interrupts allow each core to
                                    // handle their own interrupts , therefore
@@ -804,13 +808,15 @@ end
                 // Codestyle. All scopes start with a capital letter
             assign intr_FT1_o = |{
                                 Rdctrip.MCCU_watermark_fte1,Rdctrip.intr_RDC_fte1,
-                                Rdctrip.interruption_rdc_fte1,Rdctrip.RDC_enable_fte1
+                                Rdctrip.interruption_rdc_fte1,Rdctrip.RDC_enable_fte1,
+                                MCCU_intr_FT1
                                  };
             //Gather all the signals of uncorrected errors from FT scopes
                 // Codestyle. All scopes start with a capital letter
             assign intr_FT2_o = |{
                                 Rdctrip.MCCU_watermark_fte2,Rdctrip.intr_RDC_fte2,
-                                Rdctrip.interruption_rdc_fte2,Rdctrip.RDC_enable_fte2
+                                Rdctrip.interruption_rdc_fte2,Rdctrip.RDC_enable_fte2,
+                                MCCU_intr_FT2
                                  };
     end
 /////////////////////////////////////////////////////////////////////////////////
