@@ -14,7 +14,6 @@ rm -rf ./AXI_PMU
 ############
 ## TOP pmu_ahb.sv
 ############
-
 # Run Verilator
 printf "Please wait, running Verilator\n"
 verilator --lint-only ../hdl/pmu_ahb.sv \
@@ -24,7 +23,13 @@ verilator --lint-only ../hdl/pmu_ahb.sv \
 ../submodules/RDC/hdl/RDC.sv \
 ../submodules/quota/PMU_quota.sv \
 ../submodules/counters/PMU_counters.sv \
-../submodules/overflow/PMU_overflow.sv 2> $VERILATOR_LOG0
+../submodules/overflow/PMU_overflow.sv \
+../submodules/seu_ip/hamming32t26d_enc.sv \
+../submodules/seu_ip/hamming32t26d_dec.sv \
+../submodules/seu_ip/triple_reg.sv \
+../submodules/seu_ip/way3_voter.sv \
+../submodules/seu_ip/way3u2a_voter.sv \
+../submodules/seu_ip/way3ua_voter.sv 2> $VERILATOR_LOG0
 
 # Run Questa
 printf "Please wait, running Spyglass\n"

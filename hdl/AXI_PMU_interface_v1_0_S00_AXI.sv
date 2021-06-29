@@ -801,6 +801,8 @@
             .WEIGHTS_WIDTH  (MCCU_WEIGHTS_WIDTH),
             //Cores. Change this may break Verilator TB
             .N_CORES        (MCCU_N_CORES),
+            //Fault Tolerance
+            .FT(0),
             //Signals per core. Change this may break Verilator TB
             .CORE_EVENTS    (MCCU_CORE_EVENTS)
         )
@@ -812,6 +814,8 @@
             .quota_i                (MCCU_quota_int),//One register per core
             .update_quota_i         (MCCU_update_quota_int),//Software map
             .quota_o                (MCCU_quota_o),//write back to a read register
+            .intr_FT1_o(),
+            .intr_FT2_o(),
             .events_weights_i       (MCCU_events_weights_int),//core_events times WEIGHTS_WIDTH registers
             .interruption_quota_o   (MCCU_int_o)//N_CORES output signals Add this to top or single toplevel interrupt and an interrupt vector that identifies the source?
                                        // Individual interrupts allow each core to
@@ -837,6 +841,7 @@
             .events_i               (events_int),//how to parametrize this? new parameter on top or up to the programer that does the integration?
             .events_weights_i       (MCCU_events_weights_int),//core_events times WEIGHTS_WIDTH registers
             .interruption_rdc_o(intr_rdc_o),// interruption signaling a signal has exceed the expected maximum request time
+            .watermark_o(),
             .interruption_vector_rdc_o(intrv_rdc_int) // vector with offending
                 //signals. One hot encoding.
                 //Cleared when MCCU is disabled.

@@ -1,5 +1,7 @@
 CYCLES=-all
 TOP=../../..
+RED='\033[7;31m'
+NC='\033[0m' # No Color
 mv /AXI_PMU /tmp 2>/dev/null
 vlib AXI_PMU
 vmap work $PWD/AXI_PMU

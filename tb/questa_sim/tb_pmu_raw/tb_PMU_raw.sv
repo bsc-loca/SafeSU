@@ -33,6 +33,7 @@ module tb_PMU_raw();
     parameter TB_N_CORES= 4;
     //WARNIGN: if N_counters or cores change this value needs to change
     parameter TB_TOTAL_NREGS= 47;
+    parameter FT= 0;
     
 //***Signals***
     reg     tb_clk_i ;
@@ -54,7 +55,7 @@ reg tb_fail = 0;
 		.REG_WIDTH(TB_DATA_WIDTH),
 		.N_COUNTERS(TB_N_COUNTERS),
 		.N_SOC_EV(32),
-        .FT(1),
+        .FT(FT),
 		.N_CONF_REGS(TB_N_CFG)
 	)dut_PMU_raw (
 		.clk_i(tb_clk_i),
@@ -66,6 +67,8 @@ reg tb_fail = 0;
         .intr_overflow_o(tb_intr_overflow_o),
         .intr_quota_o(tb_intr_quota_o),
         .intr_MCCU_o(tb_intr_MCCU_o),
+        .intr_FT1_o(),
+        .intr_FT2_o(),
         .intr_RDC_o(tb_intr_RDC_o)
 	);
 
@@ -251,6 +254,7 @@ end
         //Disable PMU and selftest modes
         write_reg(0,32'h00000000);
         test_crossbar;
+        $display("FT = %d",FT);
         $finish;
     end
 

@@ -33,7 +33,7 @@ module tb_pmu_ahb();
     parameter TB_N_CORES= 4;
     //WARNIGN: if N_counters or cores change this value needs to change
     parameter TB_TOTAL_NREGS= 47;
-    
+    parameter FT = 0;     
 //***Signals***
     reg clk_i ;
     reg rstn_i ;
@@ -60,7 +60,7 @@ reg tb_fail = 0;
         .N_REGS(TB_TOTAL_NREGS), 
         .MCCU_N_CORES(4),
 	    .N_SOC_EV (TB_N_SOC_EV)
-        .FT(1),
+        .FT(FT),
         .N_REGS(47) 
 	)
     dut_pmu_ahb 
@@ -198,6 +198,7 @@ task automatic rand_run(input longint a);
         init_dump();
         reset_dut();
         test_sim();
+        $display("FT = %d",FT);
         $finish;
     end
 

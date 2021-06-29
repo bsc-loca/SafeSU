@@ -27,7 +27,7 @@
         //Cores. Change this may break Verilator TB
         parameter integer N_CORES       =2,
         // Fault tolerance mechanisms (FT==0 -> FT disabled)
-        parameter integer FT  = 1,                                           
+        parameter integer FT  = 0,                                           
         //Signals per core. Change this may break Verilator TB
         parameter integer CORE_EVENTS   =4
 	)
