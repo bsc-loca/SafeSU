@@ -21,6 +21,8 @@ module PMU_counters #
 	(
 		// Width of registers data bus
 		parameter integer REG_WIDTH	= 32,
+        // Fault tolerance mechanisms (FT==0 -> FT disabled)
+        parameter integer FT  = 0,                                           
 		// Amount of counters
 		parameter integer N_COUNTERS	= 9
 	)
@@ -47,7 +49,9 @@ module PMU_counters #
         input wire [REG_WIDTH-1:0] regs_i [0:N_COUNTERS-1],
         output logic [REG_WIDTH-1:0] regs_o [0:N_COUNTERS-1],
         //external signals from Soc events
-        input wire [N_COUNTERS-1:0] events_i 
+        input wire [N_COUNTERS-1:0] events_i,
+        // FT (Fault tolerance) interrupt, error detected but not recoverable
+        output wire intr_FT2_o
 	);
     reg [REG_WIDTH-1:0] slv_reg [0:N_COUNTERS-1] /*verilator public*/;
     wire [REG_WIDTH-1:0] adder_out [0:N_COUNTERS-1] /*verilator public*/;
@@ -88,7 +92,24 @@ module PMU_counters #
         regs_o = adder_out; 
         end
     end
-//TODO: fill formal propperties
+//FT mechanisms and intr
+if(FT==0) begin
+    assign intr_FT2_o = 1'b0;
+end else begin
+    //register last we_i in the negative and positive edges of clock
+        // For 200MHz, transients of width < 2500ps shall be detected
+        // For 500MHz, transients of width < 1000ps shall be detected
+        // Expected transients < 900ps
+    com_tr #(
+		.IN_WIDTH(1)
+	)dut_com_tr (
+		.clk_i(clk_i),
+		.dclk_i(~clk_i),
+		.rstn_i(rstn_i),
+		.signal_i(we_i),
+		.error_o(intr_FT2_o)
+	);
+end
 ///////////////////////////////////////////////////////////////////////////////
 //
 // Formal Verification section begins here.

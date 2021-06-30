@@ -37,7 +37,7 @@
 		// Configuration registers
 		parameter integer N_CONF_REGS	= 1,
         // Fault tolerance mechanisms (FT==0 -> FT disabled)
-        parameter integer FT  = 1,                                           
+        parameter integer FT  = 0,                                           
 
         //------------- Internal Parameters 
 		
@@ -420,6 +420,7 @@ end
 //----------------------------------------------
 //TODO: What happen if we is active but no write is done to the range of the
 //counters?
+    logic counters_fte2;
     PMU_counters # (
 		.REG_WIDTH	(REG_WIDTH),
 		.N_COUNTERS	(N_COUNTERS)
@@ -432,7 +433,8 @@ end
 		.we_i       (wrapper_we_i),
         .regs_i     (counter_regs_int),
         .regs_o     (counter_regs_o),
-        .events_i   (events_int) 
+        .events_i   (events_int), 
+        .intr_FT2_o (counters_fte2)
 	);
 
 //----------------------------------------------
@@ -858,7 +860,7 @@ end
                                 Rdctrip.MCCU_watermark_fte2,Rdctrip.intr_RDC_fte2,
                                 Rdctrip.interruption_rdc_fte2,Rdctrip.RDC_enable_fte2,
                                 MCCU_intr_FT2, Ft_mccu_rst.MCCU_rstn_fte2,
-                                Rdctrip.RDC_rstn_fte2
+                                Rdctrip.RDC_rstn_fte2, counters_fte2
                                  };
     end
 /////////////////////////////////////////////////////////////////////////////////

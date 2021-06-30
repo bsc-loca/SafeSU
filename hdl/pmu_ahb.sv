@@ -34,7 +34,7 @@
 	// Total amount of registers (use ahb_pmu_mem_map.ods) 
         parameter integer N_REGS = 55, 
         // Fault tolerance mechanisms (FT==0 -> FT disabled)
-        parameter integer FT  = 1,                                           
+        parameter integer FT  = 0,                                           
 	// -- Local parameters
 		//haddr width
         localparam integer HADDR_WIDTH = 32,
