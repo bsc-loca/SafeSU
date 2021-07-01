@@ -558,39 +558,6 @@ end
     endgenerate
 
     //register enable to solve Hazards
-    logic MCCU_rstn_Q;
-    if (FT==0) begin : Nft_mccu_rst
-        logic MCCU_rstn; 
-        always @(posedge clk_i) begin: MCCU_glitchless_rstn
-                if (!rstn_i) begin
-                    MCCU_rstn <= 0;
-                end else begin
-                    MCCU_rstn <= rstn_i && !MCCU_softrst;
-                end
-        end
-        assign MCCU_rstn_Q = MCCU_rstn; 
-    end else begin : Ft_mccu_rst
-        logic MCCU_rstn_D;
-        logic MCCU_rstn_fte1,MCCU_rstn_fte2;
-        always_comb begin: MCCU_rstn
-                if (!rstn_i) begin
-                    MCCU_rstn_D = 0;
-                end else begin
-                    MCCU_rstn_D = rstn_i && !MCCU_softrst;
-                end
-        end
-        triple_reg#(.IN_WIDTH(1)
-        )mccu_rst_trip(
-        .clk_i(clk_i),
-        .rstn_i(rstn_i),
-        .din_i(MCCU_rstn_D),
-        .dout_o(MCCU_rstn_Q),
-        .error1_o(MCCU_rstn_fte1), // ignore corrected errors
-        .error2_o(MCCU_rstn_fte2)
-        );
-    end
-    
-    //register enable to solve Hazards
     reg MCCU_enable_int;
     always @(posedge clk_i) begin: MCCU_glitchless_enable
             if (!rstn_i) begin
@@ -614,7 +581,7 @@ end
     )
     inst_MCCU(
         .clk_i                  (clk_i),
-        .rstn_i                 (MCCU_rstn_Q),//active low
+        .rstn_i                 (rstn_i && !MCCU_softrst),//active low
         .enable_i               (MCCU_enable_int),// Software map
         .events_i               (MCCU_events_int),
         .quota_i                (regs_i[BASE_MCCU_LIMITS:END_MCCU_LIMITS]),//One register per core
@@ -678,7 +645,7 @@ end
         .CORE_EVENTS    (RDC_N_EVENTS)
     ) inst_RDC(
         .clk_i                  (clk_i),
-        .rstn_i                 (RDC_rstn), //active low
+        .rstn_i                 (rstn_i && !regs_i[BASE_MCCU_CFG][7]), //active low
         .enable_i               (RDC_enable_int),// Software map
         .events_i               (MCCU_events_int),
         .events_weights_i       (MCCU_events_weights_int),
@@ -690,25 +657,6 @@ end
         .watermark_o(MCCU_watermark_int) 
     );
     end else begin : Rdctrip
-   //register enable to solve Hazards
-    logic RDC_rstn_D, RDC_rstn_Q;
-    logic RDC_rstn_fte1,RDC_rstn_fte2;
-    always_comb begin: RDC_rstn
-            if (!rstn_i) begin
-                RDC_rstn_D = 0;
-            end else begin
-                RDC_rstn_D = rstn_i && !regs_i[BASE_MCCU_CFG][7];
-            end
-    end
-    triple_reg#(.IN_WIDTH(1)
-    )mccu_rst_trip(
-    .clk_i(clk_i),
-    .rstn_i(rstn_i),
-    .din_i(RDC_rstn_D),
-    .dout_o(RDC_rstn_Q),
-    .error1_o(RDC_rstn_fte1), // ignore corrected errors
-    .error2_o(RDC_rstn_fte2)
-    );
     //register enable to solve Hazards
         // Does not nid replication since regs_i is already protected
         // RDC_enable_int may be disabled for a single cycle but
@@ -725,11 +673,11 @@ end
     .error2_o(RDC_enable_fte2)
     );
 
-    always @(posedge clk_i) begin: RDC_glitchless_enable
+    always_comb begin
             if (!rstn_i) begin
-                RDC_enable_int_D <= 0;
+                RDC_enable_int_D = 0;
             end else begin
-                RDC_enable_int_D <= regs_i[BASE_MCCU_CFG][6];
+                RDC_enable_int_D = regs_i[BASE_MCCU_CFG][6];
             end
     end 
     
@@ -762,7 +710,7 @@ end
         .CORE_EVENTS    (RDC_N_EVENTS)
     ) inst_RDC(
         .clk_i                  (clk_i),
-        .rstn_i                 (RDC_rstn_Q), //active low
+        .rstn_i                 (rstn_i && !regs_i[BASE_MCCU_CFG][7]), //active low
         .enable_i               (RDC_enable_int_Q),// Software map
         .events_i               (MCCU_events_int),
         .events_weights_i       (MCCU_events_weights_int),
@@ -777,7 +725,7 @@ end
         .CORE_EVENTS    (RDC_N_EVENTS)
     ) inst1_RDC(
         .clk_i                  (clk_i),
-        .rstn_i                 (RDC_rstn_Q), //active low
+        .rstn_i                 (rstn_i && !regs_i[BASE_MCCU_CFG][7]), //active low
         .enable_i               (RDC_enable_int_Q),// Software map
         .events_i               (MCCU_events_int),
         .events_weights_i       (MCCU_events_weights_int),
@@ -792,7 +740,7 @@ end
         .CORE_EVENTS    (RDC_N_EVENTS)
     ) inst2_RDC(
         .clk_i                  (clk_i),
-        .rstn_i                 (RDC_rstn_Q), //active low
+        .rstn_i                 (rstn_i && !regs_i[BASE_MCCU_CFG][7]), //active low
         .enable_i               (RDC_enable_int_Q),// Software map
         .events_i               (MCCU_events_int),
         .events_weights_i       (MCCU_events_weights_int),
@@ -851,16 +799,15 @@ end
             assign intr_FT1_o = |{
                                 Rdctrip.MCCU_watermark_fte1,Rdctrip.intr_RDC_fte1,
                                 Rdctrip.interruption_rdc_fte1,Rdctrip.RDC_enable_fte1,
-                                MCCU_intr_FT1, Ft_mccu_rst.MCCU_rstn_fte1,
-                                Rdctrip.RDC_rstn_fte1
+                                MCCU_intr_FT1 
                                  };
             //Gather all the signals of uncorrected errors from FT scopes
                 // Codestyle. All scopes start with a capital letter
             assign intr_FT2_o = |{
                                 Rdctrip.MCCU_watermark_fte2,Rdctrip.intr_RDC_fte2,
                                 Rdctrip.interruption_rdc_fte2,Rdctrip.RDC_enable_fte2,
-                                MCCU_intr_FT2, Ft_mccu_rst.MCCU_rstn_fte2,
-                                Rdctrip.RDC_rstn_fte2, counters_fte2
+                                MCCU_intr_FT2, 
+                                counters_fte2
                                  };
     end
 /////////////////////////////////////////////////////////////////////////////////

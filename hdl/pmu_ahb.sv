@@ -251,6 +251,7 @@ end
     logic [1:0] complete_transfer_status;
     logic [HDATA_WIDTH-1:0] dread_slave; //response from slave
     wire [$clog2(N_REGS)-1:0] slv_index;
+    wire  invalid_index;
     logic [REG_WIDTH-1:0] slv_reg [0:N_REGS-1];
     logic [REG_WIDTH-1:0] slv_reg_D [0:N_REGS-1];
     logic [REG_WIDTH-1:0] slv_reg_Q [0:N_REGS-1];
@@ -276,9 +277,9 @@ end
             //conditions under which the slv_reg shall be updated
         always_comb begin
                 //AHB write
-                //Write to slv registers if slave was selected & was a write. Else
-                //register the values given by pmu_raw
-                if(address_phase.write_Q && address_phase.select_Q) begin
+                //Write to slv registers if slave was selected & was a write to a valid register
+                //Else register the values given by pmu_raw
+                if(address_phase.write_Q && address_phase.select_Q && !invalid_index) begin
                     // get the values from the pmu_raw instance
                     slv_reg_Q = slv_reg;
                     slv_reg_Q [slv_index] = dwrite_slave;
@@ -397,9 +398,9 @@ end
             //conditions under which the slv_reg shall be updated
         always_comb begin
                 //AHB write
-                //Write to slv registers if slave was selected & was a write. Else
-                //register the values given by pmu_raw
-                if(address_phase.write_Q && address_phase.select_Q) begin
+                //Write to slv registers if slave was selected & was a write to a valid register
+                //Else register the values given by pmu_raw
+                if(address_phase.write_Q && address_phase.select_Q && !invalid_index) begin
                     //Feed and send flat assigment in to original format 
                         //assign flat hamming outputs to slv_reg_Q
                     slv_reg_Q=slv_reg_ufto;
@@ -450,7 +451,7 @@ if (FT==0) begin
             TRANS_NONSEQUENTIAL:begin
                 complete_transfer_status = TRANSFER_SUCCESS_COMPLETE; 
                 dwrite_slave = hwdata_i; 
-                if (!address_phase.write_Q) begin
+                if (!address_phase.write_Q && !invalid_index) begin
                     dread_slave = slv_reg_Q[slv_index];
                 end else begin
                     dread_slave = 32'hcafe01a1;
@@ -459,7 +460,7 @@ if (FT==0) begin
             TRANS_SEQUENTIAL:begin
                 complete_transfer_status = TRANSFER_SUCCESS_COMPLETE; 
                 dwrite_slave = hwdata_i; 
-                if (!address_phase.write_Q) begin
+                if (!address_phase.write_Q && !invalid_index) begin
                     dread_slave = slv_reg_Q[slv_index];
                 end else begin
                     dread_slave = 32'hcafee1a1;
@@ -510,7 +511,7 @@ end else begin : Stateft
             TRANS_NONSEQUENTIAL:begin
                 complete_transfer_status = TRANSFER_SUCCESS_COMPLETE; 
                 dwrite_slave = hwdata_i; 
-                if (!address_phase.write_Q) begin
+                if (!address_phase.write_Q && !invalid_index) begin
                     dread_slave = slv_reg_Q[slv_index];
                 end else begin
                     dread_slave = 32'hcafe01a1;
@@ -519,7 +520,7 @@ end else begin : Stateft
             TRANS_SEQUENTIAL:begin
                 complete_transfer_status = TRANSFER_SUCCESS_COMPLETE; 
                 dwrite_slave = hwdata_i; 
-                if (!address_phase.write_Q) begin
+                if (!address_phase.write_Q && !invalid_index) begin
                     dread_slave = slv_reg_Q[slv_index];
                 end else begin
                     dread_slave = 32'hcafee1a1;
@@ -587,6 +588,7 @@ end
 
 //data phase - slave response
 assign slv_index = address_phase.master_addr_Q[$clog2(N_REGS)+1:2];
+assign invalid_index = address_phase.master_addr_Q[$clog2(N_REGS)+1:2] >= N_REGS? 1'b1:1'b0;
 assign hrdata_o = dread_slave;
 
 assign hreadyo_o = complete_transfer_status [0];

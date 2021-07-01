@@ -480,10 +480,12 @@
     end
 
     `ifdef ASSERTIONS
-    always @(posedge clk_i) begin
-        for(integer x=0; x<N_CORES; x=x+1)  begin: InterruptionQuota
-            if(quota_int[x]>ccc_suma_int[x])
-                assert (interruption_quota_d[x]==1'b0);
+    if(FT==0) begin
+        always @(posedge clk_i) begin
+            for(integer x=0; x<N_CORES; x=x+1)  begin: InterruptionQuota
+                if(Nft_suma.quota_int[x]>Nft_suma.ccc_suma_int[x])
+                    assert (interruption_quota_d[x]==1'b0);
+            end
         end
     end
     `endif
@@ -539,11 +541,13 @@ Section of Formal propperties, valid for SBY
       When reset (rstn_i)is active all internal registers shall be set to 0 in 
       the next cycle.
     --------------*/
+    if(FT==0) begin
     always @(posedge clk_i) begin
 		if(0 == $past(rstn_i) && f_past_valid) begin
-            assert(0 == quota_int.sum()); 
-            assert(0 == ccc_suma_int.sum()); 
+            assert(0 == Nft_suma.quota_int.sum()); 
+            assert(0 == Nft_suma.ccc_suma_int.sum()); 
         end
+    end
     end
     /*--------------
       Unless a reset occures, the addition of all current cycle consumed
@@ -553,6 +557,7 @@ Section of Formal propperties, valid for SBY
       the signal for a given weight is not active the current cycle.
     --------------*/  
     //Auxiliar logic to compute sum of all signals and consumed quota
+    int i , j; 
     always@( posedge clk_i) begin
         f_sum_weights =0; //initialize to 0 and add events_weights_int
         if(rstn_i) begin // reset disabled
@@ -565,10 +570,12 @@ Section of Formal propperties, valid for SBY
     end
     //assert that the addition of quotas consumed in the current cycle
     //equal to the internal weights.
-    always @(posedge clk_i) begin
-        if(rstn_i) begin
-            assert(f_sum_weights == ccc_suma_int.sum());
-        end 
+    if(FT==0) begin
+        always @(posedge clk_i) begin
+            if(rstn_i) begin
+                assert(f_sum_weights == Nft_suma.ccc_suma_int.sum());
+            end 
+        end
     end
     /*---------
      * checks when the interruption can be triggered
