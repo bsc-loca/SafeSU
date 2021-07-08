@@ -1,0 +1,340 @@
+[*]
+[*] GTKWave Analyzer v3.3.110 (w)1999-2020 BSI
+[*] Wed Jul  7 15:07:31 2021
+[*]
+[dumpfile] "/home/gcabo/BSC/bsc_pmu/tb/formal/equivalence_pmu_ahb/top/engine_0/trace.vcd"
+[dumpfile_mtime] "Wed Jul  7 15:02:09 2021"
+[dumpfile_size] 575555
+[savefile] "/home/gcabo/BSC/bsc_pmu/tb/formal/equivalence_pmu_ahb/top.gtkw"
+[timestart] 3
+[size] 1853 1006
+[pos] -1 -1
+*-3.696324 34 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] top.
+[treeopen] top.dut_ft_pmu_ahb.
+[treeopen] top.dut_ft_pmu_ahb.inst_pmu_raw.
+[treeopen] top.dut_ft_pmu_ahb.inst_pmu_raw.Rdctrip.
+[treeopen] top.dut_ft_pmu_ahb.inst_pmu_raw.Rdctrip.inst1_RDC.
+[treeopen] top.dut_ft_pmu_ahb.inst_pmu_raw.Rdctrip.inst2_RDC.
+[treeopen] top.dut_ft_pmu_ahb.Stateft.
+[treeopen] top.dut_pmu_ahb.
+[treeopen] top.dut_pmu_ahb.inst_pmu_raw.
+[treeopen] top.dut_pmu_ahb.inst_pmu_raw.genblk16.
+[sst_width] 394
+[signals_width] 456
+[sst_expanded] 1
+[sst_vpaned_height] 282
+@28
+[color] 7
+top.clk_i
+[color] 6
+top.rstn_i
+@200
+-Top
+@28
+top.fthreadyo_o
+top.fthresp_o[1:0]
+@22
+top.ftintr_MCCU_o[3:0]
+@28
+top.ftintr_RDC_o
+top.ftintr_overflow_o
+top.ftintr_quota_o
+@22
+top.dut_ft_pmu_ahb.dread_slave[31:0]
+[color] 1
+top.hrdata_o[31:0]
+top.fthrdata_o[31:0]
+@28
+top.hreadyo_o
+top.hresp_o[1:0]
+@22
+top.intr_MCCU_o[3:0]
+@28
+top.intr_RDC_o
+top.intr_overflow_o
+top.intr_quota_o
+@200
+-
+@28
+top.ftintr_FT1_o
+@800028
+#{top.intr_FT1_o} top.intr_FT1_o
+@28
+top.intr_FT1_o
+@1001200
+-group_end
+@28
+top.ftintr_FT2_o
+top.intr_FT2_o
+@200
+-pmu_ahb
+@22
+[color] 1
+top.dut_pmu_ahb.pmu_regs_int<41>[31:0]
+top.dut_ft_pmu_ahb.pmu_regs_int<41>[31:0]
+[color] 1
+top.dut_pmu_ahb.slv_reg<41>[31:0]
+top.dut_ft_pmu_ahb.slv_reg<41>[31:0]
+[color] 1
+top.dut_pmu_ahb.slv_reg_D<41>[31:0]
+top.dut_ft_pmu_ahb.slv_reg_D<41>[31:0]
+[color] 1
+top.dut_pmu_ahb.slv_reg_Q<41>[31:0]
+top.dut_ft_pmu_ahb.slv_reg_Q<41>[31:0]
+[color] 1
+top.dut_pmu_ahb.dread_slave[31:0]
+@c00022
+top.dut_ft_pmu_ahb.dread_slave[31:0]
+@28
+(0)top.dut_ft_pmu_ahb.dread_slave[31:0]
+(1)top.dut_ft_pmu_ahb.dread_slave[31:0]
+(2)top.dut_ft_pmu_ahb.dread_slave[31:0]
+(3)top.dut_ft_pmu_ahb.dread_slave[31:0]
+(4)top.dut_ft_pmu_ahb.dread_slave[31:0]
+(5)top.dut_ft_pmu_ahb.dread_slave[31:0]
+(6)top.dut_ft_pmu_ahb.dread_slave[31:0]
+(7)top.dut_ft_pmu_ahb.dread_slave[31:0]
+(8)top.dut_ft_pmu_ahb.dread_slave[31:0]
+(9)top.dut_ft_pmu_ahb.dread_slave[31:0]
+(10)top.dut_ft_pmu_ahb.dread_slave[31:0]
+(11)top.dut_ft_pmu_ahb.dread_slave[31:0]
+(12)top.dut_ft_pmu_ahb.dread_slave[31:0]
+(13)top.dut_ft_pmu_ahb.dread_slave[31:0]
+(14)top.dut_ft_pmu_ahb.dread_slave[31:0]
+(15)top.dut_ft_pmu_ahb.dread_slave[31:0]
+(16)top.dut_ft_pmu_ahb.dread_slave[31:0]
+(17)top.dut_ft_pmu_ahb.dread_slave[31:0]
+(18)top.dut_ft_pmu_ahb.dread_slave[31:0]
+(19)top.dut_ft_pmu_ahb.dread_slave[31:0]
+(20)top.dut_ft_pmu_ahb.dread_slave[31:0]
+(21)top.dut_ft_pmu_ahb.dread_slave[31:0]
+(22)top.dut_ft_pmu_ahb.dread_slave[31:0]
+(23)top.dut_ft_pmu_ahb.dread_slave[31:0]
+(24)top.dut_ft_pmu_ahb.dread_slave[31:0]
+(25)top.dut_ft_pmu_ahb.dread_slave[31:0]
+(26)top.dut_ft_pmu_ahb.dread_slave[31:0]
+(27)top.dut_ft_pmu_ahb.dread_slave[31:0]
+(28)top.dut_ft_pmu_ahb.dread_slave[31:0]
+(29)top.dut_ft_pmu_ahb.dread_slave[31:0]
+(30)top.dut_ft_pmu_ahb.dread_slave[31:0]
+(31)top.dut_ft_pmu_ahb.dread_slave[31:0]
+@1401200
+-group_end
+@200
+-raw
+-mccu
+-rdc
+@c00022
+top.dut_ft_pmu_ahb.inst_pmu_raw.Rdctrip.MCCU_watermark_ft2<0><0>[7:0]
+@28
+(0)top.dut_ft_pmu_ahb.inst_pmu_raw.Rdctrip.MCCU_watermark_ft2<0><0>[7:0]
+(1)top.dut_ft_pmu_ahb.inst_pmu_raw.Rdctrip.MCCU_watermark_ft2<0><0>[7:0]
+(2)top.dut_ft_pmu_ahb.inst_pmu_raw.Rdctrip.MCCU_watermark_ft2<0><0>[7:0]
+(3)top.dut_ft_pmu_ahb.inst_pmu_raw.Rdctrip.MCCU_watermark_ft2<0><0>[7:0]
+(4)top.dut_ft_pmu_ahb.inst_pmu_raw.Rdctrip.MCCU_watermark_ft2<0><0>[7:0]
+(5)top.dut_ft_pmu_ahb.inst_pmu_raw.Rdctrip.MCCU_watermark_ft2<0><0>[7:0]
+(6)top.dut_ft_pmu_ahb.inst_pmu_raw.Rdctrip.MCCU_watermark_ft2<0><0>[7:0]
+(7)top.dut_ft_pmu_ahb.inst_pmu_raw.Rdctrip.MCCU_watermark_ft2<0><0>[7:0]
+@1401200
+-group_end
+@22
+top.dut_ft_pmu_ahb.inst_pmu_raw.Rdctrip.MCCU_watermark_ft2<0><1>[7:0]
+top.dut_ft_pmu_ahb.inst_pmu_raw.Rdctrip.MCCU_watermark_ft2<1><0>[7:0]
+top.dut_ft_pmu_ahb.inst_pmu_raw.Rdctrip.MCCU_watermark_ft2<1><1>[7:0]
+top.dut_ft_pmu_ahb.inst_pmu_raw.Rdctrip.MCCU_watermark_ft2<2><0>[7:0]
+top.dut_ft_pmu_ahb.inst_pmu_raw.Rdctrip.MCCU_watermark_ft2<2><1>[7:0]
+top.dut_ft_pmu_ahb.inst_pmu_raw.Rdctrip.MCCU_watermark_ft2<3><0>[7:0]
+top.dut_ft_pmu_ahb.inst_pmu_raw.Rdctrip.MCCU_watermark_ft2<3><1>[7:0]
+[color] 1
+top.dut_pmu_ahb.inst_pmu_raw.genblk16.inst_RDC.watermark_int<0>[7:0]
+[color] 1
+top.dut_pmu_ahb.inst_pmu_raw.genblk16.inst_RDC.watermark_int<1>[7:0]
+[color] 1
+top.dut_pmu_ahb.inst_pmu_raw.genblk16.inst_RDC.watermark_int<2>[7:0]
+[color] 1
+top.dut_pmu_ahb.inst_pmu_raw.genblk16.inst_RDC.watermark_int<3>[7:0]
+[color] 1
+top.dut_pmu_ahb.inst_pmu_raw.genblk16.inst_RDC.watermark_int<4>[7:0]
+[color] 1
+top.dut_pmu_ahb.inst_pmu_raw.genblk16.inst_RDC.watermark_int<5>[7:0]
+[color] 1
+top.dut_pmu_ahb.inst_pmu_raw.genblk16.inst_RDC.watermark_int<6>[7:0]
+[color] 1
+top.dut_pmu_ahb.inst_pmu_raw.genblk16.inst_RDC.watermark_int<7>[7:0]
+@200
+-tmp
+-General
+@24
+top.dut_ft_pmu_ahb.slv_index[5:0]
+@28
+top.dut_pmu_ahb.inst_pmu_raw.genblk16.inst_RDC.clk_i
+top.dut_pmu_ahb.inst_pmu_raw.genblk16.inst_RDC.enable_i
+top.dut_pmu_ahb.inst_pmu_raw.genblk16.inst_RDC.events_i<0>[1:0]
+top.dut_pmu_ahb.inst_pmu_raw.genblk16.inst_RDC.events_i<1>[1:0]
+top.dut_pmu_ahb.inst_pmu_raw.genblk16.inst_RDC.events_i<2>[1:0]
+top.dut_pmu_ahb.inst_pmu_raw.genblk16.inst_RDC.events_i<3>[1:0]
+@22
+top.dut_pmu_ahb.inst_pmu_raw.genblk16.inst_RDC.events_weights_i<0><0>[7:0]
+top.dut_pmu_ahb.inst_pmu_raw.genblk16.inst_RDC.events_weights_i<0><1>[7:0]
+top.dut_pmu_ahb.inst_pmu_raw.genblk16.inst_RDC.events_weights_i<1><0>[7:0]
+top.dut_pmu_ahb.inst_pmu_raw.genblk16.inst_RDC.events_weights_i<1><1>[7:0]
+top.dut_pmu_ahb.inst_pmu_raw.genblk16.inst_RDC.events_weights_i<2><0>[7:0]
+top.dut_pmu_ahb.inst_pmu_raw.genblk16.inst_RDC.events_weights_i<2><1>[7:0]
+top.dut_pmu_ahb.inst_pmu_raw.genblk16.inst_RDC.events_weights_i<3><0>[7:0]
+top.dut_pmu_ahb.inst_pmu_raw.genblk16.inst_RDC.events_weights_i<3><1>[7:0]
+@29
+[color] 1
+top.dut_ft_pmu_ahb.inst_pmu_raw.Rdctrip.inst2_RDC.enable_i
+@28
+[color] 1
+top.dut_ft_pmu_ahb.inst_pmu_raw.Rdctrip.inst2_RDC.events_i<0>[1:0]
+[color] 1
+top.dut_ft_pmu_ahb.inst_pmu_raw.Rdctrip.inst2_RDC.events_i<1>[1:0]
+[color] 1
+top.dut_ft_pmu_ahb.inst_pmu_raw.Rdctrip.inst2_RDC.events_i<2>[1:0]
+[color] 1
+top.dut_ft_pmu_ahb.inst_pmu_raw.Rdctrip.inst2_RDC.events_i<3>[1:0]
+@22
+[color] 1
+top.dut_ft_pmu_ahb.inst_pmu_raw.Rdctrip.inst2_RDC.events_weights_i<0><0>[7:0]
+[color] 1
+top.dut_ft_pmu_ahb.inst_pmu_raw.Rdctrip.inst2_RDC.events_weights_i<0><1>[7:0]
+[color] 1
+top.dut_ft_pmu_ahb.inst_pmu_raw.Rdctrip.inst2_RDC.events_weights_i<1><0>[7:0]
+[color] 1
+top.dut_ft_pmu_ahb.inst_pmu_raw.Rdctrip.inst2_RDC.events_weights_i<1><1>[7:0]
+[color] 1
+top.dut_ft_pmu_ahb.inst_pmu_raw.Rdctrip.inst2_RDC.events_weights_i<2><0>[7:0]
+[color] 1
+top.dut_ft_pmu_ahb.inst_pmu_raw.Rdctrip.inst2_RDC.events_weights_i<2><1>[7:0]
+[color] 1
+top.dut_ft_pmu_ahb.inst_pmu_raw.Rdctrip.inst2_RDC.events_weights_i<3><0>[7:0]
+[color] 1
+top.dut_ft_pmu_ahb.inst_pmu_raw.Rdctrip.inst2_RDC.events_weights_i<3><1>[7:0]
+top.dut_pmu_ahb.inst_pmu_raw.genblk16.inst_RDC.i[31:0]
+@28
+top.dut_pmu_ahb.inst_pmu_raw.genblk16.inst_RDC.interruption_rdc_o
+top.dut_pmu_ahb.inst_pmu_raw.genblk16.inst_RDC.interruption_vector_int<0>[1:0]
+top.dut_pmu_ahb.inst_pmu_raw.genblk16.inst_RDC.interruption_vector_int<1>[1:0]
+top.dut_pmu_ahb.inst_pmu_raw.genblk16.inst_RDC.interruption_vector_int<2>[1:0]
+top.dut_pmu_ahb.inst_pmu_raw.genblk16.inst_RDC.interruption_vector_int<3>[1:0]
+top.dut_pmu_ahb.inst_pmu_raw.genblk16.inst_RDC.interruption_vector_rdc_o<0>[1:0]
+top.dut_pmu_ahb.inst_pmu_raw.genblk16.inst_RDC.interruption_vector_rdc_o<1>[1:0]
+top.dut_pmu_ahb.inst_pmu_raw.genblk16.inst_RDC.interruption_vector_rdc_o<2>[1:0]
+top.dut_pmu_ahb.inst_pmu_raw.genblk16.inst_RDC.interruption_vector_rdc_o<3>[1:0]
+@22
+top.dut_pmu_ahb.inst_pmu_raw.genblk16.inst_RDC.max_value<0>[7:0]
+top.dut_pmu_ahb.inst_pmu_raw.genblk16.inst_RDC.max_value<1>[7:0]
+top.dut_pmu_ahb.inst_pmu_raw.genblk16.inst_RDC.max_value<2>[7:0]
+top.dut_pmu_ahb.inst_pmu_raw.genblk16.inst_RDC.max_value<3>[7:0]
+top.dut_pmu_ahb.inst_pmu_raw.genblk16.inst_RDC.max_value<4>[7:0]
+top.dut_pmu_ahb.inst_pmu_raw.genblk16.inst_RDC.max_value<5>[7:0]
+top.dut_pmu_ahb.inst_pmu_raw.genblk16.inst_RDC.max_value<6>[7:0]
+top.dut_pmu_ahb.inst_pmu_raw.genblk16.inst_RDC.max_value<7>[7:0]
+@28
+top.dut_pmu_ahb.inst_pmu_raw.genblk16.inst_RDC.past_interruption_rdc_o
+top.dut_pmu_ahb.inst_pmu_raw.genblk16.inst_RDC.rstn_i
+@22
+top.dut_pmu_ahb.inst_pmu_raw.genblk16.inst_RDC.unpacked_vector_rdc_int[7:0]
+top.dut_pmu_ahb.inst_pmu_raw.genblk16.inst_RDC.watermark_int<0>[7:0]
+top.dut_pmu_ahb.inst_pmu_raw.genblk16.inst_RDC.watermark_int<1>[7:0]
+top.dut_pmu_ahb.inst_pmu_raw.genblk16.inst_RDC.watermark_int<2>[7:0]
+top.dut_pmu_ahb.inst_pmu_raw.genblk16.inst_RDC.watermark_int<3>[7:0]
+top.dut_pmu_ahb.inst_pmu_raw.genblk16.inst_RDC.watermark_int<4>[7:0]
+top.dut_pmu_ahb.inst_pmu_raw.genblk16.inst_RDC.watermark_int<5>[7:0]
+top.dut_pmu_ahb.inst_pmu_raw.genblk16.inst_RDC.watermark_int<6>[7:0]
+top.dut_pmu_ahb.inst_pmu_raw.genblk16.inst_RDC.watermark_int<7>[7:0]
+top.dut_pmu_ahb.inst_pmu_raw.genblk16.inst_RDC.watermark_o<0><0>[7:0]
+top.dut_pmu_ahb.inst_pmu_raw.genblk16.inst_RDC.watermark_o<0><1>[7:0]
+top.dut_pmu_ahb.inst_pmu_raw.genblk16.inst_RDC.watermark_o<1><0>[7:0]
+top.dut_pmu_ahb.inst_pmu_raw.genblk16.inst_RDC.watermark_o<1><1>[7:0]
+top.dut_pmu_ahb.inst_pmu_raw.genblk16.inst_RDC.watermark_o<2><0>[7:0]
+top.dut_pmu_ahb.inst_pmu_raw.genblk16.inst_RDC.watermark_o<2><1>[7:0]
+top.dut_pmu_ahb.inst_pmu_raw.genblk16.inst_RDC.watermark_o<3><0>[7:0]
+top.dut_pmu_ahb.inst_pmu_raw.genblk16.inst_RDC.watermark_o<3><1>[7:0]
+@28
+top.dut_ft_pmu_ahb.inst_pmu_raw.Rdctrip.inst2_RDC.clk_i
+@200
+-
+@22
+[color] 1
+top.dut_ft_pmu_ahb.inst_pmu_raw.Rdctrip.inst2_RDC.i[31:0]
+@28
+[color] 1
+top.dut_ft_pmu_ahb.inst_pmu_raw.Rdctrip.inst2_RDC.interruption_rdc_o
+[color] 1
+top.dut_ft_pmu_ahb.inst_pmu_raw.Rdctrip.inst2_RDC.interruption_vector_int<0>[1:0]
+[color] 1
+top.dut_ft_pmu_ahb.inst_pmu_raw.Rdctrip.inst2_RDC.interruption_vector_int<1>[1:0]
+[color] 1
+top.dut_ft_pmu_ahb.inst_pmu_raw.Rdctrip.inst2_RDC.interruption_vector_int<2>[1:0]
+[color] 1
+top.dut_ft_pmu_ahb.inst_pmu_raw.Rdctrip.inst2_RDC.interruption_vector_int<3>[1:0]
+[color] 1
+top.dut_ft_pmu_ahb.inst_pmu_raw.Rdctrip.inst2_RDC.interruption_vector_rdc_o<0>[1:0]
+[color] 1
+top.dut_ft_pmu_ahb.inst_pmu_raw.Rdctrip.inst2_RDC.interruption_vector_rdc_o<1>[1:0]
+[color] 1
+top.dut_ft_pmu_ahb.inst_pmu_raw.Rdctrip.inst2_RDC.interruption_vector_rdc_o<2>[1:0]
+[color] 1
+top.dut_ft_pmu_ahb.inst_pmu_raw.Rdctrip.inst2_RDC.interruption_vector_rdc_o<3>[1:0]
+@22
+[color] 1
+top.dut_ft_pmu_ahb.inst_pmu_raw.Rdctrip.inst2_RDC.max_value<0>[7:0]
+[color] 1
+top.dut_ft_pmu_ahb.inst_pmu_raw.Rdctrip.inst2_RDC.max_value<1>[7:0]
+[color] 1
+top.dut_ft_pmu_ahb.inst_pmu_raw.Rdctrip.inst2_RDC.max_value<2>[7:0]
+[color] 1
+top.dut_ft_pmu_ahb.inst_pmu_raw.Rdctrip.inst2_RDC.max_value<3>[7:0]
+[color] 1
+top.dut_ft_pmu_ahb.inst_pmu_raw.Rdctrip.inst2_RDC.max_value<4>[7:0]
+[color] 1
+top.dut_ft_pmu_ahb.inst_pmu_raw.Rdctrip.inst2_RDC.max_value<5>[7:0]
+[color] 1
+top.dut_ft_pmu_ahb.inst_pmu_raw.Rdctrip.inst2_RDC.max_value<6>[7:0]
+[color] 1
+top.dut_ft_pmu_ahb.inst_pmu_raw.Rdctrip.inst2_RDC.max_value<7>[7:0]
+@28
+[color] 1
+top.dut_ft_pmu_ahb.inst_pmu_raw.Rdctrip.inst2_RDC.past_interruption_rdc_o
+[color] 1
+top.dut_ft_pmu_ahb.inst_pmu_raw.Rdctrip.inst2_RDC.rstn_i
+@22
+[color] 1
+top.dut_ft_pmu_ahb.inst_pmu_raw.Rdctrip.inst2_RDC.unpacked_vector_rdc_int[7:0]
+[color] 1
+top.dut_ft_pmu_ahb.inst_pmu_raw.Rdctrip.inst2_RDC.watermark_int<0>[7:0]
+[color] 1
+top.dut_ft_pmu_ahb.inst_pmu_raw.Rdctrip.inst2_RDC.watermark_int<1>[7:0]
+[color] 1
+top.dut_ft_pmu_ahb.inst_pmu_raw.Rdctrip.inst2_RDC.watermark_int<2>[7:0]
+[color] 1
+top.dut_ft_pmu_ahb.inst_pmu_raw.Rdctrip.inst2_RDC.watermark_int<3>[7:0]
+[color] 1
+top.dut_ft_pmu_ahb.inst_pmu_raw.Rdctrip.inst2_RDC.watermark_int<4>[7:0]
+[color] 1
+top.dut_ft_pmu_ahb.inst_pmu_raw.Rdctrip.inst2_RDC.watermark_int<5>[7:0]
+[color] 1
+top.dut_ft_pmu_ahb.inst_pmu_raw.Rdctrip.inst2_RDC.watermark_int<6>[7:0]
+[color] 1
+top.dut_ft_pmu_ahb.inst_pmu_raw.Rdctrip.inst2_RDC.watermark_int<7>[7:0]
+[color] 1
+top.dut_ft_pmu_ahb.inst_pmu_raw.Rdctrip.inst2_RDC.watermark_o<0><0>[7:0]
+[color] 1
+top.dut_ft_pmu_ahb.inst_pmu_raw.Rdctrip.inst2_RDC.watermark_o<0><1>[7:0]
+[color] 1
+top.dut_ft_pmu_ahb.inst_pmu_raw.Rdctrip.inst2_RDC.watermark_o<1><0>[7:0]
+[color] 1
+top.dut_ft_pmu_ahb.inst_pmu_raw.Rdctrip.inst2_RDC.watermark_o<1><1>[7:0]
+[color] 1
+top.dut_ft_pmu_ahb.inst_pmu_raw.Rdctrip.inst2_RDC.watermark_o<2><0>[7:0]
+[color] 1
+top.dut_ft_pmu_ahb.inst_pmu_raw.Rdctrip.inst2_RDC.watermark_o<2><1>[7:0]
+[color] 1
+top.dut_ft_pmu_ahb.inst_pmu_raw.Rdctrip.inst2_RDC.watermark_o<3><0>[7:0]
+[color] 1
+top.dut_ft_pmu_ahb.inst_pmu_raw.Rdctrip.inst2_RDC.watermark_o<3><1>[7:0]
+[pattern_trace] 1
+[pattern_trace] 0
