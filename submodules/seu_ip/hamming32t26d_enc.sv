@@ -17,10 +17,12 @@
 `endif
 module hamming32t26d_enc #
 	(
-		// Width of sampled signal
-		localparam integer IN_WIDTH	= 26,
-		// Number of hamming bits
-		localparam integer N_CHECKB	= $clog2(IN_WIDTH) //4
+    //Parameter that does nothing but prevents tcmalloc bug VIVADO
+    parameter VIVADO=0,
+    // Width of sampled signal
+    localparam integer IN_WIDTH	= 26,
+    // Number of hamming bits
+    localparam integer N_CHECKB	= $clog2(IN_WIDTH) //4
 	)
 	(
 		// Signal at register input

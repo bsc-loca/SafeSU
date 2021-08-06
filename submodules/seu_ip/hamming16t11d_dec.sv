@@ -17,10 +17,12 @@
 `endif
 module hamming16t11d_dec #
 	(
-		// Width of sampled signal
-		localparam integer IN_WIDTH	= 11,
-		// Number of hamming bits
-		localparam integer N_CHECKB	= $clog2(IN_WIDTH) //4
+    //Parameter that does nothing but prevents tcmalloc bug VIVADO
+    parameter VIVADO=0,
+    // Width of sampled signal
+    localparam integer IN_WIDTH	= 11,
+    // Number of hamming bits
+    localparam integer N_CHECKB	= $clog2(IN_WIDTH) //4
 	)
 	(
 		// Corrected data
