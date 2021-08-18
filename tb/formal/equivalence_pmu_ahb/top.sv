@@ -70,17 +70,30 @@
         // locked access 
         input wire         hmastlock_i,
     // -- PMU specific signales
-        input wire [N_SOC_EV-1:0] events_i
+        input wire [N_SOC_EV-1:0] events_i,
+
+        //outputs of FT unit
+        output logic fthreadyo_o,
+        output logic [1:0] fthresp_o,
+        output logic [HDATA_WIDTH-1:0] fthrdata_o,
+        output logic ftintr_overflow_o,
+        output logic ftintr_quota_o,
+        output logic [MCCU_N_CORES-1:0] ftintr_MCCU_o,
+        output logic ftintr_RDC_o,
+        output logic ftintr_FT1_o,
+        output logic ftintr_FT2_o,
+        //outputs of non-FT unit
+        output logic hreadyo_o,
+        output logic [1:0] hresp_o,
+        output logic [HDATA_WIDTH-1:0] hrdata_o,
+        output logic intr_overflow_o,
+        output logic intr_quota_o,
+        output logic [MCCU_N_CORES-1:0] intr_MCCU_o,
+        output logic intr_RDC_o,
+        output logic intr_FT1_o,
+        output logic intr_FT2_o
     );
-         logic hreadyo_o, fthreadyo_o;
-         logic [1:0]  hresp_o, fthresp_o;
-         logic [HDATA_WIDTH-1:0] hrdata_o, fthrdata_o;
-         logic intr_overflow_o, ftintr_overflow_o;
-         logic intr_quota_o, ftintr_quota_o;
-         logic [MCCU_N_CORES-1:0] intr_MCCU_o, ftintr_MCCU_o;
-         logic intr_RDC_o, ftintr_RDC_o;
-         logic intr_FT1_o , ftintr_FT1_o;
-         logic intr_FT2_o , ftintr_FT2_o;
+
 	pmu_ahb #
 	(
         .haddr(32'h80100000),                                                  
