@@ -59,9 +59,8 @@ reg tb_fail = 0;
         .REG_WIDTH(32),
         .N_REGS(TB_TOTAL_NREGS), 
         .MCCU_N_CORES(4),
-	    .N_SOC_EV (TB_N_SOC_EV)
-        .FT(FT),
-        .N_REGS(47) 
+	    .N_SOC_EV (TB_N_SOC_EV),
+        .FT(FT)
 	)
     dut_pmu_ahb 
 	(

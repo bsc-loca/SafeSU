@@ -6,7 +6,7 @@ if [ -z "$1" ]
 then
       vlib MCCU
       vmap work $PWD/MCCU
-      vlog +acc=rn +incdir+$TOP/hdl/ $TOP/hdl/*.sv $TOP/submodules/seu_ip/way3*.sv tb_MCCU.sv
+      vlog +acc=rn +incdir+$TOP/hdl/ $TOP/hdl/*.sv $TOP/submodules/MCCU/hdl/MCCU.sv $TOP/submodules/seu_ip/way3*.sv tb_MCCU.sv
       vmake MCCU/ > Makefile
       printf "${RED}WARNING: Check if you want Fault Tolerance active or not${RED}${NC}\n"
       printf "${RED}To enable FT add -gFT=1 after vsim${RED}${NC}\n"
@@ -14,7 +14,7 @@ then
 else
       vlib MCCU
       vmap work $PWD/MCCU
-      vlog +acc=rn +incdir+$TOP/hdl/ $TOP/hdl/*.sv $TOP/submodules/seu_ip/way3*.sv tb_MCCU.sv
+      vlog +acc=rn +incdir+$TOP/hdl/ $TOP/hdl/*.sv $TOP/submodules/MCCU/hdl/MCCU.sv $TOP/submodules/seu_ip/way3*.sv tb_MCCU.sv
       vmake MCCU/ > Makefile
       echo "#INFO# Test Default IP "
       vsim -gFT=0 work.tb_MCCU $1 -do "do save_wave.do"
