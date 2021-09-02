@@ -39,7 +39,7 @@
 		//hdata width
         localparam integer HDATA_WIDTH = 32,
 		// Cores connected to MCCU
-        localparam MCCU_N_CORES = 4,
+        parameter MCCU_N_CORES = 4,
 		// Number of configuration registers
         localparam PMU_CFG = 1
 	)
@@ -324,6 +324,7 @@ end
     
     PMU_raw #(
 		.REG_WIDTH(REG_WIDTH),
+        .MCCU_N_CORES(MCCU_N_CORES),
 		.N_COUNTERS(PMU_COUNTERS),
 		.N_SOC_EV(N_SOC_EV),
 		.N_CONF_REGS(PMU_CFG)

@@ -99,7 +99,7 @@
                 // Width of the assigned weights for each event
         localparam MCCU_WEIGHTS_WIDTH = 8,
                 // Number of cores with MCCU capabilities
-        localparam MCCU_N_CORES = 4, 
+        parameter MCCU_N_CORES = 4, 
                 // Number of events per core
         localparam MCCU_N_EVENTS = 2 , 
             // Main configuration register for the MCCU 
@@ -469,33 +469,40 @@ end
     assign MCCU_softrst = regs_i[BASE_MCCU_CFG][1];
     
     
-    //NON-PARAMETRIC one bit for each core
+    //One bit for each core to trigger quota update
     wire MCCU_update_quota_int [0:MCCU_N_CORES-1];
-        //core_0
-    assign MCCU_update_quota_int[0] = regs_i[BASE_MCCU_CFG][2]; 
-        //core_1
-    assign MCCU_update_quota_int[1] = regs_i[BASE_MCCU_CFG][3]; 
-        //core_2
-    assign MCCU_update_quota_int[2] = regs_i[BASE_MCCU_CFG][4]; 
-        //core_3
-    assign MCCU_update_quota_int[3] = regs_i[BASE_MCCU_CFG][5]; 
+    generate
+        for(q=0;q<MCCU_N_CORES;q++) begin
+            assign MCCU_update_quota_int[q] = regs_i[BASE_MCCU_CFG][q+2]; 
+        end
+    endgenerate
     
-    //NON-PARAMETRIC Adjust for different MCCU_N_CORES MCCU_CORE_EVENTS
-        //eventuall when inputs will be selectable with a crossbar signals can
-        //be hardcoded to specific corssbars outputs
+    //TODO: document MCCU capable events for each core configuration
+        //2Cores -> events 0 to 3
+        //3Cores -> events 0 to 5
+        //4Cores -> events 0 to 7
+        //5Cores -> events 0 to 9
+        //6Cores -> events 0 to 11
     wire [MCCU_N_EVENTS-1:0] MCCU_events_int[0:MCCU_N_CORES-1];
-        //core_0
-    assign MCCU_events_int [0] = {{events_int[1]},{events_int[0]}};
-        //core_1
-    assign MCCU_events_int [1] = {{events_int[3]},{events_int[2]}};
-        //core_2
-    assign MCCU_events_int [2] = {{events_int[5]},{events_int[4]}};
-        //core_3
-    assign MCCU_events_int [3] = {{events_int[7]},{events_int[6]}};
+    generate
+        for(q=0;q<MCCU_N_CORES;q++) begin
+            assign MCCU_events_int [q] = {{events_int[2*q+1]},{events_int[q*2]}};
+        end
+    endgenerate
         
     //NON-PARAMETRIC This can be autogenenerated TODO     
     wire [MCCU_WEIGHTS_WIDTH-1:0] MCCU_events_weights_int [0:MCCU_N_CORES-1]
                                                      [0:MCCU_N_EVENTS-1];
+    //TODO WIP 
+    /*
+    generate
+        for(q=0;q<MCCU_N_CORES;q++) begin //iterate cores
+            for(j=0;j<MCCU_N_EVENTS;j++) begin // iterate signals per core
+                assign MCCU_events_weights_int [q][j] =  regs_i[BASE_MCCU_WEIGHTS][(q*MCCU_N_EVENTS+j+1)*MCCU_WEIGHTS_WIDTH-1:0];
+                assign MCCU_events_weights_int [0][1] =  regs_i[BASE_MCCU_WEIGHTS][2*MCCU_WEIGHTS_WIDTH-1:MCCU_WEIGHTS_WIDTH];
+            end
+        end
+    endgenerate*/
         //core_0
     assign MCCU_events_weights_int [0][0] =  regs_i[BASE_MCCU_WEIGHTS][MCCU_WEIGHTS_WIDTH-1:0];
     assign MCCU_events_weights_int [0][1] =  regs_i[BASE_MCCU_WEIGHTS][2*MCCU_WEIGHTS_WIDTH-1:MCCU_WEIGHTS_WIDTH];
@@ -509,11 +516,38 @@ end
     assign MCCU_events_weights_int [3][0] =  regs_i[BASE_MCCU_WEIGHTS+1][3*MCCU_WEIGHTS_WIDTH-1:2*MCCU_WEIGHTS_WIDTH];
     assign MCCU_events_weights_int [3][1] =  regs_i[BASE_MCCU_WEIGHTS+1][4*MCCU_WEIGHTS_WIDTH-1:3*MCCU_WEIGHTS_WIDTH];
     
-    //NON-PARAMETRIC unpack to pack
+    //unpack to pack
     wire MCCU_intr_up [MCCU_N_CORES-1:0];
-    assign intr_MCCU_o = {{MCCU_intr_up[3]},{MCCU_intr_up[2]}
-                        ,{MCCU_intr_up[1]},{MCCU_intr_up[0]}};
-    
+    generate
+        case (MCCU_N_CORES)
+            2 : begin
+                assign intr_MCCU_o = {{MCCU_intr_up[1]},{MCCU_intr_up[0]}};
+            end
+            3 : begin
+                assign intr_MCCU_o = {{MCCU_intr_up[2]}
+                                    ,{MCCU_intr_up[1]},{MCCU_intr_up[0]}};
+            end
+            4 : begin
+                assign intr_MCCU_o = {{MCCU_intr_up[3]},{MCCU_intr_up[2]}
+                                    ,{MCCU_intr_up[1]},{MCCU_intr_up[0]}};
+            end
+            5 : begin
+                assign intr_MCCU_o = {{MCCU_intr_up[4]}
+                                    ,{MCCU_intr_up[3]},{MCCU_intr_up[2]}
+                                    ,{MCCU_intr_up[1]},{MCCU_intr_up[0]}};
+            end
+            6 : begin
+                assign intr_MCCU_o = {{MCCU_intr_up[5]},{MCCU_intr_up[4]}
+                                    ,{MCCU_intr_up[3]},{MCCU_intr_up[2]}
+                                    ,{MCCU_intr_up[1]},{MCCU_intr_up[0]}};
+            end
+            default : begin
+                assign intr_MCCU_o = '{default:1};
+                $error("Core configuration not supported by MCCU");
+            end
+        endcase
+    endgenerate
+
     //register enable to solve Hazards
     reg MCCU_rstn;
     always @(posedge clk_i, negedge rstn_i) begin: MCCU_glitchless_rstn
@@ -564,18 +598,14 @@ end
 //----------------------------------------------
     
     //Interruption vector to indicate signal exceeding weight
-    // NON-PARAMETRIC
     wire [MCCU_N_EVENTS-1:0] interruption_rdc_o [0:MCCU_N_CORES-1];
-        //core_0
-    assign regs_o[BASE_RDC_VECT][1:0] = interruption_rdc_o [0] ;
-        //core_1
-    assign regs_o[BASE_RDC_VECT][3:2] = interruption_rdc_o [1] ;
-        //core_2
-    assign regs_o[BASE_RDC_VECT][5:4] = interruption_rdc_o [2] ;
-        //core_3
-    assign regs_o[BASE_RDC_VECT][7:6] = interruption_rdc_o [3] ;
+    generate
+        for(q=0;q<MCCU_N_CORES;q++) begin
+            assign regs_o[BASE_RDC_VECT][2*q+1:q*2] = interruption_rdc_o [q] ;
+        end
         //spare bits on RDC_VECT
-    assign regs_o[BASE_RDC_VECT][REG_WIDTH-1:8] = '{default:0} ;
+        assign regs_o[BASE_RDC_VECT][REG_WIDTH-1:MCCU_N_CORES*2] = '{default:0} ;
+    endgenerate
     
    //register enable to solve Hazards
     reg RDC_rstn;
