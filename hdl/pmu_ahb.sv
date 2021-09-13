@@ -30,16 +30,16 @@
         // Number of counters
         parameter integer PMU_COUNTERS = 24,
         // Number of SoC events
-	parameter integer N_SOC_EV = 32,
+	    parameter integer N_SOC_EV = 128,
 	// Total amount of registers (use ahb_pmu_mem_map.ods) 
-        parameter integer N_REGS = 47, 
+        parameter integer N_REGS = 55, 
 	// -- Local parameters
 		//haddr width
         localparam integer HADDR_WIDTH = 32,
 		//hdata width
         localparam integer HDATA_WIDTH = 32,
 		// Cores connected to MCCU
-        parameter MCCU_N_CORES = 4,
+        parameter MCCU_N_CORES = 6,
 		// Number of configuration registers
         localparam PMU_CFG = 1
 	)

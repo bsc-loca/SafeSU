@@ -304,18 +304,25 @@
         end
     endgenerate
     //---- Request Duration Counter (RDC) registers 
-        //core_0
-    assign regs_o[BASE_RDC_WATERMARK][MCCU_WEIGHTS_WIDTH-1:0] = MCCU_watermark_int [0][0] ;
-    assign regs_o[BASE_RDC_WATERMARK][2*MCCU_WEIGHTS_WIDTH-1:MCCU_WEIGHTS_WIDTH] = MCCU_watermark_int [0][1];
-        //core_1
-    assign regs_o[BASE_RDC_WATERMARK][3*MCCU_WEIGHTS_WIDTH-1:2*MCCU_WEIGHTS_WIDTH] = MCCU_watermark_int [1][0];
-    assign regs_o[BASE_RDC_WATERMARK][4*MCCU_WEIGHTS_WIDTH-1:3*MCCU_WEIGHTS_WIDTH] = MCCU_watermark_int [1][1] ;
-        //core_2
-    assign regs_o[BASE_RDC_WATERMARK+1][MCCU_WEIGHTS_WIDTH-1:0] = MCCU_watermark_int [2][0] ;
-    assign regs_o[BASE_RDC_WATERMARK+1][2*MCCU_WEIGHTS_WIDTH-1:MCCU_WEIGHTS_WIDTH] = MCCU_watermark_int [2][1] ;
-        //core_3
-    assign regs_o[BASE_RDC_WATERMARK+1][3*MCCU_WEIGHTS_WIDTH-1:2*MCCU_WEIGHTS_WIDTH] = MCCU_watermark_int [3][0] ;
-    assign regs_o[BASE_RDC_WATERMARK+1][4*MCCU_WEIGHTS_WIDTH-1:3*MCCU_WEIGHTS_WIDTH] = MCCU_watermark_int [3][1] ;
+    genvar q;
+    genvar j;
+    generate
+        for(q=0;q<N_MCCU_WEIGHTS;q++) begin
+            for(j=0;j<(REG_WIDTH/MCCU_WEIGHTS_WIDTH);j++) begin
+                   // q - Iterate over registers that we have to fill
+                   // j - Iterate over fields of each register
+                   // assign regs_o [c][d:e] =  MCCU_watermark_int[a][b];
+                   // a - Index of the core owning the signal
+                   // b - Index of the signal within the asigned core
+                   // c - Index of the signal in the PMU register bank
+                   // d - Upper bit of the field within PMU register bank
+                   // d - Lower bit of the field within PMU register bank
+                 assign regs_o[BASE_RDC_WATERMARK+q][MCCU_WEIGHTS_WIDTH*(j+1)-1:MCCU_WEIGHTS_WIDTH*j]
+                        = MCCU_watermark_int [(q*(REG_WIDTH/MCCU_WEIGHTS_WIDTH)+j)/RDC_N_EVENTS]
+                            [((q*(REG_WIDTH/MCCU_WEIGHTS_WIDTH)+j))%RDC_N_EVENTS];
+            end
+        end
+    endgenerate
 
 //----------------------------------------------
 //------------- Crossbar 
@@ -340,7 +347,6 @@ always_comb begin
 end
 
 //map configuration fields to each mux
-genvar q; // each Crossbar output
 generate
     for (q=0;q<CROSSBAR_OUTPUTS;q++) begin
         assign crossbar_cfg[q] = concat_cfg_crossbar [q*CROSSBAR_CFG_BITS+:CROSSBAR_CFG_BITS];
@@ -490,32 +496,27 @@ end
         end
     endgenerate
         
-    //NON-PARAMETRIC This can be autogenenerated TODO     
     wire [MCCU_WEIGHTS_WIDTH-1:0] MCCU_events_weights_int [0:MCCU_N_CORES-1]
                                                      [0:MCCU_N_EVENTS-1];
-    //TODO WIP 
-    /*
     generate
-        for(q=0;q<MCCU_N_CORES;q++) begin //iterate cores
-            for(j=0;j<MCCU_N_EVENTS;j++) begin // iterate signals per core
-                assign MCCU_events_weights_int [q][j] =  regs_i[BASE_MCCU_WEIGHTS][(q*MCCU_N_EVENTS+j+1)*MCCU_WEIGHTS_WIDTH-1:0];
-                assign MCCU_events_weights_int [0][1] =  regs_i[BASE_MCCU_WEIGHTS][2*MCCU_WEIGHTS_WIDTH-1:MCCU_WEIGHTS_WIDTH];
+        // Registers
+        for(q=0;q<N_MCCU_WEIGHTS;q++) begin
+            //fields
+            for(j=0;j<(REG_WIDTH/MCCU_WEIGHTS_WIDTH);j++) begin
+                   // q - Iterate over registers that we have to fill
+                   // j - Iterate over fields of each register
+                   // assign MCCU_events_weights_int [a][b] =  regs_i[c][d:e];
+                   // a - Index of the core owning the signal
+                   // b - Index of the signal within the asigned core
+                   // c - Index of the signal in the PMU register bank
+                   // d - Upper bit of the field within PMU register bank
+                   // d - Lowe bit of the field within PMU register bank
+                 assign MCCU_events_weights_int [(q*(REG_WIDTH/MCCU_WEIGHTS_WIDTH)+j)/MCCU_N_EVENTS]
+                                                [((q*(REG_WIDTH/MCCU_WEIGHTS_WIDTH)+j))%MCCU_N_EVENTS] 
+                        =  regs_i[BASE_MCCU_WEIGHTS+q][MCCU_WEIGHTS_WIDTH*(j+1)-1:MCCU_WEIGHTS_WIDTH*j];
             end
         end
-    endgenerate*/
-        //core_0
-    assign MCCU_events_weights_int [0][0] =  regs_i[BASE_MCCU_WEIGHTS][MCCU_WEIGHTS_WIDTH-1:0];
-    assign MCCU_events_weights_int [0][1] =  regs_i[BASE_MCCU_WEIGHTS][2*MCCU_WEIGHTS_WIDTH-1:MCCU_WEIGHTS_WIDTH];
-        //core_1
-    assign MCCU_events_weights_int [1][0] =  regs_i[BASE_MCCU_WEIGHTS][3*MCCU_WEIGHTS_WIDTH-1:2*MCCU_WEIGHTS_WIDTH];
-    assign MCCU_events_weights_int [1][1] =  regs_i[BASE_MCCU_WEIGHTS][4*MCCU_WEIGHTS_WIDTH-1:3*MCCU_WEIGHTS_WIDTH];
-        //core_2
-    assign MCCU_events_weights_int [2][0] =  regs_i[BASE_MCCU_WEIGHTS+1][MCCU_WEIGHTS_WIDTH-1:0];
-    assign MCCU_events_weights_int [2][1] =  regs_i[BASE_MCCU_WEIGHTS+1][2*MCCU_WEIGHTS_WIDTH-1:MCCU_WEIGHTS_WIDTH];
-        //core_3
-    assign MCCU_events_weights_int [3][0] =  regs_i[BASE_MCCU_WEIGHTS+1][3*MCCU_WEIGHTS_WIDTH-1:2*MCCU_WEIGHTS_WIDTH];
-    assign MCCU_events_weights_int [3][1] =  regs_i[BASE_MCCU_WEIGHTS+1][4*MCCU_WEIGHTS_WIDTH-1:3*MCCU_WEIGHTS_WIDTH];
-    
+    endgenerate
     //unpack to pack
     wire MCCU_intr_up [MCCU_N_CORES-1:0];
     generate
@@ -613,7 +614,8 @@ end
             if (!rstn_i) begin
                 RDC_rstn <= 0;
             end else begin
-                RDC_rstn <= rstn_i && !regs_i[BASE_MCCU_CFG][7];
+                // Offset RDC enable, MCCU soft rest, enable and individual core updates
+                RDC_rstn <= rstn_i && !regs_i[BASE_MCCU_CFG][MCCU_N_CORES+2+2];
             end
     end
      
@@ -623,7 +625,8 @@ end
             if (!rstn_i) begin
                 RDC_enable_int <= 0;
             end else begin
-                RDC_enable_int <= regs_i[BASE_MCCU_CFG][6];
+                // Offset MCCU soft rest, enable and individual core updates
+                RDC_enable_int <= regs_i[BASE_MCCU_CFG][MCCU_N_CORES+2+1];
             end
     end 
     

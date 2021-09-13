@@ -1,0 +1,4 @@
+AXI_PMU/
+tmp/
+pmu_ahb/
+\.*\.log
