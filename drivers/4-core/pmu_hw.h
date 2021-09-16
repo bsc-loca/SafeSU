@@ -235,13 +235,12 @@ void pmu_register_events(const crossbar_event_t * ev_table, unsigned int event_c
 #define PMU_ERROR_MSG_FORMAT "\033[0;31m"
 #define PMU_DEFAULT_MSG_FORMAT "\033[0m"
 
-#define PMU_BLOCKING_ASSERT(1 U)
+#define PMU_BLOCKING_ASSERT (1u)
 
 #ifndef PMU_ASSERT
-#if PMU_BLOCKING_ASSERT == 1 U
-#define PMU_ASSERT(cond, err_msg) {
-    \
-    if (cond == 0) {
+#if PMU_BLOCKING_ASSERT == 1u
+#define PMU_ASSERT (cond, err_msg) { \
+    if (cond == 0) {\
         \
         printf("%s%s%s\n", PMU_ERROR_MSG_FORMAT, \
             err_msg, PMU_DEFAULT_MSG_FORMAT);\
@@ -250,7 +249,7 @@ void pmu_register_events(const crossbar_event_t * ev_table, unsigned int event_c
 }
 
 #else
-#define PMU_ASSERT(cond) {
+#define PMU_ASSERT (cond) {
     if (cond == 0) {
         exit(EXIT_FAILURE);
     }
@@ -317,7 +316,7 @@ unsigned int pmu_rdc_read_watermark(unsigned int input);
 unsigned int pmu_rdc_read_iv();
 unsigned int pmu_rdc_get_interrupt(unsigned int core);
 
-#define PMU_DEFAULT_EVENT_COUNT(25 U)
+#define PMU_DEFAULT_EVENT_COUNT (25u)
 static
 const crossbar_event_t pmu_default_event_table[] = {
 
