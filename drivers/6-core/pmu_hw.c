@@ -58,8 +58,7 @@ void pmu_counters_reset(void) {
  *                       SafePMU User's manual, section 2.2,table 2.1.
  *   Return      : None   
  */
-//TODO:update 6-core
-static unsigned pmu_configure_crossbar(unsigned int output, unsigned int event_index) {
+unsigned pmu_configure_crossbar(unsigned int output, unsigned int event_index) {
     if (event_index>CROSSBAR_INPUTS){
         #ifdef __UART__
         printf("Input port %d selected out of range\n", event_index);
@@ -331,7 +330,7 @@ void pmu_mccu_reset(void) {
  *       - quota :  32 bits wide quota for selected core.
  *   Return      : Unsigned int. 0 no error.
  */
-unsigned int pmu_mccu_set_quota_limit(const unsigned int core,
+unsigned pmu_mccu_set_quota_limit(const unsigned int core,
     const unsigned int quota) {
     if(core>MCCU_N_CORES){
         printf("mccu_set_quota: core %d does not exist\n", core);
@@ -355,7 +354,6 @@ unsigned int pmu_mccu_set_quota_limit(const unsigned int core,
  */
 unsigned int pmu_mccu_get_quota_remaining(unsigned int core) {
     char err_msg[] = "ERR on pmu_mccu_get_quota_remaining <core> parameter out of range";
-    PMU_ASSERT((core >= 1 U) && (core <= 4 U), err_msg);
     #ifdef __PMU_LIB_DEBUG__
     printf("pmu_mccu_get_quota_remaining\n");
     #endif
@@ -371,7 +369,7 @@ unsigned int pmu_mccu_get_quota_remaining(unsigned int core) {
  *   
  *   Return      : Unsigned int. 0 no error.
  */
-void pmu_mccu_set_event_weigths(const unsigned int input,
+unsigned pmu_mccu_set_event_weigths(const unsigned int input,
     const unsigned int weigth) {
     switch (input) {
     case 0:
@@ -473,11 +471,10 @@ unsigned int pmu_rdc_read_watermark(unsigned int input) {
     #endif
 
     char err_msg[] = "ERR on pmu_rdc_read_watermark. <input> parameter out of range";
-    PMU_ASSERT((input >= 0) && (input < MCCU_N_EVENTS*MCCU_N_CORES), err_msg);
     
     unsigned int idx, tmp; 
     idx = input/(REG_WIDTH/MCCU_WEIGHTS_WIDTH);
-    tmp = (_PMU_RDC_WATERMARKS[idx] & (0x000000FF << (input << 3))) >> (input << 3)
+    tmp = (_PMU_RDC_WATERMARKS[idx] & (0x000000FF << (input << 3))) >> (input << 3);
     return (tmp);
 }
 
@@ -513,3 +510,227 @@ unsigned int pmu_rdc_get_interrupt(unsigned int core) {
 
     return ((PMU_RDC_IV & (0x00000001 << core)) != 0);
 }
+
+/* 
+ *  Legacy Functions
+ */
+void enable_counters (void){
+pmu_counters_enable();
+}
+void disable_counters (void){
+pmu_counters_disable();
+}
+void reset_counters (void){
+pmu_counters_reset();
+}
+void reset_RDC(void){
+pmu_rdc_reset(); 
+}
+
+// ** write range of address with same value
+void write_register_range (unsigned int entry, unsigned int exit, unsigned int value){
+    volatile unsigned int *p;
+    unsigned int i;
+#ifdef __PMU_LIB_DEBUG__
+    printf("\n *** Register write***\n\n");
+#endif
+    for(i=entry;i<=exit;i=i+1){
+        p=(unsigned int*)(PMU_ADDR+(i*4));
+        *p=value;
+#ifdef __PMU_LIB_DEBUG__
+        printf("address:%x \n",(PMU_ADDR+(i*4)));
+        printf("value :%x \n",value);
+#endif
+    }
+#ifdef __PMU_LIB_DEBUG__
+    printf("\n *** end register write ***\n\n");
+#endif
+}
+
+void zero_all_pmu_regs(void){
+    write_register_range (BASE_CFG,END_PMU,0);
+}
+
+void enable_RDC (void){
+    pmu_rdc_enable();
+}
+void disable_RDC (void){
+    pmu_rdc_disable();
+}
+
+struct report_s report_pmu (void){
+    volatile unsigned int *var;
+    volatile unsigned int reader;
+    struct report_s report;
+    unsigned int pmu_addr = PMU_ADDR;
+
+    //Counters
+    var=(unsigned int*)(pmu_addr+BASE_COUNTERS*4);
+    reader=*var;
+#ifdef __UART__
+    printf("Counters  *******: %d\n",N_COUNTERS);
+    printf("SoC events  *******: %d\n",CROSSBAR_INPUTS);
+#endif
+#ifdef __UART__
+    printf("address:%x ,                 Counter0: %10u\n",var,reader);
+#endif
+    report.ev0 = reader;
+    var=(unsigned int*)(var+4);
+    reader=*var;
+#ifdef __UART__
+    printf("address:%x ,                 Counter1: %10u\n",var,reader);
+#endif
+    report.ev1 = reader;
+    var=(unsigned int*)(var+4);
+    reader=*var;
+#ifdef __UART__
+    printf("address:%x ,                 Counter2: %10u\n",var,reader);
+#endif
+    report.ev2 = reader;
+    var=(unsigned int*)(var+4);
+    reader=*var;
+#ifdef __UART__
+    printf("address:%x ,                 Counter3: %10u\n",var,reader);
+#endif
+    report.ev3 = reader;
+    var=(unsigned int*)(var+4);
+    reader=*var;
+#ifdef __UART__
+    printf("address:%x ,                 Counter4: %10u\n",var,reader);
+#endif
+    report.ev4 = reader;
+    var=(unsigned int*)(var+4);
+    reader=*var;
+#ifdef __UART__
+    printf("address:%x ,                 Counter5: %10u\n",var,reader);
+#endif
+    report.ev5 = reader;
+    var=(unsigned int*)(var+4);
+    reader=*var;
+#ifdef __UART__
+    printf("address:%x ,                 Counter6: %10u\n",var,reader);
+#endif
+    report.ev6 = reader;
+    var=(unsigned int*)(var+4);
+    reader=*var;
+#ifdef __UART__
+    printf("address:%x ,                 Counter7: %10u\n",var,reader);
+#endif
+    report.ev7 = reader;
+    var=(unsigned int*)(var+4);
+    reader=*var;
+#ifdef __UART__
+    printf("address:%x ,                 Counter8: %10u\n",var,reader);
+#endif
+    report.ev8 = reader;
+    var=(unsigned int*)(var+4);
+    reader=*var;
+#ifdef __UART__
+    printf("address:%x ,                 Counter9: %10u\n",var,reader);
+#endif
+    report.ev9 = reader;
+    var=(unsigned int*)(var+4);
+    reader=*var;
+#ifdef __UART__
+    printf("address:%x ,                 Counter10: %10u\n",var,reader);
+#endif
+    report.ev10 = reader;
+    var=(unsigned int*)(var+4);
+    reader=*var;
+#ifdef __UART__
+    printf("address:%x ,                 Counter11: %10u\n",var,reader);
+#endif
+    report.ev11 = reader;
+    var=(unsigned int*)(var+4);
+    reader=*var;
+#ifdef __UART__
+    printf("address:%x ,                 Counter12: %10u\n",var,reader);
+#endif
+    report.ev12 = reader;
+    var=(unsigned int*)(var+4);
+    reader=*var;
+#ifdef __UART__
+    printf("address:%x ,                 Counter13: %10u\n",var,reader);
+#endif
+    report.ev13 = reader;
+    var=(unsigned int*)(var+4);
+    reader=*var;
+#ifdef __UART__
+    printf("address:%x ,                 Counter14: %10u\n",var,reader);
+#endif
+    report.ev14 = reader;
+    var=(unsigned int*)(var+4);
+    reader=*var;
+#ifdef __UART__
+    printf("address:%x ,                 Counter15: %10u\n",var,reader);
+#endif
+    report.ev15 = reader;
+    var=(unsigned int*)(var+4);
+    reader=*var;
+#ifdef __UART__
+    printf("address:%x ,                 Counter16: %10u\n",var,reader);
+#endif
+    report.ev16 = reader;
+    var=(unsigned int*)(var+4);
+    reader=*var;
+#ifdef __UART__
+    printf("address:%x ,                 Counter17: %10u\n",var,reader);
+#endif
+    report.ev17 = reader;
+    var=(unsigned int*)(var+4);
+    reader=*var;
+#ifdef __UART__
+    printf("address:%x ,                 Counter18: %10u\n",var,reader);
+#endif
+    report.ev18 = reader;
+    var=(unsigned int*)(var+4);
+    reader=*var;
+#ifdef __UART__
+    printf("address:%x ,                 Counter19: %10u\n",var,reader);
+#endif
+    report.ev19 = reader;
+    var=(unsigned int*)(var+4);
+    reader=*var;
+#ifdef __UART__
+    printf("address:%x ,                 Counter20: %10u\n",var,reader);
+#endif
+    report.ev20 = reader;
+    var=(unsigned int*)(var+4);
+    reader=*var;
+#ifdef __UART__
+    printf("address:%x ,                 Counter21: %10u\n",var,reader);
+#endif
+    report.ev21 = reader;
+    var=(unsigned int*)(var+4);
+    reader=*var;
+#ifdef __UART__
+    printf("address:%x ,                 Counter22: %10u\n",var,reader);
+#endif
+    report.ev22 = reader;
+    var=(unsigned int*)(var+4);
+    reader=*var;
+#ifdef __UART__
+    printf("address:%x ,                 Counter23: %10u\n",var,reader);
+#endif
+    report.ev23 = reader;
+
+    //RDC Watermarks
+    var=(unsigned int*)(pmu_addr+BASE_RDC_WATERMARK*4);
+    reader=*var;
+#ifdef __UART__
+    printf("address:%x , watermark_0 : %u\n",var,reader & 0x000000ff);
+    printf("address:%x , watermark_1 : %u\n",var+1, (reader & 0x0000ff00) >> 8);
+    printf("address:%x , watermark_2 : %u\n",var+2, (reader & 0x00ff0000) >> 16);
+    printf("address:%x , watermark_3 : %u\n\n",var+3, (reader & 0xff000000) >> 24);
+#endif
+    var=(unsigned int*)(pmu_addr+(BASE_RDC_WATERMARK+1)*4);
+    reader=*var;
+#ifdef __UART__
+    printf("address:%x , watermark_4 : %u\n",var,reader & 0x000000ff);
+    printf("address:%x , watermark_5 : %u\n",var+1, (reader & 0x0000ff00) >> 8);
+    printf("address:%x , watermark_6 : %u\n",var+2, (reader & 0x00ff0000) >> 16);
+    printf("address:%x , watermark_7 : %u\n\n",var+3, (reader & 0xff000000) >> 24);
+#endif
+    return(report);
+}
+

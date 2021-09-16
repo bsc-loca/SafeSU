@@ -160,7 +160,7 @@ void test_RDC_2(void);
 void read_mem_range(unsigned int entry, unsigned int exit);
 
 // ** Return structure of pmu report
-struct report_struct {
+struct report_s {
     unsigned int ev0;
     unsigned int ev1;
     unsigned int ev2;
@@ -170,10 +170,25 @@ struct report_struct {
     unsigned int ev6;
     unsigned int ev7;
     unsigned int ev8;
+    unsigned int ev9;
+    unsigned int ev10;
+    unsigned int ev11;
+    unsigned int ev12;
+    unsigned int ev13;
+    unsigned int ev14;
+    unsigned int ev15;
+    unsigned int ev16;
+    unsigned int ev17;
+    unsigned int ev18;
+    unsigned int ev19;
+    unsigned int ev20;
+    unsigned int ev21;
+    unsigned int ev22;
+    unsigned int ev23;
 };
 
 // ** Read PMU counters and print in a formated way
-struct report_struct report_pmu(void);
+struct report_s report_pmu(void);
 
 // ========================
 //    Crossbar
@@ -187,7 +202,7 @@ typedef struct {
 crossbar_event_t;
 
 // ** Configure crossbar outputs with a given event **
-static void pmu_configure_crossbar(unsigned int output, unsigned int event_index);
+unsigned  pmu_configure_crossbar(unsigned int output, unsigned int event_index);
 
 // ** Read all crossbar registers ** 
 void read_crossbar_registers();
@@ -299,10 +314,10 @@ void pmu_mccu_enable(void);
 void pmu_mccu_disable(void);
 void pmu_mccu_reset(void);
 
-void pmu_mccu_set_quota_limit(const unsigned int core,
+unsigned pmu_mccu_set_quota_limit(const unsigned int core,
     const unsigned int quota);
 unsigned int pmu_mccu_get_quota_remaining(unsigned int mask);
-void pmu_mccu_set_event_weigths(const unsigned int input,
+unsigned pmu_mccu_set_event_weigths(const unsigned int input,
     const unsigned int weigth);
 
 /* **********************************
@@ -446,5 +461,11 @@ const crossbar_event_t pmu_default_event_table[] = {
         "Latency caused by a data cache miss on core 2"
     }
 };
+/* **********************************
+//Legacy function calls
+* **********************************/
+void enable_counters (void);
+void disable_counters (void);
+void reset_counters (void);
 
 #endif

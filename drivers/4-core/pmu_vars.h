@@ -62,6 +62,7 @@
 #define END_CROSSBAR 48
 #define N_CROSSBAR_REGS 6
 #define TOTAL_NREGS 49
+#define END_PMU (TOTAL_NREGS-1)
 
 #define _PMU_REG_TYPE (volatile unsigned int * )
 #define R2A (REG_WIDTH/8)
@@ -245,7 +246,7 @@
 
 #define _PMU_MCCU_RDC (_PMU_REG_TYPE(PMU_ADDR + R2A * BASE_MCCU_CFG))
 #define _PMU_MCCU_QUOTA (_PMU_REG_TYPE(PMU_ADDR +  R2A * BASE_MCCU_LIMITS))
-#define _PMU_RDC_WATERMARKS (_PMU_REG_TYPE(PMU_ADDR + R2A  BASE_RDC_WATERMARK))
+#define _PMU_RDC_WATERMARKS (_PMU_REG_TYPE(PMU_ADDR + R2A * BASE_RDC_WATERMARK))
 
 #define PMUCFG1 (_PMU_MCCU_RDC[0]) // PMU configuration register 1
 
