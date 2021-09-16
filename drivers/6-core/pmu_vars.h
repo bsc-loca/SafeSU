@@ -81,8 +81,8 @@
 #define CROSSBAR_REG1 (_PMU_CROSSBAR[1]) // Crossbar output register 1
 #define CROSSBAR_REG2 (_PMU_CROSSBAR[2]) // Crossbar output register 2
 #define CROSSBAR_REG3 (_PMU_CROSSBAR[3]) // Crossbar output register 3
-#define CROSSBAR_REG4(_PMU_CROSSBAR[4]) // Crossbar output register 4
-#define CROSSBAR_REG5(_PMU_CROSSBAR[5]) // Crossbar output register 5
+#define CROSSBAR_REG4 (_PMU_CROSSBAR[4]) // Crossbar output register 4
+#define CROSSBAR_REG5 (_PMU_CROSSBAR[5]) // Crossbar output register 5
 
 // PMU overflow (I)nterrupt (E)nable register 
 #define PMU_OVERLFOW_IE (_PMU_OVERFLOW[0])
