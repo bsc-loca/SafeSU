@@ -7,84 +7,279 @@ The unit is compatible with GRLIB \textit{plug\&play}(P\&P). Vendor and device's
 \subsection{Default input events}
 %explain signals
 %distinction bteen CCS and regular signals
-In its default implementation, the unit provides up to 32 input events. Each one of the events can be routed to any mechanism of the module through the crossbar.\\
+In its default implementation, the unit provides up to 128 input events. Each one of the events can be routed to any mechanism of the module through the crossbar.\\
 \\
 Table \ref{table:t_ev} shows the inputs and mapping to the crossbar input for the current \href{https://gitlab.bsc.es/selene/selene-hardware/-/merge_requests/2}{SELENE release}. The number of signals and arrangements may change in the upcoming versions. \\
 \begin{table}[H]
-	\caption{SELENE default input events}
+	\caption{SELENE default input events. 128 inputs, 4 cores}
 	\label{table:t_ev}
 	\centering
 	\begin{footnotesize}
 	\begin{tabular}{|l|l|l|l|l|}
 		\hline
-		\textbf{Index} &\textbf{Name} & \textbf{Type}  & \textbf{Source} & \textbf{Description} \\
-	\hline
-	0 &  '1' & Debug & Local & Constant HIGH signal, used for debug purposes or clock cycles \\
-	\hline
-	1 &  '0' & Debug & Local & Constant LOW signal, used for debug purposes\\
-	\hline
-	2 &  pmu\_events(0).icnt(0) & Pulse & Core 0 & Instruction count pipeline 0\\
-	\hline
-	3 &  pmu\_events(0).icnt(1) & Pulse & Core 0 & Instruction count pipeline 1\\
-	\hline
-	4 &  pmu\_events(0).icmiss & Pulse & Core 0 & Instruction cache miss\\
-	\hline
-	5 &  pmu\_events(0).dcmiss & Pulse & Core 0 & Data cache L1 miss\\
-	\hline
-	6 &  pmu\_events(0).bpmiss & Pulse & Core 0 & Branch Perdictor miss\\
-	\hline
-	7 &  ccs\_contention(0).r\_and\_w & CCS & Core 0 & Contention caused to core 0 due to core 1 AHB read or write accesses\\
-	\hline
-	8 &  ccs\_contention(0).read & CCS & Core 0 & Contention caused to core 0 due to core 1 AHB read accesses\\
-	\hline
-	9 &  ccs\_contention(0).write & CCS & Core 0 & Contention caused to core 0 due to core 1 AHB write accesses\\
-	\hline
-	10 &  ccs\_latency(0).total & CCS & Core 0 & -\\
-	\hline
-	11 &  ccs\_latency(0).dcmiss & CCS & Core 0 & -\\
-	\hline
-	12 &  ccs\_latency(0).icmiss & CCS & Core 0 & -\\
-	\hline
-	13 &  ccs\_latency(0).write & CCS & Core 0 & -\\
-	\hline
-	14 &  pmu\_events(1).dcmiss & Pulse & Core 1 & Data cache L1 miss\\
-	\hline
-	15 &  ccs\_contention(1).r\_and\_w &  CCS & Core 1 & Contention caused to core 0 due to core 2 AHB read or write accesses\\
-	\hline
-	16 &  ccs\_contention(1).read &  CCS & Core 1 & Contention caused to core 0 due to core 2 AHB read accesses\\
-	\hline
-	17 &  ccs\_latency(1).total &  CCS & Core 1 & -\\
-	\hline
-	18 &  ccs\_latency(1).dcmiss & CCS & Core 1 & - \\
-	\hline
-	19 &  ccs\_latency(1).write &  CCS & Core 1 & -\\
-	\hline
-	20 &  pmu\_events(2).dcmiss & Pulse & Core 2 & Data cache L1 miss\\
-	\hline
-	21 &  ccs\_contention(2).r\_and\_w &  CCS & Core 2 & Contention caused to core 0 due to core 3 AHB read or write accesses\\
-	\hline
-	22 &  ccs\_contention(2).read & CCS & Core 2 & Contention caused to core 0 due to core 3 AHB read accesses\\
-	\hline
-	23 &  ccs\_latency(2).total & CCS & Core 2 & -\\
-	\hline
-	24 &  ccs\_latency(2).dcmiss & CCS & Core 2 & -\\
-	\hline
-	25 &  ccs\_latency(2).write &  CCS & Core 2 & -\\
-	\hline
-	26 &  pmu\_events(3).dcmiss & Pulse & Core 3 & Data cache L1 miss\\
-	\hline
-	27 &  ccs\_contention(1).write & CCS & Core 1 & Contention caused to core 0 due to core 2 AHB write accesses\\
-	\hline
-	28 &  ccs\_contention(2).write & CCS & Core 2 & Contention caused to core 0 due to core 3 AHB write accesses\\
-	\hline
-	29 &  ccs\_latency(3).total & CCS & Core 3 & -\\
-	\hline
-	30 &  ccs\_latency(3).dcmiss & CCS & Core 3 & -\\
-	\hline
-	31 &  ccs\_latency(3).write &  CCS & Core 3 & -\\
-	\hline
+		\textbf{Index} & \textbf{Type}  & \textbf{Source} & \textbf{Description} \\
+	
+\hline
+0 & Debug & local &  Constant HIGH, used for debug purposes or clock cycles \\
+\hline 
+1 & Debug & local &  Constant LOW, used for debug purposes \\
+\hline 
+2 & Pulse & Core 0 &  Instruction count pipeline 0 \\
+\hline 
+3 & Pulse & Core 0 &  Instruction count pipeline 1 \\
+\hline 
+4 & Pulse & Core 0 &  Instruction cache miss \\
+\hline 
+5 & Pulse & Core 0 &  Instruction TLB miss \\
+\hline 
+6 & Pulse & Core 0 &  Data chache L1 miss \\
+\hline 
+7 & Pulse & Core 0 &  Data TLB miss \\
+\hline 
+8 & Pulse & Core 0 &  Branch predictor miss \\
+\hline 
+9 & Pulse & Core 1 &  Instruction count pipeline 0 \\
+\hline 
+10 & Pulse & Core 1 &  Instruction count pipeline 1 \\
+\hline 
+11 & Pulse & Core 1 &  Instruction cache miss \\
+\hline 
+12 & Pulse & Core 1 &  Instruction TLB miss \\
+\hline 
+13 & Pulse & Core 1 &  Data chache L1 miss \\
+\hline 
+14 & Pulse & Core 1 &  Data TLB miss \\
+\hline 
+15 & Pulse & Core 1 &  Branch predictor miss \\
+\hline 
+16 & Pulse & Core 2 &  Instruction count pipeline 0 \\
+\hline 
+17 & Pulse & Core 2 &  Instruction count pipeline 1 \\
+\hline 
+18 & Pulse & Core 2 &  Instruction cache miss \\
+\hline 
+19 & Pulse & Core 2 &  Instruction TLB miss \\
+\hline 
+20 & Pulse & Core 2 &  Data chache L1 miss \\
+\hline 
+21 & Pulse & Core 2 &  Data TLB miss \\
+\hline 
+22 & Pulse & Core 2 &  Branch predictor miss \\
+\hline 
+23 & Pulse & Core 3 &  Instruction count pipeline 0 \\
+\hline 
+24 & Pulse & Core 3 &  Instruction count pipeline 1 \\
+\hline 
+25 & Pulse & Core 3 &  Instruction cache miss \\
+\hline 
+26 & Pulse & Core 3 &  Instruction TLB miss \\
+\hline 
+27 & Pulse & Core 3 &  Data chache L1 miss \\
+\hline 
+28 & Pulse & Core 3 &  Data TLB miss \\
+\hline 
+29 & Pulse & Core 3 &  Branch predictor miss \\
+\hline 
+30 & CCS & Core0 &  Contention C0 over C1\\
+\hline 
+31 & CCS & Core1 &  Contention C0 over C2\\
+\hline 
+32 & CCS & Core2 &  Contention C0 over C3\\
+\hline 
+33 & CCS & Core0 &  Contention C1 over C0\\
+\hline 
+34 & CCS & Core1 &  Contention C1 over C2\\
+\hline 
+35 & CCS & Core2 &  Contention C1 over C3\\
+\hline 
+36 & CCS & Core0 &  Contention C2 over C0\\
+\hline 
+37 & CCS & Core1 &  Contention C2 over C1\\
+\hline 
+38 & CCS & Core2 &  Contention C2 over C3\\
+\hline 
+39 & CCS & Core0 &  Contention C3 over C0\\
+\hline 
+40 & CCS & Core1 &  Contention C3 over C1\\
+\hline 
+41 & CCS & Core2 &  Contention C3 over C2\\
+\hline 
+42 & - & - &   Filler signal, constant 0 \\
+\hline 
+... & ... & ... &  ... \\
+
+\hline 
+127 & - & - &   Filler signal, constant 0 \\
+\hline 
 	\end{tabular}
 	\end{footnotesize}
+\end{table}
+
+\begin{table}[H]
+	\caption{SELENE default input events. 128 inputs, 6 cores}
+	\label{table:t_ev2}
+	\centering
+	\begin{tiny}
+		\begin{tabular}{|l|l|l|l|l|}
+			\hline
+			\textbf{Index} & \textbf{Type}  & \textbf{Source} & \textbf{Description}\\
+			\hline
+			0 & Debug & local &  Constant HIGH, used for debug purposes or clock cycles \\
+			\hline 
+			1 & Debug & local &  Constant LOW, used for debug purposes \\
+			\hline 
+			2 & Pulse & Core 0 &  Instruction count pipeline 0 \\
+			\hline 
+			3 & Pulse & Core 0 &  Instruction count pipeline 1 \\
+			\hline 
+			4 & Pulse & Core 0 &  Instruction cache miss \\
+			\hline 
+			5 & Pulse & Core 0 &  Instruction TLB miss \\
+			\hline 
+			6 & Pulse & Core 0 &  Data chache L1 miss \\
+			\hline 
+			7 & Pulse & Core 0 &  Data TLB miss \\
+			\hline 
+			8 & Pulse & Core 0 &  Branch predictor miss \\
+			\hline 
+			9 & Pulse & Core 1 &  Instruction count pipeline 0 \\
+			\hline 
+			10 & Pulse & Core 1 &  Instruction count pipeline 1 \\
+			\hline 
+			11 & Pulse & Core 1 &  Instruction cache miss \\
+			\hline 
+			12 & Pulse & Core 1 &  Instruction TLB miss \\
+			\hline 
+			13 & Pulse & Core 1 &  Data chache L1 miss \\
+			\hline 
+			14 & Pulse & Core 1 &  Data TLB miss \\
+			\hline 
+			15 & Pulse & Core 1 &  Branch predictor miss \\
+			\hline 
+			16 & Pulse & Core 2 &  Instruction count pipeline 0 \\
+			\hline 
+			17 & Pulse & Core 2 &  Instruction count pipeline 1 \\
+			\hline 
+			18 & Pulse & Core 2 &  Instruction cache miss \\
+			\hline 
+			19 & Pulse & Core 2 &  Instruction TLB miss \\
+			\hline 
+			20 & Pulse & Core 2 &  Data chache L1 miss \\
+			\hline 
+			21 & Pulse & Core 2 &  Data TLB miss \\
+			\hline 
+			22 & Pulse & Core 2 &  Branch predictor miss \\
+			\hline 
+			23 & Pulse & Core 3 &  Instruction count pipeline 0 \\
+			\hline 
+			24 & Pulse & Core 3 &  Instruction count pipeline 1 \\
+			\hline 
+			25 & Pulse & Core 3 &  Instruction cache miss \\
+			\hline 
+			26 & Pulse & Core 3 &  Instruction TLB miss \\
+			\hline 
+			27 & Pulse & Core 3 &  Data chache L1 miss \\
+			\hline 
+			28 & Pulse & Core 3 &  Data TLB miss \\
+			\hline 
+			29 & Pulse & Core 3 &  Branch predictor miss \\
+			\hline 
+			30 & Pulse & Core 4 &  Instruction count pipeline 0 \\
+			\hline 
+			31 & Pulse & Core 4 &  Instruction count pipeline 1 \\
+			\hline 
+			32 & Pulse & Core 4 &  Instruction cache miss \\
+			\hline 
+			33 & Pulse & Core 4 &  Instruction TLB miss \\
+			\hline 
+			34 & Pulse & Core 4 &  Data chache L1 miss \\
+			\hline 
+			35 & Pulse & Core 4 &  Data TLB miss \\
+			\hline 
+			36 & Pulse & Core 4 &  Branch predictor miss \\
+			\hline 
+			37 & Pulse & Core 5 &  Instruction count pipeline 0 \\
+			\hline 
+			38 & Pulse & Core 5 &  Instruction count pipeline 1 \\
+			\hline 
+			39 & Pulse & Core 5 &  Instruction cache miss \\
+			\hline 
+			40 & Pulse & Core 5 &  Instruction TLB miss \\
+			\hline 
+			41 & Pulse & Core 5 &  Data chache L1 miss \\
+			\hline 
+			42 & Pulse & Core 5 &  Data TLB miss \\
+			\hline 
+			43 & Pulse & Core 5 &  Branch predictor miss \\
+			\hline 
+			44 & CCS & Core0 &  Contention C0 over C1\\
+			\hline 
+			45 & CCS & Core1 &  Contention C0 over C2\\
+			\hline 
+			46 & CCS & Core2 &  Contention C0 over C3\\
+			\hline 
+			47 & CCS & Core3 &  Contention C0 over C4\\
+			\hline 
+			48 & CCS & Core4 &  Contention C0 over C5\\
+			\hline 
+			49 & CCS & Core0 &  Contention C1 over C0\\
+			\hline 
+			50 & CCS & Core1 &  Contention C1 over C2\\
+			\hline 
+			51 & CCS & Core2 &  Contention C1 over C3\\
+			\hline 
+			52 & CCS & Core3 &  Contention C1 over C4\\
+			\hline 
+			53 & CCS & Core4 &  Contention C1 over C5\\
+			\hline 
+			54 & CCS & Core0 &  Contention C2 over C0\\
+			\hline 
+			55 & CCS & Core1 &  Contention C2 over C1\\
+			\hline 
+			56 & CCS & Core2 &  Contention C2 over C3\\
+			\hline 
+			57 & CCS & Core3 &  Contention C2 over C4\\
+			\hline 
+			58 & CCS & Core4 &  Contention C2 over C5\\
+			\hline 
+			59 & CCS & Core0 &  Contention C3 over C0\\
+			\hline 
+			60 & CCS & Core1 &  Contention C3 over C1\\
+			\hline 
+			61 & CCS & Core2 &  Contention C3 over C2\\
+			\hline 
+			62 & CCS & Core3 &  Contention C3 over C4\\
+			\hline 
+			63 & CCS & Core4 &  Contention C3 over C5\\
+			\hline 
+			64 & CCS & Core0 &  Contention C4 over C0\\
+			\hline 
+			65 & CCS & Core1 &  Contention C4 over C1\\
+			\hline 
+			66 & CCS & Core2 &  Contention C4 over C2\\
+			\hline 
+			67 & CCS & Core3 &  Contention C4 over C3\\
+			\hline 
+			68 & CCS & Core4 &  Contention C4 over C5\\
+			\hline 
+			69 & CCS & Core0 &  Contention C5 over C0\\
+			\hline 
+			70 & CCS & Core1 &  Contention C5 over C1\\
+			\hline 
+			71 & CCS & Core2 &  Contention C5 over C2\\
+			\hline 
+			72 & CCS & Core3 &  Contention C5 over C3\\
+			\hline 
+			73 & CCS & Core4 &  Contention C5 over C4\\
+			\hline 
+			74 & - & - &   Filler signal, constant 0 \\
+			\hline 
+			... & ... & ... & ... \\
+			\hline 
+			127 & - & - &   Filler signal, constant 0 \\
+			\hline 	
+		\end{tabular}
+	\end{tiny}
 \end{table}
 Signals labeled as \textit{debug} are fix inputs that can be used to test hardware or software with known inputs. \textbf{Event 0} (fix '1') can be used to measure the \textbf{number of elapsed cycles}.\\
 \\
@@ -116,11 +311,12 @@ These are the Self-test modes for each configuration value of the fied \textit{s
   \end{register}
 
 \subsection{Crossbar}
-This feature allows routing any of the input signals of table \ref{table:ev} into any of the 24 counters of the PMU. Each one of the counters has a 5-bit configuration value. This values are stored in registers \ref{cross_cfg0}, \ref{cross_cfg1}, \ref{cross_cfg2},\ref{cross_cfg3}. All the configuration values are consecutive. Thus some values may have configuration bits in two consecutive memory addresses. Examples of this are Output 6, 12, 19 in our current configuration. As a consequence, the previous outputs may require two writes to configure the desired input signal.\\
+This feature allows routing any of the input signals of table \ref{table:t_ev} or \ref{table:t_ev2} into any of the 24 counters of the PMU. Each one of the counters has a 5-bit configuration value for the 32 input version of the crossbar or 7-bit for the 128 version. For simplicity this section describes the 32 entry variant of the crossabar. Consider that the width of the configuration field is $log2(N\_inputs)$ and the total amount of configuration registers $log2(N\_inputs)*N\_inputs$.\\
+Configuration values are stored in registers \ref{cross_cfg0}, \ref{cross_cfg1}, \ref{cross_cfg2},\ref{cross_cfg3}. All the configuration values are consecutive. Thus some values may have configuration bits in two consecutive memory addresses. Examples of this are Output 6, 12, 19 in our current configuration. As a consequence, the previous outputs may require two writes to configure the desired input signal.\\
 \\
 Configuration fields match one to one with the internal counters. So the field \textit{output 0} matches with \textit{counter 0}, \textit{output 1} with\textit{ counter 1} and so on.\\
 \\
-As a usage example, suppose the user wants to route the signal \textit{pmu\_events(0).icnt(0)} to the internal \textit{counter 0}. The field \textit{Output 0} of register \ref{cross_cfg0} shall match the  Index of the signal in table \ref{table:ev}. In this case, the index is 2. After this configuration, the event count will be recorded in \textit{counter 0}. The addresses for counter values are indicated in figure \ref{fig:counters0}.\\
+As a usage example, suppose the user wants to route the signal \textit{pmu\_events(0).icnt(0)} to the internal \textit{counter 0}. The field \textit{Output 0} of register \ref{cross_cfg0} shall match the  Index of the signal in table \ref{table:t_ev}. In this case, the index is 2. After this configuration, the event count will be recorded in \textit{counter 0}. The addresses for counter values are indicated in figure \ref{fig:counters0}.\\
 \\
  \begin{register}{H}{Crossbar configuration register 0}{0x0AC}
 	\label{cross_cfg0}
@@ -171,7 +367,7 @@ As a usage example, suppose the user wants to route the signal \textit{pmu\_even
 	\regfield{Output 19[4:1]}{4}{0}{{00}}
 	\reglabel{Reset value}\regnewline
 \end{register}
-Signal routing is important since some of the PMU features are only available at different crossbar outputs. Table \ref{tab:features} shows the available capabilities for each one of the outputs.\\
+Signal routing is important since some of the PMU features are only available at different crossbar outputs. Table \ref{tab:features} shows the available capabilities for each one of the outputs\footnotetext{RDC and MCCU signals are only available if the assigned core is synthesized.}.\\
 \begin{table}
 	\caption{Crossbar outputs and PMU capabilities}
 	\label{tab:features}
@@ -197,13 +393,13 @@ Signal routing is important since some of the PMU features are only available at
 			\hline
 			7 & Yes & Yes & Core 3 & Yes \\
 			\hline
-			8 & Yes & Yes & No & No \\
+			8 & Yes & Yes & Core 4 & Yes \\
 			\hline
-			9 & Yes & Yes & No & No \\
+			9 & Yes & Yes & Core 4 & Yes \\
 			\hline
-			10 & Yes & Yes & No & No \\
+			10 & Yes & Yes & Core 5 & Yes \\
 			\hline
-			11 & Yes & Yes & No & No \\
+			11 & Yes & Yes & Core 5 & Yes\\
 			\hline
 			12 & Yes & Yes & No & No \\
 			\hline
@@ -376,7 +572,7 @@ The default AHB interrupt mapping can be modified within the file \textit{ahb\_w
 \subsection{Quota}
 This feature has been replaced by the MCCU and will disappear in future releases. Usage is not recommended.
 \subsection{MCCU}
-The Maximum-Contention Control Unit (MCCU) allows to monitor a subset of the input events and track the approximate contention that they will cause. Currently, events assigned to counters 0 to 7 can be used as inputs of the MCCU.  Thanks to the crossbar, any of the 32 SoC signals can be used by the MCCU.\\
+The Maximum-Contention Control Unit (MCCU) allows to monitor a subset of the input events and track the approximate contention that they will cause. Currently, events assigned to counters 0 to 7 for the 4 core version or 0 to 11 for the 6 core version can be used as inputs of the MCCU.  Thanks to the crossbar, any of the SoC signals can be used by the MCCU. In this section we use the 4 core version as a reference. In all configurations one quota register is assigned to each core and one weight is asigned to each signal.\\
 \\
 \begin{figure}[H]
 	\includegraphics[keepaspectratio,width=\columnwidth]{img/bd_MCCU.png}
@@ -385,11 +581,26 @@ The Maximum-Contention Control Unit (MCCU) allows to monitor a subset of the inp
 \end{figure}
 Figure \ref{fig:blk_MCCU} shows the internal elements required to monitor the quota consumption of one core, given four input events.  When events are active, they pass the value assigned in the weight register \ref{MCCU_weight0} for the given signal to a series of adders. The addition is subtracted from the corresponding quota register \ref{fig:MCCU_ava}. When the remaining quota is smaller than the cycle contention, an interrupt is triggered.\\
 \\
-\begin{register}{H}{MCCU main configuration}{0x074}
+\begin{register}{H}{MCCU main configuration for 4 core configurations}{0x074}
 	\label{MCCU_cfg}
 	\regfield{Reserved}{25}{8}{{x}}
 	\regfield{Soft reset RDC}{1}{7}{{0}}
 	\regfield{Enable RDC}{1}{6}{{0}}
+	\regfield{Update Quota Core 3}{1}{5}{{0}}
+	\regfield{Update Quota Core 2}{1}{4}{{0}}
+	\regfield{Update Quota Core 1}{1}{3}{{0}}
+	\regfield{Update Quota Core 0}{1}{2}{{0}}
+	\regfield{Soft reset MCCU}{1}{1}{{0}}
+	\regfield{Enable reset MCCU}{1}{0}{{0}}
+	\reglabel{Reset value}\regnewline
+\end{register}
+\begin{register}{}{MCCU main configuration for 6 core configurations}{0x074}
+	\label{MCCU_cfg_6c}
+	\regfield{Reserved}{25}{8}{{x}}
+	\regfield{Soft reset RDC}{1}{7}{{0}}
+	\regfield{Enable RDC}{1}{6}{{0}}
+	\regfield{Update Quota Core 5}{1}{5}{{0}}
+	\regfield{Update Quota Core 4}{1}{5}{{0}}
 	\regfield{Update Quota Core 3}{1}{5}{{0}}
 	\regfield{Update Quota Core 2}{1}{4}{{0}}
 	\regfield{Update Quota Core 1}{1}{3}{{0}}
@@ -459,7 +670,7 @@ The Request Duration Counter or RDC is comprised of a set of 8-bit counters and 
 	\end{center}
 \end{figure}
 
-The current release provides monitoring for crossbar outputs 0 to 7. The weights for each signal are shared with the MCCU and are stored in registers \ref{RDC_weight0} and \ref{RDC_weight1}. Weights are 8-bit fields.Counters have overflow protection, preventing the count from wrapping over the maximum value.  The maximum value for each event (watermarks), are stored in registers \ref{RDC_water0} and \ref{RDC_water1}.\\
+The current release provides monitoring for crossbar outputs 0 to 7 for the quad-core configuration and 0 to 11 for the hexa-core. Note that the amount of registers changes with the amount of cores, and figures and addresses are representative of the 4 core configuration. The weights for each signal are shared with the MCCU and are stored in registers \ref{RDC_weight0} and \ref{RDC_weight1}. Weights are 8-bit fields.Counters have overflow protection, preventing the count from wrapping over the maximum value.  The maximum value for each event (watermarks), are stored in registers \ref{RDC_water0} and \ref{RDC_water1}.\\
 \\
 The RDC shares the main configuration register with the MCCU (register \ref{MCCU_cfg}). Through this register, the unit can be reset and enabled through the corresponding fields. Such fields are active high signals. \\
 \\
@@ -469,6 +680,8 @@ The unit does provide access to the internal interrupt vector (register \ref{RDC
 \begin{register}{H}{RDC interrupt vector}{0x0a0}
 	\label{RDC_intrv}
 	\regfield{Reserved}{28}{4}{{x}}
+	\regfield{Core 5}{1}{3}{{00}}
+	\regfield{Core 4}{1}{3}{{00}}
 	\regfield{Core 3}{1}{3}{{00}}
 	\regfield{Core 2}{1}{2}{{00}}
 	\regfield{Core 1}{1}{1}{{00}}
@@ -514,13 +727,13 @@ The unit does provide access to the internal interrupt vector (register \ref{RDC
 
 
 \subsection{Software support}
-The unit can be configured by the user at a low level following the description of previous sections and \href{https://gitlab.bsc.es/caos_hw/hdl_ip/bsc_pmu/-/tree/develop/docs}{the documents associated for each unit}. In addition we provide a small bare-metal driver under the path \textit{grlib/software/noelv/BSC\_tests/BSC\_libraries/PMU}.\\
+The unit can be configured by the user at a low level following the description of previous sections and \href{https://gitlab.bsc.es/caos_hw/hdl_ip/bsc_pmu/-/tree/develop/docs}{the documents associated for each unit}. In addition we provide a small bare-metal driver under the \textit{drivers} of the PMU/safeSU repository.\\
 \\
-The driver is composed of three files.
+Currently 6 core and 4 core versions of the drivers are provided. The drivers are composed of three files.
 \begin{itemize}
 \item \textit{pmu\_vars.h }: Defines a set of constants with the RTL parameters that generated the unit. Such constants allow the reusing of functions among hardware configurations.
-\item\textit{ pmu\_test.h}: Defines the memory position of the PMU within the memory map of the SoC. It also contains the prototypes of each function of the driver.
-\item \textit{pmu\_test.c}: Contains the definition of each of the functions.
+\item\textit{ pmu\_hw.h}: Defines the memory position of the PMU within the memory map of the SoC. It also contains the prototypes of each function of the driver.
+\item \textit{pmu\_hw.c}: Contains the definition of each of the functions.
 \end{itemize}
 Given the current development status, the driver is not autogenerated, and \textbf{modifications to the RTL may require manual changes on the previous files}. 
 
