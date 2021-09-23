@@ -734,3 +734,92 @@ struct report_s report_pmu (void){
     return(report);
 }
 
+void masked_and_write (unsigned int entry, unsigned int mask){
+    volatile unsigned int *p;
+    volatile unsigned int current_value;
+#ifdef __PMU_LIB_DEBUG__
+    printf("\n *** Write AND mask register***\n\n");
+#endif
+    p=(unsigned int*)(PMU_ADDR+(entry*4));
+    //get current value 
+    current_value=*p;
+    //set reset bit
+    *p=current_value & mask;
+#ifdef __PMU_LIB_DEBUG__
+    printf("address:%x \n",(PMU_ADDR+(entry*4)));
+    printf("current value :%x \n",current_value);
+    printf("mask:%x \n", mask);
+    printf("masked value :%x \n",(current_value & mask));
+    printf("\n *** end Write AND mask register ***\n\n");
+#endif
+}
+
+// ** or mask
+void masked_or_write (unsigned int entry, unsigned int mask){
+    volatile unsigned int *p;
+    volatile unsigned int current_value;
+#ifdef __PMU_LIB_DEBUG__
+    printf("\n *** Write OR mask register***\n\n");
+#endif
+    p=(unsigned int*)(PMU_ADDR+(entry*4));
+    //get current value 
+    current_value=*p;
+    //set reset bit
+    *p=current_value | mask;
+#ifdef __PMU_LIB_DEBUG__
+    printf("address:%x \n",(PMU_ADDR+(entry*4)));
+    printf("current value :%x \n",current_value);
+    printf("mask:%x \n", mask);
+    printf("masked value :%x \n",(current_value & mask));
+    printf("\n *** end Write OR mask register ***\n\n");
+#endif
+}
+
+//Select test mode
+unsigned int select_test_mode (unsigned int mode){
+    volatile unsigned int MASK_MODE;
+    volatile unsigned int CLEAR_MODE = 0xf0000000;
+    switch (mode)
+    {
+        case 0:
+            //pass through
+#ifdef __PMU_LIB_DEBUG__
+            printf("No selftests, events are passed through\n");
+#endif
+            MASK_MODE = 0x000000000;
+            break;
+        case 1:
+            //ALL ones
+#ifdef __PMU_LIB_DEBUG__
+            printf("Selftests, All events set to 1\n");
+#endif
+            MASK_MODE = 0x40000000;
+            break;
+        case 2:
+            //ALL zeros
+#ifdef __PMU_LIB_DEBUG__
+            printf("Selftests, All events set to 0\n");
+#endif
+            MASK_MODE = 0x80000000;
+            break;
+        case 3:
+            //First singnal 1 all the other 0
+#ifdef __PMU_LIB_DEBUG__
+            printf("Selftests, First event is 1 all the other are 0\n");
+#endif
+            MASK_MODE = 0xf0000000;
+            break;
+        default:
+#ifdef __PMU_LIB_DEBUG__
+            printf("Invalid mode for selftest\n");
+#endif
+            MASK_MODE = 0x00000000;
+            return 1;
+    }
+    //clear previous mode
+    masked_and_write(BASE_CFG,~CLEAR_MODE);
+    masked_or_write(BASE_CFG,MASK_MODE);
+    return 0;
+}
+
+
