@@ -1,9 +1,10 @@
-# ======= SAME DOCKER IMAGE ===========
+# ======= Default DOCKER IMAGE ===========
 image: localhost:5000/spyglass_centos8:latest
 # =========== ALL THE STAGES ===========
 # All the stages will be executed in this order
 stages:
     - linting
+    - simulation
 
 variables:
   GIT_SUBMODULE_STRATEGY: recursive
@@ -16,14 +17,23 @@ before_script:
 #   - linting
 # =============================
 linting_spyglass:
+  image: localhost:5000/spyglass_centos8:latest
   stage: linting
-  artifacts:
-    paths:
-      #TODO:add spyglass log
-      - ./artifact_linting_verilator_BSC.log
-    when: always
-    expire_in: 30 days
+  tags:
+  - spyglass
   script:
     - echo "lint_spyglass"
-    - make "docker_spyglass"    # This is a fake call inside the Makefile, just and example
+    - make "docker_spyglass"    
+  allow_failure: false
+# =========== STAGE ===========
+#   - simulation
+# =============================
+questa:
+  image: localhost:5000/questa_ubuntu:latest
+  stage: simulation
+  tags:
+  - questa
+  script:
+    - echo "Running Questa TB"
+    - make "questa_tests"    
   allow_failure: false

@@ -57,7 +57,9 @@ reg tb_fail = 0;
         .haddr(32'h80100000),                                                  
         .hmask(32'hfff),                                           
         .REG_WIDTH(32),
-        .N_REGS(47) 
+        .N_REGS(TB_TOTAL_NREGS), 
+        .MCCU_N_CORES(4),
+	    .N_SOC_EV (TB_N_SOC_EV)
 	)
     dut_pmu_ahb 
 	(

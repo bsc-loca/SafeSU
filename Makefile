@@ -6,3 +6,7 @@ user_linting:
 docker_spyglass:
 	cd ci/ && bash lint_CI.sh
 	exit 0
+# Runs a list of self checking questasim TB
+questa_tests:
+	cd ci/ && bash questa.sh
+	exit 0
