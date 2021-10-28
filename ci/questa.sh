@@ -10,14 +10,13 @@ LOCAL_LOG=.lquesta.log
 rm -f  $LOG
 
 # Go to target folder 
-cd ../tb/questa_sim/
+cd ../tb/questa_sim/ || exit 1
 # Declare folders of tests to be executed
-declare -a StringArray=("tb_axi_pmu/" "tb_com_tr/" "tb_hamming16td11/" "tb_hamming32td26/" 
-                        "tb_pmu_ahb/" "tb_pmu_raw/" "tb_reg_sbf/" "tb_MCCU" "tb_crossbar")
+declare -a StringArray=("tb_axi_pmu/" "tb_pmu_ahb/" "tb_pmu_raw/")
 
 # Iterate the string array using for loop
 for val in ${StringArray[@]}; do
-   cd $val
+   cd $val || exit 1 
    rm -f $LOCAL_LOG
    echo $val >> $LOCAL_LOG
    ./runtest.sh -batch | grep -i -e info -e warning -e error >> $LOCAL_LOG
