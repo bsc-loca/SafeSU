@@ -1,0 +1,15 @@
+\newpage
+\section{Overview}
+\label{chapter1}
+The SafePMU is capable of changing the execution of critical tasks, either if a control kernel is using  its measures to perform software control or by the use of interrupt service routines signaled by the unit. Given this scenario the unit shall be analyzed to detect possible failure modes. We focus our efforts on failures due to single event upsets (SEU) and single transient effects (SET) that can be mitigated at RTL level. Additional measures can be taken at a physical level such us the use of hardened memory cells on ASIC or periodical reconfiguration on FPGAs, but they shall be undertaken by the IP integrator in a project by project basis.\\
+Failure modes and fault tolerance measures have been analyzed for each RTL file. Common considerations among files and features are described under the general section.\\
+\begin{itemize}
+	\item \textbf{pmu\_ahb.sv:} Interface with AHB bus. Contains a PMU values and configuration registers, state machines for AHB control, combinational logic to manage register updates.
+	\item \textbf{PMU\_raw.sv:} Signal routing among instances, some signals with combinational logic for enables, IMPLEMENTATION OF SELFTEST MODE, registers RDC and MCCU signals.
+	\item \textbf{PMU\_counters.sv:} Internally registered counter values, combinational logic for adders and external update control.
+	\item \textbf{crossbar.sv:} Externally driven muxes and registered outputs.
+	\item \textbf{MCCU.sv:}Internally registered quotas. Capable of signaling interrupts.
+	\item \textbf{PMU\_overflow:} Mostly combinational with several internal registers. Interruption capable.
+	\item \textbf{RDC.sv:} Mainly combinational logic but it has several internal registers. Capable of signaling interrupts.\\
+\end{itemize}
+The following sections describe possible failure modes and potential mitigations. Each solution will result in a tradeoff between performance, resources, ease of use, and development time. Thus the recommended reliefs may change at a later date to match project goals.\\

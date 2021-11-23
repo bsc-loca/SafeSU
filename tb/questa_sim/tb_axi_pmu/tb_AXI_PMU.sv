@@ -898,17 +898,17 @@ task automatic init_sim;
                 if(!int_quota_c1_o)
                     cycles_int_c1++;
             end
-        if( cycles_int_c0!=5) begin
+        if( cycles_int_c0!=6) begin
             `START_RED_PRINT
             $error("FAIL test_MCCI. Int_quota_c0 took %d cycles instead of %d"
-                    , cycles_int_c0, 5);
+                    , cycles_int_c0, 6);
             `END_COLOR_PRINT
             tmp=1;
         end
-        if( cycles_int_c1!=6) begin
+        if( cycles_int_c1!=7) begin
             `START_RED_PRINT
             $error("FAIL test_MCCI. Int_quota_c1 took %d cycles instead of %d"
-                    , cycles_int_c1, 6);
+                    , cycles_int_c1, 7);
             `END_COLOR_PRINT
             tmp=1;
         end

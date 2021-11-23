@@ -1,10 +1,11 @@
-$1
 CYCLES=-all
 TOP=../../..
-mv /AXI_PMU /tmp
+RED='\033[7;31m'
+NC='\033[0m' # No Color
+mv /AXI_PMU /tmp 2>/dev/null
 vlib AXI_PMU
 vmap work $PWD/AXI_PMU
-vlog +acc=rn +incdir+$TOP/hdl/ $TOP/hdl/*.sv $TOP/submodules/MCCU/hdl/* $TOP/submodules/RDC/hdl/*.sv  ./fifos/hdl/sync_fifo.v ./axi_test_master/hdl/axi_test_master.v tb_AXI_PMU.sv ./colors.vh
+vlog +acc=rn +incdir+$TOP/hdl/ $TOP/hdl/*.sv $TOP/submodules/MCCU/hdl/* $TOP/submodules/RDC/hdl/*.sv  ./fifos/hdl/sync_fifo.v ./axi_test_master/hdl/axi_test_master.v ../../../../bsc_pmu/submodules/seu_ip/*sv tb_AXI_PMU.sv ./colors.vh
 vmake AXI_PMU/ > Makefile
 if [ -z "$1" ]
 then

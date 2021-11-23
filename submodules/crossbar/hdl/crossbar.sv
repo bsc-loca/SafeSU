@@ -56,7 +56,7 @@ module crossbar #
     //Register output and assign muxes output
     generate
         for(x=0;x<N_OUT;x++) begin : reg_out
-            always_ff @(posedge clk_i, negedge rstn_i) begin
+            always_ff @(posedge clk_i) begin
                     if (!rstn_i) begin
                         vector_o[x] <= 0;
                     end else begin
@@ -71,8 +71,7 @@ module crossbar #
 //
 ////////////////////////////////////////////////////////////////////////////////
 `ifdef	FORMAL
-    assert(N_IN >= N_OUT);
-
+//    assert(N_IN >= N_OUT);
 `endif
 
 endmodule

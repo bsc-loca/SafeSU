@@ -1,0 +1,17 @@
+\newpage
+\section{Dependencies}
+\label{chapter3}
+\subsection{pmu\_ahb}
+Correct behavior depends on external AHB signals, event generators and \textit{PMU\_raw} outputs.
+\subsection{PMU\_raw}
+It depends on \textit{pmu\_ahb}, and assumes that registers driving the inputs are fault-tolerant to upsets. Outputs of the module are affected by the correct behavior of \textit{PMU\_counters}, \textit{PMU\_overflow}, \textit{MCCU}, and\textit{ PMU\_counters}. 
+\subsection{PMU\_counters}
+The module depends on the correctness of \textit{pmu\_ahb} configuration register \textit{slv\_reg} and glitchless propagation of all module inputs through\textit{ PMU\_raw}. 
+\subsection{Crossbar}
+The module depends on the correctness of \textit{pmu\_ahb} configuration register \textit{slv\_reg} and glitchless propagation of all module inputs through \textit{PMU\_raw}. 
+\subsection{MCCU}
+This module depends on the correctness of \textit{pmu\_ahb} configuration register \textit{slv\_re}g and glitchless propagation of all module inputs through \textit{PMU\_raw}. 
+\subsection{PMU\_overflow}
+This module depends on the correctness of \textit{pmu\_ahb} configuration register \textit{slv\_reg}. Glitchless propagation of all module inputs through \textit{PMU\_raw}, and correct behavior of \textit{PMU\_counters} is assumed.
+\subsection{RDC}
+This module depends on the correctness of \textit{pmu\_ahb} configuration register \textit{slv\_reg} and glitchless propagation of all module inputs through \textit{PMU\_raw}. 

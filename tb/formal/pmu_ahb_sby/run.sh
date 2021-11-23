@@ -1,5 +1,5 @@
 #Check that the formal properties pass
-sby -f pmu_ahb.sby | \
+sby -f pmu_ahb.sby bmc | \
    GREP_COLORS='mt=01;31' egrep --color=always 'Unreached|Unreached cover statement at|Assert failed in|' | \
    GREP_COLORS='mt=01;31' egrep -i --color=always 'FAIL|FAILED|ERROR|syntax|' | \
    GREP_COLORS='mt=01;34' egrep --color=always 'Reached cover statement at|BMC|' | \

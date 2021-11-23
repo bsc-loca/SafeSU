@@ -244,7 +244,7 @@
 	// S_AXI_AWVALID_i and S_AXI_WVALID_i are asserted. axi_awready is
 	// de-asserted when reset is low.
 
-	always @( posedge S_AXI_ACLK_i, negedge S_AXI_ARESETN_i)
+	always @( posedge S_AXI_ACLK_i)
 	begin
 	  if ( S_AXI_ARESETN_i == 1'b0 )
 	    begin
@@ -278,7 +278,7 @@
 	// This process is used to latch the address when both 
 	// S_AXI_AWVALID_i and S_AXI_WVALID_i are valid. 
 
-	always @( posedge S_AXI_ACLK_i, negedge S_AXI_ARESETN_i)
+	always @( posedge S_AXI_ACLK_i)
 	begin
 	  if ( S_AXI_ARESETN_i == 1'b0 )
 	    begin
@@ -299,7 +299,7 @@
 	// S_AXI_AWVALID_i and S_AXI_WVALID_i are asserted. axi_wready is 
 	// de-asserted when reset is low. 
 
-	always @( posedge S_AXI_ACLK_i, negedge S_AXI_ARESETN_i)
+	always @( posedge S_AXI_ACLK_i)
 	begin
 	  if ( S_AXI_ARESETN_i == 1'b0 )
 	    begin
@@ -331,7 +331,7 @@
 	// and the slave is ready to accept the write address and write data.
 	assign slv_reg_wren = axi_wready && S_AXI_WVALID_i && axi_awready && S_AXI_AWVALID_i;
 
-	always @( posedge S_AXI_ACLK_i, negedge S_AXI_ARESETN_i )
+	always @( posedge S_AXI_ACLK_i)
 	begin
 	  if ( S_AXI_ARESETN_i == 1'b0 )
 	    begin : reset_all
@@ -434,7 +434,7 @@
 	// This marks the acceptance of address and indicates the status of 
 	// write transaction.
 
-	always @( posedge S_AXI_ACLK_i, negedge S_AXI_ARESETN_i)
+	always @( posedge S_AXI_ACLK_i)
 	begin
 	  if ( S_AXI_ARESETN_i == 1'b0 )
 	    begin
@@ -468,7 +468,7 @@
 	// The read address is also latched when S_AXI_ARVALID_i is 
 	// asserted. axi_araddr is reset to zero on reset assertion.
 
-	always @( posedge S_AXI_ACLK_i, negedge S_AXI_ARESETN_i )
+	always @( posedge S_AXI_ACLK_i)
 	begin
 	  if ( S_AXI_ARESETN_i == 1'b0 )
 	    begin
@@ -499,7 +499,7 @@
 	// bus and axi_rresp indicates the status of read transaction.axi_rvalid 
 	// is deasserted on reset (active low). axi_rresp and axi_rdata are 
 	// cleared to zero on reset (active low).  
-	always @( posedge S_AXI_ACLK_i, negedge S_AXI_ARESETN_i )
+	always @( posedge S_AXI_ACLK_i)
 	begin
 	  if ( S_AXI_ARESETN_i == 1'b0 )
 	    begin
@@ -549,7 +549,7 @@
           end
     end
 	// Output register or memory read data
-	always @( posedge S_AXI_ACLK_i, negedge S_AXI_ARESETN_i )
+	always @( posedge S_AXI_ACLK_i)
 	begin
 	  if ( S_AXI_ARESETN_i == 1'b0 )
 	    begin
@@ -578,7 +578,7 @@
     genvar k;
     generate
     for (k=0; k<N_COUNTERS; k=k+1) begin : generated_counter
-        always @(posedge S_AXI_ACLK_i, negedge S_AXI_ARESETN_i) begin
+        always @(posedge S_AXI_ACLK_i) begin
             if(!S_AXI_ARESETN_i)
                 slv_reg[k] <={C_S_AXI_DATA_WIDTH{1'b0}};
             else begin
@@ -801,6 +801,8 @@
             .WEIGHTS_WIDTH  (MCCU_WEIGHTS_WIDTH),
             //Cores. Change this may break Verilator TB
             .N_CORES        (MCCU_N_CORES),
+            //Fault Tolerance
+            .FT(0),
             //Signals per core. Change this may break Verilator TB
             .CORE_EVENTS    (MCCU_CORE_EVENTS)
         )
@@ -812,6 +814,8 @@
             .quota_i                (MCCU_quota_int),//One register per core
             .update_quota_i         (MCCU_update_quota_int),//Software map
             .quota_o                (MCCU_quota_o),//write back to a read register
+            .intr_FT1_o(),
+            .intr_FT2_o(),
             .events_weights_i       (MCCU_events_weights_int),//core_events times WEIGHTS_WIDTH registers
             .interruption_quota_o   (MCCU_int_o)//N_CORES output signals Add this to top or single toplevel interrupt and an interrupt vector that identifies the source?
                                        // Individual interrupts allow each core to
@@ -837,6 +841,7 @@
             .events_i               (events_int),//how to parametrize this? new parameter on top or up to the programer that does the integration?
             .events_weights_i       (MCCU_events_weights_int),//core_events times WEIGHTS_WIDTH registers
             .interruption_rdc_o(intr_rdc_o),// interruption signaling a signal has exceed the expected maximum request time
+            .watermark_o(),
             .interruption_vector_rdc_o(intrv_rdc_int) // vector with offending
                 //signals. One hot encoding.
                 //Cleared when MCCU is disabled.

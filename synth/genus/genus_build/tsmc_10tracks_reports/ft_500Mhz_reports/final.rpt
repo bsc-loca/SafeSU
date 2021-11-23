@@ -1,0 +1,51 @@
+
+
+Working Directory = /users/gcabo/bsc_pmu/synth/genus
+QoS Summary for top_ft
+================================================================================
+Metric                          generic         map             final          
+================================================================================
+Slack (ps):                        34            -132              -5
+  R2R (ps):                        34            -132              -5
+  I2R (ps):                       577             124              59
+  R2O (ps):                       278               0               0
+  I2O (ps):                       894             183             115
+  CG  (ps):                  no_value        no_value        no_value
+TNS (ps):                           0           1,737              23
+  R2R (ps):                         0           1,737              23
+  I2R (ps):                         0               0               0
+  R2O (ps):                         0               0               0
+  I2O (ps):                         0               0               0
+  CG  (ps):                  no_value        no_value        no_value
+Failing Paths:                      0              32              10
+Cell Area:                    277,596         159,570         153,810
+Total Cell Area:              277,596         159,570         153,810
+Leaf Instances:                69,929          37,510          36,453
+Total Instances:               69,929          37,510          36,453
+Utilization (%):                 0.00            0.00            0.00
+Tot. Net Length (um):        no_value        no_value        no_value
+Avg. Net Length (um):        no_value        no_value        no_value
+Route Overflow H (%):        no_value        no_value        no_value
+Route Overflow V (%):        no_value        no_value        no_value
+MBCI(%) (bits/gate) :            0.00            0.00            0.00
+Norm Cong Hotspot Area:
+  Max Cong:                  no_value        no_value        no_value
+  Tot Cong:                  no_value        no_value        no_value
+================================================================================
+CPU  Runtime (h:m:s):        00:05:51        00:28:44        01:15:56
+Real Runtime (h:m:s):        00:07:13        00:21:09        01:05:08
+CPU  Elapsed (h:m:s):        00:05:55        00:34:39        01:50:35
+Real Elapsed (h:m:s):        00:07:14        00:28:23        01:33:31
+Memory (MB):                  1696.70         1699.45         1724.11
+================================================================================
+================================================================================
+Flow Settings:
+================================================================================
+Total Runtime (h:m:s): 01:33:53
+Total Memory (MB):     1732.11
+Executable Version:    19.11-s087_1
+================================================================================
+Total Cell Area =  Cell Area + Physical Cell Area
+Total Instances =  Leaf Instances + Physical Instances
+
+

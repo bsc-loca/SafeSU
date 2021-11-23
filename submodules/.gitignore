@@ -3,4 +3,6 @@
 !*.sh
 !*.gtkw
 !*.sby
-
+seu_ip/hamming32t26d_dec/
+seu_ip/hamming32t26d_enc/
+seu_ip/way3_voter/

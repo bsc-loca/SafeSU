@@ -1,0 +1,53 @@
+[options]
+    mode bmc
+    depth 25
+#append 6 
+
+[engines]
+smtbmc boolector
+smtbmc
+
+#SystemVerilog
+[script]
+verific -vlog-define EQ_CHECK
+verific -sv top.sv
+verific -sv pmu_ahb.sv
+verific -sv PMU_raw.sv
+verific -sv PMU_counters.sv
+verific -sv PMU_overflow.sv
+verific -sv PMU_quota.sv
+verific -sv MCCU.sv
+verific -sv RDC.sv
+verific -sv hamming32t26d_enc.sv
+verific -sv hamming32t26d_dec.sv
+verific -sv crossbar.sv 
+verific -sv way3u2a_voter.sv
+verific -sv way3ua_voter.sv
+verific -sv way3_voter.sv
+verific -sv triple_reg.sv 
+ 
+verific -import -extnets -all top
+prep -top top
+
+#Verilog
+#[script]
+#read_verilog -formal pmu_ahb.sv
+#prep -top pmu_ahb
+#opt -share_all
+
+[files]
+./top.sv
+../../../hdl/pmu_ahb.sv
+../../../hdl/PMU_raw.sv
+../../../submodules/counters/PMU_counters.sv 
+../../../submodules/overflow/PMU_overflow.sv
+../../../submodules/quota/PMU_quota.sv
+../../../submodules/MCCU/hdl/MCCU.sv
+../../../submodules/RDC/hdl/RDC.sv
+../../../submodules/seu_ip/hamming32t26d_enc.sv
+../../../submodules/seu_ip/hamming32t26d_dec.sv
+../../../submodules/seu_ip/way3_voter.sv
+../../../submodules/seu_ip/way3ua_voter.sv
+../../../submodules/seu_ip/way3u2a_voter.sv
+../../../submodules/seu_ip/triple_reg.sv
+../../../submodules/crossbar/hdl/crossbar.sv

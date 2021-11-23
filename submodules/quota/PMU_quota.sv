@@ -1,4 +1,6 @@
 //-----------------------------------------------------
+//  DEPRECATED. DO NOT USE
+//-----------------------------------------------------
 // ProjectName: LEON3_kc705_pmu
 // Function   : Submodule of the PMU to handle quota consumption of a single
 //              core.
@@ -87,7 +89,7 @@ module PMU_quota #
     // state_int shall  jump to reset state if the mask changes
     wire new_mask;
     reg [N_COUNTERS-1:0] old_mask;
-    always_ff @(posedge clk_i, negedge rstn_i) begin
+    always_ff @(posedge clk_i) begin
         if(rstn_i == 1'b0 ) begin
             old_mask <= {N_COUNTERS{1'b0}};
         end else if(softrst_i) begin 
@@ -106,7 +108,7 @@ module PMU_quota #
         // ...
     localparam N_BITS_STATES =$clog2(N_COUNTERS+1);
     reg [N_BITS_STATES-1:0] state_int;
-    always_ff @(posedge clk_i, negedge rstn_i) begin
+    always_ff @(posedge clk_i) begin
         integer i;
         if(rstn_i == 1'b0 ) begin
                 state_int <={N_BITS_STATES{1'b0}};
@@ -117,7 +119,7 @@ module PMU_quota #
                 //prevent overflow of statemachine
                 state_int <= 0;
             end else begin            
-                state_int <= state_int + 1;
+                state_int <= N_BITS_STATES'(state_int + 1);
             end
         end
     end
@@ -125,7 +127,7 @@ module PMU_quota #
 
     localparam padding0 = max_width - REG_WIDTH;
     reg [max_width-1:0] suma_int;
-    always_ff @(posedge clk_i, negedge rstn_i) begin
+    always_ff @(posedge clk_i) begin
         integer i;
         if(rstn_i == 1'b0 ) begin
                 suma_int <={max_width{1'b0}};
@@ -144,7 +146,7 @@ module PMU_quota #
 
     //Hold the state of the interruption
     reg hold_intr_quota;
-    always_ff @(posedge clk_i, negedge rstn_i) begin
+    always_ff @(posedge clk_i) begin
         if(rstn_i == 1'b0 ) begin
                 hold_intr_quota <= 1'b0; 
         end else begin
@@ -158,7 +160,7 @@ module PMU_quota #
     
     //Check if quota is exceeded and generate interrupt or interrupt has been
     //previously triggered and never reseted
-    assign intr_quota_o = (suma_int > quota_limit_i )
+    assign intr_quota_o = (suma_int > max_width'(quota_limit_i) )
                         ? 1'b1 : hold_intr_quota;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -167,6 +169,7 @@ module PMU_quota #
 //
 ////////////////////////////////////////////////////////////////////////////////
 `ifdef	FORMAL
+    /*
     //auxiliar registers
     reg f_past_valid ;
     initial f_past_valid = 1'b0;
@@ -186,6 +189,7 @@ module PMU_quota #
    cover property (((quota_limit_i==5)[*5] |-> (intr_quota_o==1))); 
    // Set all the the events in the mask to one and keep it stable
    cover property ((quota_mask_i== {N_COUNTERS{1'b1}})[*5] |-> (intr_quota_o==1));
+   */
    // Roll over the max value of suma_int
    /*
    cover property (($past(suma_int)=={max_width{1'b1}})
@@ -204,6 +208,7 @@ module PMU_quota #
 */
     // The interruption can't fall once it is risen unless the unit is
     // softreset 
+    /*
     assert property ($rose(intr_quota_o) |-> ($past(softrst_i)||$past(rstn_i)));
     // The interruption shall be high eventually
     assert property (##[0:$] intr_quota_o );
@@ -214,7 +219,7 @@ module PMU_quota #
     // use all inputs. Roll over all the states of the addition once before
     // trigger an interrupt
     //TODO
-
+*/
 `endif
 
 endmodule

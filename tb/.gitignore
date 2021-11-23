@@ -1,0 +1,6 @@
+questa_sim/Makefile
+questa_sim/PMU_raw/
+questa_sim/modelsim.ini
+questa_sim/tb_axi_pmu/AXI_PMU/
+questa_sim/tb_pmu_ahb/pmu_ahb/
+questa_sim/tb_pmu_raw/PMU_raw/

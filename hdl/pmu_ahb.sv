@@ -33,6 +33,8 @@
 	    parameter integer N_SOC_EV = 128,
 	// Total amount of registers (use ahb_pmu_mem_map.ods) 
         parameter integer N_REGS = 55, 
+        // Fault tolerance mechanisms (FT==0 -> FT disabled)
+        parameter integer FT  = 0,                                           
 	// -- Local parameters
 		//haddr width
         localparam integer HADDR_WIDTH = 32,
@@ -82,7 +84,11 @@
         // MCCU interruption for exceeded quota. One signal per core
         output wire [MCCU_N_CORES-1:0] intr_MCCU_o,
         // RDC (Request Duration Counter) interruption for exceeded quota
-        output wire intr_RDC_o
+        output wire intr_RDC_o,
+        // FT (Fault tolerance) interrupt, error detected and recovered
+        output wire intr_FT1_o,
+        // FT (Fault tolerance) interrupt, error detected but not recoverable
+        output wire intr_FT2_o
     );
     //----------------------------------------------
     // VIVADO: list of debug signals for ILA 
@@ -175,32 +181,354 @@ localparam TRANSFER_ERROR_RESP_2CYCLE = 2'b11;
 //------------- Data structures
 //----------------------------------------------
 var struct packed{
-    logic select;
-    logic write;
+    logic select_D, select_Q;
+    logic write_D, write_Q;
 //    logic master_ready;
-    logic [HADDR_WIDTH-1:0] master_addr;
+    logic [HADDR_WIDTH-1:0] master_addr_D, master_addr_Q;
 } address_phase;
+if (FT==0) begin
+    logic select, write;
+    logic [HADDR_WIDTH-1:0] master_addr;
+    always_ff @(posedge clk_i) begin
+        if (rstn_i==0) begin
+            select <= 1'b0;
+            write <= 1'b0;
+            master_addr <= '{default:0};
+        end else begin
+            select <= address_phase.select_D;
+            write <= address_phase. write_D;
+            master_addr <= address_phase.master_addr_D;
+        end
+    end
+    
+    always_comb begin
+        address_phase.select_Q = select;
+        address_phase.write_Q = write;
+        address_phase.master_addr_Q = master_addr;
+    end
+end else begin : Apft //Address phase FT
+    logic write_fte1, select_fte1, master_addr_fte1;
+    logic write_fte2, select_fte2, master_addr_fte2;
+    
+    triple_reg#(.IN_WIDTH(1)
+    )write_trip(
+    .clk_i(clk_i),
+    .rstn_i(rstn_i),
+    .din_i(address_phase.write_D),
+    .dout_o(address_phase.write_Q),
+    .error1_o(write_fte1), // ignore corrected errors
+    .error2_o(write_fte2)
+    );
+    
+    triple_reg#(.IN_WIDTH(1)
+    )select_trip(
+    .clk_i(clk_i),
+    .rstn_i(rstn_i),
+    .din_i(address_phase.select_D),
+    .dout_o(address_phase.select_Q),
+    .error1_o(select_fte1), // ignore corrected errors
+    .error2_o(select_fte2)
+    );
+    
+    triple_reg#(.IN_WIDTH(HADDR_WIDTH)
+    )master_addr_trip(
+    .clk_i(clk_i),
+    .rstn_i(rstn_i),
+    .din_i(address_phase.master_addr_D),
+    .dout_o(address_phase.master_addr_Q),
+    .error1_o(master_addr_fte1), // ignore corrected errors
+    .error2_o(master_addr_fte2)
+    );
+    
+end
+
 
 //----------------------------------------------
 //------------- AHB registers
 //----------------------------------------------
+    wire [REG_WIDTH-1:0] pmu_regs_int [0:N_REGS-1];
+    logic [HDATA_WIDTH-1:0] dwrite_slave; //Data master to the register bank
+    logic [1:0] complete_transfer_status;
+    logic [HDATA_WIDTH-1:0] dread_slave; //response from slave
+    wire [$clog2(N_REGS)-1:0] slv_index;
+    wire  invalid_index;
     logic [REG_WIDTH-1:0] slv_reg [0:N_REGS-1];
     logic [REG_WIDTH-1:0] slv_reg_D [0:N_REGS-1];
     logic [REG_WIDTH-1:0] slv_reg_Q [0:N_REGS-1];
-
-    always_ff @(posedge clk_i, negedge rstn_i) begin
-        if(rstn_i == 1'b0 ) begin
-            slv_reg<='{default:0};
-        end else begin 
-            slv_reg <= slv_reg_D;
+     
+    generate
+    if (FT==0) begin
+        always_ff @(posedge clk_i) begin
+            if(rstn_i == 1'b0 ) begin
+                slv_reg<='{default:0};
+            end else begin 
+                slv_reg <= slv_reg_D;
+            end
         end
+        //----------------------------------------------
+        //------------- Slave registers update
+        //----------------------------------------------
+
+        //Each cycle the values in slv_reg_D will be saved in slv_reg
+            //So if you want to update slv_reg the values for slv_reg_D shall be 
+            //assigned in this section
+            //If you add aditional logic that can change the values of the registers
+            //the next always block have to be modified to add the aditional
+            //conditions under which the slv_reg shall be updated
+        always_comb begin
+                //AHB write
+                //Write to slv registers if slave was selected & was a write to a valid register
+                //Else register the values given by pmu_raw
+                if(address_phase.write_Q && address_phase.select_Q && !invalid_index) begin
+                    // get the values from the pmu_raw instance
+                    slv_reg_Q = slv_reg;
+                    slv_reg_Q [slv_index] = dwrite_slave;
+                    slv_reg_D = pmu_regs_int;
+                    slv_reg_D[slv_index] = dwrite_slave; 
+                end else begin
+                    slv_reg_D = pmu_regs_int;
+                    slv_reg_Q = slv_reg;
+                end
+        end 
+    end else begin : Slvft
+        //FT version of the registers
+            // Hamming bits, 6 for each 26 bits of data
+        localparam HAM_P=6;//protection bits
+        localparam HAM_D=26;//data bits
+        localparam HAM_M=HAM_P+HAM_D;//mesage bits
+        localparam N_HAM32_SLV= (((REG_WIDTH*N_REGS)+(HAM_D-1))/(HAM_D));
+            //interrupt FT error
+        wire  [N_HAM32_SLV-1:0] ift_slv; //interrupt fault tolerance mechanism
+            //"Flat" slv_reg Q and D signals
+        wire [N_HAM32_SLV*HAM_D-1:0] slv_reg_fte;//fault tolerance in
+        wire [N_HAM32_SLV*HAM_D-1:0] slv_reg_fto;//fault tolerance out
+        wire [REG_WIDTH-1:0] slv_reg_ufto [0:N_REGS-1];//unpacked fault tolerance out
+        wire [N_HAM32_SLV*HAM_D-1:0] slv_reg_pQ ;//protected output
+            //"Flat" hamming messages (Data+parity bits)
+        wire [(HAM_M*N_HAM32_SLV)-1:0] ham_mbits_D;
+        wire [(HAM_M*N_HAM32_SLV)-1:0] ham_mbits_Q;
+            //Registers for parity bits
+        logic [HAM_P*N_HAM32_SLV-1:0] ham_pbits;
+        //Feed and send flat assigment in to original format 
+        for (genvar i =0; i<N_REGS; i++) begin
+            //assign slv_register inputs to a flat hamming input
+            assign slv_reg_fte[(i+1)*REG_WIDTH-1:i*REG_WIDTH]=slv_reg_D[i][REG_WIDTH-1:0];
+        end
+        // SEC-DEC hamming on 26 bit data chunks
+        for (genvar i =0; i<(N_HAM32_SLV); i++) begin : slv_ham_enc
+            //encoder
+                //hv_o needs to inteleave protection and data bits
+            hamming32t26d_enc#(
+            )slv_hamming32t26d_enc (
+                .data_i(slv_reg_fte[(i+1)*HAM_D-1:i*HAM_D]),
+                .hv_o(ham_mbits_D[(i+1)*(HAM_M)-1:i*(HAM_M)])
+            );
+        end
+        //Feed data into original registers
+        for (genvar i =0; i<N_REGS; i++) begin
+            always_ff @(posedge clk_i) begin
+                if(rstn_i == 1'b0 ) begin
+                    slv_reg[i]<='{default:0};
+                end else begin
+                    //You could be using ham_mbits_D but code is longer
+                    //Some of the ham_mbits_D aren't needed
+                    slv_reg[i] <= slv_reg_fte[(i+1)*REG_WIDTH-1:REG_WIDTH*i];
+                end
+            end
+            assign slv_reg_pQ[(i+1)*REG_WIDTH-1:i*REG_WIDTH] = slv_reg[i];
+        end
+        // pad signals to fill an integer number of 26 bit chunks
+        for (genvar i =(N_REGS)*REG_WIDTH; i<N_HAM32_SLV*HAM_D; i++) begin
+            assign slv_reg_pQ[i] = 1'b0;
+            assign slv_reg_fte[i] = 1'b0;
+        end
+
+        //Feed encoded parity bits into extra registers
+        for (genvar i =0; i<N_HAM32_SLV; i++) begin
+            always_ff @(posedge clk_i) begin
+                if(rstn_i == 1'b0 ) begin
+                    ham_pbits[(i+1)*HAM_P-1:i*HAM_P]<='{default:0};
+                end else begin 
+                    ham_pbits[(i+1)*HAM_P-1:i*HAM_P]<={
+                                                      ham_mbits_D[i*HAM_M+16]
+                                                      ,ham_mbits_D[i*HAM_M+8]
+                                                      ,ham_mbits_D[i*HAM_M+4]
+                                                      ,ham_mbits_D[i*HAM_M+2]
+                                                      ,ham_mbits_D[i*HAM_M+1]
+                                                      ,ham_mbits_D[i*HAM_M+0]
+                                                     };
+                end
+            end
+            //Get flat registered messages
+            assign ham_mbits_Q [(i+1)*HAM_M-1:i*HAM_M] = {
+                                                        slv_reg_pQ[i*HAM_D+25:i*HAM_D+11]
+                                                        ,ham_pbits[i*HAM_P+5]
+                                                        ,slv_reg_pQ[i*HAM_D+10:i*HAM_D+4]
+                                                        ,ham_pbits[i*HAM_P+4]
+                                                        ,slv_reg_pQ[i*HAM_D+3:i*HAM_D+1]
+                                                        ,ham_pbits[i*HAM_P+3]
+                                                        ,slv_reg_pQ[i*HAM_D]
+                                                        ,ham_pbits[i*HAM_P+2]
+                                                        ,ham_pbits[i*HAM_P+1]
+                                                        ,ham_pbits[i*HAM_P]
+                                                        };
+        end
+        for (genvar i =0; i<N_HAM32_SLV; i++) begin : slv_ham_dec
+            //decoder
+            hamming32t26d_dec#(
+            )slv_hamming32t26d_dec (
+                .data_o(slv_reg_fto[(i+1)*HAM_D-1:i*HAM_D]),
+                .hv_i(ham_mbits_Q[(i+1)*HAM_M-1:i*HAM_M]),
+                .ded_error_o(ift_slv[i])
+            );
+        end
+        // get a packed 2d structure to assign slv_reg
+        for (genvar i =0; i<N_REGS; i++) begin
+            assign slv_reg_ufto[i]=slv_reg_fto[(i+1)*REG_WIDTH-1:i*REG_WIDTH];
+        end
+        //----------------------------------------------
+        //------------- Slave registers update
+        //----------------------------------------------
+
+        //Each cycle the values in slv_reg_D will be saved in slv_reg
+            //So if you want to update slv_reg the values for slv_reg_D shall be 
+            //assigned in this section
+            //If you add aditional logic that can change the values of the registers
+            //the next always block have to be modified to add the aditional
+            //conditions under which the slv_reg shall be updated
+        always_comb begin
+                //AHB write
+                //Write to slv registers if slave was selected & was a write to a valid register
+                //Else register the values given by pmu_raw
+                if(address_phase.write_Q && address_phase.select_Q && !invalid_index) begin
+                    //Feed and send flat assigment in to original format 
+                        //assign flat hamming outputs to slv_reg_Q
+                    slv_reg_Q=slv_reg_ufto;
+                    slv_reg_Q [slv_index] = dwrite_slave;
+                    slv_reg_D = pmu_regs_int;
+                    slv_reg_D[slv_index] = dwrite_slave; 
+                end else begin
+                    slv_reg_D = pmu_regs_int;
+                    //Feed and send flat assigment in to original format 
+                        //assign flat hamming outputs to slv_reg_Q
+                    slv_reg_Q=slv_reg_ufto;
+                end
+        end 
     end
+    endgenerate
 
 //----------------------------------------------
 //------------- AHB control logic
 //----------------------------------------------
-logic [1:0] state, next;
+logic [1:0] next;
 
+if (FT==0) begin
+    logic [1:0] state;
+
+    //data phase - state update
+    always_ff @(posedge clk_i) begin
+        if(rstn_i == 1'b0 ) begin
+            state <= TRANS_IDLE;
+        end else begin 
+            state <= next;
+        end
+    end
+
+    always_comb begin
+    //NOTE: I don't expect any of the cafe beaf values in the registers if they do
+    //there is a bug
+        case (state)
+            TRANS_IDLE: begin
+                complete_transfer_status = TRANSFER_SUCCESS_COMPLETE; 
+                dwrite_slave = 32'hbeaf1d1e; 
+                dread_slave = 32'hcafe1d1e; 
+            end
+            TRANS_BUSY:begin
+                complete_transfer_status = TRANSFER_SUCCESS_COMPLETE; 
+                dwrite_slave = 32'hbeafb551; 
+                dread_slave = 32'hcafeb551; 
+            end
+            TRANS_NONSEQUENTIAL:begin
+                complete_transfer_status = TRANSFER_SUCCESS_COMPLETE; 
+                dwrite_slave = hwdata_i; 
+                if (!address_phase.write_Q && !invalid_index) begin
+                    dread_slave = slv_reg_Q[slv_index];
+                end else begin
+                    dread_slave = 32'hcafe01a1;
+                end
+            end
+            TRANS_SEQUENTIAL:begin
+                complete_transfer_status = TRANSFER_SUCCESS_COMPLETE; 
+                dwrite_slave = hwdata_i; 
+                if (!address_phase.write_Q && !invalid_index) begin
+                    dread_slave = slv_reg_Q[slv_index];
+                end else begin
+                    dread_slave = 32'hcafee1a1;
+                end
+            end
+        endcase
+    end
+end else begin : Stateft
+    //Fault tolerant implementation
+        //Triplication of next and state registers 
+    logic [1:0] state_D, state_Q;
+    logic state_fte1, state_fte2; //fault tolerance errors
+    
+    //error1 signals a corrected error, safe to ignore
+    triple_reg#(.IN_WIDTH(2)
+    )state_trip(
+    .clk_i(clk_i),
+    .rstn_i(rstn_i),
+    .din_i(state_D),
+    .dout_o(state_Q),
+    .error1_o(state_fte1),
+    .error2_o(state_fte2)
+    );
+    
+    //data phase - state update
+    always_comb begin
+        if(rstn_i == 1'b0 ) begin
+            state_D = TRANS_IDLE;
+        end else begin 
+            state_D = next;
+        end
+    end
+
+    always_comb begin
+    //NOTE: I don't expect any of the cafe beaf values in the registers if they do
+    //there is a bug
+        case (state_Q)
+            TRANS_IDLE: begin
+                complete_transfer_status = TRANSFER_SUCCESS_COMPLETE; 
+                dwrite_slave = 32'hbeaf1d1e; 
+                dread_slave = 32'hcafe1d1e; 
+            end
+            TRANS_BUSY:begin
+                complete_transfer_status = TRANSFER_SUCCESS_COMPLETE; 
+                dwrite_slave = 32'hbeafb551; 
+                dread_slave = 32'hcafeb551; 
+            end
+            TRANS_NONSEQUENTIAL:begin
+                complete_transfer_status = TRANSFER_SUCCESS_COMPLETE; 
+                dwrite_slave = hwdata_i; 
+                if (!address_phase.write_Q && !invalid_index) begin
+                    dread_slave = slv_reg_Q[slv_index];
+                end else begin
+                    dread_slave = 32'hcafe01a1;
+                end
+            end
+            TRANS_SEQUENTIAL:begin
+                complete_transfer_status = TRANSFER_SUCCESS_COMPLETE; 
+                dwrite_slave = hwdata_i; 
+                if (!address_phase.write_Q && !invalid_index) begin
+                    dread_slave = slv_reg_Q[slv_index];
+                end else begin
+                    dread_slave = 32'hcafee1a1;
+                end
+            end
+        endcase
+    end
+end
 // address phase - state update 
 always_comb begin
     case (htrans_i)
@@ -230,103 +558,56 @@ always_comb begin
         end
     endcase
 end
+
 // address phase - register required inputs
-always_ff @(posedge clk_i, negedge rstn_i) begin
-    if(rstn_i == 1'b0 ) begin
-        //initialize all the structure to  0 at reset
-        address_phase <= '{default:0};
-    end else begin
-        case (next) 
-            TRANS_IDLE:begin
-                address_phase.select <= hsel_i;
-                address_phase.write <= 0; 
-            end
-            TRANS_BUSY:begin
-                address_phase.select <= hsel_i;
-                address_phase.write <= 0;
-            end
-            TRANS_NONSEQUENTIAL:begin
-                address_phase.select <= hsel_i;
-                address_phase.write <= hwrite_i;
-                address_phase.master_addr <= haddr_i;
-            end
-            TRANS_SEQUENTIAL:begin
-                address_phase.select <= hsel_i;
-                address_phase.write <= hwrite_i;
-                address_phase.master_addr <= haddr_i;
-            end
-        endcase
-    end
+always_comb begin
+    case (next) 
+        TRANS_IDLE:begin
+            address_phase.select_D = hsel_i;
+            address_phase.write_D = 0; 
+            address_phase.master_addr_D = address_phase.master_addr_Q;
+        end
+        TRANS_BUSY:begin
+            address_phase.select_D = hsel_i;
+            address_phase.write_D = 0;
+            address_phase.master_addr_D = address_phase.master_addr_Q;
+        end
+        TRANS_NONSEQUENTIAL:begin
+            address_phase.select_D = hsel_i;
+            address_phase.write_D = hwrite_i;
+            address_phase.master_addr_D = haddr_i;
+        end
+        TRANS_SEQUENTIAL:begin
+            address_phase.select_D = hsel_i;
+            address_phase.write_D = hwrite_i;
+            address_phase.master_addr_D = haddr_i;
+        end
+    endcase
 end
 
-//data phase - state update
-always_ff @(posedge clk_i, negedge rstn_i) begin
-    if(rstn_i == 1'b0 ) begin
-        state <= TRANS_IDLE;
-    end else begin 
-        state <= next;
-    end
-end
 
 //data phase - slave response
-wire [$clog2(N_REGS)-1:0] slv_index;
-logic [HDATA_WIDTH-1:0] dwrite_slave; //Data master to the register bank
-assign slv_index = address_phase.master_addr[$clog2(N_REGS)+1:2];
-logic [1:0] complete_transfer_status;
-logic [HDATA_WIDTH-1:0] dread_slave; //response from slave
+assign slv_index = address_phase.master_addr_Q[$clog2(N_REGS)+1:2];
+assign invalid_index = address_phase.master_addr_Q[$clog2(N_REGS)+1:2] >= N_REGS? 1'b1:1'b0;
 assign hrdata_o = dread_slave;
 
 assign hreadyo_o = complete_transfer_status [0];
 //TODO: review the amount of bits for hresp_o
 assign hresp_o = {{complete_transfer_status[1]},{complete_transfer_status[1]}};
 
-always_comb begin
-//NOTE: I don't expect any of the cafe beaf values in the registers if they do
-//there is a bug
-    case (state)
-        TRANS_IDLE: begin
-            complete_transfer_status = TRANSFER_SUCCESS_COMPLETE; 
-            dwrite_slave = 32'hbeaf1d1e; 
-            dread_slave = 32'hcafe1d1e; 
-        end
-        TRANS_BUSY:begin
-            complete_transfer_status = TRANSFER_SUCCESS_COMPLETE; 
-            dwrite_slave = 32'hbeafb551; 
-            dread_slave = 32'hcafeb551; 
-        end
-        TRANS_NONSEQUENTIAL:begin
-            complete_transfer_status = TRANSFER_SUCCESS_COMPLETE; 
-            dwrite_slave = hwdata_i; 
-            if (!address_phase.write) begin
-                dread_slave = slv_reg_Q[slv_index];
-            end else begin
-                dread_slave = 32'hcafe01a1;
-            end
-        end
-        TRANS_SEQUENTIAL:begin
-            complete_transfer_status = TRANSFER_SUCCESS_COMPLETE; 
-            dwrite_slave = hwdata_i; 
-            if (!address_phase.write) begin
-                dread_slave = slv_reg_Q[slv_index];
-            end else begin
-                dread_slave = 32'hcafee1a1;
-            end
-        end
-    endcase
-end
-
 //----------------------------------------------
 //------------- PMU_raw instance
 //----------------------------------------------
-    wire [REG_WIDTH-1:0] pmu_regs_int [0:N_REGS-1];
     wire ahb_write_req;
-    assign ahb_write_req = address_phase.write && address_phase.select;
+    assign ahb_write_req = address_phase.write_Q && address_phase.select_Q;
+    logic pmu_raw_FT1, pmu_raw_FT2;
     
     PMU_raw #(
 		.REG_WIDTH(REG_WIDTH),
         .MCCU_N_CORES(MCCU_N_CORES),
 		.N_COUNTERS(PMU_COUNTERS),
 		.N_SOC_EV(N_SOC_EV),
+        .FT(FT),
 		.N_CONF_REGS(PMU_CFG)
 	)inst_pmu_raw (
 		.clk_i(clk_i),
@@ -334,6 +615,8 @@ end
         .regs_i(slv_reg_Q),
         .regs_o(pmu_regs_int),
         .wrapper_we_i(ahb_write_req),
+        .intr_FT1_o(pmu_raw_FT1),
+        .intr_FT2_o(pmu_raw_FT2),
         //on pourpose .name connections
         .events_i,
         .intr_overflow_o,
@@ -343,32 +626,26 @@ end
 	);
 
 //----------------------------------------------
-//------------- Slave registers update
+//------------- Generate intr_FT_o
 //----------------------------------------------
-
-//Each cycle the values in slv_reg_D will be saved in slv_reg
-    //So if you want to update slv_reg the values for slv_reg_D shall be 
-    //assigned in this section
-    //If you add aditional logic that can change the values of the registers
-    //the next always block have to be modified to add the aditional
-    //conditions under which the slv_reg shall be updated
-
-always_comb begin
-    //AHB write
-    //Write to slv registers if slave was selected & was a write. Else
-    //register the values given by pmu_raw
-    if(address_phase.write && address_phase.select) begin
-        // get the values from the pmu_raw instance
-        slv_reg_Q = slv_reg;
-        slv_reg_Q [slv_index] = dwrite_slave;
-        slv_reg_D = pmu_regs_int;
-        slv_reg_D[slv_index] = dwrite_slave; 
-    end else begin
-        slv_reg_D = pmu_regs_int;
-        slv_reg_Q = slv_reg;
-    end
+if (FT == 0 ) begin
+        assign intr_FT1_o = 1'b0;
+        assign intr_FT2_o = 1'b0;
+end else begin 
+        //Gather all the signals of corrected errors from FT scopes
+            // Codestyle. All scopes start with a capital letter
+        assign intr_FT1_o = |{Apft.write_fte1,Apft.select_fte1, Apft.master_addr_fte1,
+                             Stateft.state_fte1,
+                             pmu_raw_FT1
+                             };
+        //Gather all the signals of uncorrected errors from FT scopes
+            // Codestyle. All scopes start with a capital letter
+        assign intr_FT2_o = |{Slvft.ift_slv,
+                             Apft.write_fte2,Apft.select_fte2, Apft.master_addr_fte2,
+                             Stateft.state_fte2,
+                             pmu_raw_FT2
+                             };
 end
-
 /////////////////////////////////////////////////////////////////////////////////
 //
 // Formal Verification section begins here.
@@ -404,20 +681,12 @@ end
                     && (hwrite_i==1)
                     )
                     |=> (ahb_write_req == 1) || rstn_i==0);
-    // If event 8 is low and current transaction is not a write, counter is
-    // stable
-    assert property ((events_i[8]==0 && $stable(events_i[8]) &&
-                    ahb_write_req==0
-                     )
-                     |=> $stable(slv_reg[9]) ||
-                         (slv_reg[9]==($past(slv_reg[9])+1)) 
-                         || $past(rstn_i)==1);
 
     // If there is no write and no reset the slv_Regs used by the counters can
     // only decrease due to an overflow
         //posible resets of counters
     sequence no_counter_reset;
-        (rstn_i == 1) && (slv_reg[0][1] == 0);
+        f_past_valid && ($past(rstn_i) != 0) && (slv_reg[0][1] == 0);
     endsequence
     sequence counter_reset;
         (rstn_i == 0) || (slv_reg[0][1] == 1);
@@ -425,11 +694,11 @@ end
         //There is no pending write or it is not valid
     sequence no_ahb_write;
         //since ahb is pipelined i check for the last addres phase
-        ($past(hsel_i)==0) || ($past(hwrite_i)==0); 
+        f_past_valid && (ahb_write_req==1'b0); 
     endsequence
         //Register 1, assigned to counter 0 can't decrease
     sequence no_decrease_counter(n);
-        slv_reg[n+1] >= $past(slv_reg[n+1]);
+        (slv_reg[n+1] >= $past(slv_reg[n+1])) && f_past_valid;
     endsequence
         //Register 1, can decrease at overflow
     sequence overflow_counter(n);
@@ -441,17 +710,17 @@ end
         genvar i;
         for (i=0;i<PMU_COUNTERS;i++) begin
         assert property (
-            no_ahb_write and no_counter_reset 
-            |=> no_decrease_counter(i) or counter_reset or overflow_counter(i)
+            no_ahb_write and (rstn_i==1) and (slv_reg[0][1] == 0)
+            |=> no_decrease_counter(i) or overflow_counter(i)
             );
         end
     endgenerate
 
-    //Base configuration register remains stables if there isn't a reset or
+    //Base configuration register remains stables if last cycle isn't a reset or
     //write
     assert property (
-        no_ahb_write and no_counter_reset 
-        |-> $stable(slv_reg_Q[0]) && $stable(pmu_regs_int[0]) && $stable(slv_reg[0])
+        (ahb_write_req==1'b0) and (rstn_i==1)
+        |=> $stable(slv_reg[0]) 
         );
     
     //TODO: If counters cant decrease by their own what explains that we read

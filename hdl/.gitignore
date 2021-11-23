@@ -1,0 +1,5 @@
+pmu_ahb/
+AXI_PMU_interface_v1_0_S00_AXI/
+AXI_PMU/
+dummy_ahb/
+PMU_raw/
