@@ -119,7 +119,7 @@ module PMU_quota #
                 //prevent overflow of statemachine
                 state_int <= 0;
             end else begin            
-                state_int <= N_BITS_STATES'(state_int + 1);
+                state_int <= N_BITS_STATES'(state_int + 1'b1);
             end
         end
     end

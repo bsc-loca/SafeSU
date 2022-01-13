@@ -588,7 +588,7 @@ end
 
 //data phase - slave response
 assign slv_index = address_phase.master_addr_Q[$clog2(N_REGS)+1:2];
-assign invalid_index = address_phase.master_addr_Q[$clog2(N_REGS)+1:2] >= N_REGS? 1'b1:1'b0;
+assign invalid_index = int'(address_phase.master_addr_Q[$clog2(N_REGS)+1:2]) >= N_REGS? 1'b1:1'b0;
 assign hrdata_o = dread_slave;
 
 assign hreadyo_o = complete_transfer_status [0];
