@@ -32,7 +32,7 @@ Table \ref{table:t_ev} shows the inputs and mapping to the crossbar input for th
 \hline 
 5 & Pulse & Core 0 &  Instruction TLB miss \\
 \hline 
-6 & Pulse & Core 0 &  Data chache L1 miss \\
+6 & Pulse & Core 0 &  Data caches L1 miss \\
 \hline 
 7 & Pulse & Core 0 &  Data TLB miss \\
 \hline 
@@ -46,7 +46,7 @@ Table \ref{table:t_ev} shows the inputs and mapping to the crossbar input for th
 \hline 
 12 & Pulse & Core 1 &  Instruction TLB miss \\
 \hline 
-13 & Pulse & Core 1 &  Data chache L1 miss \\
+13 & Pulse & Core 1 &  Data caches L1 miss \\
 \hline 
 14 & Pulse & Core 1 &  Data TLB miss \\
 \hline 
@@ -60,7 +60,7 @@ Table \ref{table:t_ev} shows the inputs and mapping to the crossbar input for th
 \hline 
 19 & Pulse & Core 2 &  Instruction TLB miss \\
 \hline 
-20 & Pulse & Core 2 &  Data chache L1 miss \\
+20 & Pulse & Core 2 &  Data caches L1 miss \\
 \hline 
 21 & Pulse & Core 2 &  Data TLB miss \\
 \hline 
@@ -74,7 +74,7 @@ Table \ref{table:t_ev} shows the inputs and mapping to the crossbar input for th
 \hline 
 26 & Pulse & Core 3 &  Instruction TLB miss \\
 \hline 
-27 & Pulse & Core 3 &  Data chache L1 miss \\
+27 & Pulse & Core 3 &  Data caches L1 miss \\
 \hline 
 28 & Pulse & Core 3 &  Data TLB miss \\
 \hline 
@@ -82,27 +82,27 @@ Table \ref{table:t_ev} shows the inputs and mapping to the crossbar input for th
 \hline 
 30 & CCS & Core0 &  Contention C0 over C1\\
 \hline 
-31 & CCS & Core1 &  Contention C0 over C2\\
+31 & CCS & Core0 &  Contention C0 over C2\\
 \hline 
-32 & CCS & Core2 &  Contention C0 over C3\\
+32 & CCS & Core0 &  Contention C0 over C3\\
 \hline 
-33 & CCS & Core0 &  Contention C1 over C0\\
+33 & CCS & Core1 &  Contention C1 over C0\\
 \hline 
 34 & CCS & Core1 &  Contention C1 over C2\\
 \hline 
-35 & CCS & Core2 &  Contention C1 over C3\\
+35 & CCS & Core1 &  Contention C1 over C3\\
 \hline 
-36 & CCS & Core0 &  Contention C2 over C0\\
+36 & CCS & Core2 &  Contention C2 over C0\\
 \hline 
-37 & CCS & Core1 &  Contention C2 over C1\\
+37 & CCS & Core2 &  Contention C2 over C1\\
 \hline 
 38 & CCS & Core2 &  Contention C2 over C3\\
 \hline 
-39 & CCS & Core0 &  Contention C3 over C0\\
+39 & CCS & Core3 &  Contention C3 over C0\\
 \hline 
-40 & CCS & Core1 &  Contention C3 over C1\\
+40 & CCS & Core3 &  Contention C3 over C1\\
 \hline 
-41 & CCS & Core2 &  Contention C3 over C2\\
+41 & CCS & Core3 &  Contention C3 over C2\\
 \hline 
 42 & - & - &   Filler signal, constant 0 \\
 \hline 
@@ -136,7 +136,7 @@ Table \ref{table:t_ev} shows the inputs and mapping to the crossbar input for th
 			\hline 
 			5 & Pulse & Core 0 &  Instruction TLB miss \\
 			\hline 
-			6 & Pulse & Core 0 &  Data chache L1 miss \\
+			6 & Pulse & Core 0 &  Data caches L1 miss \\
 			\hline 
 			7 & Pulse & Core 0 &  Data TLB miss \\
 			\hline 
@@ -150,7 +150,7 @@ Table \ref{table:t_ev} shows the inputs and mapping to the crossbar input for th
 			\hline 
 			12 & Pulse & Core 1 &  Instruction TLB miss \\
 			\hline 
-			13 & Pulse & Core 1 &  Data chache L1 miss \\
+			13 & Pulse & Core 1 &  Data caches L1 miss \\
 			\hline 
 			14 & Pulse & Core 1 &  Data TLB miss \\
 			\hline 
@@ -164,7 +164,7 @@ Table \ref{table:t_ev} shows the inputs and mapping to the crossbar input for th
 			\hline 
 			19 & Pulse & Core 2 &  Instruction TLB miss \\
 			\hline 
-			20 & Pulse & Core 2 &  Data chache L1 miss \\
+			20 & Pulse & Core 2 &  Data caches L1 miss \\
 			\hline 
 			21 & Pulse & Core 2 &  Data TLB miss \\
 			\hline 
@@ -178,7 +178,7 @@ Table \ref{table:t_ev} shows the inputs and mapping to the crossbar input for th
 			\hline 
 			26 & Pulse & Core 3 &  Instruction TLB miss \\
 			\hline 
-			27 & Pulse & Core 3 &  Data chache L1 miss \\
+			27 & Pulse & Core 3 &  Data caches L1 miss \\
 			\hline 
 			28 & Pulse & Core 3 &  Data TLB miss \\
 			\hline 
@@ -192,7 +192,7 @@ Table \ref{table:t_ev} shows the inputs and mapping to the crossbar input for th
 			\hline 
 			33 & Pulse & Core 4 &  Instruction TLB miss \\
 			\hline 
-			34 & Pulse & Core 4 &  Data chache L1 miss \\
+			34 & Pulse & Core 4 &  Data caches L1 miss \\
 			\hline 
 			35 & Pulse & Core 4 &  Data TLB miss \\
 			\hline 
@@ -206,7 +206,7 @@ Table \ref{table:t_ev} shows the inputs and mapping to the crossbar input for th
 			\hline 
 			40 & Pulse & Core 5 &  Instruction TLB miss \\
 			\hline 
-			41 & Pulse & Core 5 &  Data chache L1 miss \\
+			41 & Pulse & Core 5 &  Data caches L1 miss \\
 			\hline 
 			42 & Pulse & Core 5 &  Data TLB miss \\
 			\hline 
@@ -214,63 +214,63 @@ Table \ref{table:t_ev} shows the inputs and mapping to the crossbar input for th
 			\hline 
 			44 & CCS & Core0 &  Contention C0 over C1\\
 			\hline 
-			45 & CCS & Core1 &  Contention C0 over C2\\
+			45 & CCS & Core0 &  Contention C0 over C2\\
 			\hline 
-			46 & CCS & Core2 &  Contention C0 over C3\\
+			46 & CCS & Core0 &  Contention C0 over C3\\
 			\hline 
-			47 & CCS & Core3 &  Contention C0 over C4\\
+			47 & CCS & Core0 &  Contention C0 over C4\\
 			\hline 
-			48 & CCS & Core4 &  Contention C0 over C5\\
+			48 & CCS & Core0 &  Contention C0 over C5\\
 			\hline 
-			49 & CCS & Core0 &  Contention C1 over C0\\
+			49 & CCS & Core1 &  Contention C1 over C0\\
 			\hline 
 			50 & CCS & Core1 &  Contention C1 over C2\\
 			\hline 
-			51 & CCS & Core2 &  Contention C1 over C3\\
+			51 & CCS & Core1 &  Contention C1 over C3\\
 			\hline 
-			52 & CCS & Core3 &  Contention C1 over C4\\
+			52 & CCS & Core1 &  Contention C1 over C4\\
 			\hline 
-			53 & CCS & Core4 &  Contention C1 over C5\\
+			53 & CCS & Core1 &  Contention C1 over C5\\
 			\hline 
-			54 & CCS & Core0 &  Contention C2 over C0\\
+			54 & CCS & Core2 &  Contention C2 over C0\\
 			\hline 
-			55 & CCS & Core1 &  Contention C2 over C1\\
+			55 & CCS & Core2 &  Contention C2 over C1\\
 			\hline 
 			56 & CCS & Core2 &  Contention C2 over C3\\
 			\hline 
-			57 & CCS & Core3 &  Contention C2 over C4\\
+			57 & CCS & Core2 &  Contention C2 over C4\\
 			\hline 
-			58 & CCS & Core4 &  Contention C2 over C5\\
+			58 & CCS & Core2 &  Contention C2 over C5\\
 			\hline 
-			59 & CCS & Core0 &  Contention C3 over C0\\
+			59 & CCS & Core3 &  Contention C3 over C0\\
 			\hline 
-			60 & CCS & Core1 &  Contention C3 over C1\\
+			60 & CCS & Core3 &  Contention C3 over C1\\
 			\hline 
-			61 & CCS & Core2 &  Contention C3 over C2\\
+			61 & CCS & Core3 &  Contention C3 over C2\\
 			\hline 
 			62 & CCS & Core3 &  Contention C3 over C4\\
 			\hline 
-			63 & CCS & Core4 &  Contention C3 over C5\\
+			63 & CCS & Core3 &  Contention C3 over C5\\
 			\hline 
-			64 & CCS & Core0 &  Contention C4 over C0\\
+			64 & CCS & Core4 &  Contention C4 over C0\\
 			\hline 
-			65 & CCS & Core1 &  Contention C4 over C1\\
+			65 & CCS & Core4 &  Contention C4 over C1\\
 			\hline 
-			66 & CCS & Core2 &  Contention C4 over C2\\
+			66 & CCS & Core4 &  Contention C4 over C2\\
 			\hline 
-			67 & CCS & Core3 &  Contention C4 over C3\\
+			67 & CCS & Core4 &  Contention C4 over C3\\
 			\hline 
 			68 & CCS & Core4 &  Contention C4 over C5\\
 			\hline 
-			69 & CCS & Core0 &  Contention C5 over C0\\
+			69 & CCS & Core5 &  Contention C5 over C0\\
 			\hline 
-			70 & CCS & Core1 &  Contention C5 over C1\\
+			70 & CCS & Core5 &  Contention C5 over C1\\
 			\hline 
-			71 & CCS & Core2 &  Contention C5 over C2\\
+			71 & CCS & Core5 &  Contention C5 over C2\\
 			\hline 
-			72 & CCS & Core3 &  Contention C5 over C3\\
+			72 & CCS & Core5 &  Contention C5 over C3\\
 			\hline 
-			73 & CCS & Core4 &  Contention C5 over C4\\
+			73 & CCS & Core5 &  Contention C5 over C4\\
 			\hline 
 			74 & - & - &   Filler signal, constant 0 \\
 			\hline 
