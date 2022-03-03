@@ -137,7 +137,7 @@
     end
    
     //output interrupt if new interrupt or already on interrupt state
-    assign interruption_rdc_o = (|unpacked_vector_rdc_int) || past_interruption_rdc_o;
+    assign interruption_rdc_o = ((|unpacked_vector_rdc_int) || past_interruption_rdc_o) & enable_i;
 //-------------Watermark registers
     logic [WEIGHTS_WIDTH-1 : 0] watermark_int [0 : N_COUNTERS-1];
     genvar q;
