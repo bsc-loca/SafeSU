@@ -189,7 +189,9 @@
         // FT (Fault tolerance) interrupt, error detected and recovered
         output wire intr_FT1_o,
         // FT (Fault tolerance) interrupt, error detected but not recoverable
-        output wire intr_FT2_o
+        output wire intr_FT2_o,
+        // Enables hardware_quota over software_quota interruptions
+        output wire hardware_quota
 	);
     //----------------------------------------------
     // VIVADO: list of debug signals for ILA 
@@ -249,6 +251,8 @@
     assign overflow_softrst_i = regs_i [BASE_CFG][3];
     //quota    
     assign quota_softrst_i    = regs_i [BASE_CFG][4];
+
+
     // Register never set by PMU, only written by master
     genvar y;
     generate
@@ -486,6 +490,9 @@
 
     wire MCCU_softrst;
     assign MCCU_softrst = regs_i[BASE_MCCU_CFG][1];
+        
+    //hardware quota
+    assign hardware_quota     = regs_i[BASE_MCCU_CFG][31];
 
 
     //One bit for each core to trigger quota update

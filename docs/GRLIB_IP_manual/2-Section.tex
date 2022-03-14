@@ -579,11 +579,15 @@ The Maximum-Contention Control Unit (MCCU) allows to monitor a subset of the inp
 	\caption{Block diagram MCCU mechanism for one core.}
 	\label{fig:blk_MCCU}
 \end{figure}
-Figure \ref{fig:blk_MCCU} shows the internal elements required to monitor the quota consumption of one core, given four input events.  When events are active, they pass the value assigned in the weight register \ref{MCCU_weight0} for the given signal to a series of adders. The addition is subtracted from the corresponding quota register \ref{fig:MCCU_ava}. When the remaining quota is smaller than the cycle contention, an interrupt is triggered.\\
-\\
+Figure \ref{fig:blk_MCCU} shows the internal elements required to monitor the quota consumption of one core, given four input events.  When events are active, they pass the value assigned in the weight register \ref{MCCU_weight0} for the given signal to a series of adders. The addition is subtracted from the corresponding quota register \ref{fig:MCCU_ava}. When the remaining quota is smaller than the cycle contention, an interrupt is triggered.
+
+When the "Enable Hardware Quota" bit is toggled, this interrupt is routed to the AHB controller directly to block contending core access to the shared bus. Thus, disabling the interrupt lines and performing the decisions without software intervention.
+
+
 \begin{register}{H}{MCCU main configuration for 4 core configurations}{0x074}
 	\label{MCCU_cfg}
-	\regfield{Reserved}{25}{8}{{x}}
+	\regfield{Enable Hardware Quota}{1}{31}{{0}}
+	\regfield{Reserved}{23}{8}{{x}}
 	\regfield{Soft reset RDC}{1}{7}{{0}}
 	\regfield{Enable RDC}{1}{6}{{0}}
 	\regfield{Update Quota Core 3}{1}{5}{{0}}
@@ -596,11 +600,12 @@ Figure \ref{fig:blk_MCCU} shows the internal elements required to monitor the qu
 \end{register}
 \begin{register}{}{MCCU main configuration for 6 core configurations}{0x074}
 	\label{MCCU_cfg_6c}
-	\regfield{Reserved}{25}{8}{{x}}
-	\regfield{Soft reset RDC}{1}{7}{{0}}
-	\regfield{Enable RDC}{1}{6}{{0}}
-	\regfield{Update Quota Core 5}{1}{5}{{0}}
-	\regfield{Update Quota Core 4}{1}{5}{{0}}
+	\regfield{Enable Hardware Quota}{1}{31}{{0}}
+	\regfield{Reserved}{21}{10}{{x}}
+	\regfield{Soft reset RDC}{1}{9}{{0}}
+	\regfield{Enable RDC}{1}{8}{{0}}
+	\regfield{Update Quota Core 5}{1}{7}{{0}}
+	\regfield{Update Quota Core 4}{1}{6}{{0}}
 	\regfield{Update Quota Core 3}{1}{5}{{0}}
 	\regfield{Update Quota Core 2}{1}{4}{{0}}
 	\regfield{Update Quota Core 1}{1}{3}{{0}}
