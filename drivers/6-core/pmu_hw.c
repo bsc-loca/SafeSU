@@ -1,8 +1,7 @@
 #include <pmu_hw.h>
 #include <math.h>
-#include "util.h"
-#define PLIC_BASE 0x84000000
-#define __PMU_LIB_DEBUG__
+
+//#define __PMU_LIB_DEBUG__
 
 /*
  *   Function    : pmu_counters_enable
@@ -127,7 +126,13 @@ void pmu_register_events(const crossbar_event_t * ev_table, unsigned int event_c
  */
 void pmu_counters_print(const crossbar_event_t * table, unsigned int event_count) {
     for (int i = 0; i < event_count; ++i) {
-        printf("PMU_COUNTER[%d] = %d\t%s\n", i, _PMU_COUNTERS[table[i].output], table[i].description);
+        printf("PMU_COUNTER[%2d] = %10d\t%s\n", i, _PMU_COUNTERS[table[i].output], table[i].description);
+    }
+}
+
+void pmu_counters_fill_default_descriptions(crossbar_event_t* table, unsigned int event_count){
+    for(int i = 0; i < event_count; i++){
+        table[i].description = counterDescriptions[table[i].event];
     }
 }
 
@@ -355,7 +360,7 @@ unsigned int pmu_mccu_get_quota_remaining(unsigned int core) {
     #ifdef __PMU_LIB_DEBUG__
     printf("pmu_mccu_get_quota_remaining\n");
     #endif
-    return (_PMU_MCCU_QUOTA[3 + core]);
+    return (_PMU_MCCU_QUOTA[MCCU_N_CORES + core]);
 }
 
 /*
@@ -405,6 +410,15 @@ unsigned pmu_mccu_set_event_weigths(const unsigned int input,
     printf("EVENT_WEIGHT_REG2 = %u\n", EVENT_WEIGHT_REG2);
     #endif
     return (0);
+}
+
+void pmu_mccu_enable_HQ(){
+    unsigned mask = 1 << 31;
+    PMUCFG1 |= mask;
+}
+void pmu_mccu_disable_HQ(){
+    unsigned mask = 1 << 31;
+    PMUCFG1 &= ~(mask);
 }
 
 /* **********************************
