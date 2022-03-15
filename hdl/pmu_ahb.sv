@@ -138,7 +138,8 @@ module pmu_ahb #
         output wire                    intr_FT1_o     ,
         // FT (Fault tolerance) interrupt, error detected but not recoverable
         output wire                    intr_FT2_o     ,
-        output wire                    hardware_quota
+        // Enables hardware_quota over software_quota interruptions
+        output wire                    en_hwquota_o
     );
     //----------------------------------------------
     // VIVADO: list of debug signals for ILA 
@@ -699,7 +700,7 @@ inst_pmu_raw
     .intr_quota_o                ,
     .intr_MCCU_o                 ,
     .intr_RDC_o                  ,
-    .hardware_quota(hardware_quota)
+    .en_hwquota_o(en_hwquota_o)
 );
 
 //----------------------------------------------

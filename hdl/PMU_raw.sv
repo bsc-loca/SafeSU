@@ -191,7 +191,7 @@
         // FT (Fault tolerance) interrupt, error detected but not recoverable
         output wire intr_FT2_o,
         // Enables hardware_quota over software_quota interruptions
-        output wire hardware_quota
+        output wire en_hwquota_o
 	);
     //----------------------------------------------
     // VIVADO: list of debug signals for ILA 
@@ -492,7 +492,7 @@
     assign MCCU_softrst = regs_i[BASE_MCCU_CFG][1];
         
     //hardware quota
-    assign hardware_quota     = regs_i[BASE_MCCU_CFG][31];
+    assign en_hwquota_o     = regs_i[BASE_MCCU_CFG][31];
 
 
     //One bit for each core to trigger quota update
