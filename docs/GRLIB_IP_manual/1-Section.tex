@@ -1,8 +1,8 @@
 \newpage
 \section{Overview}
 \label{chapter1}
-The SafePMU (Safe Performance Monitoring  Unit) is an AHB slave capable of monitoring SoC events, enforce contention control, and identifying profiling errors on run-time.
-Figure "\ref{fig:blkdia}" shows the structure of the unit. It is composed of an ahb wrapper (\textit{ahb\_wrapper.vhd}) that maps the SystemVerilog implementation into a VHDL module that can be instanced in SELENE and De-RISC SoCs.  The SystemVerilog AHB interface (\textit{pmu\_ahb.sv}) offers support for a subset of AHB requests. This module also instances the interface agnostic PMU (\textit{PMU\_raw.sv}). The latter is used as the generator of the statistic unit. It generates the memory map and the instances for each of the features.\\
+The SafeSU (Safe Statistics Unit) is an AHB slave capable of monitoring SoC events, enforce contention control, and identifying profiling errors on run-time.
+Figure "\ref{fig:blkdia}" shows the structure of the unit. It is composed of an ahb wrapper (\textit{ahb\_wrapper.vhd}) that maps the SystemVerilog implementation into a VHDL module that can be instanced in SELENE and De-RISC SoCs.  The SystemVerilog AHB interface (\textit{pmu\_ahb.sv}) offers support for a subset of AHB requests. This module also instances the interface agnostic SafeSU (\textit{PMU\_raw.sv}). The latter is used as the generator of the statistic unit. It generates the memory map and the instances for each of the features.\\
 \\
 The main features are:\\
 \begin{itemize}

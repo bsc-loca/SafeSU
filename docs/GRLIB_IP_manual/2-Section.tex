@@ -1,7 +1,7 @@
 \section{Operation}
 \label{chapter2}
 \subsection{General}
-The SafePMU attaches to a 128-bit wide AHB bus but only supports Single burst 32-bit accesses. AHB Lock accesses and protection control are not implemented.\\
+The SafeSU attaches to a 128-bit wide AHB bus but only supports Single burst 32-bit accesses. AHB Lock accesses and protection control are not implemented.\\
 \\
 The unit is compatible with GRLIB \textit{plug\&play}(P\&P). Vendor and device's default configuration values are  \textit{"BSC"} and \textit{" AHB Performance Monitoring Unit"} respectively. Regardless, release  \textit{v3.2.4}  of GRMON, the unit may appear as \textit{"Unknown device"}.
 \subsection{Default input events}
@@ -311,7 +311,7 @@ These are the Self-test modes for each configuration value of the fied \textit{s
   \end{register}
 
 \subsection{Crossbar}
-This feature allows routing any of the input signals of table \ref{table:t_ev} or \ref{table:t_ev2} into any of the 24 counters of the PMU. Each one of the counters has a 5-bit configuration value for the 32 input version of the crossbar or 7-bit for the 128 version. For simplicity this section describes the 32 entry variant of the crossabar. Consider that the width of the configuration field is $log2(N\_inputs)$ and the total amount of configuration registers $log2(N\_inputs)*N\_inputs$.\\
+This feature allows routing any of the input signals of table \ref{table:t_ev} or \ref{table:t_ev2} into any of the 24 counters of the SafeSU. Each one of the counters has a 5-bit configuration value for the 32 input version of the crossbar or 7-bit for the 128 version. For simplicity this section describes the 32 entry variant of the crossabar. Consider that the width of the configuration field is $log2(N\_inputs)$ and the total amount of configuration registers $log2(N\_inputs)*N\_inputs$.\\
 Configuration values are stored in registers \ref{cross_cfg0}, \ref{cross_cfg1}, \ref{cross_cfg2},\ref{cross_cfg3}. All the configuration values are consecutive. Thus some values may have configuration bits in two consecutive memory addresses. Examples of this are Output 6, 12, 19 in our current configuration. As a consequence, the previous outputs may require two writes to configure the desired input signal.\\
 \\
 Configuration fields match one to one with the internal counters. So the field \textit{output 0} matches with \textit{counter 0}, \textit{output 1} with\textit{ counter 1} and so on.\\
@@ -367,9 +367,9 @@ As a usage example, suppose the user wants to route the signal \textit{pmu\_even
 	\regfield{Output 19[4:1]}{4}{0}{{00}}
 	\reglabel{Reset value}\regnewline
 \end{register}
-Signal routing is important since some of the PMU features are only available at different crossbar outputs. Table \ref{tab:features} shows the available capabilities for each one of the outputs\footnotetext{RDC and MCCU signals are only available if the assigned core is synthesized.}.\\
+Signal routing is important since some of the SafeSU features are only available at different crossbar outputs. Table \ref{tab:features} shows the available capabilities for each one of the outputs\footnotetext{RDC and MCCU signals are only available if the assigned core is synthesized.}.\\
 \begin{table}
-	\caption{Crossbar outputs and PMU capabilities}
+	\caption{Crossbar outputs and SafeSU capabilities}
 	\label{tab:features}
 \begin{small}
 	\begin{center} 
@@ -732,12 +732,12 @@ The unit does provide access to the internal interrupt vector (register \ref{RDC
 
 
 \subsection{Software support}
-The unit can be configured by the user at a low level following the description of previous sections and \href{https://gitlab.bsc.es/caos_hw/hdl_ip/bsc_pmu/-/tree/develop/docs}{the documents associated for each unit}. In addition we provide a small bare-metal driver under the \textit{drivers} of the PMU/safeSU repository.\\
+The unit can be configured by the user at a low level following the description of previous sections and \href{https://gitlab.bsc.es/caos_hw/hdl_ip/bsc_pmu/-/tree/develop/docs}{the documents associated for each unit}. In addition we provide a small bare-metal driver under the \textit{drivers} directory of the SafeSU repository.\\
 \\
 Currently 6 core and 4 core versions of the drivers are provided. The drivers are composed of three files.
 \begin{itemize}
 \item \textit{pmu\_vars.h }: Defines a set of constants with the RTL parameters that generated the unit. Such constants allow the reusing of functions among hardware configurations.
-\item\textit{ pmu\_hw.h}: Defines the memory position of the PMU within the memory map of the SoC. It also contains the prototypes of each function of the driver.
+\item\textit{ pmu\_hw.h}: Defines the memory position of the SafeSU within the memory map of the SoC. It also contains the prototypes of each function of the driver.
 \item \textit{pmu\_hw.c}: Contains the definition of each of the functions.
 \end{itemize}
 Given the current development status, the driver is not autogenerated, and \textbf{modifications to the RTL may require manual changes on the previous files}. 
