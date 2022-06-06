@@ -1,7 +1,8 @@
 #include <pmu_hw.h>
 #include <math.h>
-
-//#define __PMU_LIB_DEBUG__
+#include "util.h"
+#define PLIC_BASE 0x84000000
+#define __PMU_LIB_DEBUG__
 
 /*
  *   Function    : pmu_counters_enable
