@@ -10,276 +10,343 @@ The unit is compatible with GRLIB \textit{plug\&play}(P\&P). Vendor and device's
 In its default implementation, the unit provides up to 128 input events. Each one of the events can be routed to any mechanism of the module through the crossbar.\\
 \\
 Table \ref{table:t_ev} shows the inputs and mapping to the crossbar input for the current \href{https://gitlab.bsc.es/selene/selene-hardware/-/merge_requests/2}{SELENE release}. The number of signals and arrangements may change in the upcoming versions. \\
-\begin{table}[H]
-	\caption{SELENE default input events. 128 inputs, 4 cores}
-	\label{table:t_ev}
-	\centering
-	\begin{footnotesize}
-	\begin{tabular}{|l|l|l|l|l|}
-		\hline
-		\textbf{Index} & \textbf{Type}  & \textbf{Source} & \textbf{Description} \\
-	
+
+\begin{center}
+	\begin{longtable}{|l|l|l|l|}
+		\caption[SELENE input events. 256 inputs, 6 cores]{SELENE GPL input events. 256 inputs, 6 cores} \label{table:t_ev} \\
+
+			
+		\hline \multicolumn{1}{|c|}{\textbf{Index}} & \multicolumn{1}{c|}{\textbf{Type}} 
+		& \multicolumn{1}{c|}{\textbf{Source}} & \multicolumn{1}{c|}{\textbf{Description}} \\ \hline 
+		\endfirsthead
+		
+		\multicolumn{3}{c}%
+		{{\bfseries \tablename\ \thetable{} -- continued from previous page}} \\
+		\hline \multicolumn{1}{|c|}{\textbf{Index}} & 
+		\multicolumn{1}{c|}{\textbf{Type}} & 
+		\multicolumn{1}{c|}{\textbf{Source}} &
+		\multicolumn{1}{c|}{\textbf{Description}} \\ \hline 
+		\endhead
+		
+		\hline \multicolumn{3}{|r|}{{Continued on next page}} \\ \hline
+		\endfoot
+		
+		\hline \hline
+		\endlastfoot
+		
 \hline
 0 & Debug & local &  Constant HIGH, used for debug purposes or clock cycles \\
-\hline 
 1 & Debug & local &  Constant LOW, used for debug purposes \\
-\hline 
 2 & Pulse & Core 0 &  Instruction count pipeline 0 \\
-\hline 
 3 & Pulse & Core 0 &  Instruction count pipeline 1 \\
-\hline 
 4 & Pulse & Core 0 &  Instruction cache miss \\
-\hline 
 5 & Pulse & Core 0 &  Instruction TLB miss \\
-\hline 
-6 & Pulse & Core 0 &  Data caches L1 miss \\
-\hline 
+6 & Pulse & Core 0 &  Data chache L1 miss \\
 7 & Pulse & Core 0 &  Data TLB miss \\
-\hline 
 8 & Pulse & Core 0 &  Branch predictor miss \\
-\hline 
 9 & Pulse & Core 1 &  Instruction count pipeline 0 \\
-\hline 
 10 & Pulse & Core 1 &  Instruction count pipeline 1 \\
-\hline 
 11 & Pulse & Core 1 &  Instruction cache miss \\
-\hline 
 12 & Pulse & Core 1 &  Instruction TLB miss \\
-\hline 
-13 & Pulse & Core 1 &  Data caches L1 miss \\
-\hline 
+13 & Pulse & Core 1 &  Data chache L1 miss \\
 14 & Pulse & Core 1 &  Data TLB miss \\
-\hline 
 15 & Pulse & Core 1 &  Branch predictor miss \\
-\hline 
 16 & Pulse & Core 2 &  Instruction count pipeline 0 \\
-\hline 
 17 & Pulse & Core 2 &  Instruction count pipeline 1 \\
-\hline 
 18 & Pulse & Core 2 &  Instruction cache miss \\
-\hline 
 19 & Pulse & Core 2 &  Instruction TLB miss \\
-\hline 
-20 & Pulse & Core 2 &  Data caches L1 miss \\
-\hline 
+20 & Pulse & Core 2 &  Data chache L1 miss \\
 21 & Pulse & Core 2 &  Data TLB miss \\
-\hline 
 22 & Pulse & Core 2 &  Branch predictor miss \\
-\hline 
 23 & Pulse & Core 3 &  Instruction count pipeline 0 \\
-\hline 
 24 & Pulse & Core 3 &  Instruction count pipeline 1 \\
-\hline 
 25 & Pulse & Core 3 &  Instruction cache miss \\
-\hline 
 26 & Pulse & Core 3 &  Instruction TLB miss \\
-\hline 
-27 & Pulse & Core 3 &  Data caches L1 miss \\
-\hline 
+27 & Pulse & Core 3 &  Data chache L1 miss \\
 28 & Pulse & Core 3 &  Data TLB miss \\
-\hline 
 29 & Pulse & Core 3 &  Branch predictor miss \\
-\hline 
-30 & CCS & Core0 &  Contention C0 over C1\\
-\hline 
-31 & CCS & Core0 &  Contention C0 over C2\\
-\hline 
-32 & CCS & Core0 &  Contention C0 over C3\\
-\hline 
-33 & CCS & Core1 &  Contention C1 over C0\\
-\hline 
-34 & CCS & Core1 &  Contention C1 over C2\\
-\hline 
-35 & CCS & Core1 &  Contention C1 over C3\\
-\hline 
-36 & CCS & Core2 &  Contention C2 over C0\\
-\hline 
-37 & CCS & Core2 &  Contention C2 over C1\\
-\hline 
-38 & CCS & Core2 &  Contention C2 over C3\\
-\hline 
-39 & CCS & Core3 &  Contention C3 over C0\\
-\hline 
-40 & CCS & Core3 &  Contention C3 over C1\\
-\hline 
-41 & CCS & Core3 &  Contention C3 over C2\\
-\hline 
-42 & - & - &   Filler signal, constant 0 \\
-\hline 
-... & ... & ... &  ... \\
+30 & Pulse & Core 4 &  Instruction count pipeline 0 \\
+31 & Pulse & Core 4 &  Instruction count pipeline 1 \\
+32 & Pulse & Core 4 &  Instruction cache miss \\
+33 & Pulse & Core 4 &  Instruction TLB miss \\
+34 & Pulse & Core 4 &  Data chache L1 miss \\
+35 & Pulse & Core 4 &  Data TLB miss \\
+36 & Pulse & Core 4 &  Branch predictor miss \\
+37 & Pulse & Core 5 &  Instruction count pipeline 0 \\
+38 & Pulse & Core 5 &  Instruction count pipeline 1 \\
+39 & Pulse & Core 5 &  Instruction cache miss \\
+40 & Pulse & Core 5 &  Instruction TLB miss \\
+41 & Pulse & Core 5 &  Data chache L1 miss \\
+42 & Pulse & Core 5 &  Data TLB miss \\
+43 & Pulse & Core 5 &  Branch predictor miss \\
+44 & CCS AHB &  -  &  Agressor C1 Victim C0\\
+45 & CCS AHB &  -  &  Agressor C2 Victim C0\\
+46 & CCS AHB &  -  &  Agressor C3 Victim C0\\
+47 & CCS AHB &  -  &  Agressor C4 Victim C0\\
+48 & CCS AHB &  -  &  Agressor C5 Victim C0\\
+49 & CCS AHB &  -  &  Agressor C0 Victim C1\\
+50 & CCS AHB &  -  &  Agressor C2 Victim C1\\
+51 & CCS AHB &  -  &  Agressor C3 Victim C1\\
+52 & CCS AHB &  -  &  Agressor C4 Victim C1\\
+53 & CCS AHB &  -  &  Agressor C5 Victim C1\\
+54 & CCS AHB &  -  &  Agressor C0 Victim C2\\
+55 & CCS AHB &  -  &  Agressor C1 Victim C2\\
+56 & CCS AHB &  -  &  Agressor C3 Victim C2\\
+57 & CCS AHB &  -  &  Agressor C4 Victim C2\\
+58 & CCS AHB &  -  &  Agressor C5 Victim C2\\
+59 & CCS AHB &  -  &  Agressor C0 Victim C3\\
+60 & CCS AHB &  -  &  Agressor C1 Victim C3\\
+61 & CCS AHB &  -  &  Agressor C2 Victim C3\\
+62 & CCS AHB &  -  &  Agressor C4 Victim C3\\
+63 & CCS AHB &  -  &  Agressor C5 Victim C3\\
+64 & CCS AHB &  -  &  Agressor C0 Victim C4\\
+65 & CCS AHB &  -  &  Agressor C1 Victim C4\\
+66 & CCS AHB &  -  &  Agressor C2 Victim C4\\
+67 & CCS AHB &  -  &  Agressor C3 Victim C4\\
+68 & CCS AHB &  -  &  Agressor C5 Victim C4\\
+69 & CCS AHB &  -  &  Agressor C0 Victim C5\\
+70 & CCS AHB &  -  &  Agressor C1 Victim C5\\
+71 & CCS AHB &  -  &  Agressor C2 Victim C5\\
+72 & CCS AHB &  -  &  Agressor C3 Victim C5\\
+73 & CCS AHB &  -  &  Agressor C4 Victim C5\\
+74 & CCS AXI & Write &  Agressor MQ1 Victim MQ0\\
+75 & CCS AXI & Write &  Agressor MQ2 Victim MQ0\\
+76 & CCS AXI & Write &  Agressor MQ3 Victim MQ0\\
+77 & CCS AXI & Write &  Agressor MQ4 Victim MQ0\\
+78 & CCS AXI & Write &  Agressor MQ5 Victim MQ0\\
+79 & CCS AXI & Write &  Agressor MQ6 Victim MQ0\\
+80 & CCS AXI & Write &  Agressor MQ7 Victim MQ0\\
+81 & CCS AXI & Write &  Agressor MQ8 Victim MQ0\\
+82 & CCS AXI & Write &  Agressor MQ9 Victim MQ0\\
+83 & CCS AXI & Write &  Agressor MQ10 Victim MQ0\\
+84 & CCS AXI & Write &  Agressor MQ11 Victim MQ0\\
+85 & CCS AXI & Write &  Agressor MQ12 Victim MQ0\\
+86 & CCS AXI & Write &  Agressor MQ13 Victim MQ0\\
+87 & CCS AXI & Write &  Agressor MQ14 Victim MQ0\\
+88 & CCS AXI & Write &  Agressor MQ0 Victim MQ1\\
+89 & CCS AXI & Write &  Agressor MQ2 Victim MQ1\\
+90 & CCS AXI & Write &  Agressor MQ3 Victim MQ1\\
+91 & CCS AXI & Write &  Agressor MQ4 Victim MQ1\\
+92 & CCS AXI & Write &  Agressor MQ5 Victim MQ1\\
+93 & CCS AXI & Write &  Agressor MQ6 Victim MQ1\\
+94 & CCS AXI & Write &  Agressor MQ7 Victim MQ1\\
+95 & CCS AXI & Write &  Agressor MQ8 Victim MQ1\\
+96 & CCS AXI & Write &  Agressor MQ9 Victim MQ1\\
+97 & CCS AXI & Write &  Agressor MQ10 Victim MQ1\\
+98 & CCS AXI & Write &  Agressor MQ11 Victim MQ1\\
+99 & CCS AXI & Write &  Agressor MQ12 Victim MQ1\\
+100 & CCS AXI & Write &  Agressor MQ13 Victim MQ1\\
+101 & CCS AXI & Write &  Agressor MQ14 Victim MQ1\\
+102 & CCS AXI & Write &  Agressor MQ0 Victim MQ2\\
+103 & CCS AXI & Write &  Agressor MQ1 Victim MQ2\\
+104 & CCS AXI & Write &  Agressor MQ3 Victim MQ2\\
+105 & CCS AXI & Write &  Agressor MQ4 Victim MQ2\\
+106 & CCS AXI & Write &  Agressor MQ5 Victim MQ2\\
+107 & CCS AXI & Write &  Agressor MQ6 Victim MQ2\\
+108 & CCS AXI & Write &  Agressor MQ7 Victim MQ2\\
+109 & CCS AXI & Write &  Agressor MQ8 Victim MQ2\\
+110 & CCS AXI & Write &  Agressor MQ9 Victim MQ2\\
+111 & CCS AXI & Write &  Agressor MQ10 Victim MQ2\\
+112 & CCS AXI & Write &  Agressor MQ11 Victim MQ2\\
+113 & CCS AXI & Write &  Agressor MQ12 Victim MQ2\\
+114 & CCS AXI & Write &  Agressor MQ13 Victim MQ2\\
+115 & CCS AXI & Write &  Agressor MQ14 Victim MQ2\\
+116 & CCS AXI & Write &  Agressor MQ0 Victim MQ3\\
+117 & CCS AXI & Write &  Agressor MQ1 Victim MQ3\\
+118 & CCS AXI & Write &  Agressor MQ2 Victim MQ3\\
+119 & CCS AXI & Write &  Agressor MQ4 Victim MQ3\\
+120 & CCS AXI & Write &  Agressor MQ5 Victim MQ3\\
+121 & CCS AXI & Write &  Agressor MQ6 Victim MQ3\\
+122 & CCS AXI & Write &  Agressor MQ7 Victim MQ3\\
+123 & CCS AXI & Write &  Agressor MQ8 Victim MQ3\\
+124 & CCS AXI & Write &  Agressor MQ9 Victim MQ3\\
+125 & CCS AXI & Write &  Agressor MQ10 Victim MQ3\\
+126 & CCS AXI & Write &  Agressor MQ11 Victim MQ3\\
+127 & CCS AXI & Write &  Agressor MQ12 Victim MQ3\\
+128 & CCS AXI & Write &  Agressor MQ13 Victim MQ3\\
+129 & CCS AXI & Write &  Agressor MQ14 Victim MQ3\\
+130 & CCS AXI & Write &  Agressor MQ0 Victim MQ4\\
+131 & CCS AXI & Write &  Agressor MQ1 Victim MQ4\\
+132 & CCS AXI & Write &  Agressor MQ2 Victim MQ4\\
+133 & CCS AXI & Write &  Agressor MQ3 Victim MQ4\\
+134 & CCS AXI & Write &  Agressor MQ5 Victim MQ4\\
+135 & CCS AXI & Write &  Agressor MQ6 Victim MQ4\\
+136 & CCS AXI & Write &  Agressor MQ7 Victim MQ4\\
+137 & CCS AXI & Write &  Agressor MQ8 Victim MQ4\\
+138 & CCS AXI & Write &  Agressor MQ9 Victim MQ4\\
+139 & CCS AXI & Write &  Agressor MQ10 Victim MQ4\\
+140 & CCS AXI & Write &  Agressor MQ11 Victim MQ4\\
+141 & CCS AXI & Write &  Agressor MQ12 Victim MQ4\\
+142 & CCS AXI & Write &  Agressor MQ13 Victim MQ4\\
+143 & CCS AXI & Write &  Agressor MQ14 Victim MQ4\\
+144 & CCS AXI & Write &  Agressor MQ0 Victim MQ5\\
+145 & CCS AXI & Write &  Agressor MQ1 Victim MQ5\\
+146 & CCS AXI & Write &  Agressor MQ2 Victim MQ5\\
+147 & CCS AXI & Write &  Agressor MQ3 Victim MQ5\\
+148 & CCS AXI & Write &  Agressor MQ4 Victim MQ5\\
+149 & CCS AXI & Write &  Agressor MQ6 Victim MQ5\\
+150 & CCS AXI & Write &  Agressor MQ7 Victim MQ5\\
+151 & CCS AXI & Write &  Agressor MQ8 Victim MQ5\\
+152 & CCS AXI & Write &  Agressor MQ9 Victim MQ5\\
+153 & CCS AXI & Write &  Agressor MQ10 Victim MQ5\\
+154 & CCS AXI & Write &  Agressor MQ11 Victim MQ5\\
+155 & CCS AXI & Write &  Agressor MQ12 Victim MQ5\\
+156 & CCS AXI & Write &  Agressor MQ13 Victim MQ5\\
+157 & CCS AXI & Write &  Agressor MQ14 Victim MQ5\\
+158 & CCS AXI & Read &  Agressor MQ1 Victim MQ0\\
+159 & CCS AXI & Read &  Agressor MQ2 Victim MQ0\\
+160 & CCS AXI & Read &  Agressor MQ3 Victim MQ0\\
+161 & CCS AXI & Read &  Agressor MQ4 Victim MQ0\\
+162 & CCS AXI & Read &  Agressor MQ5 Victim MQ0\\
+163 & CCS AXI & Read &  Agressor MQ6 Victim MQ0\\
+164 & CCS AXI & Read &  Agressor MQ7 Victim MQ0\\
+165 & CCS AXI & Read &  Agressor MQ8 Victim MQ0\\
+166 & CCS AXI & Read &  Agressor MQ9 Victim MQ0\\
+167 & CCS AXI & Read &  Agressor MQ10 Victim MQ0\\
+168 & CCS AXI & Read &  Agressor MQ11 Victim MQ0\\
+169 & CCS AXI & Read &  Agressor MQ12 Victim MQ0\\
+170 & CCS AXI & Read &  Agressor MQ13 Victim MQ0\\
+171 & CCS AXI & Read &  Agressor MQ14 Victim MQ0\\
+172 & CCS AXI & Read &  Agressor MQ0 Victim MQ1\\
+173 & CCS AXI & Read &  Agressor MQ2 Victim MQ1\\
+174 & CCS AXI & Read &  Agressor MQ3 Victim MQ1\\
+175 & CCS AXI & Read &  Agressor MQ4 Victim MQ1\\
+176 & CCS AXI & Read &  Agressor MQ5 Victim MQ1\\
+177 & CCS AXI & Read &  Agressor MQ6 Victim MQ1\\
+178 & CCS AXI & Read &  Agressor MQ7 Victim MQ1\\
+179 & CCS AXI & Read &  Agressor MQ8 Victim MQ1\\
+180 & CCS AXI & Read &  Agressor MQ9 Victim MQ1\\
+181 & CCS AXI & Read &  Agressor MQ10 Victim MQ1\\
+182 & CCS AXI & Read &  Agressor MQ11 Victim MQ1\\
+183 & CCS AXI & Read &  Agressor MQ12 Victim MQ1\\
+184 & CCS AXI & Read &  Agressor MQ13 Victim MQ1\\
+185 & CCS AXI & Read &  Agressor MQ14 Victim MQ1\\
+186 & CCS AXI & Read &  Agressor MQ0 Victim MQ2\\
+187 & CCS AXI & Read &  Agressor MQ1 Victim MQ2\\
+188 & CCS AXI & Read &  Agressor MQ3 Victim MQ2\\
+189 & CCS AXI & Read &  Agressor MQ4 Victim MQ2\\
+190 & CCS AXI & Read &  Agressor MQ5 Victim MQ2\\
+191 & CCS AXI & Read &  Agressor MQ6 Victim MQ2\\
+192 & CCS AXI & Read &  Agressor MQ7 Victim MQ2\\
+193 & CCS AXI & Read &  Agressor MQ8 Victim MQ2\\
+194 & CCS AXI & Read &  Agressor MQ9 Victim MQ2\\
+195 & CCS AXI & Read &  Agressor MQ10 Victim MQ2\\
+196 & CCS AXI & Read &  Agressor MQ11 Victim MQ2\\
+197 & CCS AXI & Read &  Agressor MQ12 Victim MQ2\\
+198 & CCS AXI & Read &  Agressor MQ13 Victim MQ2\\
+199 & CCS AXI & Read &  Agressor MQ14 Victim MQ2\\
+200 & CCS AXI & Read &  Agressor MQ0 Victim MQ3\\
+201 & CCS AXI & Read &  Agressor MQ1 Victim MQ3\\
+202 & CCS AXI & Read &  Agressor MQ2 Victim MQ3\\
+203 & CCS AXI & Read &  Agressor MQ4 Victim MQ3\\
+204 & CCS AXI & Read &  Agressor MQ5 Victim MQ3\\
+205 & CCS AXI & Read &  Agressor MQ6 Victim MQ3\\
+206 & CCS AXI & Read &  Agressor MQ7 Victim MQ3\\
+207 & CCS AXI & Read &  Agressor MQ8 Victim MQ3\\
+208 & CCS AXI & Read &  Agressor MQ9 Victim MQ3\\
+209 & CCS AXI & Read &  Agressor MQ10 Victim MQ3\\
+210 & CCS AXI & Read &  Agressor MQ11 Victim MQ3\\
+211 & CCS AXI & Read &  Agressor MQ12 Victim MQ3\\
+212 & CCS AXI & Read &  Agressor MQ13 Victim MQ3\\
+213 & CCS AXI & Read &  Agressor MQ14 Victim MQ3\\
+214 & CCS AXI & Read &  Agressor MQ0 Victim MQ4\\
+215 & CCS AXI & Read &  Agressor MQ1 Victim MQ4\\
+216 & CCS AXI & Read &  Agressor MQ2 Victim MQ4\\
+217 & CCS AXI & Read &  Agressor MQ3 Victim MQ4\\
+218 & CCS AXI & Read &  Agressor MQ5 Victim MQ4\\
+219 & CCS AXI & Read &  Agressor MQ6 Victim MQ4\\
+220 & CCS AXI & Read &  Agressor MQ7 Victim MQ4\\
+221 & CCS AXI & Read &  Agressor MQ8 Victim MQ4\\
+222 & CCS AXI & Read &  Agressor MQ9 Victim MQ4\\
+223 & CCS AXI & Read &  Agressor MQ10 Victim MQ4\\
+224 & CCS AXI & Read &  Agressor MQ11 Victim MQ4\\
+225 & CCS AXI & Read &  Agressor MQ12 Victim MQ4\\
+226 & CCS AXI & Read &  Agressor MQ13 Victim MQ4\\
+227 & CCS AXI & Read &  Agressor MQ14 Victim MQ4\\
+228 & CCS AXI & Read &  Agressor MQ0 Victim MQ5\\
+229 & CCS AXI & Read &  Agressor MQ1 Victim MQ5\\
+230 & CCS AXI & Read &  Agressor MQ2 Victim MQ5\\
+231 & CCS AXI & Read &  Agressor MQ3 Victim MQ5\\
+232 & CCS AXI & Read &  Agressor MQ4 Victim MQ5\\
+233 & CCS AXI & Read &  Agressor MQ6 Victim MQ5\\
+234 & CCS AXI & Read &  Agressor MQ7 Victim MQ5\\
+235 & CCS AXI & Read &  Agressor MQ8 Victim MQ5\\
+236 & CCS AXI & Read &  Agressor MQ9 Victim MQ5\\
+237 & CCS AXI & Read &  Agressor MQ10 Victim MQ5\\
+238 & CCS AXI & Read &  Agressor MQ11 Victim MQ5\\
+239 & CCS AXI & Read &  Agressor MQ12 Victim MQ5\\
+240 & CCS AXI & Read &  Agressor MQ13 Victim MQ5\\
+241 & CCS AXI & Read &  Agressor MQ14 Victim MQ5\\
+242 & - & - &   Filler signal, constant 0 \\
+243 & - & - &   Filler signal, constant 0 \\
+244 & - & - &   Filler signal, constant 0 \\
+245 & - & - &   Filler signal, constant 0 \\
+246 & - & - &   Filler signal, constant 0 \\
+247 & - & - &   Filler signal, constant 0 \\
+248 & - & - &   Filler signal, constant 0 \\
+249 & - & - &   Filler signal, constant 0 \\
+250 & - & - &   Filler signal, constant 0 \\
+251 & - & - &   Filler signal, constant 0 \\
+252 & - & - &   Filler signal, constant 0 \\
+253 & - & - &   Filler signal, constant 0 \\
+254 & - & - &   Filler signal, constant 0 \\
+255 & - & - &   Filler signal, constant 0 \\
+	\end{longtable}
+\end{center}
 
-\hline 
-127 & - & - &   Filler signal, constant 0 \\
-\hline 
-	\end{tabular}
-	\end{footnotesize}
+\begin{table}[H]
+	\caption{Maping from Master qos (MQ) to IPs on GPL release. }
+	\label{table:t_ev2}
+	\centering
+		\begin{tabular}{|l|l|l|l|l|}
+			\hline
+			\textbf{MQ} & \textbf{Bus of origin}  & \textbf{Bus ID} & \textbf{Description}\\
+			\hline
+0 & AHB & 0 &  NOEL-V CORE \\
+1 & AHB & 1 &  NOEL-V CORE \\
+2 & AHB & 2 &  NOEL-V CORE \\
+3 & AHB & 3 &  NOEL-V CORE \\
+4 & AHB & 4 &  NOEL-V CORE \\
+5 & AHB & 5 &  NOEL-V CORE \\
+6 & AHB & 6 &  GR Ethernet MAC \\
+7 & AHB & 7 &  GRDMAC2 DMA Controller \\
+8 & AHB & 8 &  AHB Debug UART \\
+9 & AHB & 9 &  JTAG Debug Link \\
+10 & AHB & 10 &  EDCL master interface   \\
+11 & - & - & Unused \\
+12 & - & - & Unused  \\
+13 & - & - & Unused   \\
+14 & - & - & Unused  \\
+	\hline
+		\end{tabular}
 \end{table}
 
 \begin{table}[H]
-	\caption{SELENE default input events. 128 inputs, 6 cores}
-	\label{table:t_ev2}
+	\caption{Maping from Master qos (MQ) to IPs on non-GPL release}
+	\label{table:t_ev3}
 	\centering
-	\begin{tiny}
-		\begin{tabular}{|l|l|l|l|l|}
-			\hline
-			\textbf{Index} & \textbf{Type}  & \textbf{Source} & \textbf{Description}\\
-			\hline
-			0 & Debug & local &  Constant HIGH, used for debug purposes or clock cycles \\
-			\hline 
-			1 & Debug & local &  Constant LOW, used for debug purposes \\
-			\hline 
-			2 & Pulse & Core 0 &  Instruction count pipeline 0 \\
-			\hline 
-			3 & Pulse & Core 0 &  Instruction count pipeline 1 \\
-			\hline 
-			4 & Pulse & Core 0 &  Instruction cache miss \\
-			\hline 
-			5 & Pulse & Core 0 &  Instruction TLB miss \\
-			\hline 
-			6 & Pulse & Core 0 &  Data caches L1 miss \\
-			\hline 
-			7 & Pulse & Core 0 &  Data TLB miss \\
-			\hline 
-			8 & Pulse & Core 0 &  Branch predictor miss \\
-			\hline 
-			9 & Pulse & Core 1 &  Instruction count pipeline 0 \\
-			\hline 
-			10 & Pulse & Core 1 &  Instruction count pipeline 1 \\
-			\hline 
-			11 & Pulse & Core 1 &  Instruction cache miss \\
-			\hline 
-			12 & Pulse & Core 1 &  Instruction TLB miss \\
-			\hline 
-			13 & Pulse & Core 1 &  Data caches L1 miss \\
-			\hline 
-			14 & Pulse & Core 1 &  Data TLB miss \\
-			\hline 
-			15 & Pulse & Core 1 &  Branch predictor miss \\
-			\hline 
-			16 & Pulse & Core 2 &  Instruction count pipeline 0 \\
-			\hline 
-			17 & Pulse & Core 2 &  Instruction count pipeline 1 \\
-			\hline 
-			18 & Pulse & Core 2 &  Instruction cache miss \\
-			\hline 
-			19 & Pulse & Core 2 &  Instruction TLB miss \\
-			\hline 
-			20 & Pulse & Core 2 &  Data caches L1 miss \\
-			\hline 
-			21 & Pulse & Core 2 &  Data TLB miss \\
-			\hline 
-			22 & Pulse & Core 2 &  Branch predictor miss \\
-			\hline 
-			23 & Pulse & Core 3 &  Instruction count pipeline 0 \\
-			\hline 
-			24 & Pulse & Core 3 &  Instruction count pipeline 1 \\
-			\hline 
-			25 & Pulse & Core 3 &  Instruction cache miss \\
-			\hline 
-			26 & Pulse & Core 3 &  Instruction TLB miss \\
-			\hline 
-			27 & Pulse & Core 3 &  Data caches L1 miss \\
-			\hline 
-			28 & Pulse & Core 3 &  Data TLB miss \\
-			\hline 
-			29 & Pulse & Core 3 &  Branch predictor miss \\
-			\hline 
-			30 & Pulse & Core 4 &  Instruction count pipeline 0 \\
-			\hline 
-			31 & Pulse & Core 4 &  Instruction count pipeline 1 \\
-			\hline 
-			32 & Pulse & Core 4 &  Instruction cache miss \\
-			\hline 
-			33 & Pulse & Core 4 &  Instruction TLB miss \\
-			\hline 
-			34 & Pulse & Core 4 &  Data caches L1 miss \\
-			\hline 
-			35 & Pulse & Core 4 &  Data TLB miss \\
-			\hline 
-			36 & Pulse & Core 4 &  Branch predictor miss \\
-			\hline 
-			37 & Pulse & Core 5 &  Instruction count pipeline 0 \\
-			\hline 
-			38 & Pulse & Core 5 &  Instruction count pipeline 1 \\
-			\hline 
-			39 & Pulse & Core 5 &  Instruction cache miss \\
-			\hline 
-			40 & Pulse & Core 5 &  Instruction TLB miss \\
-			\hline 
-			41 & Pulse & Core 5 &  Data caches L1 miss \\
-			\hline 
-			42 & Pulse & Core 5 &  Data TLB miss \\
-			\hline 
-			43 & Pulse & Core 5 &  Branch predictor miss \\
-			\hline 
-			44 & CCS & Core0 &  Contention C0 over C1\\
-			\hline 
-			45 & CCS & Core0 &  Contention C0 over C2\\
-			\hline 
-			46 & CCS & Core0 &  Contention C0 over C3\\
-			\hline 
-			47 & CCS & Core0 &  Contention C0 over C4\\
-			\hline 
-			48 & CCS & Core0 &  Contention C0 over C5\\
-			\hline 
-			49 & CCS & Core1 &  Contention C1 over C0\\
-			\hline 
-			50 & CCS & Core1 &  Contention C1 over C2\\
-			\hline 
-			51 & CCS & Core1 &  Contention C1 over C3\\
-			\hline 
-			52 & CCS & Core1 &  Contention C1 over C4\\
-			\hline 
-			53 & CCS & Core1 &  Contention C1 over C5\\
-			\hline 
-			54 & CCS & Core2 &  Contention C2 over C0\\
-			\hline 
-			55 & CCS & Core2 &  Contention C2 over C1\\
-			\hline 
-			56 & CCS & Core2 &  Contention C2 over C3\\
-			\hline 
-			57 & CCS & Core2 &  Contention C2 over C4\\
-			\hline 
-			58 & CCS & Core2 &  Contention C2 over C5\\
-			\hline 
-			59 & CCS & Core3 &  Contention C3 over C0\\
-			\hline 
-			60 & CCS & Core3 &  Contention C3 over C1\\
-			\hline 
-			61 & CCS & Core3 &  Contention C3 over C2\\
-			\hline 
-			62 & CCS & Core3 &  Contention C3 over C4\\
-			\hline 
-			63 & CCS & Core3 &  Contention C3 over C5\\
-			\hline 
-			64 & CCS & Core4 &  Contention C4 over C0\\
-			\hline 
-			65 & CCS & Core4 &  Contention C4 over C1\\
-			\hline 
-			66 & CCS & Core4 &  Contention C4 over C2\\
-			\hline 
-			67 & CCS & Core4 &  Contention C4 over C3\\
-			\hline 
-			68 & CCS & Core4 &  Contention C4 over C5\\
-			\hline 
-			69 & CCS & Core5 &  Contention C5 over C0\\
-			\hline 
-			70 & CCS & Core5 &  Contention C5 over C1\\
-			\hline 
-			71 & CCS & Core5 &  Contention C5 over C2\\
-			\hline 
-			72 & CCS & Core5 &  Contention C5 over C3\\
-			\hline 
-			73 & CCS & Core5 &  Contention C5 over C4\\
-			\hline 
-			74 & - & - &   Filler signal, constant 0 \\
-			\hline 
-			... & ... & ... & ... \\
-			\hline 
-			127 & - & - &   Filler signal, constant 0 \\
-			\hline 	
-		\end{tabular}
-	\end{tiny}
+	\begin{tabular}{|l|l|l|l|l|}
+		\hline
+		\textbf{MQ} & \textbf{Bus of origin}  & \textbf{Bus ID} & \textbf{Description}\\
+		\hline
+0 & AHB & 0 &  NOEL-V CORE \\
+1 & AHB & 1 &  NOEL-V CORE \\
+2 & AHB & 2 &  NOEL-V CORE \\
+3 & AHB & 3 &  NOEL-V CORE \\
+4 & AHB & 4 &  NOEL-V CORE \\
+5 & AHB & 5 &  NOEL-V CORE \\
+
+6 & AHB & 6 &  GR Ethernet MAC \\
+7 & AHB & 7 &  GRSPW2 SpaceWire \\
+8 & AHB & 8 &  GRSPW2 SpaceWire \\
+9 & AHB & 9 &  CAN-FD Controller with DMA \\
+10 & AHB & 10 &  CAN-FD Controller with DMA \\
+11 & AHB & 11 & GRDMAC2 DMA Controller \\
+12 & AHB & 12 & AHB Debug UART  \\
+13 & AHB & 13 & JTAG Debug Link   \\
+14 & AHB & 14 & EDCL master interface  \\
+	\hline
+	\end{tabular}
 \end{table}
 Signals labeled as \textit{debug} are fix inputs that can be used to test hardware or software with known inputs. \textbf{Event 0} (fix '1') can be used to measure the \textbf{number of elapsed cycles}.\\
 \\
@@ -734,7 +801,9 @@ The unit does provide access to the internal interrupt vector (register \ref{RDC
 \subsection{Software support}
 The unit can be configured by the user at a low level following the description of previous sections and \href{https://gitlab.bsc.es/caos_hw/hdl_ip/bsc_pmu/-/tree/develop/docs}{the documents associated for each unit}. In addition we provide a small bare-metal driver under the \textit{drivers} directory of the SafeSU repository.\\
 \\
-Currently 6 core and 4 core versions of the drivers are provided. The drivers are composed of three files.
+Currently 3 configurations are provided. \textit{4-core} and \textit{6-core} folders have the driver for default configurations. \textit{6-core-256e} folder has a driver for an hexacore with 256 entries on the crossbar.\\
+\\
+The drivers are composed of three files.
 \begin{itemize}
 \item \textit{pmu\_vars.h }: Defines a set of constants with the RTL parameters that generated the unit. Such constants allow the reusing of functions among hardware configurations.
 \item\textit{ pmu\_hw.h}: Defines the memory position of the SafeSU within the memory map of the SoC. It also contains the prototypes of each function of the driver.
