@@ -3,7 +3,6 @@
 *.toc
 *.aux
 *.pyg
-*.pdf
 *.bbl
 *.blg
 *.cut

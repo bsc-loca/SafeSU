@@ -730,6 +730,14 @@ Weights for each monitored event are registered in registers \ref{MCCU_weight0} 
 	\regfield{Input 4}{8}{0}{{00}}
 	\reglabel{Reset value}\regnewline
 \end{register}
+\begin{register}{H}{MCCU event weights register 2 (shared with RDC)}{0xa0}
+	\label{MCCU_weight1}
+	\regfield{Input 11}{8}{24}{{00}}
+	\regfield{Input 10}{8}{16}{{00}}
+	\regfield{Input 9}{8}{8}{{00}}
+	\regfield{Input 8}{8}{0}{{00}}
+	\reglabel{Reset value}\regnewline
+\end{register}
 
 \subsection{RDC}
 The Request Duration Counter or RDC is comprised of a set of 8-bit counters and comparators that allow monitoring the length of a CCS signal, record the number of clock cycles of the longest pulse and compare such value with the defined weight.\\
