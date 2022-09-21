@@ -140,6 +140,7 @@ void safesu_plic_register_interrupt(uint8_t mode, uint8_t core, uint8_t source_p
     printf("safesu_plic_register_interrupt IN\n");
 #endif
     //TODO Indentify Interrupt source
+    plic_set_source_priority(29,source_priority);
     plic_set_source_priority(28,source_priority);
     plic_set_source_priority(26,source_priority);
     plic_set_source_priority(24,source_priority);
@@ -148,6 +149,7 @@ void safesu_plic_register_interrupt(uint8_t mode, uint8_t core, uint8_t source_p
     plic_set_source_priority(8,source_priority);
     plic_set_source_priority(7,source_priority);
     plic_set_source_priority(4,source_priority);
+    plic_enable_source(mode, core, MASK_SOURCE_29);
     plic_enable_source(mode, core, MASK_SOURCE_28);
     plic_enable_source(mode, core, MASK_SOURCE_26);
     plic_enable_source(mode, core, MASK_SOURCE_24);
