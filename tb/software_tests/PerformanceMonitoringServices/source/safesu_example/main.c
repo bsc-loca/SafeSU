@@ -126,7 +126,7 @@ main(void)
             printf("ITERATIONS:%d\n", __TEST_ITERATIONS__);
 
             //Pointer for Core 0
-            p = (unsigned int *) (0x05000000);
+            p = (unsigned int *) (0x05100000);
 
             //Disable counters
             safesu_counters_disable();
@@ -150,34 +150,34 @@ main(void)
         case 1:
             //CORE 1 CODE
             //Pointer for Core 1
-            p = (unsigned int *) (0x05100000);
+            p = (unsigned int *) (0x05200000);
             contender_code(p);
             break;
         case 2:
             //CORE 2 CODE
             //Pointer for Core 2
-            p = (unsigned int *) (0x05200000);
+            p = (unsigned int *) (0x05300000);
             contender_code(p);
             break;
 
         case 3:
             //CORE 3 CODE
             //Pointer for Core 3
-            p = (unsigned int *) (0x05300000);
+            p = (unsigned int *) (0x05400000);
             contender_code(p);
             break;
 
         case 4:
             //CORE 4 CODE
             //Pointer for Core 4
-            p = (unsigned int *) (0x05400000);
+            p = (unsigned int *) (0x05500000);
             contender_code(p);
             break;
 
         case 5:
             //CORE 5 CODE
             //Pointer for Core 5
-            p = (unsigned int *) (0x05500000);
+            p = (unsigned int *) (0x05600000);
             contender_code(p);
             break;
     }
