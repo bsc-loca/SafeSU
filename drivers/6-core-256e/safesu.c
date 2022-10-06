@@ -139,7 +139,7 @@ void safesu_plic_register_interrupt(uint8_t mode, uint8_t core, uint8_t source_p
 #ifdef __SAFESU_LIB_DEBUG__
     printf("safesu_plic_register_interrupt IN\n");
 #endif
-    //TODO Indentify Interrupt source
+    //TODO Dont use this code -> Check out the 5 cores interrupt example
     plic_set_source_priority(29,source_priority);
     plic_set_source_priority(28,source_priority);
     plic_set_source_priority(26,source_priority);
@@ -309,6 +309,10 @@ void safesu_mccu_disable(void) {
 void safesu_mccu_reset(void) {
     SAFESUCFG1 |= 0x00000002;
     SAFESUCFG1 &= 0xFFFFFFFD;
+    //4 -> weigths per register
+    for (int i = 0; i < N_MCCU_WEIGHTS * 4; ++i) {
+        safesu_mccu_set_event_weigths(i,0);
+    }
     #ifdef __SAFESU_LIB_DEBUG__
     printf("safesu_mccu_reset\n");
     printf("SAFESUCFG1 = %d\n", SAFESUCFG1);
@@ -366,26 +370,53 @@ unsigned safesu_mccu_set_event_weigths(const unsigned int input,
     const unsigned int weigth) {
     switch (input) {
     case 0:
+        EVENT_WEIGHT_REG0 &= ~(0x000000FF);
+        EVENT_WEIGHT_REG0 |= (weigth);
+        break;
     case 1:
+        EVENT_WEIGHT_REG0 &= ~(0x0000FF00);
+        EVENT_WEIGHT_REG0 |= (weigth << 8);
+        break;
     case 2:
+        EVENT_WEIGHT_REG0 &= ~(0x00FF0000);
+        EVENT_WEIGHT_REG0 |= (weigth << 16);
+        break;
     case 3:
-        EVENT_WEIGHT_REG0 &= ~(0x000000FF << (input << 3));
-        EVENT_WEIGHT_REG0 |= (weigth & 0x000000FF) << (input << 3);
+        EVENT_WEIGHT_REG0 &= ~(0xFF000000);
+        EVENT_WEIGHT_REG0 |= (weigth  << 24);
         break;
 
     case 4:
+        EVENT_WEIGHT_REG1 &= ~(0x000000FF);
+        EVENT_WEIGHT_REG1 |= (weigth);
+        break;
     case 5:
+        EVENT_WEIGHT_REG1 &= ~(0x0000FF00);
+        EVENT_WEIGHT_REG1 |= (weigth << 8);
+        break;
     case 6:
+        EVENT_WEIGHT_REG1 &= ~(0x00FF0000);
+        EVENT_WEIGHT_REG1 |= (weigth << 16);
+        break;
     case 7:
-        EVENT_WEIGHT_REG1 &= ~(0x000000FF << (input << 3));
-        EVENT_WEIGHT_REG1 |= (weigth & 0x000000FF) << (input << 3);
+        EVENT_WEIGHT_REG1 &= ~(0xFF000000);
+        EVENT_WEIGHT_REG1 |= (weigth << 24);
         break;
     case 8:
+        EVENT_WEIGHT_REG2 &= ~(0x000000FF);
+        EVENT_WEIGHT_REG2 |= (weigth);
+        break;
     case 9:
+        EVENT_WEIGHT_REG2 &= ~(0x0000FF00);
+        EVENT_WEIGHT_REG2 |= (weigth << 8);
+        break;
     case 10:
+        EVENT_WEIGHT_REG2 &= ~(0x00FF0000);
+        EVENT_WEIGHT_REG2 |= (weigth << 16);
+        break;
     case 11:
-        EVENT_WEIGHT_REG2 &= ~(0x000000FF << (input << 3));
-        EVENT_WEIGHT_REG2 |= (weigth & 0x000000FF) << (input << 3);
+        EVENT_WEIGHT_REG2 &= ~(0xFF000000);
+        EVENT_WEIGHT_REG2 |= (weigth << 24);
         break;
 
     default:
