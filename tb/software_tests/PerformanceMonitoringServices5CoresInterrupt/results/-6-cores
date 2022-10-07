@@ -1,0 +1,403 @@
+                                SESSION: Wed Jul 27 00:01:51 2022
+                                GRMON version: v3.2.17 pro version
+                                ID: 692040366 (ldk)
+                                OS: Linux
+                                Command line: /mnt/caos_hw/Programs2/grmon-pro-3.2.17/linux/bin64/grmon -u -v -digilent -jtagcable 2 -log results/-6-cores -c grmon_scripts/active_cores_6.grmon
+                                
+                                GRMON debug monitor v3.2.17 64-bit pro version
+                                
+                                Copyright (C) 2022 Cobham Gaisler - All rights reserved.
+                                For latest updates, go to https://www.gaisler.com/
+                                Comments or bug-reports to support@gaisler.com
+                                
+[SE0:sys]         001658872911  JTAG chain (1): xcvu9p 
+[SE0:cli]         001658872912  GRLIB build version: 4274
+[SE0:cli]         001658872912  Detected frequency:  100.0 MHz
+[SE0:cli]         001658872912  
+[SE0:cli]         001658872912  Component                            Vendor
+[SE0:cli]         001658872912  NOEL-V RISC-V Processor              Cobham Gaisler
+[SE0:cli]         001658872912  NOEL-V RISC-V Processor              Cobham Gaisler
+[SE0:cli]         001658872912  NOEL-V RISC-V Processor              Cobham Gaisler
+[SE0:cli]         001658872912  NOEL-V RISC-V Processor              Cobham Gaisler
+[SE0:cli]         001658872912  NOEL-V RISC-V Processor              Cobham Gaisler
+[SE0:cli]         001658872912  NOEL-V RISC-V Processor              Cobham Gaisler
+[SE0:cli]         001658872912  GR Ethernet MAC                      Cobham Gaisler
+[SE0:cli]         001658872912  GRDMAC2 DMA Controller               Cobham Gaisler
+[SE0:cli]         001658872912  AHB Debug UART                       Cobham Gaisler
+[SE0:cli]         001658872912  JTAG Debug Link                      Cobham Gaisler
+[SE0:cli]         001658872912  EDCL master interface                Cobham Gaisler
+[SE0:cli]         001658872912  L2-Cache Controller - Lite           Cobham Gaisler
+[SE0:cli]         001658872912  Xilinx MIG Controller                Cobham Gaisler
+[SE0:cli]         001658872912  Generic AHB ROM                      Cobham Gaisler
+[SE0:cli]         001658872912  AMBA AHB/AXI Bridge                  Cobham Gaisler
+[SE0:cli]         001658872912  Contributed core 2                   Various contributions
+[SE0:cli]         001658872912  AHB/APB Bridge                       Cobham Gaisler
+[SE0:cli]         001658872912  RISC-V CLINT                         Cobham Gaisler
+[SE0:cli]         001658872912  RISC-V PLIC                          Cobham Gaisler
+[SE0:cli]         001658872912  RISC-V Debug Module                  Cobham Gaisler
+[SE0:cli]         001658872912  AMBA Trace Buffer                    Cobham Gaisler
+[SE0:cli]         001658872912  XILINX SGMII Interface               Cobham Gaisler
+[SE0:cli]         001658872912  General Purpose I/O port             Cobham Gaisler
+[SE0:cli]         001658872912  Version and Revision Register        Cobham Gaisler
+[SE0:cli]         001658872912  AHB Status Register                  Cobham Gaisler
+[SE0:cli]         001658872912  Generic UART                         Cobham Gaisler
+[SE0:cli]         001658872912  Generic UART                         Cobham Gaisler
+[SE0:cli]         001658872912  Modular Timer Unit                   Cobham Gaisler
+[SE0:cli]         001658872912  Generic UART                         Cobham Gaisler
+[SE0:cli]         001658872912  
+[SE0:cli]         001658872912  Use command 'info sys' to print a detailed report of attached cores
+[SE0:cli]         001658872912  
+[SE0:cli]         001658872912  grmon3> ::source [file normalize {grmon_scripts/active_cores_6.grmon}]
+[SE0:sys]         001658872912  01:0bd.00 Cobham Gaisler  NOEL-V RISC-V Processor  (cpu0)
+[SE0:sys]         001658872912   0:0      AHB Master 0
+[SE0:sys]         001658872912  01:0bd.00 Cobham Gaisler  NOEL-V RISC-V Processor  (cpu1)
+[SE0:sys]         001658872912   0:1      AHB Master 1
+[SE0:sys]         001658872912  01:0bd.00 Cobham Gaisler  NOEL-V RISC-V Processor  (cpu2)
+[SE0:sys]         001658872912   0:2      AHB Master 2
+[SE0:sys]         001658872912  01:0bd.00 Cobham Gaisler  NOEL-V RISC-V Processor  (cpu3)
+[SE0:sys]         001658872912   0:3      AHB Master 3
+[SE0:sys]         001658872912  01:0bd.00 Cobham Gaisler  NOEL-V RISC-V Processor  (cpu4)
+[SE0:sys]         001658872912   0:4      AHB Master 4
+[SE0:sys]         001658872912  01:0bd.00 Cobham Gaisler  NOEL-V RISC-V Processor  (cpu5)
+[SE0:sys]         001658872912   0:5      AHB Master 5
+[SE0:sys]         001658872912  01:01d.00 Cobham Gaisler  GR Ethernet MAC  (greth0)
+[SE0:sys]         001658872912   0:6      AHB Master 6
+[SE0:sys]         001658872912   0:1      APB: fc084000 - fc084100
+[SE0:sys]         001658872912            IRQ: 5
+[SE0:sys]         001658872912            edcl ip 192.168.125.2, buffer 16 kbyte
+[SE0:sys]         001658872912  01:0c0.01 Cobham Gaisler  GRDMAC2 DMA Controller  (dma0)
+[SE0:sys]         001658872912   0:7      AHB Master 7
+[SE0:sys]         001658872912   0:8      APB: fc0a0000 - fc0a0800
+[SE0:sys]         001658872912            IRQ: 8
+[SE0:sys]         001658872912  01:007.00 Cobham Gaisler  AHB Debug UART  (ahbuart0)
+[SE0:sys]         001658872912   0:8      AHB Master 8
+[SE0:sys]         001658872912   0:0      APB: fc000300 - fc000400
+[SE0:sys]         001658872912            Baudrate 115200, AHB frequency 100.00 MHz
+[SE0:sys]         001658872912  01:01c.02 Cobham Gaisler  JTAG Debug Link  (ahbjtag0)
+[SE0:sys]         001658872912   0:9      AHB Master 9
+[SE0:sys]         001658872912  01:08c.00 Cobham Gaisler  EDCL master interface  (edcl0)
+[SE0:sys]         001658872912   0:a      AHB Master 10
+[SE0:sys]         001658872912  01:0d0.00 Cobham Gaisler  L2-Cache Controller - Lite  (adev11)
+[SE0:sys]         001658872912   0:1      AHB: 00000000 - 80000000
+[SE0:sys]         001658872912            AHB: ffff0000 - 00000000
+[SE0:sys]         001658872912  01:090.00 Cobham Gaisler  Xilinx MIG Controller  (mig0)
+[SE0:sys]         001658872912   0:3      AHB: 00000000 - 80000000
+[SE0:sys]         001658872912            SDRAM: 2048 Mbyte
+[SE0:sys]         001658872912  01:01b.00 Cobham Gaisler  Generic AHB ROM  (ahbrom0)
+[SE0:sys]         001658872912   0:4      AHB: c0000000 - c0100000
+[SE0:sys]         001658872912            32-bit ROM: 1 MB @ 0xc0000000
+[SE0:sys]         001658872912  01:09f.00 Cobham Gaisler  AMBA AHB/AXI Bridge  (adev14)
+[SE0:sys]         001658872912   0:5      AHB: fffc0000 - fffc0800
+[SE0:sys]         001658872912  09:003.00 Various contributions  Contributed core 2  (adev15)
+[SE0:sys]         001658872912   0:6      AHB: 80100000 - 80200000
+[SE0:sys]         001658872912   0:9      APB: fc000500 - fc000600
+[SE0:sys]         001658872912            IRQ: 1
+[SE0:sys]         001658872912  01:006.01 Cobham Gaisler  AHB/APB Bridge  (apbmst0)
+[SE0:sys]         001658872912   0:7      AHB: fc000000 - fc100000
+[SE0:sys]         001658872912  01:0c3.00 Cobham Gaisler  RISC-V CLINT  (clint0)
+[SE0:sys]         001658872912   0:8      AHB: e0000000 - e0100000
+[SE0:sys]         001658872912  01:0c2.00 Cobham Gaisler  RISC-V PLIC  (plic0)
+[SE0:sys]         001658872912   0:9      AHB: f8000000 - fc000000
+[SE0:sys]         001658872912            24 contexts, 32 interrupt sources
+[SE0:sys]         001658872912  01:0be.01 Cobham Gaisler  RISC-V Debug Module  (dm0)
+[SE0:sys]         001658872912   0:b      AHB: fe000000 - ff000000
+[SE0:sys]         001658872912            hart0: DXLEN 64, MXLEN 64, SXLEN 64, UXLEN 64
+[SE0:sys]         001658872912                   ISA A C D F H I M,  Modes M S U
+[SE0:sys]         001658872912                   Stack pointer 0x7ffffff0
+[SE0:sys]         001658872912                   icache 4 * 4 kB, 32 B/line, dir
+[SE0:sys]         001658872912                   dcache 4 * 4 kB, 32 B/line, dir
+[SE0:sys]         001658872912                   3 triggers,
+[SE0:sys]         001658872912                   itrace 64 lines
+[SE0:sys]         001658872912            hart1: DXLEN 64, MXLEN 64, SXLEN 64, UXLEN 64
+[SE0:sys]         001658872912                   ISA A C D F H I M,  Modes M S U
+[SE0:sys]         001658872912                   Stack pointer 0x7ffffff0
+[SE0:sys]         001658872912                   icache 4 * 4 kB, 32 B/line, dir
+[SE0:sys]         001658872912                   dcache 4 * 4 kB, 32 B/line, dir
+[SE0:sys]         001658872912                   3 triggers,
+[SE0:sys]         001658872912                   itrace 64 lines
+[SE0:sys]         001658872912            hart2: DXLEN 64, MXLEN 64, SXLEN 64, UXLEN 64
+[SE0:sys]         001658872912                   ISA A C D F H I M,  Modes M S U
+[SE0:sys]         001658872912                   Stack pointer 0x7ffffff0
+[SE0:sys]         001658872912                   icache 4 * 4 kB, 32 B/line, dir
+[SE0:sys]         001658872912                   dcache 4 * 4 kB, 32 B/line, dir
+[SE0:sys]         001658872912                   3 triggers,
+[SE0:sys]         001658872912                   itrace 64 lines
+[SE0:sys]         001658872912            hart3: DXLEN 64, MXLEN 64, SXLEN 64, UXLEN 64
+[SE0:sys]         001658872912                   ISA A C D F H I M,  Modes M S U
+[SE0:sys]         001658872912                   Stack pointer 0x7ffffff0
+[SE0:sys]         001658872912                   icache 4 * 4 kB, 32 B/line, dir
+[SE0:sys]         001658872912                   dcache 4 * 4 kB, 32 B/line, dir
+[SE0:sys]         001658872912                   3 triggers,
+[SE0:sys]         001658872912                   itrace 64 lines
+[SE0:sys]         001658872912            hart4: DXLEN 64, MXLEN 64, SXLEN 64, UXLEN 64
+[SE0:sys]         001658872912                   ISA A C D F H I M,  Modes M S U
+[SE0:sys]         001658872912                   Stack pointer 0x7ffffff0
+[SE0:sys]         001658872912                   icache 4 * 4 kB, 32 B/line, dir
+[SE0:sys]         001658872912                   dcache 4 * 4 kB, 32 B/line, dir
+[SE0:sys]         001658872912                   3 triggers,
+[SE0:sys]         001658872912                   itrace 64 lines
+[SE0:sys]         001658872912            hart5: DXLEN 64, MXLEN 64, SXLEN 64, UXLEN 64
+[SE0:sys]         001658872912                   ISA A C D F H I M,  Modes M S U
+[SE0:sys]         001658872912                   Stack pointer 0x7ffffff0
+[SE0:sys]         001658872912                   icache 4 * 4 kB, 32 B/line, dir
+[SE0:sys]         001658872912                   dcache 4 * 4 kB, 32 B/line, dir
+[SE0:sys]         001658872912                   3 triggers,
+[SE0:sys]         001658872912                   itrace 64 lines
+[SE0:sys]         001658872912  01:017.00 Cobham Gaisler  AMBA Trace Buffer  (ahbtrace0)
+[SE0:sys]         001658872912   0:e      AHB: fff00000 - fff20000
+[SE0:sys]         001658872912            Trace buffer size: 128 lines
+[SE0:sys]         001658872912  01:092.01 Cobham Gaisler  XILINX SGMII Interface  (sgmii0)
+[SE0:sys]         001658872912   0:2      APB: fc002000 - fc003000
+[SE0:sys]         001658872912  01:01a.03 Cobham Gaisler  General Purpose I/O port  (gpio0)
+[SE0:sys]         001658872912   0:3      APB: fc083000 - fc083100
+[SE0:sys]         001658872912  01:03a.00 Cobham Gaisler  Version and Revision Register  (version0)
+[SE0:sys]         001658872912   0:4      APB: fc081000 - fc081100
+[SE0:sys]         001658872912            Version 0, Revision 257
+[SE0:sys]         001658872912  01:052.00 Cobham Gaisler  AHB Status Register  (ahbstat0)
+[SE0:sys]         001658872912   0:5      APB: fc082000 - fc082100
+[SE0:sys]         001658872912            IRQ: 4
+[SE0:sys]         001658872912  01:00c.01 Cobham Gaisler  Generic UART  (uart0)
+[SE0:sys]         001658872912   0:6      APB: fc0e0000 - fc0e0100
+[SE0:sys]         001658872912            IRQ: 6
+[SE0:sys]         001658872912            Baudrate 38343, FIFO debug mode available
+[SE0:sys]         001658872912  01:00c.01 Cobham Gaisler  Generic UART  (uart1)
+[SE0:sys]         001658872912   0:7      APB: fc0f0000 - fc0f0100
+[SE0:sys]         001658872912            IRQ: 7
+[SE0:sys]         001658872912            Baudrate 38343, FIFO debug mode available
+[SE0:sys]         001658872912  01:011.01 Cobham Gaisler  Modular Timer Unit  (gptimer0)
+[SE0:sys]         001658872912   0:a      APB: fc000000 - fc000100
+[SE0:sys]         001658872912            IRQ: 2
+[SE0:sys]         001658872912            16-bit scalar, 2 * 32-bit timers, divisor 100
+[SE0:sys]         001658872912  01:00c.01 Cobham Gaisler  Generic UART  (uart2)
+[SE0:sys]         001658872912   0:b      APB: fc001000 - fc001100
+[SE0:sys]         001658872912            IRQ: 1
+[SE0:sys]         001658872912            Baudrate 38343, FIFO debug mode available
+[SE0:sys]         001658872912  NOEL-V RISC-V Processor
+[SE0:sys]         001658872912                  ISA and extensions                      0x80000000001411ad
+[SE0:sys]         001658872912                  Machine status register (mstatus)       0x0000000a00000000
+[SE0:sys]         001658872912                  Machine interrupt pending (mip)         0x0000000000000000
+[SE0:sys]         001658872912                  Features enable register                0x0000000000000000
+[SE0:sys]         001658872912                  Cache control register                  0x000000000000010f
+[SE0:sys]         001658872912                  Tightly coupled inst memory             0x0000000000000000
+[SE0:cli]         001658872912  Bad argument ".riscv/-1.riscv" : File not found
+[SE0:cli]         001658872912  
+[SE0:sys]         001658872913                  Tightly coupled data memory             0x0000000000000000
+[SE0:sys]         001658872913                  Capability register                     0x00000000c0312312
+[SE0:sys]         001658872913  NOEL-V RISC-V Processor
+[SE0:sys]         001658872913                  ISA and extensions                      0x80000000001411ad
+[SE0:sys]         001658872913                  Machine status register (mstatus)       0x0000000a00000000
+[SE0:sys]         001658872913                  Machine interrupt pending (mip)         0x0000000000000000
+[SE0:sys]         001658872913                  Features enable register                0x0000000000000000
+[SE0:sys]         001658872913                  Cache control register                  0x000000000000010f
+[SE0:sys]         001658872913                  Tightly coupled inst memory             0x0000000000000000
+[SE0:sys]         001658872913                  Tightly coupled data memory             0x0000000000000000
+[SE0:sys]         001658872913                  Capability register                     0x00000000c0312312
+[SE0:sys]         001658872913  NOEL-V RISC-V Processor
+[SE0:sys]         001658872913                  ISA and extensions                      0x80000000001411ad
+[SE0:sys]         001658872913                  Machine status register (mstatus)       0x0000000a00000000
+[SE0:sys]         001658872913                  Machine interrupt pending (mip)         0x0000000000000000
+[SE0:sys]         001658872913                  Features enable register                0x0000000000000000
+[SE0:sys]         001658872913                  Cache control register                  0x000000000000010f
+[SE0:sys]         001658872913                  Tightly coupled inst memory             0x0000000000000000
+[SE0:sys]         001658872913                  Tightly coupled data memory             0x0000000000000000
+[SE0:sys]         001658872913                  Capability register                     0x00000000c0312312
+[SE0:sys]         001658872913  NOEL-V RISC-V Processor
+[SE0:sys]         001658872913                  ISA and extensions                      0x80000000001411ad
+[SE0:sys]         001658872913                  Machine status register (mstatus)       0x0000000a00000000
+[SE0:sys]         001658872913                  Machine interrupt pending (mip)         0x0000000000000000
+[SE0:sys]         001658872913                  Features enable register                0x0000000000000000
+[SE0:sys]         001658872913                  Cache control register                  0x000000000000010f
+[SE0:sys]         001658872913                  Tightly coupled inst memory             0x0000000000000000
+[SE0:sys]         001658872913                  Tightly coupled data memory             0x0000000000000000
+[SE0:sys]         001658872913                  Capability register                     0x00000000c0312312
+[SE0:sys]         001658872913  NOEL-V RISC-V Processor
+[SE0:sys]         001658872913                  ISA and extensions                      0x80000000001411ad
+[SE0:sys]         001658872913                  Machine status register (mstatus)       0x0000000a00000000
+[SE0:sys]         001658872913                  Machine interrupt pending (mip)         0x0000000000000000
+[SE0:sys]         001658872913                  Features enable register                0x0000000000000000
+[SE0:sys]         001658872913                  Cache control register                  0x000000000000010f
+[SE0:sys]         001658872913                  Tightly coupled inst memory             0x0000000000000000
+[SE0:sys]         001658872913                  Tightly coupled data memory             0x0000000000000000
+[SE0:sys]         001658872913                  Capability register                     0x00000000c0312312
+[SE0:sys]         001658872913  NOEL-V RISC-V Processor
+[SE0:sys]         001658872913                  ISA and extensions                      0x80000000001411ad
+[SE0:sys]         001658872913                  Machine status register (mstatus)       0x0000000a00000000
+[SE0:sys]         001658872913                  Machine interrupt pending (mip)         0x0000000000000000
+[SE0:sys]         001658872913                  Features enable register                0x0000000000000000
+[SE0:sys]         001658872913                  Cache control register                  0x000000000000010f
+[SE0:sys]         001658872913                  Tightly coupled inst memory             0x0000000000000000
+[SE0:sys]         001658872913                  Tightly coupled data memory             0x0000000000000000
+[SE0:sys]         001658872913                  Capability register                     0x00000000c0312312
+[SE0:sys]         001658872913  GR Ethernet MAC
+[SE0:sys]         001658872913      0xfc084000  Control register                        0xc4001010
+[SE0:sys]         001658872913      0xfc084004  Status register                         0x00000000
+[SE0:sys]         001658872913      0xfc084008  MAC address MSB                         0x00000000
+[SE0:sys]         001658872913      0xfc08400c  MAC address LSB                         0x00000000
+[SE0:sys]         001658872913      0xfc084010  MDIO register                           0x00001fc0
+[SE0:sys]         001658872913      0xfc084014  Tx descriptor register                  0x00000000
+[SE0:sys]         001658872913      0xfc084018  Rx descriptor register                  0x00000000
+[SE0:sys]         001658872913      0xfc08401c  EDCL IP register                        0xc0a87d02
+[SE0:sys]         001658872913      0xfc084020  Hash table MSB register                 0x00000000
+[SE0:sys]         001658872913      0xfc084024  Hash table LSB register                 0x00000000
+[SE0:sys]         001658872913      0xfc084028  ECDL MAC address MSB                    0x00000200
+[SE0:sys]         001658872913      0xfc08402c  ECDL MAC address LSB                    0x00000000
+[SE0:sys]         001658872913  GRDMAC2 DMA Controller
+[SE0:sys]         001658872913      0xfc0a0000  Control Register                        0x00000000
+[SE0:sys]         001658872913      0xfc0a0004  Status Register                         0x00000000
+[SE0:sys]         001658872913      0xfc0a0008  Timer reset value Register              0x00000000
+[SE0:sys]         001658872913      0xfc0a000c  Capability Register                     0x20000e01
+[SE0:sys]         001658872913      0xfc0a0010  Descriptor pointer                      0x00000000
+[SE0:sys]         001658872913      0xfc0a0014  Desc ctrl dbg capability                0x00000000
+[SE0:sys]         001658872913      0xfc0a0018  Next desc dbg capability                0x00000000
+[SE0:sys]         001658872913      0xfc0a001c  fnxt/dest.addr dbg capability           0x00000000
+[SE0:sys]         001658872913      0xfc0a0020  poll.addr/src.addr dbg capability       0x00000000
+[SE0:sys]         001658872913      0xfc0a0024  Desc sts dbg capability                 0x00000000
+[SE0:sys]         001658872913      0xfc0a0028  Expctd data dbg capability              0x00000000
+[SE0:sys]         001658872913      0xfc0a002c  Cond mask dbg capability                0x00000000
+[SE0:sys]         001658872913      0xfc0a0030  Curr desc ptr dbg capability            0x00000000
+[SE0:sys]         001658872913  RISC-V CLINT
+[SE0:sys]         001658872913      0xe0000000  hart0 msip                              0x00000000
+[SE0:sys]         001658872913      0xe0004000  hart0 mtimecmp lo                       0xffffffff
+[SE0:sys]         001658872913      0xe0004004  hart0 mtimecmp hi                       0xffffffff
+[SE0:sys]         001658872913      0xe0000004  hart1 msip                              0x00000000
+[SE0:sys]         001658872913      0xe0004008  hart1 mtimecmp lo                       0xffffffff
+[SE0:sys]         001658872913      0xe000400c  hart1 mtimecmp hi                       0xffffffff
+[SE0:sys]         001658872913      0xe0000008  hart2 msip                              0x00000000
+[SE0:sys]         001658872913      0xe0004010  hart2 mtimecmp lo                       0xffffffff
+[SE0:sys]         001658872913      0xe0004014  hart2 mtimecmp hi                       0xffffffff
+[SE0:sys]         001658872913      0xe000000c  hart3 msip                              0x00000000
+[SE0:sys]         001658872913      0xe0004018  hart3 mtimecmp lo                       0xffffffff
+[SE0:sys]         001658872913      0xe000401c  hart3 mtimecmp hi                       0xffffffff
+[SE0:sys]         001658872913      0xe0000010  hart4 msip                              0x00000000
+[SE0:sys]         001658872913      0xe0004020  hart4 mtimecmp lo                       0xffffffff
+[SE0:sys]         001658872913      0xe0004024  hart4 mtimecmp hi                       0xffffffff
+[SE0:sys]         001658872913      0xe0000014  hart5 msip                              0x00000000
+[SE0:sys]         001658872913      0xe0004028  hart5 mtimecmp lo                       0xffffffff
+[SE0:sys]         001658872913      0xe000402c  hart5 mtimecmp hi                       0xffffffff
+[SE0:sys]         001658872913      0xe000bff8  mtime lo                                0x016d742b
+[SE0:sys]         001658872913      0xe000bffc  mtime hi                                0x00000000
+[SE0:sys]         001658872913  RISC-V PLIC
+[SE0:sys]         001658872913      0xf8000004  Interrupt source priority  1            0x00000000
+[SE0:sys]         001658872913      0xf8000008  Interrupt source priority  2            0x00000000
+[SE0:sys]         001658872913      0xf800000c  Interrupt source priority  3            0x00000000
+[SE0:sys]         001658872913      0xf8000010  Interrupt source priority  4            0x00000000
+[SE0:sys]         001658872913      0xf8000014  Interrupt source priority  5            0x00000000
+[SE0:sys]         001658872913      0xf8000018  Interrupt source priority  6            0x00000000
+[SE0:sys]         001658872913      0xf800001c  Interrupt source priority  7            0x00000000
+[SE0:sys]         001658872913      0xf8000020  Interrupt source priority  8            0x00000000
+[SE0:sys]         001658872913      0xf8000024  Interrupt source priority  9            0x00000000
+[SE0:sys]         001658872913      0xf8000028  Interrupt source priority 10            0x00000000
+[SE0:sys]         001658872913      0xf800002c  Interrupt source priority 11            0x00000000
+[SE0:sys]         001658872913      0xf8000030  Interrupt source priority 12            0x00000000
+[SE0:sys]         001658872913      0xf8000034  Interrupt source priority 13            0x00000000
+[SE0:sys]         001658872913      0xf8000038  Interrupt source priority 14            0x00000000
+[SE0:sys]         001658872913      0xf800003c  Interrupt source priority 15            0x00000000
+[SE0:sys]         001658872913      0xf8000040  Interrupt source priority 16            0x00000000
+[SE0:sys]         001658872913      0xf8000044  Interrupt source priority 17            0x00000000
+[SE0:sys]         001658872913      0xf8000048  Interrupt source priority 18            0x00000000
+[SE0:sys]         001658872913      0xf800004c  Interrupt source priority 19            0x00000000
+[SE0:sys]         001658872913      0xf8000050  Interrupt source priority 20            0x00000000
+[SE0:sys]         001658872913      0xf8000054  Interrupt source priority 21            0x00000000
+[SE0:sys]         001658872913      0xf8000058  Interrupt source priority 22            0x00000000
+[SE0:sys]         001658872913      0xf800005c  Interrupt source priority 23            0x00000000
+[SE0:sys]         001658872913      0xf8000060  Interrupt source priority 24            0x00000000
+[SE0:sys]         001658872913      0xf8000064  Interrupt source priority 25            0x00000000
+[SE0:sys]         001658872913      0xf8000068  Interrupt source priority 26            0x00000000
+[SE0:sys]         001658872913      0xf800006c  Interrupt source priority 27            0x00000000
+[SE0:sys]         001658872913      0xf8000070  Interrupt source priority 28            0x00000000
+[SE0:sys]         001658872913      0xf8000074  Interrupt source priority 29            0x00000000
+[SE0:sys]         001658872913      0xf8000078  Interrupt source priority 30            0x00000000
+[SE0:sys]         001658872913      0xf800007c  Interrupt source priority 31            0x00000000
+[SE0:sys]         001658872913      0xf8001000  Interrupt pending  0-31                 0x00000000
+[SE0:sys]         001658872913      0xf8002000  CPU0 Enable sources M  0-31             0x00000000
+[SE0:sys]         001658872913      0xf8002080  CPU0 Enable sources S  0-31             0x00000000
+[SE0:sys]         001658872913      0xf8002100  CPU0 Enable sources U  0-31             0x00000000
+[SE0:sys]         001658872913      0xf8002180  CPU0 Enable sources H  0-31             0x00000000
+[SE0:sys]         001658872913      0xf8002200  CPU1 Enable sources M  0-31             0x00000000
+[SE0:sys]         001658872913      0xf8002280  CPU1 Enable sources S  0-31             0x00000000
+[SE0:sys]         001658872913      0xf8002300  CPU1 Enable sources U  0-31             0x00000000
+[SE0:sys]         001658872913      0xf8002380  CPU1 Enable sources H  0-31             0x00000000
+[SE0:sys]         001658872913      0xf8002400  CPU2 Enable sources M  0-31             0x00000000
+[SE0:sys]         001658872913      0xf8002480  CPU2 Enable sources S  0-31             0x00000000
+[SE0:sys]         001658872913      0xf8002500  CPU2 Enable sources U  0-31             0x00000000
+[SE0:sys]         001658872913      0xf8002580  CPU2 Enable sources H  0-31             0x00000000
+[SE0:sys]         001658872913      0xf8002600  CPU3 Enable sources M  0-31             0x00000000
+[SE0:sys]         001658872913      0xf8002680  CPU3 Enable sources S  0-31             0x00000000
+[SE0:sys]         001658872913      0xf8002700  CPU3 Enable sources U  0-31             0x00000000
+[SE0:sys]         001658872913      0xf8002780  CPU3 Enable sources H  0-31             0x00000000
+[SE0:sys]         001658872913      0xf8002800  CPU4 Enable sources M  0-31             0x00000000
+[SE0:sys]         001658872913      0xf8002880  CPU4 Enable sources S  0-31             0x00000000
+[SE0:sys]         001658872913      0xf8002900  CPU4 Enable sources U  0-31             0x00000000
+[SE0:sys]         001658872913      0xf8002980  CPU4 Enable sources H  0-31             0x00000000
+[SE0:sys]         001658872913      0xf8002a00  CPU5 Enable sources M  0-31             0x00000000
+[SE0:sys]         001658872913      0xf8002a80  CPU5 Enable sources S  0-31             0x00000000
+[SE0:sys]         001658872913      0xf8002b00  CPU5 Enable sources U  0-31             0x00000000
+[SE0:sys]         001658872913      0xf8002b80  CPU5 Enable sources H  0-31             0x00000000
+[SE0:sys]         001658872913      0xf8200000  CPU0 Priority threshold M               0x00000001
+[SE0:sys]         001658872913      0xf8201000  CPU0 Priority threshold S               0x00000001
+[SE0:sys]         001658872913      0xf8202000  CPU0 Priority threshold U               0x00000001
+[SE0:sys]         001658872913      0xf8203000  CPU0 Priority threshold H               0x00000001
+[SE0:sys]         001658872913      0xf8204000  CPU1 Priority threshold M               0x00000001
+[SE0:sys]         001658872913      0xf8205000  CPU1 Priority threshold S               0x00000001
+[SE0:sys]         001658872913      0xf8206000  CPU1 Priority threshold U               0x00000001
+[SE0:sys]         001658872913      0xf8207000  CPU1 Priority threshold H               0x00000001
+[SE0:sys]         001658872913      0xf8208000  CPU2 Priority threshold M               0x00000001
+[SE0:sys]         001658872913      0xf8209000  CPU2 Priority threshold S               0x00000001
+[SE0:sys]         001658872913      0xf820a000  CPU2 Priority threshold U               0x00000001
+[SE0:sys]         001658872913      0xf820b000  CPU2 Priority threshold H               0x00000001
+[SE0:sys]         001658872913      0xf820c000  CPU3 Priority threshold M               0x00000001
+[SE0:sys]         001658872913      0xf820d000  CPU3 Priority threshold S               0x00000001
+[SE0:sys]         001658872913      0xf820e000  CPU3 Priority threshold U               0x00000001
+[SE0:sys]         001658872913      0xf820f000  CPU3 Priority threshold H               0x00000001
+[SE0:sys]         001658872913      0xf8210000  CPU4 Priority threshold M               0x00000001
+[SE0:sys]         001658872913      0xf8211000  CPU4 Priority threshold S               0x00000001
+[SE0:sys]         001658872913      0xf8212000  CPU4 Priority threshold U               0x00000001
+[SE0:sys]         001658872913      0xf8213000  CPU4 Priority threshold H               0x00000001
+[SE0:sys]         001658872913      0xf8214000  CPU5 Priority threshold M               0x00000001
+[SE0:sys]         001658872913      0xf8215000  CPU5 Priority threshold S               0x00000001
+[SE0:sys]         001658872913      0xf8216000  CPU5 Priority threshold U               0x00000001
+[SE0:sys]         001658872913      0xf8217000  CPU5 Priority threshold H               0x00000001
+[SE0:sys]         001658872913  AMBA Trace Buffer
+[SE0:sys]         001658872913      0xfff00000  Trace buffer control register           0x00008080
+[SE0:sys]         001658872913      0xfff00004  Trace buffer index register             0x000007f0
+[SE0:sys]         001658872913      0xfff00008  Trace buffer time tag counter           0x00000000
+[SE0:sys]         001658872913      0xfff0000c  Trace buffer mst/slv filter register    0x00000000
+[SE0:sys]         001658872913      0xfff00010  Trace buffer bp 1 address               0x00000000
+[SE0:sys]         001658872913      0xfff00014  Trace buffer bp 1 mask                  0x00000000
+[SE0:sys]         001658872913      0xfff00018  Trace buffer bp 2 address               0x00000000
+[SE0:sys]         001658872913      0xfff0001c  Trace buffer bp 2 mask                  0x00000000
+[SE0:sys]         001658872913  General Purpose I/O port
+[SE0:sys]         001658872913      0xfc083000  I/O port data register                  0x00000000
+[SE0:sys]         001658872913      0xfc083004  I/O port output register                0x00000000
+[SE0:sys]         001658872913      0xfc083008  I/O port direction register             0x00000000
+[SE0:sys]         001658872913      0xfc08300c  I/O interrupt mask register             0x00000000
+[SE0:sys]         001658872913      0xfc083010  I/O interrupt polarity register         0x00000000
+[SE0:sys]         001658872913      0xfc083014  I/O interrupt edge register             0x00000000
+[SE0:sys]         001658872913      0xfc08301c  Capability register                     0x0000000f
+[SE0:sys]         001658872913  Version and Revision Register
+[SE0:sys]         001658872913      0xfc081000  Configuration register                  0x00000101
+[SE0:sys]         001658872913  AHB Status Register
+[SE0:sys]         001658872913      0xfc082000  Status register                         0x0000004a
+[SE0:sys]         001658872913      0xfc082004  Failing address register                0xfc082004
+[SE0:sys]         001658872913  Generic UART
+[SE0:sys]         001658872913      0xfc0e0004  UART Status register                    0x00000006
+[SE0:sys]         001658872913      0xfc0e0008  UART Control register                   0x00000003
+[SE0:sys]         001658872913      0xfc0e000c  UART Scaler register                    0x00000145
+[SE0:sys]         001658872913  Generic UART
+[SE0:sys]         001658872913      0xfc0f0004  UART Status register                    0x00000006
+[SE0:sys]         001658872913      0xfc0f0008  UART Control register                   0x00000000
+[SE0:sys]         001658872913      0xfc0f000c  UART Scaler register                    0x00000145
+[SE0:sys]         001658872913  Modular Timer Unit
+[SE0:sys]         001658872913      0xfc000000  Scalar value register                   0x00000063
+[SE0:sys]         001658872913      0xfc000004  Scalar reload value register            0x00000063
+[SE0:sys]         001658872913      0xfc000008  Configuration register                  0x00000112
+[SE0:sys]         001658872913      0xfc000010  Timer 0 Value register                  0xffffffff
+[SE0:sys]         001658872913      0xfc000014  Timer 0 Reload value register           0xffffffff
+[SE0:sys]         001658872913      0xfc000018  Timer 0 Control register                0x00000043
+[SE0:sys]         001658872913      0xfc000020  Timer 1 Value register                  0x00000000
+[SE0:sys]         001658872913      0xfc000024  Timer 1 Reload value register           0x00000000
+[SE0:sys]         001658872913      0xfc000028  Timer 1 Control register                0x00000040
+[SE0:sys]         001658872913  Generic UART
+[SE0:sys]         001658872913      0xfc001004  UART Status register                    0x00000086
+[SE0:sys]         001658872913      0xfc001008  UART Control register                   0x80000000
+[SE0:sys]         001658872913      0xfc00100c  UART Scaler register                    0x00000145

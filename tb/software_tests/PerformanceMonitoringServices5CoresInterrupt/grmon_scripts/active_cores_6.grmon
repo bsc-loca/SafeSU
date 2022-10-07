@@ -1,0 +1,39 @@
+set benchmark $::env(MULTICORE_BENCHMARK)
+
+load $benchmark.riscv/$benchmark-1.riscv
+load $benchmark.riscv/$benchmark-2.riscv
+load $benchmark.riscv/$benchmark-3.riscv
+load $benchmark.riscv/$benchmark-4.riscv
+load $benchmark.riscv/$benchmark-5.riscv
+load $benchmark.riscv/$benchmark-6.riscv
+
+l2cache split false
+
+cpu act 0
+ep 0x00000000
+stack 0x000fff00 
+
+cpu act 1        
+ep 0x01000000
+stack 0x010fff00 
+
+cpu act 2        
+ep 0x02000000
+stack 0x020fff00 
+
+cpu act 3        
+ep 0x03000000
+stack 0x030fff00 
+
+cpu act 4        
+ep 0x04000000
+stack 0x040fff00
+
+cpu act 5       
+ep 0x05000000
+stack 0x050fff00
+
+after 3000
+
+run
+exit
