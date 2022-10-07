@@ -21,6 +21,9 @@ before starting the execution will configure the SafeSU according to the configu
 in `./source/safesu_example/test_utility.h`. Once configured will enable the SafeSU counters will execute its 
 test the amount of specified iteration and then disable the SafeSU and print the values of those counters.
 
+For this example will stop contention caused to core 0 due 1-5 cores using Interrupt functionality of SafeSU MCCU. 
+We will detect the interrupt thanks to quota limit feature on MCCU and will stop the cores 1-5 contention tasks.
+
 ## Usage
 
 - Modify the Makefile variables `__TEST_ITERATIONS__ __TEST_MATRIX_ROW__ __TEST_MATRIX_COL__ ` accordingly to which 
