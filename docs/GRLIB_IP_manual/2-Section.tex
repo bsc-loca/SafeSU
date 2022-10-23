@@ -41,42 +41,42 @@ Table \ref{table:t_ev} shows the inputs and mapping to the crossbar input for th
 3 & Pulse & Core 0 &  Instruction count pipeline 1 \\
 4 & Pulse & Core 0 &  Instruction cache miss \\
 5 & Pulse & Core 0 &  Instruction TLB miss \\
-6 & Pulse & Core 0 &  Data chache L1 miss \\
+6 & Pulse & Core 0 &  Data cache L1 miss \\
 7 & Pulse & Core 0 &  Data TLB miss \\
 8 & Pulse & Core 0 &  Branch predictor miss \\
 9 & Pulse & Core 1 &  Instruction count pipeline 0 \\
 10 & Pulse & Core 1 &  Instruction count pipeline 1 \\
 11 & Pulse & Core 1 &  Instruction cache miss \\
 12 & Pulse & Core 1 &  Instruction TLB miss \\
-13 & Pulse & Core 1 &  Data chache L1 miss \\
+13 & Pulse & Core 1 &  Data cache L1 miss \\
 14 & Pulse & Core 1 &  Data TLB miss \\
 15 & Pulse & Core 1 &  Branch predictor miss \\
 16 & Pulse & Core 2 &  Instruction count pipeline 0 \\
 17 & Pulse & Core 2 &  Instruction count pipeline 1 \\
 18 & Pulse & Core 2 &  Instruction cache miss \\
 19 & Pulse & Core 2 &  Instruction TLB miss \\
-20 & Pulse & Core 2 &  Data chache L1 miss \\
+20 & Pulse & Core 2 &  Data cache L1 miss \\
 21 & Pulse & Core 2 &  Data TLB miss \\
 22 & Pulse & Core 2 &  Branch predictor miss \\
 23 & Pulse & Core 3 &  Instruction count pipeline 0 \\
 24 & Pulse & Core 3 &  Instruction count pipeline 1 \\
 25 & Pulse & Core 3 &  Instruction cache miss \\
 26 & Pulse & Core 3 &  Instruction TLB miss \\
-27 & Pulse & Core 3 &  Data chache L1 miss \\
+27 & Pulse & Core 3 &  Data cache L1 miss \\
 28 & Pulse & Core 3 &  Data TLB miss \\
 29 & Pulse & Core 3 &  Branch predictor miss \\
 30 & Pulse & Core 4 &  Instruction count pipeline 0 \\
 31 & Pulse & Core 4 &  Instruction count pipeline 1 \\
 32 & Pulse & Core 4 &  Instruction cache miss \\
 33 & Pulse & Core 4 &  Instruction TLB miss \\
-34 & Pulse & Core 4 &  Data chache L1 miss \\
+34 & Pulse & Core 4 &  Data cache L1 miss \\
 35 & Pulse & Core 4 &  Data TLB miss \\
 36 & Pulse & Core 4 &  Branch predictor miss \\
 37 & Pulse & Core 5 &  Instruction count pipeline 0 \\
 38 & Pulse & Core 5 &  Instruction count pipeline 1 \\
 39 & Pulse & Core 5 &  Instruction cache miss \\
 40 & Pulse & Core 5 &  Instruction TLB miss \\
-41 & Pulse & Core 5 &  Data chache L1 miss \\
+41 & Pulse & Core 5 &  Data cache L1 miss \\
 42 & Pulse & Core 5 &  Data TLB miss \\
 43 & Pulse & Core 5 &  Branch predictor miss \\
 44 & CCS AHB &  -  &  Agressor C1 Victim C0\\
@@ -691,19 +691,27 @@ When the "Enable Hardware Quota" bit is toggled, this interrupt is routed to the
 		\reglabelb{Core 2} \\
 		\regfieldb{0x084}{32}{0}
 		\reglabelb{Core 3} \\
+		\regfieldb{0x088}{32}{0}
+		\reglabelb{Core4} \\
+		\regfieldb{0x08c}{32}{0}
+		\reglabelb{Core5} \\
 	\end{center}
 	\caption{MCCU Quota limits for each core}\label{fig:MCCU_lim}
 \end{figure}
 \begin{figure}[H]
 	\begin{center}
-		\regfieldb{0x088}{32}{0}
-		\reglabelb{Core 0} \\
-		\regfieldb{0x08c}{32}{0}
-		\reglabelb{Core 1} \\
 		\regfieldb{0x090}{32}{0}
+		\reglabelb{Core 0} \\
+		\regfieldb{0x084}{32}{0}
+		\reglabelb{Core 1} \\
+		\regfieldb{0x098}{32}{0}
 		\reglabelb{Core 2} \\
-		\regfieldb{0x094}{32}{0}
+		\regfieldb{0x09c}{32}{0}
 		\reglabelb{Core 3} \\
+		\regfieldb{0x0a0}{32}{0}
+		\reglabelb{Core 4} \\
+		\regfieldb{0x0a4}{32}{0}
+		\reglabelb{Core 5} \\
 	\end{center}
 	\caption{MCCU Current remaning Quota for each core}\label{fig:MCCU_ava}
 \end{figure}
@@ -714,7 +722,7 @@ The unit provides one interruption for each of the monitored cores. Quota exhaus
 \\
 Weights for each monitored event are registered in registers \ref{MCCU_weight0} and \ref{MCCU_weight1}. Currently, each weight is an 8-bit field. Each input of the MCCU maps directly to the outputs of the crossbar. Thus the weight for the MCCU input 0 corresponds to the signal in crossbar output 0.\\
 \\
-\begin{register}{H}{MCCU event weights register 0 (shared with RDC)}{0x098}
+\begin{register}{H}{MCCU event weights register 0 (shared with RDC)}{0x0a8}
 	\label{MCCU_weight0}
 	\regfield{Input 3}{8}{24}{{00}}
 	\regfield{Input 2}{8}{16}{{00}}
@@ -722,7 +730,7 @@ Weights for each monitored event are registered in registers \ref{MCCU_weight0} 
 	\regfield{Input 0}{8}{0}{{00}}
 	\reglabel{Reset value}\regnewline
 \end{register}
-\begin{register}{H}{MCCU event weights register 1 (shared with RDC)}{0x09c}
+\begin{register}{H}{MCCU event weights register 1 (shared with RDC)}{0x0ac}
 	\label{MCCU_weight1}
 	\regfield{Input 7}{8}{24}{{00}}
 	\regfield{Input 6}{8}{16}{{00}}
@@ -730,7 +738,7 @@ Weights for each monitored event are registered in registers \ref{MCCU_weight0} 
 	\regfield{Input 4}{8}{0}{{00}}
 	\reglabel{Reset value}\regnewline
 \end{register}
-\begin{register}{H}{MCCU event weights register 2 (shared with RDC)}{0xa0}
+\begin{register}{H}{MCCU event weights register 2 (shared with RDC)}{0x0b0}
 	\label{MCCU_weight1}
 	\regfield{Input 11}{8}{24}{{00}}
 	\regfield{Input 10}{8}{16}{{00}}
@@ -757,7 +765,7 @@ The RDC shares the main configuration register with the MCCU (register \ref{MCCU
 The unit does provide access to the internal interrupt vector (register \ref{RDC_intrv}), but such information is redundant and may be removed in future releases. Given the current watermarks and assigned weights, the events responsible for the interrupt can be identified.  The RDC interrupt has been routed to AHB interrupt 11.
 
 
-\begin{register}{H}{RDC interrupt vector}{0x0a0}
+\begin{register}{H}{RDC interrupt vector}{0x0b4}
 	\label{RDC_intrv}
 	\regfield{Reserved}{28}{4}{{x}}
 	\regfield{Core 5}{1}{3}{{00}}
@@ -768,7 +776,7 @@ The unit does provide access to the internal interrupt vector (register \ref{RDC
 	\regfield{Core 0}{1}{0}{{00}}
 	\reglabel{Reset value}\regnewline
 \end{register}
-\begin{register}{H}{RDC event weights register 0 (shared with MCCU)}{0x098}
+\begin{register}{H}{RDC event weights register 0 (shared with MCCU)}{0x0a8}
 	\label{RDC_weight0}
 	\regfield{Input 3}{8}{24}{{00}}
 	\regfield{Input 2}{8}{16}{{00}}
@@ -776,7 +784,7 @@ The unit does provide access to the internal interrupt vector (register \ref{RDC
 	\regfield{Input 0}{8}{0}{{00}}
 	\reglabel{Reset value}\regnewline
 \end{register}
-\begin{register}{H}{RDC event weights register 1 (shared with MCCU)}{0x09c}
+\begin{register}{H}{RDC event weights register 1 (shared with MCCU)}{0x0ac}
 	\label{RDC_weight1}
 	\regfield{Input 7}{8}{24}{{00}}
 	\regfield{Input 6}{8}{16}{{00}}
@@ -784,9 +792,17 @@ The unit does provide access to the internal interrupt vector (register \ref{RDC
 	\regfield{Input 4}{8}{0}{{00}}
 	\reglabel{Reset value}\regnewline
 \end{register}
+\begin{register}{H}{RDC event weights register 2 (shared with MCCU)}{0x0b0}
+	\label{MCCU_weight1}
+	\regfield{Input 11}{8}{24}{{00}}
+	\regfield{Input 10}{8}{16}{{00}}
+	\regfield{Input 9}{8}{8}{{00}}
+	\regfield{Input 8}{8}{0}{{00}}
+	\reglabel{Reset value}\regnewline
+\end{register}
 
 
-\begin{register}{H}{RDC watermark register 0}{0x0a4}
+\begin{register}{H}{RDC watermark register 0}{0x0b8}
 	\label{RDC_water0}
 	\regfield{Input 3}{8}{24}{{00}}
 	\regfield{Input 2}{8}{16}{{00}}
@@ -796,12 +812,21 @@ The unit does provide access to the internal interrupt vector (register \ref{RDC
 \end{register}
 
 
-\begin{register}{H}{RDC watermark register 1}{0x0a8}
+\begin{register}{H}{RDC watermark register 1}{0x0bc}
 	\label{RDC_water1}
 	\regfield{Input 7}{8}{24}{{00}}
 	\regfield{Input 6}{8}{16}{{00}}
 	\regfield{Input 5}{8}{8}{{00}}
 	\regfield{Input 4}{8}{0}{{00}}
+	\reglabel{Reset value}\regnewline
+\end{register}
+
+\begin{register}{H}{RDC watermark register 2}{0x0c0}
+	\label{RDC_water2}
+	\regfield{Input 11}{8}{24}{{00}}
+	\regfield{Input 10}{8}{16}{{00}}
+	\regfield{Input 9}{8}{8}{{00}}
+	\regfield{Input 8}{8}{0}{{00}}
 	\reglabel{Reset value}\regnewline
 \end{register}
 
