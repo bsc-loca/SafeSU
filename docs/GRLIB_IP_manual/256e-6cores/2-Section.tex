@@ -7,7 +7,7 @@ The unit is compatible with GRLIB \textit{plug\&play}(P\&P). Vendor and device's
 \subsection{Default input events}
 %explain signals
 %distinction bteen CCS and regular signals
-In its default implementation, the unit provides up to 128 input events. Each one of the events can be routed to any mechanism of the module through the crossbar.\\
+In its default implementation, the unit provides up to 256 input events. Each one of the events can be routed to any mechanism of the module through the crossbar.\\
 \\
 Table \ref{table:t_ev} shows the inputs and mapping to the crossbar input for the current \href{https://gitlab.bsc.es/selene/selene-hardware/-/merge_requests/2}{SELENE release}. The number of signals and arrangements may change in the upcoming versions. \\
 
@@ -639,7 +639,7 @@ The default AHB interrupt mapping can be modified within the file \textit{ahb\_w
 \subsection{Quota}
 This feature has been replaced by the MCCU and will disappear in future releases. Usage is not recommended.
 \subsection{MCCU}
-The Maximum-Contention Control Unit (MCCU) allows to monitor a subset of the input events and track the approximate contention that they will cause. Currently, events assigned to counters 0 to 7 for the 4 core version or 0 to 11 for the 6 core version can be used as inputs of the MCCU.  Thanks to the crossbar, any of the SoC signals can be used by the MCCU. In this section we use the 4 core version as a reference. In all configurations one quota register is assigned to each core and one weight is asigned to each signal.\\
+The Maximum-Contention Control Unit (MCCU) allows to monitor a subset of the input events and track the approximate contention that they will cause. Currently, events assigned to counters 0 to 11 can be used as inputs of the MCCU. Thanks to the crossbar, any of the SoC signals can be used by the MCCU. In this section we use the 4 core version as a reference. In all configurations one quota register is assigned to each core and one weight is asigned to each signal.\\
 \\
 \begin{figure}[H]
 	\includegraphics[keepaspectratio,width=\columnwidth]{img/bd_MCCU.png}
@@ -718,7 +718,8 @@ When the "Enable Hardware Quota" bit is toggled, this interrupt is routed to the
 In the current release, the MCCU can be reset and activated with the respective fields of register \ref{MCCU_cfg}. The fields labeled as \textit{Update Quota core} are used to update the available quota of each core (figure \ref{fig:MCCU_ava}). While  \textit{Update Quota core} is high, the content is assigned to the available quota. Once released (low), the available quota can start to decrease if the MCCU is active. The current quota can be read while the unit is active.\\
 \\
 In the current release, each core can monitor two input events. The MCCU module is parametric and more events can be provided in future releases.  Table \ref{tab:features} shows the features available for each crossbar output. Under the column MCCU, you can see towards which core quota the event will be computed.
-The unit provides one interruption for each of the monitored cores. Quota exhaustion for cores 3, 2, 1, and 0 is mapped to AHB interrupts 10, 9, 8, and 7, respectively.\\
+The unit provides one interruption for each of the monitored cores. 
+%Quota exhaustion for cores 3, 2, 1, and 0 is mapped to AHB interrupts 10, 9, 8, and 7, respectively.\\ it changes across bitstreams
 \\
 Weights for each monitored event are registered in registers \ref{MCCU_weight0} and \ref{MCCU_weight1}. Currently, each weight is an 8-bit field. Each input of the MCCU maps directly to the outputs of the crossbar. Thus the weight for the MCCU input 0 corresponds to the signal in crossbar output 0.\\
 \\
@@ -758,11 +759,12 @@ The Request Duration Counter or RDC is comprised of a set of 8-bit counters and 
 	\end{center}
 \end{figure}
 
-The current release provides monitoring for crossbar outputs 0 to 7 for the quad-core configuration and 0 to 11 for the hexa-core. Note that the amount of registers changes with the amount of cores, and figures and addresses are representative of the 4 core configuration. The weights for each signal are shared with the MCCU and are stored in registers \ref{RDC_weight0} and \ref{RDC_weight1}. Weights are 8-bit fields.Counters have overflow protection, preventing the count from wrapping over the maximum value.  The maximum value for each event (watermarks), are stored in registers \ref{RDC_water0} and \ref{RDC_water1}.\\
+The current release provides monitoring for crossbar outputs 0 to 11 for the hexa-core. Note that the amount of registers changes with the amount of cores, and figures and addresses are representative of the 4 core configuration. The weights for each signal are shared with the MCCU and are stored in registers \ref{RDC_weight0} and \ref{RDC_weight1}. Weights are 8-bit fields.Counters have overflow protection, preventing the count from wrapping over the maximum value.  The maximum value for each event (watermarks), are stored in registers \ref{RDC_water0} and \ref{RDC_water1}.\\
 \\
 The RDC shares the main configuration register with the MCCU (register \ref{MCCU_cfg}). Through this register, the unit can be reset and enabled through the corresponding fields. Such fields are active high signals. \\
 \\
-The unit does provide access to the internal interrupt vector (register \ref{RDC_intrv}), but such information is redundant and may be removed in future releases. Given the current watermarks and assigned weights, the events responsible for the interrupt can be identified.  The RDC interrupt has been routed to AHB interrupt 11.
+The unit does provide access to the internal interrupt vector (register \ref{RDC_intrv}), but such information is redundant and may be removed in future releases. Given the current watermarks and assigned weights, the events responsible for the interrupt can be identified.  
+%The RDC interrupt has been routed to AHB interrupt 11.
 
 
 \begin{register}{H}{RDC interrupt vector}{0x0b4}
