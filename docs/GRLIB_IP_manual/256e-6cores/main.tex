@@ -21,6 +21,7 @@
 \usepackage{graphicx}
 
 \usepackage{float}
+\usepackage{longtable}
 
 \usepackage{blindtext} %for enumarations
 
@@ -34,7 +35,9 @@
 \usepackage{sectsty} % Allows customizing section commands
 \allsectionsfont{\centering \normalfont\scshape} % Make all sections centered, the default font and small caps
 
+
 \usepackage{fancyhdr} % Custom headers and footers
+\usepackage{register} % Custom headers and footers
 \pagestyle{fancyplain} % Makes all pages in the document conform to the custom headers and footers
 \fancyhead{} % No page header - if you want one, create it in the same way as the footers below
 \fancyfoot[L]{} % Empty left footer
@@ -51,7 +54,6 @@
 %\setlength\parindent{0pt} % Removes all indentation from paragraphs - comment this line for an assignment with lots of text
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \setlength\parskip{4pt}
 
 %----------------------------------------------------------------------------------------
@@ -63,13 +65,41 @@
 \title{	
 \normalfont \normalsize 
 \horrule{0.5pt} \\[0.4cm] % Thin top horizontal rule
-\huge  PMU\_ahb specification version v1 \\ % The assignment title
+\huge  SafeSU User's Manual\\ % The assignment title
 \horrule{2pt} \\[0.5cm] % Thick bottom horizontal rule
 }
 
 \author{ Guillem Cabo Pitarch \& Sergi Alcaide} % Your name
 
 \date{\today} % Today's date or a custom date
+
+\usepackage{listings}
+\lstdefinelanguage{VHDL}{
+	morekeywords={
+		library,use,all,entity,is,port,in,out,end,architecture,of,
+		begin,and
+	},
+	morecomment=[l]--
+}
+
+\usepackage{xcolor}
+\colorlet{keyword}{blue!100!black!80}
+\colorlet{comment}{green!90!black!90}
+\lstdefinestyle{vhdl}{
+	language     = VHDL,
+	basicstyle   = \ttfamily,
+	keywordstyle = \color{keyword}\bfseries,
+	commentstyle = \color{comment},
+	framexleftmargin = 15pt
+}
+
+\usepackage{caption}
+\DeclareCaptionFont{white}{\color{white}}
+\DeclareCaptionFormat{listing}{%
+	\parbox{\textwidth}{\colorbox{gray}{\parbox{\textwidth}{#1#2#3}}\vskip-4pt}}
+\captionsetup[lstlisting]{format=listing,labelfont=white,textfont=white}
+\lstset{frame=lrb,xleftmargin=\fboxsep,xrightmargin=-\fboxsep}
+
 
 \begin{document}
 %\nocite{*}
@@ -100,12 +130,8 @@
 
 \input{7-Section.tex}
 
-\input{8-Section.tex}
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%Bibliography
-\bibliographystyle{apalike}
-\cleardoublepage
-\bibliography{bib/cite} % Path to your References.bib file
+
+
 \end{document}
