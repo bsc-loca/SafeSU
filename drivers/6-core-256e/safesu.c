@@ -1,7 +1,4 @@
 #include "safesu.h"
-#include <math.h>
-#include "util.h"
-
 /*
  *   Function    : safesu_counters_enable
  *   Description : It enables the event counters.
@@ -310,7 +307,7 @@ void safesu_mccu_reset(void) {
     SAFESUCFG1 |= 0x00000002;
     SAFESUCFG1 &= 0xFFFFFFFD;
     //4 -> weigths per register
-    for (int i = 0; i < N_MCCU_WEIGHTS * 4; ++i) {
+    for (int i = 0; i < N_MCCU_WEIGTHS * 4; ++i) {
         safesu_mccu_set_event_weigths(i,0);
     }
     #ifdef __SAFESU_LIB_DEBUG__
@@ -333,13 +330,34 @@ unsigned safesu_mccu_set_quota_limit(const unsigned int core,
         printf("mccu_set_quota: core %d does not exist\n", core);
 	return(1);
     }
-    //set update bits
-    SAFESUCFG1 |= 1<<(core+2);//Offset are enable en reset bits
+
     //set target quota
     _SAFESU_MCCU_QUOTA[core]=quota;
+    //set update bits
+    SAFESUCFG1 |= 1<<(core+2);//Offset are enable en reset bits
     //release set bits
     SAFESUCFG1 &= ~(0x3f<<2);//shift 2 bits due to enable and reset mccu
                           // 0xf ->4cores / 0x3f -> 6cores
+}
+
+/*
+ *   Function    : safesu_mccu_reset_quota_limit
+ *   Description : It resets the quota limits for MCCU submodule
+ *   Parameters  :
+ *       - core  : Target core for quota monitoring. Select core number 1, 2, 3, 4 or 5.
+ *   Return      : Unsigned int. 0 no error.
+ */
+unsigned safesu_mccu_reset_quota_limit(const unsigned int core)
+{
+    if(core>MCCU_N_CORES){
+        printf("mccu_set_quota: core %d does not exist\n", core);
+        return(1);
+    }
+    //set update bits
+    SAFESUCFG1 |= 1<<(core+2);//Offset are enable en reset bits
+    //release set bits
+    SAFESUCFG1 &= ~(0x3f<<2);//shift 2 bits due to enable and reset mccu
+    // 0xf ->4cores / 0x3f -> 6cores
 }
 
 /*
@@ -370,53 +388,53 @@ unsigned safesu_mccu_set_event_weigths(const unsigned int input,
     const unsigned int weigth) {
     switch (input) {
     case 0:
-        EVENT_WEIGHT_REG0 &= ~(0x000000FF);
-        EVENT_WEIGHT_REG0 |= (weigth);
+        EVENT_WEIGTH_REG0 &= ~(0x000000FF);
+        EVENT_WEIGTH_REG0 |= (weigth);
         break;
     case 1:
-        EVENT_WEIGHT_REG0 &= ~(0x0000FF00);
-        EVENT_WEIGHT_REG0 |= (weigth << 8);
+        EVENT_WEIGTH_REG0 &= ~(0x0000FF00);
+        EVENT_WEIGTH_REG0 |= (weigth << 8);
         break;
     case 2:
-        EVENT_WEIGHT_REG0 &= ~(0x00FF0000);
-        EVENT_WEIGHT_REG0 |= (weigth << 16);
+        EVENT_WEIGTH_REG0 &= ~(0x00FF0000);
+        EVENT_WEIGTH_REG0 |= (weigth << 16);
         break;
     case 3:
-        EVENT_WEIGHT_REG0 &= ~(0xFF000000);
-        EVENT_WEIGHT_REG0 |= (weigth  << 24);
+        EVENT_WEIGTH_REG0 &= ~(0xFF000000);
+        EVENT_WEIGTH_REG0 |= (weigth  << 24);
         break;
 
     case 4:
-        EVENT_WEIGHT_REG1 &= ~(0x000000FF);
-        EVENT_WEIGHT_REG1 |= (weigth);
+        EVENT_WEIGTH_REG1 &= ~(0x000000FF);
+        EVENT_WEIGTH_REG1 |= (weigth);
         break;
     case 5:
-        EVENT_WEIGHT_REG1 &= ~(0x0000FF00);
-        EVENT_WEIGHT_REG1 |= (weigth << 8);
+        EVENT_WEIGTH_REG1 &= ~(0x0000FF00);
+        EVENT_WEIGTH_REG1 |= (weigth << 8);
         break;
     case 6:
-        EVENT_WEIGHT_REG1 &= ~(0x00FF0000);
-        EVENT_WEIGHT_REG1 |= (weigth << 16);
+        EVENT_WEIGTH_REG1 &= ~(0x00FF0000);
+        EVENT_WEIGTH_REG1 |= (weigth << 16);
         break;
     case 7:
-        EVENT_WEIGHT_REG1 &= ~(0xFF000000);
-        EVENT_WEIGHT_REG1 |= (weigth << 24);
+        EVENT_WEIGTH_REG1 &= ~(0xFF000000);
+        EVENT_WEIGTH_REG1 |= (weigth << 24);
         break;
     case 8:
-        EVENT_WEIGHT_REG2 &= ~(0x000000FF);
-        EVENT_WEIGHT_REG2 |= (weigth);
+        EVENT_WEIGTH_REG2 &= ~(0x000000FF);
+        EVENT_WEIGTH_REG2 |= (weigth);
         break;
     case 9:
-        EVENT_WEIGHT_REG2 &= ~(0x0000FF00);
-        EVENT_WEIGHT_REG2 |= (weigth << 8);
+        EVENT_WEIGTH_REG2 &= ~(0x0000FF00);
+        EVENT_WEIGTH_REG2 |= (weigth << 8);
         break;
     case 10:
-        EVENT_WEIGHT_REG2 &= ~(0x00FF0000);
-        EVENT_WEIGHT_REG2 |= (weigth << 16);
+        EVENT_WEIGTH_REG2 &= ~(0x00FF0000);
+        EVENT_WEIGTH_REG2 |= (weigth << 16);
         break;
     case 11:
-        EVENT_WEIGHT_REG2 &= ~(0xFF000000);
-        EVENT_WEIGHT_REG2 |= (weigth << 24);
+        EVENT_WEIGTH_REG2 &= ~(0xFF000000);
+        EVENT_WEIGTH_REG2 |= (weigth << 24);
         break;
 
     default:
@@ -426,9 +444,9 @@ unsigned safesu_mccu_set_event_weigths(const unsigned int input,
 
     #ifdef __SAFESU_LIB_DEBUG__
     printf("safesu_mccu_set_event_weigths\n");
-    printf("EVENT_WEIGHT_REG0 = %u\n", EVENT_WEIGHT_REG0);
-    printf("EVENT_WEIGHT_REG1 = %u\n", EVENT_WEIGHT_REG1);
-    printf("EVENT_WEIGHT_REG2 = %u\n", EVENT_WEIGHT_REG2);
+    printf("EVENT_WEIGTH_REG0 = %u\n", EVENT_WEIGTH_REG0);
+    printf("EVENT_WEIGTH_REG1 = %u\n", EVENT_WEIGTH_REG1);
+    printf("EVENT_WEIGTH_REG2 = %u\n", EVENT_WEIGTH_REG2);
     #endif
     return (0);
 }
@@ -506,7 +524,7 @@ unsigned int safesu_rdc_read_watermark(unsigned int input) {
     char err_msg[] = "ERR on safesu_rdc_read_watermark. <input> parameter out of range";
     
     unsigned int idx, tmp; 
-    idx = input/(REG_WIDTH/MCCU_WEIGHTS_WIDTH);
+    idx = input/(REG_WIDTH/MCCU_WEIGTHS_WIDTH);
     tmp = (_SAFESU_RDC_WATERMARKS[idx] & (0x000000FF << (input << 3))) >> (input << 3);
     return (tmp);
 }

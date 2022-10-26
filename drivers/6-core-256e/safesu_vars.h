@@ -27,7 +27,7 @@
 #define END_QUOTA_LIMIT 28
 #define N_QUOTA_REGS 2
 #define END_QUOTA_INTR 28
-#define MCCU_WEIGHTS_WIDTH 8
+#define MCCU_WEIGTHS_WIDTH 8
 #define MCCU_N_CORES 6
 #define MCCU_N_EVENTS 2
 #define BASE_MCCU_CFG 29
@@ -39,19 +39,19 @@
 #define BASE_MCCU_QUOTA 36
 #define N_MCCU_QUOTA 6
 #define END_MCCU_QUOTA 41
-#define BASE_MCCU_WEIGHTS 42
-#define N_MCCU_WEIGHTS 3
-#define END_MCCU_WEIGHTS 44
+#define BASE_MCCU_WEIGTHS 42
+#define N_MCCU_WEIGTHS 3
+#define END_MCCU_WEIGTHS 44
 #define N_MCCU_REGS 16
-#define RDC_WEIGHTS_WIDTH 8
+#define RDC_WEIGTHS_WIDTH 8
 #define RDC_N_CORES 6
 #define RDC_N_EVENTS 2
 #define BASE_RDC_VECT 45
 #define N_RDC_VECT_REGS 1
 #define END_RDC_VECT 45
-#define BASE_RDC_WEIGHTS 42
-#define N_RDC_WEIGHTS 0
-#define END_RDC_WEIGHTS 44
+#define BASE_RDC_WEIGTHS 42
+#define N_RDC_WEIGTHS 0
+#define END_RDC_WEIGTHS 44
 #define BASE_RDC_WATERMARK 46
 #define N_RDC_WATERMARK 3
 #define END_RDC_WATERMARK 48
@@ -394,9 +394,9 @@
 #define SAFESU_QUOTA_REM4 (_SAFESU_MCCU_QUOTA[10]) // Quota current remaining for core 4
 #define SAFESU_QUOTA_REM5 (_SAFESU_MCCU_QUOTA[11]) // Quota current remaining for core 5
 
-#define EVENT_WEIGHT_REG0 (_SAFESU_MCCU_QUOTA[12]) // Event weight register 0 (input 0 to 3)
-#define EVENT_WEIGHT_REG1 (_SAFESU_MCCU_QUOTA[13]) // Event weight register 1 (input 4 to 7)
-#define EVENT_WEIGHT_REG2 (_SAFESU_MCCU_QUOTA[14]) // Event weight register 2 (input 8 to 12)
+#define EVENT_WEIGTH_REG0 (_SAFESU_MCCU_QUOTA[12]) // Event weight register 0 (input 0 to 3)
+#define EVENT_WEIGTH_REG1 (_SAFESU_MCCU_QUOTA[13]) // Event weight register 1 (input 4 to 7)
+#define EVENT_WEIGTH_REG2 (_SAFESU_MCCU_QUOTA[14]) // Event weight register 2 (input 8 to 12)
 
 
 #define _SAFESU_RDC_IV (_SAFESU_REG_TYPE(SAFESU_ADDR + BASE_RDC_VECT * R2A))
@@ -405,13 +405,13 @@
 #define SAFESU_RDC_WATERMARK_REG0 (_SAFESU_RDC_WATERMARKS[0])
 #define SAFESU_RDC_WATERMARK_REG1 (_SAFESU_RDC_WATERMARKS[1])
 
-#define EV_WEIGHT_INPUT0 (0u)
-#define EV_WEIGHT_INPUT1 (1u)
-#define EV_WEIGHT_INPUT2 (2u)
-#define EV_WEIGHT_INPUT3 (3u)
-#define EV_WEIGHT_INPUT4 (4u)
-#define EV_WEIGHT_INPUT5 (5u)
-#define EV_WEIGHT_INPUT6 (6u)
-#define EV_WEIGHT_INPUT7 (7u)
+#define EV_WEIGTH_INPUT0 (0u)
+#define EV_WEIGTH_INPUT1 (1u)
+#define EV_WEIGTH_INPUT2 (2u)
+#define EV_WEIGTH_INPUT3 (3u)
+#define EV_WEIGTH_INPUT4 (4u)
+#define EV_WEIGTH_INPUT5 (5u)
+#define EV_WEIGTH_INPUT6 (6u)
+#define EV_WEIGTH_INPUT7 (7u)
 
 #define SAFESU_OVERFLOW_INT_INDEX (1u)

@@ -23,115 +23,18 @@
 
 // ** and mask
 void masked_and_write(unsigned int entry, unsigned int mask);
+
 // ** or mask
 void masked_or_write(unsigned int entry, unsigned int mask);
 
 //Select test mode
 unsigned int select_test_mode(unsigned int mode);
 
-// ** write one register register_id, value
-void write_register(unsigned int entry, unsigned int value);
-
-// ** read one register register_id,
-unsigned int read_register(unsigned int entry);
-
-// ** write in main cfg register (counters, overflow and quota)
-void write_main_cfg(unsigned int value);
-
 // ** write range of address with same value
 void write_register_range(unsigned int entry, unsigned int exit, unsigned int value);
 
-// ** Read range of registers. Includes first and an last values
-void read_register_range(unsigned int entry, unsigned int exit);
-
-// ** Read and print the content of all the SAFESU registers
-void read_all_safesu_regs(void);
-
 // ** Set to 0 all SAFESU registers
 void zero_all_safesu_regs(void);
-
-// ========================
-// Counters
-// ========================
-
-// ========================
-// Overflow
-// ========================
-
-// ** softreset overflow 
-void reset_overflow(void);
-
-// ** enable overflow 
-void enable_overflow(void);
-
-// ** disable overflow 
-void disable_overflow(void);
-
-//Write all 1 to the overflow mask Write all 1 to the overflow mask 
-//Pass condition: Register shall be set to max value
-void test_overflow_1(void);
-
-//Configure the SAFESU in a way that will trigger an interrupt
-//Given that all the input events are set to 1
-//Pass condition: Each bit assigned to a counter in the interruption vector
-//shall be set to 1, overflow interruption shall be 1
-void test_overflow_2(void);
-
-// ========================
-// QUOTA
-// ========================
-
-// ** softreset overflow 
-void reset_quota(void);
-
-//Disable counters, set counters to 1, set mask enable for all counters, wait
-//as many cycles as counters pass: Interruption shall trigger
-void test_quota_1(void);
-
-//Disable counters, set counters to max_value , set mask disabled for  all
-//counters, wait as many cycles as counters pass: Interruption shall not
-//trigger
-void test_quota_2(void);
-
-//Quota test 1 and reset the unit.
-//pass: Interruption shall trigger and be disabled after softreset. Mask will
-//be updated from the wrapper registers once the softreset is set to 0 again and
-//interruption may rettrigger
-void test_quota_3(void);
-
-// ========================
-// MCCU
-// ========================
-
-// ** write in main MCCU cfg register (MCCU RDC)
-void write_MCCU_cfg(unsigned int value);
-
-// ** softreset MCCU
-void reset_MCCU(void);
-
-// ** enable MCCU 
-void enable_MCCU(void);
-
-// ** disable MCCU 
-void disable_MCCU(void);
-
-//Disable MCCU, write quota limits and toogle quota update bit on MCCU_CFG reg
-//pass:Internal registers of MCCU shall be exactly the configured values after
-//two cycles
-void test_MCCU_1(unsigned int value);
-
-//Disable MCCU, set weights for each eventi
-//pass: weights shall be internally registered after two cycles
-void test_MCCU_2(unsigned int value);
-
-//Disable MCCU, set limits, set weights, and enable MCCU. When available quota
-//reach 0 the interrupts risen pass: all interrupts must rise. This will happen
-//up to 2 cycles before the wrapper registers are updated
-void test_MCCU_3(void);
-
-//Disable MCCU, set limits, and DONT enable MCCU. 
-//pass: non of the interrupts must rise. Available quota shall not decerease 
-void test_MCCU_4(void);
 
 // ========================
 // RDC
@@ -145,17 +48,6 @@ void enable_RDC(void);
 
 // ** disable RDC 
 void disable_RDC(void);
-
-//Set weights to low value and count pulse length in testmode 1
-//pass:Since all the events are high the interupt shall rise
-void test_RDC_1(void);
-
-//Set weights to low value and count pulse length in testmode 2
-//pass:Since all the events are low the interupt shall not rise
-void test_RDC_2(void);
-
-// ** Read range of registers. Includes first and an last values
-void read_mem_range(unsigned int entry, unsigned int exit);
 
 // ** Return structure of safesu report
 struct report_s {
@@ -202,9 +94,6 @@ crossbar_event_t;
 // ** Configure crossbar outputs with a given event **
 unsigned  safesu_configure_crossbar(unsigned int output, unsigned int event_index);
 
-// ** Read all crossbar registers ** 
-void read_crossbar_registers();
-
 // ** Register all events from a crossbar_event_t table
 void safesu_register_events(const crossbar_event_t * ev_table, unsigned int event_count);
 
@@ -248,18 +137,7 @@ void safesu_register_events(const crossbar_event_t * ev_table, unsigned int even
 #define SAFESU_ERROR_MSG_FORMAT "\033[0;31m"
 #define SAFESU_DEFAULT_MSG_FORMAT "\033[0m"
 
-void safesu_enable();
-void safesu_disable();
-void safesu_reset();
 void safesu_plic_register_interrupt(uint8_t mode, uint8_t core, uint8_t source_priority, uint8_t context_priority);
-void reset_rdc();
-void enable_rdc();
-void disable_rdc();
-void print_watermarks_regs();
-void mccu_set_quota(const unsigned int core,
-    const unsigned int quota);
-void mccu_set_event_weigths(const unsigned int input,
-    const unsigned int weigth);
 
 /* **********************************
         COUNTERS SUBMODULE
@@ -292,9 +170,9 @@ void safesu_mccu_disable(void);
 void safesu_mccu_reset(void);
 void safesu_mccu_enable_HQ(void);
 void safesu_mccu_disable_HQ(void);
-
 unsigned safesu_mccu_set_quota_limit(const unsigned int core,
     const unsigned int quota);
+unsigned safesu_mccu_reset_quota_limit(const unsigned int core);
 unsigned int safesu_mccu_get_quota_remaining(unsigned int core);
 unsigned safesu_mccu_set_event_weigths(const unsigned int input,
     const unsigned int weigth);
