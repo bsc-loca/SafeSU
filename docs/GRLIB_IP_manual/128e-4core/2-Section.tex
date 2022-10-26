@@ -7,347 +7,171 @@ The unit is compatible with GRLIB \textit{plug\&play}(P\&P). Vendor and device's
 \subsection{Default input events}
 %explain signals
 %distinction bteen CCS and regular signals
-In its default implementation, the unit provides up to 256 input events. Each one of the events can be routed to any mechanism of the module through the crossbar.\\
+In its default implementation, the unit provides up to 128 input events. Each one of the events can be routed to any mechanism of the module through the crossbar.\\
 \\
 Table \ref{table:t_ev} shows the inputs and mapping to the crossbar input for the current \href{https://gitlab.bsc.es/selene/selene-hardware/-/merge_requests/2}{SELENE release}. The number of signals and arrangements may change in the upcoming versions. \\
 
-\begin{center}
-	\begin{longtable}{|l|l|l|l|}
-		\caption[SELENE input events. 256 inputs, 6 cores]{SELENE GPL input events. 256 inputs, 6 cores} \label{table:t_ev} \\
-
-			
-		\hline \multicolumn{1}{|c|}{\textbf{Index}} & \multicolumn{1}{c|}{\textbf{Type}} 
-		& \multicolumn{1}{c|}{\textbf{Source}} & \multicolumn{1}{c|}{\textbf{Description}} \\ \hline 
-		\endfirsthead
-		
-		\multicolumn{3}{c}%
-		{{\bfseries \tablename\ \thetable{} -- continued from previous page}} \\
-		\hline \multicolumn{1}{|c|}{\textbf{Index}} & 
-		\multicolumn{1}{c|}{\textbf{Type}} & 
-		\multicolumn{1}{c|}{\textbf{Source}} &
-		\multicolumn{1}{c|}{\textbf{Description}} \\ \hline 
-		\endhead
-		
-		\hline \multicolumn{3}{|r|}{{Continued on next page}} \\ \hline
-		\endfoot
-		
-		\hline \hline
-		\endlastfoot
-		
-\hline
-0 & Debug & local &  Constant HIGH, used for debug purposes or clock cycles \\
-1 & Debug & local &  Constant LOW, used for debug purposes \\
-2 & Pulse & Core 0 &  Instruction count pipeline 0 \\
-3 & Pulse & Core 0 &  Instruction count pipeline 1 \\
-4 & Pulse & Core 0 &  Instruction cache miss \\
-5 & Pulse & Core 0 &  Instruction TLB miss \\
-6 & Pulse & Core 0 &  Data cache L1 miss \\
-7 & Pulse & Core 0 &  Data TLB miss \\
-8 & Pulse & Core 0 &  Branch predictor miss \\
-9 & Pulse & Core 1 &  Instruction count pipeline 0 \\
-10 & Pulse & Core 1 &  Instruction count pipeline 1 \\
-11 & Pulse & Core 1 &  Instruction cache miss \\
-12 & Pulse & Core 1 &  Instruction TLB miss \\
-13 & Pulse & Core 1 &  Data cache L1 miss \\
-14 & Pulse & Core 1 &  Data TLB miss \\
-15 & Pulse & Core 1 &  Branch predictor miss \\
-16 & Pulse & Core 2 &  Instruction count pipeline 0 \\
-17 & Pulse & Core 2 &  Instruction count pipeline 1 \\
-18 & Pulse & Core 2 &  Instruction cache miss \\
-19 & Pulse & Core 2 &  Instruction TLB miss \\
-20 & Pulse & Core 2 &  Data cache L1 miss \\
-21 & Pulse & Core 2 &  Data TLB miss \\
-22 & Pulse & Core 2 &  Branch predictor miss \\
-23 & Pulse & Core 3 &  Instruction count pipeline 0 \\
-24 & Pulse & Core 3 &  Instruction count pipeline 1 \\
-25 & Pulse & Core 3 &  Instruction cache miss \\
-26 & Pulse & Core 3 &  Instruction TLB miss \\
-27 & Pulse & Core 3 &  Data cache L1 miss \\
-28 & Pulse & Core 3 &  Data TLB miss \\
-29 & Pulse & Core 3 &  Branch predictor miss \\
-30 & Pulse & Core 4 &  Instruction count pipeline 0 \\
-31 & Pulse & Core 4 &  Instruction count pipeline 1 \\
-32 & Pulse & Core 4 &  Instruction cache miss \\
-33 & Pulse & Core 4 &  Instruction TLB miss \\
-34 & Pulse & Core 4 &  Data cache L1 miss \\
-35 & Pulse & Core 4 &  Data TLB miss \\
-36 & Pulse & Core 4 &  Branch predictor miss \\
-37 & Pulse & Core 5 &  Instruction count pipeline 0 \\
-38 & Pulse & Core 5 &  Instruction count pipeline 1 \\
-39 & Pulse & Core 5 &  Instruction cache miss \\
-40 & Pulse & Core 5 &  Instruction TLB miss \\
-41 & Pulse & Core 5 &  Data cache L1 miss \\
-42 & Pulse & Core 5 &  Data TLB miss \\
-43 & Pulse & Core 5 &  Branch predictor miss \\
-44 & CCS AHB &  -  &  Agressor C1 Victim C0\\
-45 & CCS AHB &  -  &  Agressor C2 Victim C0\\
-46 & CCS AHB &  -  &  Agressor C3 Victim C0\\
-47 & CCS AHB &  -  &  Agressor C4 Victim C0\\
-48 & CCS AHB &  -  &  Agressor C5 Victim C0\\
-49 & CCS AHB &  -  &  Agressor C0 Victim C1\\
-50 & CCS AHB &  -  &  Agressor C2 Victim C1\\
-51 & CCS AHB &  -  &  Agressor C3 Victim C1\\
-52 & CCS AHB &  -  &  Agressor C4 Victim C1\\
-53 & CCS AHB &  -  &  Agressor C5 Victim C1\\
-54 & CCS AHB &  -  &  Agressor C0 Victim C2\\
-55 & CCS AHB &  -  &  Agressor C1 Victim C2\\
-56 & CCS AHB &  -  &  Agressor C3 Victim C2\\
-57 & CCS AHB &  -  &  Agressor C4 Victim C2\\
-58 & CCS AHB &  -  &  Agressor C5 Victim C2\\
-59 & CCS AHB &  -  &  Agressor C0 Victim C3\\
-60 & CCS AHB &  -  &  Agressor C1 Victim C3\\
-61 & CCS AHB &  -  &  Agressor C2 Victim C3\\
-62 & CCS AHB &  -  &  Agressor C4 Victim C3\\
-63 & CCS AHB &  -  &  Agressor C5 Victim C3\\
-64 & CCS AHB &  -  &  Agressor C0 Victim C4\\
-65 & CCS AHB &  -  &  Agressor C1 Victim C4\\
-66 & CCS AHB &  -  &  Agressor C2 Victim C4\\
-67 & CCS AHB &  -  &  Agressor C3 Victim C4\\
-68 & CCS AHB &  -  &  Agressor C5 Victim C4\\
-69 & CCS AHB &  -  &  Agressor C0 Victim C5\\
-70 & CCS AHB &  -  &  Agressor C1 Victim C5\\
-71 & CCS AHB &  -  &  Agressor C2 Victim C5\\
-72 & CCS AHB &  -  &  Agressor C3 Victim C5\\
-73 & CCS AHB &  -  &  Agressor C4 Victim C5\\
-74 & CCS AXI & Write &  Agressor MQ1 Victim MQ0\\
-75 & CCS AXI & Write &  Agressor MQ2 Victim MQ0\\
-76 & CCS AXI & Write &  Agressor MQ3 Victim MQ0\\
-77 & CCS AXI & Write &  Agressor MQ4 Victim MQ0\\
-78 & CCS AXI & Write &  Agressor MQ5 Victim MQ0\\
-79 & CCS AXI & Write &  Agressor MQ6 Victim MQ0\\
-80 & CCS AXI & Write &  Agressor MQ7 Victim MQ0\\
-81 & CCS AXI & Write &  Agressor MQ8 Victim MQ0\\
-82 & CCS AXI & Write &  Agressor MQ9 Victim MQ0\\
-83 & CCS AXI & Write &  Agressor MQ10 Victim MQ0\\
-84 & CCS AXI & Write &  Agressor MQ11 Victim MQ0\\
-85 & CCS AXI & Write &  Agressor MQ12 Victim MQ0\\
-86 & CCS AXI & Write &  Agressor MQ13 Victim MQ0\\
-87 & CCS AXI & Write &  Agressor MQ14 Victim MQ0\\
-88 & CCS AXI & Write &  Agressor MQ0 Victim MQ1\\
-89 & CCS AXI & Write &  Agressor MQ2 Victim MQ1\\
-90 & CCS AXI & Write &  Agressor MQ3 Victim MQ1\\
-91 & CCS AXI & Write &  Agressor MQ4 Victim MQ1\\
-92 & CCS AXI & Write &  Agressor MQ5 Victim MQ1\\
-93 & CCS AXI & Write &  Agressor MQ6 Victim MQ1\\
-94 & CCS AXI & Write &  Agressor MQ7 Victim MQ1\\
-95 & CCS AXI & Write &  Agressor MQ8 Victim MQ1\\
-96 & CCS AXI & Write &  Agressor MQ9 Victim MQ1\\
-97 & CCS AXI & Write &  Agressor MQ10 Victim MQ1\\
-98 & CCS AXI & Write &  Agressor MQ11 Victim MQ1\\
-99 & CCS AXI & Write &  Agressor MQ12 Victim MQ1\\
-100 & CCS AXI & Write &  Agressor MQ13 Victim MQ1\\
-101 & CCS AXI & Write &  Agressor MQ14 Victim MQ1\\
-102 & CCS AXI & Write &  Agressor MQ0 Victim MQ2\\
-103 & CCS AXI & Write &  Agressor MQ1 Victim MQ2\\
-104 & CCS AXI & Write &  Agressor MQ3 Victim MQ2\\
-105 & CCS AXI & Write &  Agressor MQ4 Victim MQ2\\
-106 & CCS AXI & Write &  Agressor MQ5 Victim MQ2\\
-107 & CCS AXI & Write &  Agressor MQ6 Victim MQ2\\
-108 & CCS AXI & Write &  Agressor MQ7 Victim MQ2\\
-109 & CCS AXI & Write &  Agressor MQ8 Victim MQ2\\
-110 & CCS AXI & Write &  Agressor MQ9 Victim MQ2\\
-111 & CCS AXI & Write &  Agressor MQ10 Victim MQ2\\
-112 & CCS AXI & Write &  Agressor MQ11 Victim MQ2\\
-113 & CCS AXI & Write &  Agressor MQ12 Victim MQ2\\
-114 & CCS AXI & Write &  Agressor MQ13 Victim MQ2\\
-115 & CCS AXI & Write &  Agressor MQ14 Victim MQ2\\
-116 & CCS AXI & Write &  Agressor MQ0 Victim MQ3\\
-117 & CCS AXI & Write &  Agressor MQ1 Victim MQ3\\
-118 & CCS AXI & Write &  Agressor MQ2 Victim MQ3\\
-119 & CCS AXI & Write &  Agressor MQ4 Victim MQ3\\
-120 & CCS AXI & Write &  Agressor MQ5 Victim MQ3\\
-121 & CCS AXI & Write &  Agressor MQ6 Victim MQ3\\
-122 & CCS AXI & Write &  Agressor MQ7 Victim MQ3\\
-123 & CCS AXI & Write &  Agressor MQ8 Victim MQ3\\
-124 & CCS AXI & Write &  Agressor MQ9 Victim MQ3\\
-125 & CCS AXI & Write &  Agressor MQ10 Victim MQ3\\
-126 & CCS AXI & Write &  Agressor MQ11 Victim MQ3\\
-127 & CCS AXI & Write &  Agressor MQ12 Victim MQ3\\
-128 & CCS AXI & Write &  Agressor MQ13 Victim MQ3\\
-129 & CCS AXI & Write &  Agressor MQ14 Victim MQ3\\
-130 & CCS AXI & Write &  Agressor MQ0 Victim MQ4\\
-131 & CCS AXI & Write &  Agressor MQ1 Victim MQ4\\
-132 & CCS AXI & Write &  Agressor MQ2 Victim MQ4\\
-133 & CCS AXI & Write &  Agressor MQ3 Victim MQ4\\
-134 & CCS AXI & Write &  Agressor MQ5 Victim MQ4\\
-135 & CCS AXI & Write &  Agressor MQ6 Victim MQ4\\
-136 & CCS AXI & Write &  Agressor MQ7 Victim MQ4\\
-137 & CCS AXI & Write &  Agressor MQ8 Victim MQ4\\
-138 & CCS AXI & Write &  Agressor MQ9 Victim MQ4\\
-139 & CCS AXI & Write &  Agressor MQ10 Victim MQ4\\
-140 & CCS AXI & Write &  Agressor MQ11 Victim MQ4\\
-141 & CCS AXI & Write &  Agressor MQ12 Victim MQ4\\
-142 & CCS AXI & Write &  Agressor MQ13 Victim MQ4\\
-143 & CCS AXI & Write &  Agressor MQ14 Victim MQ4\\
-144 & CCS AXI & Write &  Agressor MQ0 Victim MQ5\\
-145 & CCS AXI & Write &  Agressor MQ1 Victim MQ5\\
-146 & CCS AXI & Write &  Agressor MQ2 Victim MQ5\\
-147 & CCS AXI & Write &  Agressor MQ3 Victim MQ5\\
-148 & CCS AXI & Write &  Agressor MQ4 Victim MQ5\\
-149 & CCS AXI & Write &  Agressor MQ6 Victim MQ5\\
-150 & CCS AXI & Write &  Agressor MQ7 Victim MQ5\\
-151 & CCS AXI & Write &  Agressor MQ8 Victim MQ5\\
-152 & CCS AXI & Write &  Agressor MQ9 Victim MQ5\\
-153 & CCS AXI & Write &  Agressor MQ10 Victim MQ5\\
-154 & CCS AXI & Write &  Agressor MQ11 Victim MQ5\\
-155 & CCS AXI & Write &  Agressor MQ12 Victim MQ5\\
-156 & CCS AXI & Write &  Agressor MQ13 Victim MQ5\\
-157 & CCS AXI & Write &  Agressor MQ14 Victim MQ5\\
-158 & CCS AXI & Read &  Agressor MQ1 Victim MQ0\\
-159 & CCS AXI & Read &  Agressor MQ2 Victim MQ0\\
-160 & CCS AXI & Read &  Agressor MQ3 Victim MQ0\\
-161 & CCS AXI & Read &  Agressor MQ4 Victim MQ0\\
-162 & CCS AXI & Read &  Agressor MQ5 Victim MQ0\\
-163 & CCS AXI & Read &  Agressor MQ6 Victim MQ0\\
-164 & CCS AXI & Read &  Agressor MQ7 Victim MQ0\\
-165 & CCS AXI & Read &  Agressor MQ8 Victim MQ0\\
-166 & CCS AXI & Read &  Agressor MQ9 Victim MQ0\\
-167 & CCS AXI & Read &  Agressor MQ10 Victim MQ0\\
-168 & CCS AXI & Read &  Agressor MQ11 Victim MQ0\\
-169 & CCS AXI & Read &  Agressor MQ12 Victim MQ0\\
-170 & CCS AXI & Read &  Agressor MQ13 Victim MQ0\\
-171 & CCS AXI & Read &  Agressor MQ14 Victim MQ0\\
-172 & CCS AXI & Read &  Agressor MQ0 Victim MQ1\\
-173 & CCS AXI & Read &  Agressor MQ2 Victim MQ1\\
-174 & CCS AXI & Read &  Agressor MQ3 Victim MQ1\\
-175 & CCS AXI & Read &  Agressor MQ4 Victim MQ1\\
-176 & CCS AXI & Read &  Agressor MQ5 Victim MQ1\\
-177 & CCS AXI & Read &  Agressor MQ6 Victim MQ1\\
-178 & CCS AXI & Read &  Agressor MQ7 Victim MQ1\\
-179 & CCS AXI & Read &  Agressor MQ8 Victim MQ1\\
-180 & CCS AXI & Read &  Agressor MQ9 Victim MQ1\\
-181 & CCS AXI & Read &  Agressor MQ10 Victim MQ1\\
-182 & CCS AXI & Read &  Agressor MQ11 Victim MQ1\\
-183 & CCS AXI & Read &  Agressor MQ12 Victim MQ1\\
-184 & CCS AXI & Read &  Agressor MQ13 Victim MQ1\\
-185 & CCS AXI & Read &  Agressor MQ14 Victim MQ1\\
-186 & CCS AXI & Read &  Agressor MQ0 Victim MQ2\\
-187 & CCS AXI & Read &  Agressor MQ1 Victim MQ2\\
-188 & CCS AXI & Read &  Agressor MQ3 Victim MQ2\\
-189 & CCS AXI & Read &  Agressor MQ4 Victim MQ2\\
-190 & CCS AXI & Read &  Agressor MQ5 Victim MQ2\\
-191 & CCS AXI & Read &  Agressor MQ6 Victim MQ2\\
-192 & CCS AXI & Read &  Agressor MQ7 Victim MQ2\\
-193 & CCS AXI & Read &  Agressor MQ8 Victim MQ2\\
-194 & CCS AXI & Read &  Agressor MQ9 Victim MQ2\\
-195 & CCS AXI & Read &  Agressor MQ10 Victim MQ2\\
-196 & CCS AXI & Read &  Agressor MQ11 Victim MQ2\\
-197 & CCS AXI & Read &  Agressor MQ12 Victim MQ2\\
-198 & CCS AXI & Read &  Agressor MQ13 Victim MQ2\\
-199 & CCS AXI & Read &  Agressor MQ14 Victim MQ2\\
-200 & CCS AXI & Read &  Agressor MQ0 Victim MQ3\\
-201 & CCS AXI & Read &  Agressor MQ1 Victim MQ3\\
-202 & CCS AXI & Read &  Agressor MQ2 Victim MQ3\\
-203 & CCS AXI & Read &  Agressor MQ4 Victim MQ3\\
-204 & CCS AXI & Read &  Agressor MQ5 Victim MQ3\\
-205 & CCS AXI & Read &  Agressor MQ6 Victim MQ3\\
-206 & CCS AXI & Read &  Agressor MQ7 Victim MQ3\\
-207 & CCS AXI & Read &  Agressor MQ8 Victim MQ3\\
-208 & CCS AXI & Read &  Agressor MQ9 Victim MQ3\\
-209 & CCS AXI & Read &  Agressor MQ10 Victim MQ3\\
-210 & CCS AXI & Read &  Agressor MQ11 Victim MQ3\\
-211 & CCS AXI & Read &  Agressor MQ12 Victim MQ3\\
-212 & CCS AXI & Read &  Agressor MQ13 Victim MQ3\\
-213 & CCS AXI & Read &  Agressor MQ14 Victim MQ3\\
-214 & CCS AXI & Read &  Agressor MQ0 Victim MQ4\\
-215 & CCS AXI & Read &  Agressor MQ1 Victim MQ4\\
-216 & CCS AXI & Read &  Agressor MQ2 Victim MQ4\\
-217 & CCS AXI & Read &  Agressor MQ3 Victim MQ4\\
-218 & CCS AXI & Read &  Agressor MQ5 Victim MQ4\\
-219 & CCS AXI & Read &  Agressor MQ6 Victim MQ4\\
-220 & CCS AXI & Read &  Agressor MQ7 Victim MQ4\\
-221 & CCS AXI & Read &  Agressor MQ8 Victim MQ4\\
-222 & CCS AXI & Read &  Agressor MQ9 Victim MQ4\\
-223 & CCS AXI & Read &  Agressor MQ10 Victim MQ4\\
-224 & CCS AXI & Read &  Agressor MQ11 Victim MQ4\\
-225 & CCS AXI & Read &  Agressor MQ12 Victim MQ4\\
-226 & CCS AXI & Read &  Agressor MQ13 Victim MQ4\\
-227 & CCS AXI & Read &  Agressor MQ14 Victim MQ4\\
-228 & CCS AXI & Read &  Agressor MQ0 Victim MQ5\\
-229 & CCS AXI & Read &  Agressor MQ1 Victim MQ5\\
-230 & CCS AXI & Read &  Agressor MQ2 Victim MQ5\\
-231 & CCS AXI & Read &  Agressor MQ3 Victim MQ5\\
-232 & CCS AXI & Read &  Agressor MQ4 Victim MQ5\\
-233 & CCS AXI & Read &  Agressor MQ6 Victim MQ5\\
-234 & CCS AXI & Read &  Agressor MQ7 Victim MQ5\\
-235 & CCS AXI & Read &  Agressor MQ8 Victim MQ5\\
-236 & CCS AXI & Read &  Agressor MQ9 Victim MQ5\\
-237 & CCS AXI & Read &  Agressor MQ10 Victim MQ5\\
-238 & CCS AXI & Read &  Agressor MQ11 Victim MQ5\\
-239 & CCS AXI & Read &  Agressor MQ12 Victim MQ5\\
-240 & CCS AXI & Read &  Agressor MQ13 Victim MQ5\\
-241 & CCS AXI & Read &  Agressor MQ14 Victim MQ5\\
-242 & - & - &   Filler signal, constant 0 \\
-243 & - & - &   Filler signal, constant 0 \\
-244 & - & - &   Filler signal, constant 0 \\
-245 & - & - &   Filler signal, constant 0 \\
-246 & - & - &   Filler signal, constant 0 \\
-247 & - & - &   Filler signal, constant 0 \\
-248 & - & - &   Filler signal, constant 0 \\
-249 & - & - &   Filler signal, constant 0 \\
-250 & - & - &   Filler signal, constant 0 \\
-251 & - & - &   Filler signal, constant 0 \\
-252 & - & - &   Filler signal, constant 0 \\
-253 & - & - &   Filler signal, constant 0 \\
-254 & - & - &   Filler signal, constant 0 \\
-255 & - & - &   Filler signal, constant 0 \\
-	\end{longtable}
-\end{center}
-
 \begin{table}[H]
-	\caption{Mapping from Master qos (MQ) to IPs on GPL release. }
-	\label{table:t_ev2}
+	\caption{SELENE default input events. 128 inputs, 4 cores}
+	\label{table:t_ev}
 	\centering
-		\begin{tabular}{|l|l|l|l|l|}
-			\hline
-			\textbf{MQ} & \textbf{Bus of origin}  & \textbf{Bus ID} & \textbf{Description}\\
-			\hline
-0 & AHB & 0 &  NOEL-V CORE \\
-1 & AHB & 1 &  NOEL-V CORE \\
-2 & AHB & 2 &  NOEL-V CORE \\
-3 & AHB & 3 &  NOEL-V CORE \\
-4 & AHB & 4 &  NOEL-V CORE \\
-5 & AHB & 5 &  NOEL-V CORE \\
-6 & AHB & 6 &  GR Ethernet MAC \\
-7 & AHB & 7 &  GRDMAC2 DMA Controller \\
-8 & AHB & 8 &  AHB Debug UART \\
-9 & AHB & 9 &  JTAG Debug Link \\
-10 & AHB & 10 &  EDCL master interface   \\
-11 & - & - & Unused \\
-12 & - & - & Unused  \\
-13 & - & - & Unused   \\
-14 & - & - & Unused  \\
-	\hline
-		\end{tabular}
-\end{table}
-
-\begin{table}[H]
-	\caption{Maping from Master qos (MQ) to IPs on non-GPL release}
-	\label{table:t_ev3}
-	\centering
+	\begin{footnotesize}
 	\begin{tabular}{|l|l|l|l|l|}
 		\hline
-		\textbf{MQ} & \textbf{Bus of origin}  & \textbf{Bus ID} & \textbf{Description}\\
-		\hline
-0 & AHB & 0 &  NOEL-V CORE \\
-1 & AHB & 1 &  NOEL-V CORE \\
-2 & AHB & 2 &  NOEL-V CORE \\
-3 & AHB & 3 &  NOEL-V CORE \\
-4 & AHB & 4 &  NOEL-V CORE \\
-5 & AHB & 5 &  NOEL-V CORE \\
+		\textbf{Index} & \textbf{Type}  & \textbf{Source} & \textbf{Description} \\
+	
+\hline
+0 & Debug & local &  Constant HIGH, used for debug purposes or clock cycles \\
+\hline 
+1 & Debug & local &  Constant LOW, used for debug purposes \\
+\hline 
+2 & Pulse & Core 0 &  Instruction count pipeline 0 \\
+\hline 
+3 & Pulse & Core 0 &  Instruction count pipeline 1 \\
+\hline 
+4 & Pulse & Core 0 &  Instruction cache miss \\
+\hline 
+5 & Pulse & Core 0 &  Instruction TLB miss \\
+\hline 
+6 & Pulse & Core 0 &  Data caches L1 miss \\
+\hline 
+7 & Pulse & Core 0 &  Data TLB miss \\
+\hline 
+8 & Pulse & Core 0 &  Branch predictor miss \\
+\hline 
+9 & Pulse & Core 1 &  Instruction count pipeline 0 \\
+\hline 
+10 & Pulse & Core 1 &  Instruction count pipeline 1 \\
+\hline 
+11 & Pulse & Core 1 &  Instruction cache miss \\
+\hline 
+12 & Pulse & Core 1 &  Instruction TLB miss \\
+\hline 
+13 & Pulse & Core 1 &  Data caches L1 miss \\
+\hline 
+14 & Pulse & Core 1 &  Data TLB miss \\
+\hline 
+15 & Pulse & Core 1 &  Branch predictor miss \\
+\hline 
+16 & Pulse & Core 2 &  Instruction count pipeline 0 \\
+\hline 
+17 & Pulse & Core 2 &  Instruction count pipeline 1 \\
+\hline 
+18 & Pulse & Core 2 &  Instruction cache miss \\
+\hline 
+19 & Pulse & Core 2 &  Instruction TLB miss \\
+\hline 
+20 & Pulse & Core 2 &  Data caches L1 miss \\
+\hline 
+21 & Pulse & Core 2 &  Data TLB miss \\
+\hline 
+22 & Pulse & Core 2 &  Branch predictor miss \\
+\hline 
+23 & Pulse & Core 3 &  Instruction count pipeline 0 \\
+\hline 
+24 & Pulse & Core 3 &  Instruction count pipeline 1 \\
+\hline 
+25 & Pulse & Core 3 &  Instruction cache miss \\
+\hline 
+26 & Pulse & Core 3 &  Instruction TLB miss \\
+\hline 
+27 & Pulse & Core 3 &  Data caches L1 miss \\
+\hline 
+28 & Pulse & Core 3 &  Data TLB miss \\
+\hline 
+29 & Pulse & Core 3 &  Branch predictor miss \\
+\hline 
+30 & CCS & Core0 &  Contention C0 over C1\\
+\hline 
+31 & CCS & Core0 &  Contention C0 over C2\\
+\hline 
+32 & CCS & Core0 &  Contention C0 over C3\\
+\hline 
+33 & CCS & Core1 &  Contention C1 over C0\\
+\hline 
+34 & CCS & Core1 &  Contention C1 over C2\\
+\hline 
+35 & CCS & Core1 &  Contention C1 over C3\\
+\hline 
+36 & CCS & Core2 &  Contention C2 over C0\\
+\hline 
+37 & CCS & Core2 &  Contention C2 over C1\\
+\hline 
+38 & CCS & Core2 &  Contention C2 over C3\\
+\hline 
+39 & CCS & Core3 &  Contention C3 over C0\\
+\hline 
+40 & CCS & Core3 &  Contention C3 over C1\\
+\hline 
+41 & CCS & Core3 &  Contention C3 over C2\\
+\hline 
+42 & - & - &   Filler signal, constant 0 \\
+\hline 
+... & ... & ... &  ... \\
 
-6 & AHB & 6 &  GR Ethernet MAC \\
-7 & AHB & 7 &  GRSPW2 SpaceWire \\
-8 & AHB & 8 &  GRSPW2 SpaceWire \\
-9 & AHB & 9 &  CAN-FD Controller with DMA \\
-10 & AHB & 10 &  CAN-FD Controller with DMA \\
-11 & AHB & 11 & GRDMAC2 DMA Controller \\
-12 & AHB & 12 & AHB Debug UART  \\
-13 & AHB & 13 & JTAG Debug Link   \\
-14 & AHB & 14 & EDCL master interface  \\
-	\hline
+\hline 
+127 & - & - &   Filler signal, constant 0 \\
+\hline 
 	\end{tabular}
+	\end{footnotesize}
 \end{table}
+
+%%Not tested in the 4-core setup
+%\begin{table}[H]
+%	\caption{Mapping from Master qos (MQ) to IPs on GPL release. }
+%	\label{table:t_ev2}
+%	\centering
+%		\begin{tabular}{|l|l|l|l|l|}
+%			\hline
+%			\textbf{MQ} & \textbf{Bus of origin}  & \textbf{Bus ID} & \textbf{Description}\\
+%			\hline
+%0 & AHB & 0 &  NOEL-V CORE \\
+%1 & AHB & 1 &  NOEL-V CORE \\
+%2 & AHB & 2 &  NOEL-V CORE \\
+%3 & AHB & 3 &  NOEL-V CORE \\
+%4 & AHB & 4 &  NOEL-V CORE \\
+%5 & AHB & 5 &  NOEL-V CORE \\
+%6 & AHB & 6 &  GR Ethernet MAC \\
+%7 & AHB & 7 &  GRDMAC2 DMA Controller \\
+%8 & AHB & 8 &  AHB Debug UART \\
+%9 & AHB & 9 &  JTAG Debug Link \\
+%10 & AHB & 10 &  EDCL master interface   \\
+%11 & - & - & Unused \\
+%12 & - & - & Unused  \\
+%13 & - & - & Unused   \\
+%14 & - & - & Unused  \\
+%	\hline
+%		\end{tabular}
+%\end{table}
+%
+%\begin{table}[H]
+%	\caption{Maping from Master qos (MQ) to IPs on non-GPL release}
+%	\label{table:t_ev3}
+%	\centering
+%	\begin{tabular}{|l|l|l|l|l|}
+%		\hline
+%		\textbf{MQ} & \textbf{Bus of origin}  & \textbf{Bus ID} & \textbf{Description}\\
+%		\hline
+%0 & AHB & 0 &  NOEL-V CORE \\
+%1 & AHB & 1 &  NOEL-V CORE \\
+%2 & AHB & 2 &  NOEL-V CORE \\
+%3 & AHB & 3 &  NOEL-V CORE \\
+%4 & AHB & 4 &  NOEL-V CORE \\
+%5 & AHB & 5 &  NOEL-V CORE \\
+%
+%6 & AHB & 6 &  GR Ethernet MAC \\
+%7 & AHB & 7 &  GRSPW2 SpaceWire \\
+%8 & AHB & 8 &  GRSPW2 SpaceWire \\
+%9 & AHB & 9 &  CAN-FD Controller with DMA \\
+%10 & AHB & 10 &  CAN-FD Controller with DMA \\
+%11 & AHB & 11 & GRDMAC2 DMA Controller \\
+%12 & AHB & 12 & AHB Debug UART  \\
+%13 & AHB & 13 & JTAG Debug Link   \\
+%14 & AHB & 14 & EDCL master interface  \\
+%	\hline
+%	\end{tabular}
+%\end{table}
+
 Signals labeled as \textit{debug} are fix inputs that can be used to test hardware or software with known inputs. \textbf{Event 0} (fix '1') can be used to measure the \textbf{number of elapsed cycles}.\\
 \\
 Signals of type \textit{CCS} can be used to compute the total contention cycle stack of the system. These signals become high at the first rising edge of the clock after a given condition or event has been detected. They remain active until the condition or event that they are measuring becomes low. This behavior allows measuring the length of clock cycles. When generating CCS signals, the user must consider if they want to allow back to back events and generate the input signals accordingly at RTL level.
@@ -378,7 +202,7 @@ These are the Self-test modes for each configuration value of the fied \textit{s
   \end{register}
 
 \subsection{Crossbar}
-This feature allows routing any of the input signals of table \ref{table:t_ev} or \ref{table:t_ev2} into any of the 24 counters of the SafeSU. Each one of the counters has a 5-bit configuration value for the 32 input version of the crossbar, 7-bit for the 128 version and 8-bit for the 256 version. For simplicity this section describes the 32 entry variant of the crossabar. Consider that the width of the configuration field is $log2(N\_inputs)$ and the total amount of configuration registers $log2(N\_inputs)*N\_inputs$.\\
+This feature allows routing any of the input signals of table \ref{table:t_ev} or \ref{table:t_ev2} into any of the 24 counters of the SafeSU. Each one of the counters has a 5-bit configuration value for the 32 input version of the crossbar or 7-bit for the 128 version. For simplicity this section describes the 32 entry variant of the crossabar. Consider that the width of the configuration field is $log2(N\_inputs)$ and the total amount of configuration registers $log2(N\_inputs)*N\_inputs$.\\
 Configuration values are stored in registers \ref{cross_cfg0}, \ref{cross_cfg1}, \ref{cross_cfg2},\ref{cross_cfg3}. All the configuration values are consecutive. Thus some values may have configuration bits in two consecutive memory addresses. Examples of this are Output 6, 12, 19 in our current configuration. As a consequence, the previous outputs may require two writes to configure the desired input signal.\\
 \\
 Configuration fields match one to one with the internal counters. So the field \textit{output 0} matches with \textit{counter 0}, \textit{output 1} with\textit{ counter 1} and so on.\\
@@ -460,13 +284,13 @@ Signal routing is important since some of the SafeSU features are only available
 			\hline
 			7 & Yes & Yes & Core 3 & Yes \\
 			\hline
-			8 & Yes & Yes & Core 4 & Yes \\
+			8 & Yes & Yes & No & Yes \\
 			\hline
-			9 & Yes & Yes & Core 4 & Yes \\
+			9 & Yes & Yes & No & Yes \\
 			\hline
-			10 & Yes & Yes & Core 5 & Yes \\
+			10 & Yes & Yes & No & Yes \\
 			\hline
-			11 & Yes & Yes & Core 5 & Yes\\
+			11 & Yes & Yes & No & Yes\\
 			\hline
 			12 & Yes & Yes & No & No \\
 			\hline
@@ -639,7 +463,7 @@ The default AHB interrupt mapping can be modified within the file \textit{ahb\_w
 \subsection{Quota}
 This feature has been replaced by the MCCU and will disappear in future releases. Usage is not recommended.
 \subsection{MCCU}
-The Maximum-Contention Control Unit (MCCU) allows to monitor a subset of the input events and track the approximate contention that they will cause. Currently, events assigned to counters 0 to 11 can be used as inputs of the MCCU. Thanks to the crossbar, any of the SoC signals can be used by the MCCU. In this section we use the 4 core version as a reference. In all configurations one quota register is assigned to each core and one weight is asigned to each signal.\\
+The Maximum-Contention Control Unit (MCCU) allows to monitor a subset of the input events and track the approximate contention that they will cause. Currently, events assigned to counters 0 to 7 for the 4 core version or 0 to 11 for the 6 core version can be used as inputs of the MCCU.  Thanks to the crossbar, any of the SoC signals can be used by the MCCU. In this section we use the 4 core version as a reference. In all configurations one quota register is assigned to each core and one weight is asigned to each signal.\\
 \\
 \begin{figure}[H]
 	\includegraphics[keepaspectratio,width=\columnwidth]{img/bd_MCCU.png}
@@ -651,14 +475,12 @@ Figure \ref{fig:blk_MCCU} shows the internal elements required to monitor the qu
 When the "Enable Hardware Quota" bit is toggled, this interrupt is routed to the AHB controller directly to block contending core access to the shared bus. Thus, disabling the interrupt lines and performing the decisions without software intervention.
 
 
-\begin{register}{}{MCCU main configuration for 6 core configurations}{0x074}
-	\label{MCCU_cfg_6c}
+\begin{register}{H}{MCCU main configuration for 4 core configurations}{0x074}
+	\label{MCCU_cfg}
 	\regfield{Enable Hardware Quota}{1}{31}{{0}}
-	\regfield{Reserved}{21}{10}{{x}}
-	\regfield{Soft reset RDC}{1}{9}{{0}}
-	\regfield{Enable RDC}{1}{8}{{0}}
-	\regfield{Update Quota Core 5}{1}{7}{{0}}
-	\regfield{Update Quota Core 4}{1}{6}{{0}}
+	\regfield{Reserved}{23}{8}{{x}}
+	\regfield{Soft reset RDC}{1}{7}{{0}}
+	\regfield{Enable RDC}{1}{6}{{0}}
 	\regfield{Update Quota Core 3}{1}{5}{{0}}
 	\regfield{Update Quota Core 2}{1}{4}{{0}}
 	\regfield{Update Quota Core 1}{1}{3}{{0}}
@@ -667,6 +489,7 @@ When the "Enable Hardware Quota" bit is toggled, this interrupt is routed to the
 	\regfield{Enable reset MCCU}{1}{0}{{0}}
 	\reglabel{Reset value}\regnewline
 \end{register}
+
 \begin{figure}[H]
 	\begin{center}
 		\regfieldb{0x078}{32}{0}
@@ -677,39 +500,32 @@ When the "Enable Hardware Quota" bit is toggled, this interrupt is routed to the
 		\reglabelb{Core 2} \\
 		\regfieldb{0x084}{32}{0}
 		\reglabelb{Core 3} \\
-		\regfieldb{0x088}{32}{0}
-		\reglabelb{Core 4} \\
-		\regfieldb{0x08c}{32}{0}
-		\reglabelb{Core 5} \\
 	\end{center}
 	\caption{MCCU Quota limits for each core}\label{fig:MCCU_lim}
 \end{figure}
 \begin{figure}[H]
 	\begin{center}
-		\regfieldb{0x090}{32}{0}
+		\regfieldb{0x088}{32}{0}
 		\reglabelb{Core 0} \\
-		\regfieldb{0x094}{32}{0}
+		\regfieldb{0x08c}{32}{0}
 		\reglabelb{Core 1} \\
-		\regfieldb{0x098}{32}{0}
+		\regfieldb{0x090}{32}{0}
 		\reglabelb{Core 2} \\
-		\regfieldb{0x09c}{32}{0}
+		\regfieldb{0x094}{32}{0}
 		\reglabelb{Core 3} \\
-		\regfieldb{0x0a0}{32}{0}
-		\reglabelb{Core 4} \\
-		\regfieldb{0x0a4}{32}{0}
-		\reglabelb{Core 5} \\
 	\end{center}
 	\caption{MCCU Current remaning Quota for each core}\label{fig:MCCU_ava}
 \end{figure}
+
 In the current release, the MCCU can be reset and activated with the respective fields of register \ref{MCCU_cfg}. The fields labeled as \textit{Update Quota core} are used to update the available quota of each core (figure \ref{fig:MCCU_ava}). While  \textit{Update Quota core} is high, the content is assigned to the available quota. Once released (low), the available quota can start to decrease if the MCCU is active. The current quota can be read while the unit is active.\\
 \\
 In the current release, each core can monitor two input events. The MCCU module is parametric and more events can be provided in future releases.  Table \ref{tab:features} shows the features available for each crossbar output. Under the column MCCU, you can see towards which core quota the event will be computed.
-The unit provides one interruption for each of the monitored cores. 
-%Quota exhaustion for cores 3, 2, 1, and 0 is mapped to AHB interrupts 10, 9, 8, and 7, respectively.\\ it changes across bitstreams
+The unit provides one interruption for each of the monitored cores.
+%Quota exhaustion for cores 3, 2, 1, and 0 is mapped to AHB interrupts 10, 9, 8, and 7, respectively.\\
 \\
 Weights for each monitored event are registered in registers \ref{MCCU_weight0} and \ref{MCCU_weight1}. Currently, each weight is an 8-bit field. Each input of the MCCU maps directly to the outputs of the crossbar. Thus the weight for the MCCU input 0 corresponds to the signal in crossbar output 0.\\
 \\
-\begin{register}{H}{MCCU event weights register 0 (shared with RDC)}{0x0a8}
+\begin{register}{H}{MCCU event weights register 0 (shared with RDC)}{0x098}
 	\label{MCCU_weight0}
 	\regfield{Input 3}{8}{24}{{00}}
 	\regfield{Input 2}{8}{16}{{00}}
@@ -717,7 +533,7 @@ Weights for each monitored event are registered in registers \ref{MCCU_weight0} 
 	\regfield{Input 0}{8}{0}{{00}}
 	\reglabel{Reset value}\regnewline
 \end{register}
-\begin{register}{H}{MCCU event weights register 1 (shared with RDC)}{0x0ac}
+\begin{register}{H}{MCCU event weights register 1 (shared with RDC)}{0x09c}
 	\label{MCCU_weight1}
 	\regfield{Input 7}{8}{24}{{00}}
 	\regfield{Input 6}{8}{16}{{00}}
@@ -725,7 +541,7 @@ Weights for each monitored event are registered in registers \ref{MCCU_weight0} 
 	\regfield{Input 4}{8}{0}{{00}}
 	\reglabel{Reset value}\regnewline
 \end{register}
-\begin{register}{H}{MCCU event weights register 2 (shared with RDC)}{0x0b0}
+\begin{register}{H}{MCCU event weights register 2 (shared with RDC)}{0x0a0}
 	\label{MCCU_weight1}
 	\regfield{Input 11}{8}{24}{{00}}
 	\regfield{Input 10}{8}{16}{{00}}
@@ -745,15 +561,14 @@ The Request Duration Counter or RDC is comprised of a set of 8-bit counters and 
 	\end{center}
 \end{figure}
 
-The current release provides monitoring for crossbar outputs 0 to 11 for the hexa-core. Note that the amount of registers changes with the amount of cores, and figures and addresses are representative of the 4 core configuration. The weights for each signal are shared with the MCCU and are stored in registers \ref{RDC_weight0} and \ref{RDC_weight1}. Weights are 8-bit fields.Counters have overflow protection, preventing the count from wrapping over the maximum value.  The maximum value for each event (watermarks), are stored in registers \ref{RDC_water0} and \ref{RDC_water1}.\\
+The current release provides monitoring for crossbar outputs 0 to 7 for the quad-core configuration and 0 to 11 for the hexa-core. Note that the amount of registers changes with the amount of cores, and figures and addresses are representative of the 4 core configuration. The weights for each signal are shared with the MCCU and are stored in registers \ref{RDC_weight0} and \ref{RDC_weight1}. Weights are 8-bit fields.Counters have overflow protection, preventing the count from wrapping over the maximum value.  The maximum value for each event (watermarks), are stored in registers \ref{RDC_water0} and \ref{RDC_water1}.\\
 \\
 The RDC shares the main configuration register with the MCCU (register \ref{MCCU_cfg}). Through this register, the unit can be reset and enabled through the corresponding fields. Such fields are active high signals. \\
 \\
-The unit does provide access to the internal interrupt vector (register \ref{RDC_intrv}), but such information is redundant and may be removed in future releases. Given the current watermarks and assigned weights, the events responsible for the interrupt can be identified.  
-%The RDC interrupt has been routed to AHB interrupt 11.
+The unit does provide access to the internal interrupt vector (register \ref{RDC_intrv}), but such information is redundant and may be removed in future releases. Given the current watermarks and assigned weights, the events responsible for the interrupt can be identified.  The RDC interrupt has been routed to AHB interrupt 11.
 
 
-\begin{register}{H}{RDC interrupt vector}{0x0b4}
+\begin{register}{H}{RDC interrupt vector}{0x0a4}
 	\label{RDC_intrv}
 	\regfield{Reserved}{28}{4}{{x}}
 	\regfield{Core 5}{1}{3}{{00}}
@@ -764,7 +579,7 @@ The unit does provide access to the internal interrupt vector (register \ref{RDC
 	\regfield{Core 0}{1}{0}{{00}}
 	\reglabel{Reset value}\regnewline
 \end{register}
-\begin{register}{H}{RDC event weights register 0 (shared with MCCU)}{0x0a8}
+\begin{register}{H}{RDC event weights register 0 (shared with MCCU)}{0x098}
 	\label{RDC_weight0}
 	\regfield{Input 3}{8}{24}{{00}}
 	\regfield{Input 2}{8}{16}{{00}}
@@ -772,7 +587,7 @@ The unit does provide access to the internal interrupt vector (register \ref{RDC
 	\regfield{Input 0}{8}{0}{{00}}
 	\reglabel{Reset value}\regnewline
 \end{register}
-\begin{register}{H}{RDC event weights register 1 (shared with MCCU)}{0x0ac}
+\begin{register}{H}{RDC event weights register 1 (shared with MCCU)}{0x09c}
 	\label{RDC_weight1}
 	\regfield{Input 7}{8}{24}{{00}}
 	\regfield{Input 6}{8}{16}{{00}}
@@ -780,7 +595,7 @@ The unit does provide access to the internal interrupt vector (register \ref{RDC
 	\regfield{Input 4}{8}{0}{{00}}
 	\reglabel{Reset value}\regnewline
 \end{register}
-\begin{register}{H}{RDC event weights register 2 (shared with MCCU)}{0x0b0}
+\begin{register}{H}{RDC event weights register 2 (shared with MCCU)}{0x0a0}
 	\label{MCCU_weight1}
 	\regfield{Input 11}{8}{24}{{00}}
 	\regfield{Input 10}{8}{16}{{00}}
@@ -790,7 +605,7 @@ The unit does provide access to the internal interrupt vector (register \ref{RDC
 \end{register}
 
 
-\begin{register}{H}{RDC watermark register 0}{0x0b8}
+\begin{register}{H}{RDC watermark register 0}{0x0a8}
 	\label{RDC_water0}
 	\regfield{Input 3}{8}{24}{{00}}
 	\regfield{Input 2}{8}{16}{{00}}
@@ -800,7 +615,7 @@ The unit does provide access to the internal interrupt vector (register \ref{RDC
 \end{register}
 
 
-\begin{register}{H}{RDC watermark register 1}{0x0bc}
+\begin{register}{H}{RDC watermark register 1}{0x0ac}
 	\label{RDC_water1}
 	\regfield{Input 7}{8}{24}{{00}}
 	\regfield{Input 6}{8}{16}{{00}}
@@ -809,7 +624,7 @@ The unit does provide access to the internal interrupt vector (register \ref{RDC
 	\reglabel{Reset value}\regnewline
 \end{register}
 
-\begin{register}{H}{RDC watermark register 2}{0x0c0}
+\begin{register}{H}{RDC watermark register 2}{0x0b0}
 	\label{RDC_water2}
 	\regfield{Input 11}{8}{24}{{00}}
 	\regfield{Input 10}{8}{16}{{00}}

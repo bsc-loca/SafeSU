@@ -1,0 +1,31 @@
+\section{Signal descriptions}
+Table \ref{t_ports} shows the interface of the core (VHDL ports).
+\begin{table}[H]
+	\caption{Signal descriptions (VHDL ports)}
+	\label{t_ports}
+	\centering
+	\begin{footnotesize}
+	\begin{tabular}{|l|l|l|l|l|}
+		\hline
+		\textbf{Signal name} & \textbf{Field}  & \textbf{Type}  & \textbf{Function} & \textbf{Active}\\
+		\hline
+		RST & &Input &Reset & Low\\
+		\hline
+		CLK & &Input &AHB master bus clock & -\\
+		\hline
+		SafeSU\_EVENTS & &Input & Input for regular SoC events & -\\
+		\hline
+		CCS\_CONTENTION & &Input & Input for contention cycle stack signals that measure contention  & -\\
+		\hline
+		CCS\_LATENCY & &Input & Input for contention cycle stack signals that measure access latency & -\\
+		\hline
+		AHBSI & * &Input & AHB slave input signals& -\\
+		\hline
+		AHBSO & * &Output &AHB slave output signals, includes interrupts & - \\
+		\hline
+	\end{tabular}
+\end{footnotesize}
+\end{table}
+
+
+
