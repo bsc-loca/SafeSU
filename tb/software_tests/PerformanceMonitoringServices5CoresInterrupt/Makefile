@@ -12,6 +12,8 @@ src_dir=source
 __TEST_ITERATIONS__ ?= 8
 __TEST_MATRIX_ROW__ ?= 50
 __TEST_MATRIX_COL__ ?= 50
+__TEST_EVENT_WEIGHT__ ?= 1
+__TEST_QUOTA_LIMIT__ ?= 10000
 
 
 setup:

@@ -1,4 +1,4 @@
-#include <stdio.h> 
+#include <stdio.h>
 #include "util.h"
 #include "csr.h"
 #include "plic.h"
@@ -162,18 +162,18 @@ main(void)
             safesu_mccu_reset();
             //Set event weigths -> check test_utility.h
             //Show table 2.4 on GRLIB_IP_manual.pdf
-            safesu_mccu_set_event_weigths(2,1);
-            safesu_mccu_set_event_weigths(4,1);
-            safesu_mccu_set_event_weigths(6,1);
-            safesu_mccu_set_event_weigths(8,1);
-            safesu_mccu_set_event_weigths(10,1);
+            safesu_mccu_set_event_weigths(2,__TEST_EVENT_WEIGHT__);
+            safesu_mccu_set_event_weigths(4,__TEST_EVENT_WEIGHT__);
+            safesu_mccu_set_event_weigths(6,__TEST_EVENT_WEIGHT__);
+            safesu_mccu_set_event_weigths(8,__TEST_EVENT_WEIGHT__);
+            safesu_mccu_set_event_weigths(10,__TEST_EVENT_WEIGHT__);
 
             //Set quota limit
-            safesu_mccu_set_quota_limit(1,1000);
-            safesu_mccu_set_quota_limit(2,1000);
-            safesu_mccu_set_quota_limit(3,1000);
-            safesu_mccu_set_quota_limit(4,1000);
-            safesu_mccu_set_quota_limit(5,1000);
+            safesu_mccu_set_quota_limit(1,__TEST_QUOTA_LIMIT__);
+            safesu_mccu_set_quota_limit(2,__TEST_QUOTA_LIMIT__);
+            safesu_mccu_set_quota_limit(3,__TEST_QUOTA_LIMIT__);
+            safesu_mccu_set_quota_limit(4,__TEST_QUOTA_LIMIT__);
+            safesu_mccu_set_quota_limit(5,__TEST_QUOTA_LIMIT__);
 
             //Enable MCCU
             safesu_mccu_enable();

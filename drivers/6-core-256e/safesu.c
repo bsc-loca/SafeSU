@@ -341,13 +341,13 @@ unsigned safesu_mccu_set_quota_limit(const unsigned int core,
 }
 
 /*
- *   Function    : safesu_mccu_reset_quota_limit
- *   Description : It resets the quota limits for MCCU submodule
+ *   Function    : safesu_mccu_refill_quota
+ *   Description : It refills the quota limits for MCCU submodule.
  *   Parameters  :
  *       - core  : Target core for quota monitoring. Select core number 1, 2, 3, 4 or 5.
  *   Return      : Unsigned int. 0 no error.
  */
-unsigned safesu_mccu_reset_quota_limit(const unsigned int core)
+unsigned safesu_mccu_refill_quota(const unsigned int core)
 {
     if(core>MCCU_N_CORES){
         printf("mccu_set_quota: core %d does not exist\n", core);

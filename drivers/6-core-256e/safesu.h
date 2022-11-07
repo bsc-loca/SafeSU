@@ -172,7 +172,7 @@ void safesu_mccu_enable_HQ(void);
 void safesu_mccu_disable_HQ(void);
 unsigned safesu_mccu_set_quota_limit(const unsigned int core,
     const unsigned int quota);
-unsigned safesu_mccu_reset_quota_limit(const unsigned int core);
+unsigned safesu_mccu_refill_quota(const unsigned int core);
 unsigned int safesu_mccu_get_quota_remaining(unsigned int core);
 unsigned safesu_mccu_set_event_weigths(const unsigned int input,
     const unsigned int weigth);
