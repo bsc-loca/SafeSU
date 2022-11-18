@@ -183,11 +183,23 @@ task automatic rand_run(input longint a);
             sws_ahb_w(32'h8010000,32'h2,tmp        );
             sws_ahb_w(32'h8010000,32'h1,tmp        );
             sws_ahb_w(32'h801000ac,32'hcafecafe,tmp);
-            sws_ahb_w(32'h801000ac,$random(),tmp   );
-            sws_ahb_w(32'h801000b0,$random(),tmp   );
-            sws_ahb_w(32'h801000b4,$random(),tmp   );
-            sws_ahb_w(32'h801000b8,$random(),tmp   );
-            rand_run (50                           );
+            sws_ahb_w(32'h801000ac,$urandom(),tmp   );
+            sws_ahb_w(32'h801000b0,$urandom(),tmp   );
+            sws_ahb_w(32'h801000b4,$urandom(),tmp   );
+            sws_ahb_w(32'h801000b8,$urandom(),tmp   );
+            sws_ahb_w(32'h80100078,$urandom(),tmp   );
+            sws_ahb_w(32'h8010007c,$urandom(),tmp   );
+            sws_ahb_w(32'h80100080,$urandom(),tmp   );
+            sws_ahb_w(32'h80100084,$urandom(),tmp   );
+            sws_ahb_w(32'h80100088,$urandom(),tmp   );
+            sws_ahb_w(32'h8010008c,$urandom(),tmp   );
+	    for(int i = 0; i < 100; i++)begin
+		    sws_ahb_w(32'h80100074,$urandom(),tmp   );
+	    end
+	    for(int i = 0; i < 10000; i++)begin
+			sws_ahb_w($random(),$urandom(),tmp   );
+	    end
+	    rand_run (10                           );
             $display ("Done"                       );
         end
     endtask 
