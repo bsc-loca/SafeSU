@@ -79,7 +79,7 @@ module tb_pmu_ahb();
         .hprot_i         (4'b0     ),
         .hmastlock_i     (1'b0     ),
         .hreadyo_o       (hreadyo_o),
-        .hresp_o         (         ),
+        .hresp_o         (hresp_o  ),
         .hrdata_o        (hrdata_o ),
         .events_i        (events_i ),
         .intr_overflow_o (         ),
@@ -147,9 +147,9 @@ task automatic init_sim;
             hwdata_i = data             ;
             #CLK_PERIOD;
             //wait for acknowledge and  finish request
-            while (hresp_o != 2'b01) begin
-            #CLK_PERIOD;
-            end
+            wait(hresp_o != 2'b01);
+            hwrite_i = 0; 
+            #CLK_PERIOD
             hsel_i   = 0                ;
             hwrite_i = 0                ;
             htrans_i = TRANS_SEQUENTIAL ;
@@ -180,9 +180,10 @@ task automatic rand_run(input longint a);
             int tmp = 1 ;
             $display("*** test_sim");
             // Simple writes tests
-            sws_ahb_w(32'h8010000,32'h2,tmp        );
-            sws_ahb_w(32'h8010000,32'h1,tmp        );
-            sws_ahb_w(32'h801000ac,32'hcafecafe,tmp);
+            sws_ahb_w(32'h80100000,32'h00000002,tmp        );
+            sws_ahb_w(32'h80100000,32'h00000001,tmp        );
+            //sws_ahb_w(32'h80100000,32'h00000001, tmp);
+            sws_ahb_w(32'h801000ac,32'hcafecafe,tmp );
             sws_ahb_w(32'h801000ac,$urandom(),tmp   );
             sws_ahb_w(32'h801000b0,$urandom(),tmp   );
             sws_ahb_w(32'h801000b4,$urandom(),tmp   );
@@ -193,13 +194,17 @@ task automatic rand_run(input longint a);
             sws_ahb_w(32'h80100084,$urandom(),tmp   );
             sws_ahb_w(32'h80100088,$urandom(),tmp   );
             sws_ahb_w(32'h8010008c,$urandom(),tmp   );
-	    for(int i = 0; i < 100; i++)begin
-		    sws_ahb_w(32'h80100074,$urandom(),tmp   );
-	    end
-	    for(int i = 0; i < 10000; i++)begin
-			sws_ahb_w($random(),$urandom(),tmp   );
-	    end
-	    rand_run (10                           );
+            for(int i = 0; i < 100; i++)begin
+		        sws_ahb_w(32'h80100074,$urandom(),tmp   );
+	            repeat(10) #CLK_PERIOD; 
+            end
+            sws_ahb_w(32'h80100074, 32'h00000002, tmp);
+            sws_ahb_w(32'h80100074, 32'h00000001, tmp);
+            
+//	    for(int i = 0; i < 10000; i++)begin
+//			sws_ahb_w($random(),$urandom(),tmp   );
+//	    end
+	        rand_run (10                           );
             $display ("Done"                       );
         end
     endtask 
