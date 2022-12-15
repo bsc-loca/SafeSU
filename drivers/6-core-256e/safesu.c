@@ -1,4 +1,5 @@
 #include "safesu.h"
+#include <math.h>
 /*
  *   Function    : safesu_counters_enable
  *   Description : It enables the event counters.
@@ -333,11 +334,7 @@ unsigned safesu_mccu_set_quota_limit(const unsigned int core,
 
     //set target quota
     _SAFESU_MCCU_QUOTA[core]=quota;
-    //set update bits
-    SAFESUCFG1 |= 1<<(core+2);//Offset are enable en reset bits
-    //release set bits
-    SAFESUCFG1 &= ~(0x3f<<2);//shift 2 bits due to enable and reset mccu
-                          // 0xf ->4cores / 0x3f -> 6cores
+    safesu_mccu_refill_quota(core);    
 }
 
 /*
@@ -353,11 +350,13 @@ unsigned safesu_mccu_refill_quota(const unsigned int core)
         printf("mccu_set_quota: core %d does not exist\n", core);
         return(1);
     }
+    safesu_mccu_disable();
     //set update bits
     SAFESUCFG1 |= 1<<(core+2);//Offset are enable en reset bits
     //release set bits
     SAFESUCFG1 &= ~(0x3f<<2);//shift 2 bits due to enable and reset mccu
     // 0xf ->4cores / 0x3f -> 6cores
+    safesu_mccu_enable();
 }
 
 /*
