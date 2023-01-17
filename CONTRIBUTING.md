@@ -5,7 +5,7 @@ email, or any other method with the owners of this repository before making a ch
 
 # Reference
 
-This component has been developed by the **CAOS** (Computer Architecure and Operative Systems) group at the **Barcelona Supercomputing Center** (BSC), Spain. Please visit the [Webpage](https://www.bsc.es/discover-bsc/organisation/scientific-structure/computer-architecture-operating-systems-caos) for more information.
+This component has been developed by the **CAOS** (Computer Architecture and Operative Systems) group at the **Barcelona Supercomputing Center** (BSC), Spain. Please visit the [Webpage](https://www.bsc.es/discover-bsc/organisation/scientific-structure/computer-architecture-operating-systems-caos) for more information.
 
 The main references for this component are as follows:
 
