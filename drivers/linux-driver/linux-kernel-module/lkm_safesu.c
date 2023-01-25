@@ -109,19 +109,11 @@ static irqreturn_t irq_handler(int irq,void *dev_id) {
 }
 
 /* When a process llseeks from our device, this gets called. */
-
-    // Philosophy of the driver is to use "llseek + read" and "llseek + write"
-    // This is, placing the pointer in the right location, then exec operation
-    // Two ways of placing the pointer:
-    //      - The bad one: SEEK_CUR. moves with respect to current position. I don't think
-    //                      that it is very useful
-    //      - The good one: SEEK_SET. moves with respect to initial location of the file (of the set of regs)
-    //                      I think it makes much more sense
 loff_t device_llseek(struct file *flip, loff_t offset, int whence) {
     switch(whence) {
             // If whence is SEEK_CUR, the pointer is set to its current location plus offset.
         case SEEK_CUR:
-                    // Check it's not going beyond end of the region for the dev, with respect current offset
+            // Check it's not going beyond end of the region for the dev, with respect current offset
                 if(offset<=SAFESU_BYTES-phy_offset) {                    
                     iounmap(safesu_curr_virtual_address);                    
                     phy_offset += offset;    
@@ -177,7 +169,7 @@ static ssize_t device_read(struct file *flip, char *buffer, size_t len, loff_t *
     unsigned int out_len;
     char my_buf[SAFESU_BYTES];
 
-              // Check if ask for more bytes than those remaining in safesu_bytes
+    // Check if ask for more bytes than those remaining in safesu_bytes
     out_len = (len>SAFESU_BYTES-phy_offset)?SAFESU_BYTES-phy_offset:len;
 
 #ifdef  __DEBUG__
@@ -208,7 +200,6 @@ static ssize_t device_read(struct file *flip, char *buffer, size_t len, loff_t *
     }
 
     // now we are to remap 'forward' the bytes that we've offered to userspace.
-    // doesn't make much sense / file-like philosophy, but that's how read should do    
     iounmap(safesu_curr_virtual_address);
     phy_offset += out_len;    
     if((safesu_curr_virtual_address = ioremap(((unsigned long int)SAFESU_ADDR+phy_offset), 
@@ -235,7 +226,7 @@ static ssize_t device_write(struct file *flip, const char *buffer, size_t len, l
                     (unsigned long int)safesu_curr_virtual_address, (unsigned long int)SAFESU_ADDR+phy_offset);       
 #endif
 
-        // Check if ask for more bytes than those remaining in safesu_bytes
+    // Check if ask for more bytes than those remaining in safesu_bytes
     out_len = (len>SAFESU_BYTES-phy_offset)?SAFESU_BYTES-phy_offset:len;
 
     if(!out_len) {
@@ -248,7 +239,7 @@ static ssize_t device_write(struct file *flip, const char *buffer, size_t len, l
         pr_err("Could not cpy from buffer to my_buf");
     }
 
-    // now copy from the kernel to io space
+    // copy from the kernel to io space
     memcpy_toio((void *)safesu_curr_virtual_address, my_buf, out_len);
 
 #ifdef  __DEBUG__
@@ -260,7 +251,7 @@ static ssize_t device_write(struct file *flip, const char *buffer, size_t len, l
     pr_info("\n");
 #endif
 
-    // and now move the pointer to next location. Note we're using same pointer for read and write    
+    //move the pointer to next location. Note we're using same pointer for read and write
     iounmap(safesu_curr_virtual_address);
     phy_offset += out_len;    
     if((safesu_curr_virtual_address = ioremap(((unsigned long int)SAFESU_ADDR+phy_offset), 
@@ -276,9 +267,7 @@ static ssize_t device_write(struct file *flip, const char *buffer, size_t len, l
     return out_len;
 }
 
-    // These are a couple of functions to enable/disable (supervisor/linux-level)-interrupts
-    // I'm just using them for testing, see call in ioctl. The idea (untested), is being able
-    // to run a full microbenchmark in kernel space, with interrupts disabled
+// These are a couple of functions to enable/disable (supervisor/linux-level)-interrupts
 inline static void enable_int(void) {
     arch_local_irq_enable();
 }
@@ -296,11 +285,6 @@ static long device_unlocked_ioctl(struct file *flip, unsigned int cmd, unsigned 
     
     switch(cmd & ~0xc0000000) {
 
-                // This ioctl 'registers current (user) task' as receiver of a signal
-                // this signal is sent when an interrupt occurs, from 'irq_handler' routine 
-                // (if any task registered)
-                // -- The mechanism for interrupts is NOT working. request_irq() mechanism won't return
-                // success. 
         case (REG_CURRENT_TASK & ~0xc0000000):
 
 #ifdef  __DEBUG__
@@ -312,16 +296,16 @@ static long device_unlocked_ioctl(struct file *flip, unsigned int cmd, unsigned 
             break;
 
         case (DISABLE_PLIC_INT & ~0xc0000000):                
-                disable_int();
+            disable_int();
             break;
 
         case (ENABLE_PLIC_INT & ~0xc0000000):
-                enable_int();
+            enable_int();
             break;
 
         case (RUN_UB & ~0xc0000000):
-                    // in order to be able to access data from userspace, we need first to "copy_from_user" it
-                    // to kernel space.
+                // in order to be able to access data from userspace, we need first to "copy_from_user" it
+                // to kernel space.
                 copy_from_user((void *)&ub, (void *)arg, sizeof(ub_run_t));                
                 copy_from_user((void *)ub_kernel_ptr, (void *)ub.ub_run_fn, ub.ub_run_fn_bytes_len);
                 pr_info("allocating %d bytes\n", ub.ub_run_fn_bytes_len);
@@ -351,7 +335,7 @@ static int device_open(struct inode *inode, struct file *file) {
 
     /*Allocate I/O memory regions*/
 
-        // ------- SAFESU
+    // ------- SAFESU
 
     // request_mem_region tells the kernel that your driver is going to use this range of 
     // I/O addresses, which will prevent other drivers to make any overlapping call to 
@@ -360,8 +344,6 @@ static int device_open(struct inode *inode, struct file *file) {
     // kernel device drivers must be nice, and they must call request_mem_region, check 
     // the return value, and behave properly in case of error.
 
-        // jjorba: So, it's not needed, but somewhat elegant to do it.
-
     if((request_mem_region(SAFESU_ADDR, SAFESU_BYTES, "safesu_memory")) == NULL){
         pr_err(SAFESU_MSG "Cannot allocate I/O memory for SAFESU\n");
         goto r_device;
@@ -369,7 +351,7 @@ static int device_open(struct inode *inode, struct file *file) {
 
     /*Obtain the physical address of the safesu*/
 
-            // ioremap maps region of I/O memory to a virtual addr accessible by the kernel.
+    // ioremap maps region of I/O memory to a virtual addr accessible by the kernel.
     if((safesu_curr_virtual_address = ioremap(SAFESU_ADDR, SAFESU_BYTES)) == NULL){
         pr_err(SAFESU_MSG "Cannot obtain the virtual address for SAFESU\n");
         goto r_device;
@@ -380,20 +362,7 @@ static int device_open(struct inode *inode, struct file *file) {
         goto r_device;
     }
 
-        // ------- PLIC
-
-
-    // jjorba: This driver is not meant to deal with PLIC. I'm mapping registers anyway to take 
-    // a look at its regs / understand what's going on.
-
-    // Note that:
-    //      mstatus won't be accessible, as machine mode is handled from hypervisor (opensbi layer)
-    //      sstatus doesn't seem to exist in the platform (exception when attempting to read_csr on
-    //      it). 
-
-    // jjorba: I'm reserving it also here. Since there must be already another PLIC
-    // driver in the kernel, may not be fully consistent (i.e. the other driver may
-    // need to reserve it). Anyway, doing it, and seems not to pose trouble.
+    // ------- PLIC
 
     if((request_mem_region(PLIC_ADDR, PLIC_BYTES, "plic_memory")) == NULL){
         pr_err(SAFESU_MSG "Cannot allocate I/O memory for PLIC\n");
@@ -402,39 +371,11 @@ static int device_open(struct inode *inode, struct file *file) {
 
     /*Obtain the physical address of the safesu*/
 
-        // ioremap maps region of I/O memory to a virtual addr accessible by the kernel.
+    // ioremap maps region of I/O memory to a virtual addr accessible by the kernel.
     if((plic_virtual_address = ioremap(PLIC_ADDR, PLIC_BYTES)) == NULL){
         pr_err(SAFESU_MSG "Cannot obtain the virtual address for PLIC\n");
         goto r_device;
     }
-
-// unsigned int my_buf[100];
-// 
-//     /*Tell which interrupts are enabled*/
-// #define INTERRUPT_ENABLE_REG_OFFSET 0x002000
-// #define CONTEXT_OFFSET  0x80
-// #define N_CONTEXTS  10
-
-//     memcpy_fromio((void *)my_buf, plic_virtual_address + INTERRUPT_ENABLE_REG_OFFSET, 
-//                 CONTEXT_OFFSET * 4 * N_CONTEXTS);
-
-//     int ct;
-//     for(ct=0; ct<N_CONTEXTS; ++ct) {    
-//         int reg;
-//         for(reg=0; reg<10; ++reg) {
-//             printk("PLIC [%08x]/INTERRUPT_ENABLE_REG\tct %d\t reg %d= %08x\r\n", 
-//                 plic_virtual_address + INTERRUPT_ENABLE_REG_OFFSET + CONTEXT_OFFSET * ct + reg*4, ct, reg, my_buf[0]);
-//         }
-//     }
-
-// #define INTERRUPT_1_PRIORITY_REG_OFFSET 0x000004    
-// #define N_INTERRUPTS 24
-//     memcpy_fromio((void *)my_buf, plic_virtual_address + INTERRUPT_1_PRIORITY_REG_OFFSET, 4*N_INTERRUPTS /* two 32-bit regs*/);
-
-//     int i;
-//     for(i=0; i<N_INTERRUPTS; ++i) {
-//         printk("PLIC [%08x]/INTERRUPT_%02d_PRIORITY_REG= %08x\r\n", plic_virtual_address + INTERRUPT_1_PRIORITY_REG_OFFSET + 4*i, i+1, my_buf[i]);
-//     }
 
     phy_offset = 0;
 
@@ -513,12 +454,6 @@ static int __init lkm_safesu_init(void) {
         pr_err(SAFESU_MSG "Cannot create device\n");
         goto r_device;
     }
-
-    // int err_code = 0;
-    // if (err_code = request_irq(IRQ_NO, irq_handler, 0, "safesu_device", (void *)(irq_handler))) {
-    //     pr_info(SAFESU_MSG "cannot register IRQ: %d ", err_code);
-    //     goto r_irq;
-    // }
 
     pr_info(SAFESU_MSG "Device Driver Init... done\n");
 
