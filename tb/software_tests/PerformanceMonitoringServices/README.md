@@ -1,9 +1,8 @@
-# performance_monitoring_services
+# Performance Monitoring Services Application Example (Baremetal)
 
 
 ## Requirements
 
-To be filled:
 - SELENE bitstream
 - GRMON
 - RISC-V compiler
@@ -11,12 +10,12 @@ To be filled:
 ## Description
 
 Performance monitoring application for the SELENE platform 
-[https://gitlab.bsc.es/selene/selene-hardware](https://gitlab.bsc.es/selene/selene-hardware) that uses two submodules 
-the SafeSU and executes in a bare-metal environment.
+[https://gitlab.com/selene-riscv-platform/selene-hardware](https://gitlab.com/selene-riscv-platform/selene-hardware) that uses two submodules 
+the SafeSU and executes in a baremetal environment.
 
 ### Execution description
 
-Cores 1-5 will run the specified test(Matrix multiplication) in a `while(1)` loop. Core0 instead will run the same  test, 
+Cores 1-5 will run the specified test (Matrix multiplication) in a `while(1)` loop. Core0 instead will run the same test, 
 before starting the execution will configure the SafeSU according to the configuration specified 
 in `./source/safesu_example/test_utility.h`. Once configured will enable the SafeSU counters will execute its 
 test the amount of specified iteration and then disable the SafeSU and print the values of those counters.
@@ -29,10 +28,10 @@ test the amount of specified iteration and then disable the SafeSU and print the
   binaries, one for each core.
 - Before going to the next step, remember to load the bistream you want to use.
 - Check in `grmon_scripts/active_cores_6.grmon` if you want L2 split activated (enabled by default) l2cache 
-  split **false** or l2cache split **true** if a gpl bitstream is used just comment this line.
+  split **false** or l2cache split **true** if the GPL bitstream is used, just comment this line.
 - To launch a single execution, run `./run_grmon.sh safesu_example`
 
-## Report
+## Output Example
 ```
 STARTING DEMO
 ITERATIONS:8
