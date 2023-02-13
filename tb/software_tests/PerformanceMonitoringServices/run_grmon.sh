@@ -30,4 +30,4 @@ export MULTICORE_BENCHMARK
 mkdir -p $results_folder
 
 #Ethernet not working in latest bitstream
-/mnt/caos_hw/Programs2/grmon-pro-3.2.17/linux/bin64/grmon -u -v -digilent -jtagcable 2 -log $results_folder/$MULTICORE_BENCHMARK-$active_cores-cores -c $grmon_script
+grmon -u -v -digilent -jtagcable 2 -log $results_folder/$MULTICORE_BENCHMARK-$active_cores-cores -c $grmon_script
