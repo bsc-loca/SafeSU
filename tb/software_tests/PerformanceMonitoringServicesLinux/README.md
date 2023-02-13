@@ -1,9 +1,8 @@
-# kernel_module_example_application
+# SafeSU Kernel Module (Linux Driver) - Application Example
 
 
 ## Requirements
 
-To be filled:
 - SELENE bitstream
 - GRMON
 - RISC-V compiler
@@ -13,7 +12,7 @@ To be filled:
 ## Description
 
 Performance monitoring application for the SELENE platform 
-[https://gitlab.bsc.es/selene/selene-hardware](https://gitlab.bsc.es/selene/selene-hardware) that uses two submodules 
+[https://gitlab.com/selene-riscv-platform/selene-hardware](https://gitlab.com/selene-riscv-platform/selene-hardware) that uses two submodules 
 the SafeSU and executes in a linux environment.
 
 ### Execution description
