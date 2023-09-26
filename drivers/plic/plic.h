@@ -1,4 +1,4 @@
-/** @file plic.c
+/** @file plic.h
  *  @brief Functions to manager RISC-V Platform-Level Interrupt Controller(Selene specs).
  *
  *  @author Juan C. Rodriguez (jrodrig9).
@@ -13,7 +13,7 @@
 #ifndef PLIC_H
 #define PLIC_H
 
-//grmon: info sys
+//grmon_scripts: info sys
 #define PLIC_BASE 0xf8000000
 
 /********************************************************************
@@ -115,12 +115,12 @@ void plic_clear_core_priority(uint8_t mode, uint8_t core);
  *
  * @return - uint32_t register where every bits with 1 value indicate the pending irq source.
  */
-static inline uint32_t
+static inline __attribute__((always_inline)) uint32_t
 plic_pending_irq (void)
 {
     volatile uint32_t *address;
 
-    address = (volatile uint32_t *) (PLIC_BASE + 0x001000);
+    address = (volatile uint32_t *) (uintptr_t) (PLIC_BASE + 0x001000);
     return *address;
 }
 /**
@@ -130,12 +130,12 @@ plic_pending_irq (void)
  * @param core - CPU cores: 0-5.
  * @note You have got CPU modes definitions up.
  */
-static inline void
+static inline __attribute__((always_inline)) void
 plic_claim_complete_core_irq (uint8_t mode, uint8_t core)
 {
     volatile uint32_t *address;
 
-    address = (volatile uint32_t *) (PLIC_BASE + 0x200004 +
+    address = (volatile uint32_t *) (uintptr_t) (PLIC_BASE + 0x200004 +
                                      (0x4000 * core) + (0x1000 * mode));
     *address = *address;
 }

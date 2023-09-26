@@ -16,7 +16,7 @@ plic_set_source_priority (uint32_t source, uint8_t priority)
 {
     volatile uint32_t *address;
 
-    address = (volatile uint32_t *)(PLIC_BASE + 0x4 * source);
+    address = (volatile uint32_t *) (uintptr_t) (PLIC_BASE + 0x4 * source);
     *address = priority;
 }
 
@@ -25,7 +25,7 @@ plic_clear_source_priority (uint32_t source)
 {
     volatile uint32_t *address;
 
-    address = (volatile uint32_t *)(PLIC_BASE + 0x4 * source);
+    address = (volatile uint32_t *) (uintptr_t) (PLIC_BASE + 0x4 * source);
     *address = 0;
 }
 
@@ -34,7 +34,7 @@ plic_enable_source (uint8_t mode, uint8_t core, uint32_t mask)
 {
     volatile uint32_t *address;
 
-    address = (volatile uint32_t *)(PLIC_BASE + 0x002000 +
+    address = (volatile uint32_t *) (uintptr_t) (PLIC_BASE + 0x002000 +
                                     (0x200 * core) + (0x80 * mode));
     *address = *address | mask;
 }
@@ -44,7 +44,7 @@ plic_clear_source (uint8_t mode, uint8_t core, uint32_t mask)
 {
     volatile uint32_t *address;
 
-    address = (volatile uint32_t *)(PLIC_BASE + 0x002000 +
+    address = (volatile uint32_t *) (uintptr_t) (PLIC_BASE + 0x002000 +
                                     (0x200 * core) + (0x80 * mode));
     *address = *address & !mask;
 }
@@ -54,7 +54,7 @@ plic_set_core_priority (uint8_t mode, uint8_t core, uint8_t priority)
 {
     volatile uint32_t *address;
 
-    address = (volatile uint32_t *)(PLIC_BASE + 0x200000 +
+    address = (volatile uint32_t *) (uintptr_t) (PLIC_BASE + 0x200000 +
                                     (0x4000 * core) + (0x1000 * mode));
     *address = priority;
 }
@@ -64,7 +64,7 @@ plic_clear_core_priority (uint8_t mode, uint8_t core)
 {
     volatile uint32_t *address;
 
-    address = (volatile uint32_t *)(PLIC_BASE + 0x200000 +
+    address = (volatile uint32_t *) (uintptr_t) (PLIC_BASE + 0x200000 +
                                     (0x4000 * core) + (0x1000 * mode));
     *address = 0;
 }
