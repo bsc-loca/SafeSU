@@ -624,16 +624,6 @@
 
     if(FT == 0) begin
     //register enable to solve Hazards
-    reg RDC_rstn;
-    always @(posedge clk_i) begin: RDC_glitchless_rstn
-        if(!rstn_i) begin
-            RDC_rstn <= 0;
-        end else begin
-            // Offset RDC enable, MCCU soft rest, enable and individual core updates
-            RDC_rstn <= rstn_i && !regs_i[BASE_MCCU_CFG][MCCU_N_CORES+2+2];
-        end
-    end
-    //register enable to solve Hazards
         // Does not nid replication since regs_i is already protected
         // RDC_enable_int may be disabled for a single cycle but
         // it will not be a permanent fault
@@ -643,7 +633,7 @@
             RDC_enable_int <= 0;
         end else begin
             // Offset MCCU soft rest, enable and individual core updates
-            RDC_enable_int <= regs_i[BASE_MCCU_CFG][MCCU_N_CORES+2+1];
+            RDC_enable_int <= regs_i[BASE_MCCU_CFG][MCCU_N_CORES+2];
         end
     end 
     RDC #
@@ -660,7 +650,7 @@
     inst_RDC
     (
         .clk_i                     (clk_i                              ),
-        .rstn_i                    (rstn_i && !regs_i[BASE_MCCU_CFG][7]), //active low
+        .rstn_i                    (rstn_i && !regs_i[BASE_MCCU_CFG][MCCU_N_CORES+3]), //active low
         .enable_i                  (RDC_enable_int                     ),// Software map
         .events_i                  (MCCU_events_int                    ),
         .events_weights_i          (MCCU_events_weights_int            ),
@@ -695,7 +685,7 @@
         if(!rstn_i) begin
             RDC_enable_int_D = 0;
         end else begin
-            RDC_enable_int_D = regs_i[BASE_MCCU_CFG][6];
+            RDC_enable_int_D = regs_i[BASE_MCCU_CFG][MCCU_N_CORES+2];
         end
     end 
 
@@ -730,7 +720,7 @@
     inst_RDC
     (
         .clk_i                     (clk_i                              ),
-        .rstn_i                    (rstn_i && !regs_i[BASE_MCCU_CFG][7]), //active low
+        .rstn_i                    (rstn_i && !regs_i[BASE_MCCU_CFG][MCCU_N_CORES+3]), //active low
         .enable_i                  (RDC_enable_int_Q                   ),// Software map
         .events_i                  (MCCU_events_int                    ),
         .events_weights_i          (MCCU_events_weights_int            ),
@@ -748,7 +738,7 @@
     inst1_RDC
     (
         .clk_i                     (clk_i                              ),
-        .rstn_i                    (rstn_i && !regs_i[BASE_MCCU_CFG][7]), //active low
+        .rstn_i                    (rstn_i && !regs_i[BASE_MCCU_CFG][MCCU_N_CORES+3]), //active low
         .enable_i                  (RDC_enable_int_Q                   ),// Software map
         .events_i                  (MCCU_events_int                    ),
         .events_weights_i          (MCCU_events_weights_int            ),
@@ -766,7 +756,7 @@
     inst2_RDC
     (
         .clk_i                     (clk_i                              ),
-        .rstn_i                    (rstn_i && !regs_i[BASE_MCCU_CFG][7]), //active low
+        .rstn_i                    (rstn_i && !regs_i[BASE_MCCU_CFG][MCCU_N_CORES+3]), //active low
         .enable_i                  (RDC_enable_int_Q                   ),// Software map
         .events_i                  (MCCU_events_int                    ),
         .events_weights_i          (MCCU_events_weights_int            ),
