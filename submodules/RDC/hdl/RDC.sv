@@ -96,10 +96,9 @@
     generate
     for(x=0;x<N_CORES;x++) begin
         for(y=0;y<CORE_EVENTS;y++) begin
-            assign interruption_vector_int[x][y] = 
-                            (max_value[(x*CORE_EVENTS)+y]>=events_weights_i[x][y])?
-                            1'b1 : 1'b0;
-        end
+            assign interruption_vector_int[x][y] = (events_weights_i[x][y] != '0) ? (max_value[(x*CORE_EVENTS)+y]>=events_weights_i[x][y]) ? 
+                                                1'b1 : 1'b0 : 1'b0;
+	end
     end
     endgenerate
     
