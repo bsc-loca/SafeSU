@@ -277,19 +277,19 @@ Table \ref{table:t_ev} shows the inputs and mapping to the crossbar input for th
 239 & CCS AXI & Read &  Agressor MQ12 Victim MQ5\\
 240 & CCS AXI & Read &  Agressor MQ13 Victim MQ5\\
 241 & CCS AXI & Read &  Agressor MQ14 Victim MQ5\\
-242 & - & - &   Filler signal, constant 0 \\
+242 & CCS AHB & - &   Aggressor others Victim C0 \\
 243 & - & - &   Filler signal, constant 0 \\
 244 & - & - &   Filler signal, constant 0 \\
 245 & - & - &   Filler signal, constant 0 \\
 246 & - & - &   Filler signal, constant 0 \\
 247 & - & - &   Filler signal, constant 0 \\
-248 & - & - &   Filler signal, constant 0 \\
-249 & - & - &   Filler signal, constant 0 \\
-250 & - & - &   Filler signal, constant 0 \\
-251 & - & - &   Filler signal, constant 0 \\
-252 & - & - &   Filler signal, constant 0 \\
-253 & - & - &   Filler signal, constant 0 \\
-254 & - & - &   Filler signal, constant 0 \\
+248 & CCS AHB & - &   Generic, Aggressor 0 Victim 0\\
+249 & CCS AHB & - &   Generic, Aggressor 1 Victim 0 \\
+250 & CCS AHB & - &   Generic, Aggressor 2 Victim 0 \\
+251 & CCS AHB & - &   Generic, Aggressor 3 Victim 0 \\
+252 & CCS AHB & - &   Generic, Aggressor 4 Victim 0 \\
+253 & CCS AHB & - &   Generic, Aggressor 5 Victim 0 \\
+254 & CCS AHB & - &   Residual, Victim 0  \\
 255 & - & - &   Filler signal, constant 0 \\
 	\end{longtable}
 \end{center}
@@ -351,6 +351,12 @@ Table \ref{table:t_ev} shows the inputs and mapping to the crossbar input for th
 Signals labeled as \textit{debug} are fix inputs that can be used to test hardware or software with known inputs. \textbf{Event 0} (fix '1') can be used to measure the \textbf{number of elapsed cycles}.\\
 \\
 Signals of type \textit{CCS} can be used to compute the total contention cycle stack of the system. These signals become high at the first rising edge of the clock after a given condition or event has been detected. They remain active until the condition or event that they are measuring becomes low. This behavior allows measuring the length of clock cycles. When generating CCS signals, the user must consider if they want to allow back to back events and generate the input signals accordingly at RTL level.
+
+The generic and residual contention metrics have the following meanings:
+\begin{itemize}
+\item \textbf{Generic contention}: The previous request has been served, but has left the slave in an unready state, making this core's request be delayed this cycle. We assume that the slave would be ready if the previous master had not accessed it.
+\item \textbf{Residual contention}: We observed that, when using the gaisler L2-lite cache, if a htrans "10"(NONSEQ) happens after a non-idle transaction, the response to the current master (the one that issued the "10") transaction is delayed by one cycle. THIS IS GAISLER L2 LITE specific, thus, not portable
+\end{itemize}
 
 \subsection{Main configuration and self-test}
 Reset and enable of overflow, quota, and regular counters can be performed with register \ref{base_cfg}. All signals are active high.\\
