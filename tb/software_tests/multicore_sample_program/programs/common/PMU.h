@@ -13,7 +13,6 @@
 #define N_COUNTERS          19
 #define N_CONF_REGS         5
 #define OVERFLOW            1
-#define QUOTA               1
 #define MCCU                1
 #define N_CORES             2
 #define ADDR_LSB            2
@@ -25,15 +24,6 @@
     #define N_OVERFLOW_REGS     1 //TODO:parametrize 
 #else
     #define N_OVERFLOW_REGS     0
-#endif
-
-#if QUOTA
-    #define N_QUOTA_MASK        1 //TODO: parametrize
-    #define N_QUOTA_LIMIT       1 //TODO: parametrize
-                
-#else
-    #define N_QUOTA_MASK        0
-    #define N_QUOTA_LIMIT       0
 #endif
 
 #if MCCU
@@ -59,10 +49,9 @@
     #define MCCU_DATA_WIDTH     0
 #endif
 
-#define BASE_QUOTA          ((N_COUNTERS + N_CONF_REGS) + N_OVERFLOW_REGS)
-#define BASE_MCCU           ((BASE_QUOTA + N_QUOTA_MASK) + N_QUOTA_LIMIT)
+#define BASE_MCCU          ((N_COUNTERS + N_CONF_REGS) + N_OVERFLOW_REGS)
 #define R_ONLY_REGS         (N_COUNTERS + MCCU_R_REGS)          
-#define RW_REGS             ((N_CONF_REGS + N_OVERFLOW_REGS) + N_QUOTA_MASK) + N_QUOTA_LIMIT) + MCCU_RW_REGS)
+#define RW_REGS             ((N_CONF_REGS + N_OVERFLOW_REGS) + MCCU_RW_REGS)
 #define TOTAL_REGS          (R_ONLY_REGS + RW_REGS)             
 //More parameters we may use
         //boundaries
@@ -80,16 +69,10 @@
 #define N_OVERFLOW N_OVERFLOW_REGS
 #define BASE_OVERFLOW LAST_CONF + 4
 #define LAST_OVERFLOW BASE_OVERFLOW + (N_OVERFLOW-1)*4
-        //qUOTA 
-#define N_QUOTA N_QUOTA_MASK + N_QUOTA_LIMIT
-#define BASE_QUOTA LAST_OVERFLOW + 4
-#define LAST_QUOTA BASE_QUOTA + (N_QUOTA-1) * 4
-#define FIRST_QUOTA_MASK BASE_QUOTA 
-#define FIRST_QUOTA_LIMIT BASE_QUOTA + (N_QUOTA_MASK)*4 
         //MCCU
 #define N_MCCU MCCU_REGS
 #define N_CORES_MCCU MCCU_N_CORES
-#define BASE_MCCU LAST_QUOTA + 4
+#define BASE_MCCU LAST_OVERFLOW + 4
 #define LAST_MCCU BASE_MCCU + (N_MCCU-1) *4
 #define MAIN_MCCU_CFG BASE_MCCU
 #define FIRST_MCCU_QUOTA BASE_MCCU+4

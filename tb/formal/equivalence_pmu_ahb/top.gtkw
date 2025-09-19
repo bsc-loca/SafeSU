@@ -39,7 +39,6 @@ top.ftintr_MCCU_o[3:0]
 @28
 top.ftintr_RDC_o
 top.ftintr_overflow_o
-top.ftintr_quota_o
 @22
 top.dut_ft_pmu_ahb.dread_slave[31:0]
 [color] 1
@@ -53,7 +52,6 @@ top.intr_MCCU_o[3:0]
 @28
 top.intr_RDC_o
 top.intr_overflow_o
-top.intr_quota_o
 @200
 -
 @28

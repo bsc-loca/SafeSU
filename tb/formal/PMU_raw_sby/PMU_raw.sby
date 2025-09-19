@@ -23,7 +23,6 @@ verific -vlog-define FORMAL
 verific -sv PMU_raw.sv
 verific -sv PMU_counters.sv
 verific -sv PMU_overflow.sv
-verific -sv PMU_quota.sv  
 verific -sv MCCU.sv  
 verific -sv RDC.sv
 verific -sv triple_reg.sv 

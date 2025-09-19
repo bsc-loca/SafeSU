@@ -77,7 +77,6 @@
         output logic [1:0] fthresp_o,
         output logic [HDATA_WIDTH-1:0] fthrdata_o,
         output logic ftintr_overflow_o,
-        output logic ftintr_quota_o,
         output logic [MCCU_N_CORES-1:0] ftintr_MCCU_o,
         output logic ftintr_RDC_o,
         output logic ftintr_FT1_o,
@@ -87,7 +86,6 @@
         output logic [1:0] hresp_o,
         output logic [HDATA_WIDTH-1:0] hrdata_o,
         output logic intr_overflow_o,
-        output logic intr_quota_o,
         output logic [MCCU_N_CORES-1:0] intr_MCCU_o,
         output logic intr_RDC_o,
         output logic intr_FT1_o,
@@ -121,7 +119,6 @@
         .hrdata_o(fthrdata_o),
         .events_i(events_i),
         .intr_overflow_o(ftintr_overflow_o),
-        .intr_quota_o(ftintr_quota_o),
         .intr_MCCU_o(ftintr_MCCU_o),
         .intr_RDC_o(ftintr_RDC_o),
         .intr_FT1_o(ftintr_FT1_o),
@@ -156,7 +153,6 @@
         .hrdata_o(hrdata_o),
         .events_i(events_i),
         .intr_overflow_o(intr_overflow_o),
-        .intr_quota_o(intr_quota_o),
         .intr_MCCU_o(intr_MCCU_o),
         .intr_RDC_o(intr_RDC_o),
         .intr_FT1_o(intr_FT1_o),
@@ -179,8 +175,6 @@
     assert property ((f_past_valid) |=> (hresp_o == fthresp_o));
     assert property ((f_past_valid) |=> (hrdata_o == fthrdata_o));
     assert property ((f_past_valid) |=> (intr_overflow_o == ftintr_overflow_o));
-    //Quota mechanism is deprecated
-    //assert property ((f_past_valid) |=> (intr_quota_o == ftintr_quota_o));
     assert property ((f_past_valid) |=> (intr_MCCU_o == ftintr_MCCU_o));
     assert property ((f_past_valid) |=> (intr_RDC_o == ftintr_RDC_o));
     assert property ((f_past_valid) |=> (intr_FT1_o == ftintr_FT1_o));

@@ -13,7 +13,6 @@ verific -sv ../../../hdl/PMU_raw.sv
 verific -sv ../../../hdl/pmu_ahb.sv
 verific -sv ../../../submodules/MCCU/hdl/MCCU.sv
 verific -sv ../../../submodules/RDC/hdl/RDC.sv
-verific -sv ../../../submodules/quota/PMU_quota.sv
 verific -sv ../../../submodules/counters/PMU_counters.sv
 verific -sv ../../../submodules/overflow/PMU_overflow.sv
 verific -sv ../../../submodules/seu_ip/hamming32t26d_dec.sv

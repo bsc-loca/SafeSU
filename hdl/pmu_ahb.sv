@@ -47,8 +47,6 @@ module pmu_ahb #
         // *** Active functions and global configuration
         //---- Overflow
 		localparam integer OVERFLOW	= 1, //Yes/No
-		//---- Quota
-		localparam integer QUOTA	= 1, //Yes/No
 		//---- MCCU - Maximum-contention Control Unit mode
 		localparam integer MCCU	    = 1, //Yes/No
 		//---- RDC - Request Duration Counters
@@ -80,13 +78,11 @@ module pmu_ahb #
 		localparam N_RDC_REGS = (N_RDC_WEIGHTS + N_RDC_VECT_REGS+N_RDC_WATERMARK) * RDC,
 		//---- OVERFLOW registers
         localparam N_OVERFLOW_REGS = 2*((N_COUNTERS-1)/REG_WIDTH+1) * OVERFLOW,
-		//---- QUOTA registers
-        localparam N_QUOTA_REGS = 2*((N_COUNTERS-1)/REG_WIDTH+1) * QUOTA,
 		//---- CROSSBAR registers
         localparam N_CROSSBAR_REGS = ((N_COUNTERS* $clog2(N_SOC_EV)-1)/REG_WIDTH+1) * CROSSBAR,
 	 
         //---- Total of registers used
-        localparam integer N_REGS = N_COUNTERS + N_CONF_REGS + N_MCCU_REGS + N_RDC_REGS + N_OVERFLOW_REGS + N_QUOTA_REGS + N_CROSSBAR_REGS,	
+        localparam integer N_REGS = N_COUNTERS + N_CONF_REGS + N_MCCU_REGS + N_RDC_REGS + N_OVERFLOW_REGS + N_CROSSBAR_REGS,	
 
         // -- Local parameters
 		// haddr width
@@ -128,8 +124,6 @@ module pmu_ahb #
         input  wire [N_SOC_EV-1:0]     events_i       ,
         //interruption rises when one of the counters overflows
         output wire                    intr_overflow_o,
-        //interruption rises when overal events quota is exceeded 
-        output wire                    intr_quota_o   ,
         // MCCU interruption for exceeded quota. One signal per core
         output wire [MCCU_N_CORES-1:0] intr_MCCU_o    ,
         // RDC (Request Duration Counter) interruption for exceeded quota
@@ -160,7 +154,6 @@ module pmu_ahb #
         (* MARK_DEBUG = "TRUE" *) wire [HDATA_WIDTH-1:0]  debug_hrdata_o       ;       
         (* MARK_DEBUG = "TRUE" *) wire [N_SOC_EV-1:0]     debug_events_i       ;        
         (* MARK_DEBUG = "TRUE" *) wire                    debug_intr_overflow_o;    
-        (* MARK_DEBUG = "TRUE" *) wire                    debug_intr_quota_o   ;       
         (* MARK_DEBUG = "TRUE" *) wire [MCCU_N_CORES-1:0] debug_intr_MCCU_o    ;        
         (* MARK_DEBUG = "TRUE" *) wire                    debug_intr_RDC_o     ;         
         assign debug_hsel_i          = hsel_i         ;                                                      
@@ -177,8 +170,7 @@ module pmu_ahb #
         assign debug_hresp_o         = hresp_o        ;                          
         assign debug_hrdata_o        = hrdata_o       ;                        
         assign debug_events_i        = events_i       ;                        
-        assign debug_intr_overflow_o = intr_overflow_o;          
-        assign debug_intr_quota_o    = intr_quota_o   ;                
+        assign debug_intr_overflow_o = intr_overflow_o;                
         assign debug_intr_MCCU_o     = intr_MCCU_o    ;                  
         assign debug_intr_RDC_o      = intr_RDC_o     ;  
     `endif                                                                                                              
@@ -697,7 +689,6 @@ inst_pmu_raw
     //on pourpose .name connections
     .events_i     (events_i     ), // By cf 20220126
     .intr_overflow_o             ,
-    .intr_quota_o                ,
     .intr_MCCU_o                 ,
     .intr_RDC_o                  ,
     .en_hwquota_o(en_hwquota_o)

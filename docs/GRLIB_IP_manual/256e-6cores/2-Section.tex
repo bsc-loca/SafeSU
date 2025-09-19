@@ -359,7 +359,7 @@ The generic and residual contention metrics have the following meanings:
 \end{itemize}
 
 \subsection{Main configuration and self-test}
-Reset and enable of overflow, quota, and regular counters can be performed with register \ref{base_cfg}. All signals are active high.\\
+Reset and enable of overflow and regular counters can be performed with register \ref{base_cfg}. All signals are active high.\\
 \\
 Self-test mode allows to bypass the input events from the crossbar and instead use a specific input pattern where signals are constant. This mode can be used for debugging. After the addition of the crossbar and debug inputs, there is a certain overlap. The same results can be achieved with the correct crossbar configuration. Nevertheless, it has been included in this release for compatibility.\\
 \\
@@ -375,7 +375,6 @@ These are the Self-test modes for each configuration value of the fied \textit{s
    \label{base_cfg}
    \regfield{Selftest mode}{2}{30}{{00}}
    \regfield{Reserved}{24}{5}{x}
-   \regfield{Quota softreset}{1}{4}{0}
    \regfield{Overflow softreset}{1}{3}{0}
    \regfield{Overflow enable}{1}{2}{0}
    \regfield{General Softreset}{1}{1}{0}

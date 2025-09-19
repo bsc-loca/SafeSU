@@ -21,7 +21,6 @@ $TOP/hdl/PMU_raw.sv \
 $TOP/submodules/crossbar/hdl/crossbar.sv \
 $TOP/submodules/MCCU/hdl/MCCU.sv \
 $TOP/submodules/RDC/hdl/RDC.sv \
-$TOP/submodules/quota/PMU_quota.sv \
 $TOP/submodules/counters/PMU_counters.sv \
 $TOP/submodules/overflow/PMU_overflow.sv \
 $TOP/submodules/seu_ip/hamming32t26d_enc.sv \
@@ -40,7 +39,6 @@ $TOP/hdl/PMU_raw.sv \
 $TOP/submodules/crossbar/hdl/crossbar.sv \
 $TOP/submodules/MCCU/hdl/MCCU.sv \
 $TOP/submodules/RDC/hdl/RDC.sv \
-$TOP/submodules/quota/PMU_quota.sv \
 $TOP/submodules/counters/PMU_counters.sv \
 $TOP/submodules/overflow/PMU_overflow.sv \
 $TOP/submodules/seu_ip/hamming32t26d_enc.sv \

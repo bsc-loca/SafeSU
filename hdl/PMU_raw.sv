@@ -50,8 +50,6 @@
         // *** Active functions and global configuration
         //---- Overflow
 		localparam integer OVERFLOW	= 1, //Yes/No
-		//---- Quota
-		localparam integer QUOTA	= 1, //Yes/No
 		//---- MCCU - Maximum-contention Control Unit mode
 		localparam integer MCCU	    = 1, //Yes/No
 		//---- RDC - Request Duration Counters
@@ -86,26 +84,10 @@
         localparam N_OVERFLOW_REGS   = (N_OVERFLOW_VECT_REGS + N_OVERFLOW_VECT_REGS) * OVERFLOW,
         localparam END_OVERFLOW_INTR = BASE_OVERFLOW_INTR + N_OVERFLOW_REGS -1                 ,
         
-        //---- Quota interruption  registers
-            // General parameters feature  
-        localparam BASE_QUOTA_INTR = END_OVERFLOW_INTR + 1,
-        // mask feature
-            // QUOTA_INTR_MASK_REGS equivalentto to $ceil(N_COUNTERS/REG_WIDTH)
-        localparam BASE_QUOTA_MASK   = BASE_QUOTA_INTR                       ,
-        localparam N_QUOTA_MASK_REGS = ((N_COUNTERS-1)/REG_WIDTH+1)          , 
-        localparam END_QUOTA_MASK    = BASE_QUOTA_MASK + N_QUOTA_MASK_REGS -1,
-        // Available quota aka quota limit
-        localparam BASE_QUOTA_LIMIT   = END_QUOTA_MASK + 1                      , 
-        localparam N_QUOTA_LIMIT_REGS = 1                                       ,
-        localparam END_QUOTA_LIMIT    = BASE_QUOTA_LIMIT + N_QUOTA_LIMIT_REGS -1,
-        // General parameters overflow feature  
-        localparam N_QUOTA_REGS   = (N_QUOTA_MASK_REGS + N_QUOTA_LIMIT_REGS ) * QUOTA,
-        localparam END_QUOTA_INTR = BASE_QUOTA_INTR + N_QUOTA_REGS -1                ,
-        
         //---- MCCU registers and parameters
             // General parameters feature
         // Main configuration register for the MCCU 
-        localparam BASE_MCCU_CFG = END_QUOTA_INTR + 1,
+        localparam BASE_MCCU_CFG = END_OVERFLOW_INTR + 1,
         localparam N_MCCU_CFG = 1,
         localparam END_MCCU_CFG = BASE_MCCU_CFG + N_MCCU_CFG -1 ,
         // Quota limit assgined to each core
@@ -162,7 +144,7 @@
         
         //---- Total of registers used
         localparam integer TOTAL_NREGS = N_COUNTERS + N_CONF_REGS + N_OVERFLOW_REGS
-                                        +N_QUOTA_REGS + N_MCCU_REGS + N_RDC_REGS + N_CROSSBAR_REGS
+                                        + N_MCCU_REGS + N_RDC_REGS + N_CROSSBAR_REGS
 	)
 	(
 		// Global Clock Signal
@@ -180,8 +162,6 @@
         input  wire [N_SOC_EV-1:0] events_i,
         //interruption rises when one of the counters overflows
         output wire intr_overflow_o,
-        //interruption rises when overall events quota is exceeded 
-        output wire intr_quota_o,
         // MCCU interruption for exceeded quota. One signal per core
         output wire [MCCU_N_CORES-1:0] intr_MCCU_o,
         // RDC (Request Duration Counter) interruption for exceeded quota
@@ -201,8 +181,7 @@
     (* MARK_DEBUG = "TRUE" *) logic [REG_WIDTH-1:0]    debug_regs_o [0:TOTAL_NREGS-1]; 
     (* MARK_DEBUG = "TRUE" *) wire                     debug_wrapper_we_i            ;              
     (* MARK_DEBUG = "TRUE" *) wire  [N_SOC_EV-1:0]     debug_events_i                ;                 
-    (* MARK_DEBUG = "TRUE" *) wire                     debug_intr_overflow_o         ;                 
-    (* MARK_DEBUG = "TRUE" *) wire                     debug_intr_quota_o            ;                           
+    (* MARK_DEBUG = "TRUE" *) wire                     debug_intr_overflow_o         ;                          
     (* MARK_DEBUG = "TRUE" *) wire  [MCCU_N_CORES-1:0] debug_intr_MCCU_o             ;            
     (* MARK_DEBUG = "TRUE" *) wire                     debug_intr_RDC_o              ;            
                                                                                     
@@ -210,8 +189,7 @@
     assign debug_regs_o          = regs_o         ;                                                   
     assign debug_wrapper_we_i    = wrapper_we_i   ;                                       
     assign debug_events_i        = events_i       ;                                               
-    assign debug_intr_overflow_o = intr_overflow_o;                                 
-    assign debug_intr_quota_o    = intr_quota_o   ;                                       
+    assign debug_intr_overflow_o = intr_overflow_o;                                       
     assign debug_intr_MCCU_o     = intr_MCCU_o    ;                                         
     assign debug_intr_RDC_o      = intr_RDC_o     ;                                           
     `endif                                                                          
@@ -226,7 +204,6 @@
     wire                          softrst_i         ;
     wire                          overflow_en_i     ;
     wire                          overflow_softrst_i;
-    wire                          quota_softrst_i   ;
     //---- Counter signals
     wire [REG_WIDTH-1:0]          counter_regs_o       [0 : N_COUNTERS-1];
     wire [REG_WIDTH-1:0]          counter_regs_int     [0 : N_COUNTERS-1];
@@ -249,8 +226,6 @@
     //overflow
     assign overflow_en_i      = regs_i [BASE_CFG][2];
     assign overflow_softrst_i = regs_i [BASE_CFG][3];
-    //quota    
-    assign quota_softrst_i    = regs_i [BASE_CFG][4];
 
 
     // Register never set by PMU, only written by master
@@ -281,18 +256,6 @@
     generate
         for(x = 0; x < N_OVERFLOW_MASK_REGS; x++) begin
             assign regs_o[BASE_OVERFLOW_MASK+x] = regs_i[BASE_OVERFLOW_MASK+x];
-        end
-    endgenerate
-    //---- Quota interruption  registers
-        // Register never set by PMU, only written by master
-    generate
-        for(x = 0; x < N_QUOTA_MASK_REGS; x++) begin
-            assign regs_o[BASE_QUOTA_MASK+x] = regs_i[BASE_QUOTA_MASK+x];
-        end
-    endgenerate
-    generate
-        for(x = 0; x < N_QUOTA_LIMIT_REGS; x++) begin
-            assign regs_o[BASE_QUOTA_LIMIT+x] = regs_i[BASE_QUOTA_LIMIT+x];
         end
     endgenerate
     //---- MCCU  registers
@@ -461,25 +424,6 @@
         .over_intr_mask_i   (overflow_intr_mask_i[0][N_COUNTERS-1:0]), 
         .intr_overflow_o    (intr_overflow_o                        ), 
         .over_intr_vect_o   (overflow_intr_vect_o[0][N_COUNTERS-1:0])
-    );
-
-//----------------------------------------------
-//------------- Quota interruption instance
-//----------------------------------------------
-    
-    PMU_quota # 
-    (
-        .REG_WIDTH	(REG_WIDTH ),
-        .N_COUNTERS	(N_COUNTERS)
-    )
-    inst_quota(
-        .clk_i          (clk_i                                  ),
-        .rstn_i         (rstn_i                                 ),
-        .counter_value_i(counter_regs_o                         ),
-        .softrst_i      (quota_softrst_i                        ),
-        .quota_limit_i  (regs_i[BASE_QUOTA_LIMIT]               ),
-        .quota_mask_i   (regs_i[BASE_QUOTA_MASK][N_COUNTERS-1:0]), 
-        .intr_quota_o   (intr_quota_o                           ) 
     );
 
 //----------------------------------------------

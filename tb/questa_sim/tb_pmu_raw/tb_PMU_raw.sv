@@ -39,8 +39,6 @@ module tb_PMU_raw();
         // *** Active functions and global configuration
         //---- Overflow
     localparam integer OVERFLOW	= 1; //Yes/No
-    //---- Quota
-    localparam integer QUOTA	= 1; //Yes/No
     //---- MCCU - Maximum-contention Control Unit mode
     localparam integer MCCU	    = 1; //Yes/No
     //---- RDC - Request Duration Counters
@@ -73,20 +71,18 @@ module tb_PMU_raw();
     localparam N_RDC_REGS      = (N_RDC_WEIGHTS + N_RDC_VECT_REGS+N_RDC_WATERMARK) * RDC;
     //---- OVERFLOW registers
     localparam N_OVERFLOW_REGS = 2*((TB_N_COUNTERS-1)/TB_REG_WIDTH+1) * OVERFLOW;
-    //---- QUOTA registers
-    localparam N_QUOTA_REGS    = 2*((TB_N_COUNTERS-1)/TB_REG_WIDTH+1) * QUOTA;
     //---- CROSSBAR registers
     localparam N_CROSSBAR_CFG  = ((TB_N_COUNTERS*$clog2(TB_N_SOC_EV)-1)/TB_REG_WIDTH+1) * CROSSBAR;
     localparam N_CROSSBAR_REGS = N_CROSSBAR_CFG;
     localparam CROSSBAR_CFG_BITS = $clog2(TB_N_SOC_EV);
    
-    localparam END_MCCU_WEIGHTS   =  BASE_CFG + TB_N_CONF_REGS + TB_N_COUNTERS + N_OVERFLOW_REGS + N_QUOTA_REGS + N_MCCU_CFG + N_MCCU_LIMITS  + TB_MCCU_N_CORES -1 +  N_MCCU_WEIGHTS;      
+    localparam END_MCCU_WEIGHTS   =  BASE_CFG + TB_N_CONF_REGS + TB_N_COUNTERS + N_OVERFLOW_REGS + N_MCCU_CFG + N_MCCU_LIMITS  + TB_MCCU_N_CORES -1 +  N_MCCU_WEIGHTS;      
     localparam BASE_RDC_VECT      = END_MCCU_WEIGHTS+1;
     localparam BASE_RDC_WATERMARK =  BASE_RDC_VECT + N_RDC_VECT_REGS; 
     localparam BASE_CROSSBAR      = BASE_RDC_WATERMARK + N_RDC_WATERMARK;
 
   //---- Total of registers used
-    localparam integer TB_TOTAL_NREGS = TB_N_COUNTERS + TB_N_CONF_REGS + N_MCCU_REGS + N_RDC_REGS + N_OVERFLOW_REGS + N_QUOTA_REGS + N_CROSSBAR_REGS;	
+    localparam integer TB_TOTAL_NREGS = TB_N_COUNTERS + TB_N_CONF_REGS + N_MCCU_REGS + N_RDC_REGS + N_OVERFLOW_REGS + N_CROSSBAR_REGS;	
   
     
 //***Signals***
@@ -97,7 +93,6 @@ module tb_PMU_raw();
     wire  [TB_REG_WIDTH-1:0]    tb_regs_o          [0:TB_TOTAL_NREGS-1];
     reg                         tb_wrapper_we_i                        ;
     wire                        tb_intr_overflow_o                     ;
-    wire                        tb_intr_quota_o                        ;
     wire  [TB_MCCU_N_CORES-1:0] tb_intr_MCCU_o                         ;
     wire                        tb_intr_RDC_o                          ;
 
@@ -122,7 +117,6 @@ reg          tb_fail = 0 ;
         .wrapper_we_i    (tb_wrapper_we_i   ),
         .events_i        (tb_events_i       ),
         .intr_overflow_o (tb_intr_overflow_o),
-        .intr_quota_o    (tb_intr_quota_o   ),
         .intr_MCCU_o     (tb_intr_MCCU_o    ),
         .intr_FT1_o      (                  ),
         .intr_FT2_o      (                  ),

@@ -21,7 +21,6 @@ verilator --lint-only ../hdl/pmu_ahb.sv \
 ../submodules/crossbar/hdl/crossbar.sv \
 ../submodules/MCCU/hdl/MCCU.sv \
 ../submodules/RDC/hdl/RDC.sv \
-../submodules/quota/PMU_quota.sv \
 ../submodules/counters/PMU_counters.sv \
 ../submodules/overflow/PMU_overflow.sv \
 ../submodules/seu_ip/hamming32t26d_enc.sv \
@@ -45,7 +44,6 @@ printf "Please wait, running Spyglass\n"
 ../submodules/seu_ip/way3_voter.sv \
 ../submodules/seu_ip/way3u2a_voter.sv \
 ../submodules/seu_ip/way3ua_voter.sv \
-../submodules/quota/PMU_quota.sv \
 ../submodules/counters/PMU_counters.sv \
 ../submodules/overflow/PMU_overflow.sv 1> /dev/null 
 

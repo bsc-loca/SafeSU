@@ -117,36 +117,6 @@ uint32_t get_quota_mask_32b(void){
     }
     return *var;
 }
-
-uint32_t set_quota_mask_32b(uint32_t mask[N_QUOTA_MASK]){
-    volatile uint32_t *var;
-    for(int i=0; i<N_QUOTA_MASK;i++){
-        var=(uint32_t*)(FIRST_QUOTA_MASK+i*4);
-        *var = mask[i];
-    }
-    return mask;
-}
-
-uint32_t get_quota_limit_32b(void){
-    volatile uint32_t *var;
-    for(int i=0; i<N_QUOTA_LIMIT;i++){
-        var=(uint32_t*)(FIRST_QUOTA_LIMIT+i*4);
-        #ifdef __UART__
-        printf("QUOTA_LIMIT REG\n");
-        printf("value :%d \n",*var);
-        #endif
-    }
-    return *var;
-}
-
-uint32_t set_quota_limit_32b(uint32_t limits[N_QUOTA_LIMIT]){
-    volatile uint32_t *var;
-    for(int i=0; i<N_QUOTA_LIMIT;i++){
-        var=(uint32_t*)(FIRST_QUOTA_LIMIT+i*4);
-        *var = limits[i];
-    }
-    return limits;
-}
 //MCCU functions
 uint32_t enable_MCCU_32b(void){
     volatile uint32_t *var;
@@ -219,14 +189,6 @@ get_cycles_32b ();
 get_instr_32b ();
 reset_pmu();
 get_overflow_32b();
-
-uint32_t mask [N_QUOTA_MASK] ={0xffff};
-set_quota_mask_32b(mask);
-get_quota_mask_32b();
-
-uint32_t limits [N_QUOTA_LIMIT] ={0xaaaa};
-set_quota_limit_32b(limits);
-get_quota_limit_32b();
 
 get_main_config_MCCU_32b();
 uint32_t MCCU_quota [MCCU_N_CORES] ={0xcccc,0xdddd};

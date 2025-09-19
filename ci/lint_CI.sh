@@ -13,7 +13,6 @@ printf "Please wait, running Spyglass\n"
 ../submodules/crossbar/hdl/crossbar.sv \
 ../submodules/MCCU/hdl/MCCU.sv \
 ../submodules/RDC/hdl/RDC.sv \
-../submodules/quota/PMU_quota.sv \
 ../submodules/counters/PMU_counters.sv \
 ../submodules/overflow/PMU_overflow.sv  
 #../submodules/overflow/PMU_overflow.sv 1> /dev/null 

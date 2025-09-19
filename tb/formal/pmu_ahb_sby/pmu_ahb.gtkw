@@ -396,14 +396,6 @@ pmu_ahb.inst_pmu_raw.inst_counters.we_i
 pmu_ahb.f_past_valid
 @22
 [color] 2
-pmu_ahb.inst_pmu_raw.inst_MCCU.quota_int<0>[31:0]
-[color] 2
-pmu_ahb.inst_pmu_raw.inst_MCCU.quota_int<1>[31:0]
-[color] 2
-pmu_ahb.inst_pmu_raw.inst_MCCU.quota_int<2>[31:0]
-[color] 2
-pmu_ahb.inst_pmu_raw.inst_MCCU.quota_int<3>[31:0]
-[color] 2
 pmu_ahb.inst_pmu_raw.inst_MCCU.ccc_suma_int<0>[8:0]
 [color] 2
 pmu_ahb.inst_pmu_raw.inst_MCCU.ccc_suma_int<1>[63:0]

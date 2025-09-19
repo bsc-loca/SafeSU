@@ -83,7 +83,6 @@ module tb_pmu_ahb();
         .hrdata_o        (hrdata_o ),
         .events_i        (events_i ),
         .intr_overflow_o (         ),
-        .intr_quota_o    (         ),
         .intr_MCCU_o     (         ),
         .intr_RDC_o      (         ),
         .intr_FT1_o      (         ),
