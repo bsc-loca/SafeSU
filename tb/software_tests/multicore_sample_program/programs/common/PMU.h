@@ -49,7 +49,7 @@
     #define MCCU_DATA_WIDTH     0
 #endif
 
-#define BASE_MCCU          ((N_COUNTERS + N_CONF_REGS) + N_OVERFLOW_REGS)
+#define BASE_MCCU           ((N_COUNTERS + N_CONF_REGS) + N_OVERFLOW_REGS)
 #define R_ONLY_REGS         (N_COUNTERS + MCCU_R_REGS)          
 #define RW_REGS             ((N_CONF_REGS + N_OVERFLOW_REGS) + MCCU_RW_REGS)
 #define TOTAL_REGS          (R_ONLY_REGS + RW_REGS)             

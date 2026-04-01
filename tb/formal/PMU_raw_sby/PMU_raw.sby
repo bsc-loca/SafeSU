@@ -42,8 +42,7 @@ prep -top PMU_raw
 [files]
 ../../../hdl/PMU_raw.sv
 ../../../submodules/counters/PMU_counters.sv 
-../../../submodules/overflow/PMU_overflow.sv 
-../../../submodules/quota/PMU_quota.sv
+../../../submodules/overflow/PMU_overflow.sv
 ../../../submodules/MCCU/hdl/MCCU.sv
 ../../../submodules/seu_ip/way3_voter.sv
 ../../../submodules/crossbar/hdl/crossbar.sv

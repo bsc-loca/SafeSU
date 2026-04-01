@@ -1,0 +1,30 @@
+package:
+  name: safesu
+
+dependencies:
+  axi:                      { git: "https://github.com/pulp-platform/axi.git",                    version: 0.39.0 }
+  common_cells:             { git: "https://github.com/pulp-platform/common_cells.git",           version: 1.32.0 }
+
+sources:
+  - hdl/PMU_raw.sv
+  - submodules/RDC/hdl/RDC.sv
+  - submodules/crossbar/hdl/crossbar.sv
+  - submodules/counters/PMU_counters.sv
+  - submodules/overflow/PMU_overflow.sv
+  - submodules/MCCU/hdl/MCCU.sv
+  - submodules/seu_ip/way3ua_voter.sv
+  - submodules/seu_ip/way3_voter.sv
+  - submodules/seu_ip/hamming16t11d_dec.sv
+  - submodules/seu_ip/hamming32t26d_enc.sv
+  - submodules/seu_ip/com_tr.sv
+  - submodules/seu_ip/reg_sbf.sv
+  - submodules/seu_ip/way3u2a_voter.sv
+  - submodules/seu_ip/ham_reg.sv
+  - submodules/seu_ip/hamming16t11d_enc.sv
+  - submodules/seu_ip/hamming32t26d_dec.sv
+  - submodules/seu_ip/triple_reg.sv
+  - submodules/seu_ip/sbf_reg.sv
+  - drivers/safety_soc/safesu.c
+  - drivers/safety_soc/safesu.h
+  - drivers/safety_soc/safesu_vars.h
+

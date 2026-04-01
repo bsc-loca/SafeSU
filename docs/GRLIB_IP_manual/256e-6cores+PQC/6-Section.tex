@@ -1,0 +1,27 @@
+\section{Library dependences}
+Table \ref{dep_tab} shows the libraries used when instantiating the core (VHDL libraries).\\
+%%TODO: check if the libraries are actually needed
+\begin{table}[H]
+	\caption{Library dependencies}
+	\label{dep_tab}
+	\centering
+	\begin{tabular}{|l|l|l|l|}
+		\hline
+		\textbf{Library} & \textbf{Package}  & \textbf{Imported units}  & \textbf{Description} \\
+		\hline
+		IEEE & std\_logic\_1164 & Types & Standard logic types\\
+		\hline
+		GRLIB & amba & Signals & AMBA signal definitions\\
+		\hline
+		GRLIB & config & Types & Amba P\&P types\\
+		\hline
+		GRLIB & devices  & Types  & Device names and vendors \\
+		\hline
+		GRLIB & stdlib &  All & Common VHDL functions\\
+		\hline
+		GAISLER & noelv & Signals & Counter vectors and types \\
+		\hline
+		BSC & pmu\_module & Instances and signals & Instances and signal definitions for the SafeSU\\
+		\hline
+	\end{tabular}
+\end{table}

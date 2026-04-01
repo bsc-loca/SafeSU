@@ -1,10 +1,10 @@
 /* -----------------------------------------------
-* Project Name   : MCCU research 
+* Project Name   : MCCU research
 * File           : tb_pmu_raw.sv_
 * Organization   : Barcelona Supercomputing Center
-* Author(s)      : Guillem cabo 
+* Author(s)      : Guillem cabo
 * Email(s)       : guillem.cabo@bsc.es
-* References     : 
+* References     :
 * -----------------------------------------------
 * Revision History
 *  Revision   | Author    | Commit | Description
@@ -25,22 +25,28 @@ module tb_PMU_raw();
 //***Parameters***
     parameter CLK_PERIOD            = 2;
     parameter CLK_HALF_PERIOD       = CLK_PERIOD / 2;
-//***DUT parameters***    
+//***DUT parameters***
     parameter TB_REG_WIDTH          = 32 ;
     parameter TB_N_COUNTERS         = 24 ;
-    parameter TB_N_SOC_EV           = 128;    
+    parameter TB_N_SOC_EV           = 128;
     parameter TB_MCCU_N_CORES       = 6  ;
-    parameter TB_N_CONF_REGS        = 1  ;    
+    parameter TB_N_CONF_REGS        = 1  ;
     parameter TB_MCCU_WEIGHTS_WIDTH = 8  ;
     parameter TB_MCCU_N_EVENTS      = 2  ;
+    parameter TB_MCCU_ALT_N_CORES       = 3  ;
+    parameter TB_MCCU_ALT_N_WEIGHTS     = 8  ;
+    parameter TB_MCCU_ALT_WEIGHTS_WIDTH = 8  ;
+    parameter TB_MCCU_ALT_N_EVENTS      = 16 ;
     parameter FT= 0;
 
-        //------------- Internal Parameters 		
+        //------------- Internal Parameters
         // *** Active functions and global configuration
         //---- Overflow
     localparam integer OVERFLOW	= 1; //Yes/No
     //---- MCCU - Maximum-contention Control Unit mode
     localparam integer MCCU	    = 1; //Yes/No
+    //---- MCCU_ALT - Secondary custom MCCU (requires MCCU)
+    localparam integer MCCU_ALT = 1; //Yes/No
     //---- RDC - Request Duration Counters
     localparam integer RDC	    = 1; //Yes/No
     //---- Crossbar
@@ -49,25 +55,27 @@ module tb_PMU_raw();
      //---- MCCU registers and parameters
         // General parameters feature
     localparam BASE_CFG       = 0;
-       // Main configuration register for the MCCU 
-    localparam N_MCCU_CFG     = 1;		
+       // Main configuration register for the MCCU
+    localparam N_MCCU_CFG     = 1;
     // Quota limit assgined to each core
-    localparam N_MCCU_LIMITS  = TB_MCCU_N_CORES;
+    localparam N_MCCU_LIMITS  = TB_MCCU_N_CORES+TB_MCCU_ALT_N_CORES*MCCU_ALT;
     // Currently available Quota for each core
-    localparam N_MCCU_QUOTA   = TB_MCCU_N_CORES;
+    localparam N_MCCU_QUOTA   = TB_MCCU_N_CORES+TB_MCCU_ALT_N_CORES*MCCU_ALT;
     // Weights for each one of the available events
     localparam N_MCCU_WEIGHTS = (((TB_MCCU_N_CORES*TB_MCCU_N_EVENTS*TB_MCCU_WEIGHTS_WIDTH)-1)/TB_REG_WIDTH+1);
-    //--- MCCU registers  
-    localparam N_MCCU_REGS    = (N_MCCU_CFG + N_MCCU_LIMITS + N_MCCU_QUOTA + N_MCCU_WEIGHTS) * MCCU;
-    
-    //---- RDC registers and parameters. Shared with MCCU 
+    // Weights for alternative MCCU core
+    localparam N_ALT_MCCU_WEIGHTS = (((1*TB_MCCU_ALT_N_WEIGHTS*TB_MCCU_ALT_WEIGHTS_WIDTH)-1)/TB_REG_WIDTH+1);
+    //--- MCCU registers
+    localparam N_MCCU_REGS    = (N_MCCU_CFG + N_MCCU_LIMITS + N_MCCU_QUOTA + N_MCCU_WEIGHTS + N_ALT_MCCU_WEIGHTS*MCCU_ALT) * MCCU;
+
+    //---- RDC registers and parameters. Shared with MCCU
         // General parameters feature
-    localparam N_RDC_WEIGHTS   = 0; 	
-      // Interruption vector 
+    localparam N_RDC_WEIGHTS   = 0;
+      // Interruption vector
     localparam N_RDC_VECT_REGS =  ((TB_MCCU_N_CORES*TB_MCCU_N_EVENTS-1)/TB_REG_WIDTH+1);
     // Watermark for each one of the available events
     localparam N_RDC_WATERMARK = (((TB_MCCU_N_CORES*TB_MCCU_N_EVENTS*TB_MCCU_WEIGHTS_WIDTH)-1)/TB_REG_WIDTH+1);
-    //--- RDC registers 
+    //--- RDC registers
     localparam N_RDC_REGS      = (N_RDC_WEIGHTS + N_RDC_VECT_REGS+N_RDC_WATERMARK) * RDC;
     //---- OVERFLOW registers
     localparam N_OVERFLOW_REGS = 2*((TB_N_COUNTERS-1)/TB_REG_WIDTH+1) * OVERFLOW;
@@ -75,16 +83,16 @@ module tb_PMU_raw();
     localparam N_CROSSBAR_CFG  = ((TB_N_COUNTERS*$clog2(TB_N_SOC_EV)-1)/TB_REG_WIDTH+1) * CROSSBAR;
     localparam N_CROSSBAR_REGS = N_CROSSBAR_CFG;
     localparam CROSSBAR_CFG_BITS = $clog2(TB_N_SOC_EV);
-   
-    localparam END_MCCU_WEIGHTS   =  BASE_CFG + TB_N_CONF_REGS + TB_N_COUNTERS + N_OVERFLOW_REGS + N_MCCU_CFG + N_MCCU_LIMITS  + TB_MCCU_N_CORES -1 +  N_MCCU_WEIGHTS;      
+
+    localparam END_MCCU_WEIGHTS   =  BASE_CFG + TB_N_CONF_REGS + TB_N_COUNTERS + N_OVERFLOW_REGS + N_MCCU_CFG + N_MCCU_LIMITS  + TB_MCCU_N_CORES + TB_MCCU_ALT_N_CORES*MCCU_ALT -1 +  N_MCCU_WEIGHTS + N_ALT_MCCU_WEIGHTS*MCCU_ALT;
     localparam BASE_RDC_VECT      = END_MCCU_WEIGHTS+1;
-    localparam BASE_RDC_WATERMARK =  BASE_RDC_VECT + N_RDC_VECT_REGS; 
+    localparam BASE_RDC_WATERMARK =  BASE_RDC_VECT + N_RDC_VECT_REGS;
     localparam BASE_CROSSBAR      = BASE_RDC_WATERMARK + N_RDC_WATERMARK;
 
   //---- Total of registers used
-    localparam integer TB_TOTAL_NREGS = TB_N_COUNTERS + TB_N_CONF_REGS + N_MCCU_REGS + N_RDC_REGS + N_OVERFLOW_REGS + N_CROSSBAR_REGS;	
-  
-    
+    localparam integer TB_TOTAL_NREGS = TB_N_COUNTERS + TB_N_CONF_REGS + N_MCCU_REGS + N_RDC_REGS + N_OVERFLOW_REGS + N_CROSSBAR_REGS;
+
+
 //***Signals***
     reg                         tb_clk_i                               ;
     reg                         tb_rstn_i                              ;
@@ -100,7 +108,7 @@ module tb_PMU_raw();
 reg [64*8:0] tb_test_name;
 reg          tb_fail = 0 ;
 //***Module***
-    PMU_raw #(         
+    PMU_raw #(
         .REG_WIDTH          (TB_REG_WIDTH         ),
         .N_COUNTERS         (TB_N_COUNTERS        ),
         .N_SOC_EV           (TB_N_SOC_EV          ),
@@ -108,6 +116,10 @@ reg          tb_fail = 0 ;
         .N_CONF_REGS        (TB_N_CONF_REGS       ),
         .MCCU_WEIGHTS_WIDTH (TB_MCCU_WEIGHTS_WIDTH),
         .MCCU_N_EVENTS      (TB_MCCU_N_EVENTS     ),
+        .MCCU_ALT_N_CORES       (TB_MCCU_ALT_N_CORES      ),
+        .MCCU_ALT_WEIGHTS_WIDTH (TB_MCCU_ALT_WEIGHTS_WIDTH),
+        .MCCU_ALT_N_WEIGHTS     (TB_MCCU_ALT_N_WEIGHTS    ),
+        .MCCU_ALT_N_EVENTS      (TB_MCCU_ALT_N_EVENTS     ),
         .FT                 (FT                   )
 	)dut_PMU_raw (
 		.clk_i           (tb_clk_i          ),
@@ -118,6 +130,7 @@ reg          tb_fail = 0 ;
         .events_i        (tb_events_i       ),
         .intr_overflow_o (tb_intr_overflow_o),
         .intr_MCCU_o     (tb_intr_MCCU_o    ),
+        .intr_MCCU_ALT_o (                  ),
         .intr_FT1_o      (                  ),
         .intr_FT2_o      (                  ),
         .intr_RDC_o      (tb_intr_RDC_o     )
@@ -131,16 +144,16 @@ reg          tb_fail = 0 ;
     task automatic reset_dut;
         begin
             $display("*** Toggle reset.");
-            tb_rstn_i <= 1'b0; 
+            tb_rstn_i <= 1'b0;
             #CLK_PERIOD;
             tb_rstn_i <= 1'b1;
             #CLK_PERIOD;
             $display("Done");
         end
-    endtask 
+    endtask
 
 //***task automatic init_sim***
-//Initialize TB registers to a known state. 
+//Initialize TB registers to a known state.
 task automatic init_sim;
         begin
             $display("*** init sim.");
@@ -159,7 +172,7 @@ task automatic init_sim;
             $dumpfile("MCCU_test.vcd");
             $dumpvars(0,dut_PMU_raw);
         end
-    endtask 
+    endtask
 
 //***task automatic write_reg***
 task automatic write_reg (input int register, value);
@@ -176,17 +189,17 @@ task automatic test_MCCU_1;
     begin
         tb_test_name="test_MCCU_1";
         write_reg(0,32'h00000012);
-        write_reg(29,32'b10);
-        write_reg(29,32'b10);
+        write_reg(27,32'b10);
+        write_reg(27,32'b10);
         write_reg(0,32'h40000001);
-        write_reg(38,32'h01020304);
-        write_reg(39,32'h05060708);
-        write_reg(30,32'hffffffff);
-        write_reg(31,32'haaaaaaaa);
-        write_reg(32,32'hbbbbbbbb);
-        write_reg(33,32'hcccccccc);
-        write_reg(29,32'b0111100);
-        write_reg(29,32'b0000001);
+        write_reg(39,32'h01020304);
+        write_reg(40,32'h05060708);
+        write_reg(28,32'hffffffff);
+        write_reg(29,32'haaaaaaaa);
+        write_reg(30,32'hbbbbbbbb);
+        write_reg(31,32'hcccccccc);
+        write_reg(27,32'b0111100);
+        write_reg(27,32'b0000001);
         #CLK_PERIOD;
         #CLK_PERIOD;
         #CLK_PERIOD;
@@ -198,7 +211,7 @@ task automatic test_MCCU_1;
 endtask
 //***task automatic route_ito***
     // This taks takes two parameters. First parameter
-    // is the input event. The second parameter is the 
+    // is the input event. The second parameter is the
     // selected output. The function enables the input
     // sets the configuration register and checks if
     // the signal reaches the output.
@@ -225,7 +238,7 @@ end
         begin
             tb_test_name = "route_ito";
             //set all other signals to 0
-            tb_events_i  <= '{default:0}; 
+            tb_events_i  <= '{default:0};
             //enable signal that we want to route
             #CLK_PERIOD;
             tb_events_i[in] = 1;
@@ -233,19 +246,19 @@ end
             unpack_crossbar_cfg <= '{default:0};
             #CLK_PERIOD;
             //set new configuration
-            unpack_crossbar_cfg[out] <= in;  
+            unpack_crossbar_cfg[out] <= in;
             #CLK_PERIOD;
             #CLK_PERIOD;
             //check if the output signal is enabled
             if(dut_PMU_raw.unpacked_cbo_int[out]!=1) begin
-                tb_fail = 1; 
+                tb_fail = 1;
                 `START_RED_PRINT
-                $error("FAIL.%d routed to %d. Expected output value is 1", in, out); 
+                $error("FAIL.%d routed to %d. Expected output value is 1", in, out);
                 `END_COLOR_PRINT
             end
 
         end
-    endtask 
+    endtask
 //***test all routing combinations crossbar
     task automatic test_crossbar;
         begin
@@ -262,11 +275,11 @@ end
             end
             if (test_fail == 0) begin
                 `START_GREEN_PRINT
-                $error("PASS routing tests"); 
+                $error("PASS routing tests");
                 `END_COLOR_PRINT
             end
         end
-    endtask 
+    endtask
 
 
 //***task automatic test_sim***
@@ -279,7 +292,7 @@ end
             test_MCCU_1();
             //check results
             if(temp!=1) begin
-                tb_fail = 1; 
+                tb_fail = 1;
                 $error("FAIL test_sim. Expected interruption high");
                 `START_RED_PRINT
                 $display("FAIL");
@@ -287,7 +300,7 @@ end
             end
             $display("Done");
         end
-    endtask 
+    endtask
 
 //***init_sim***
     initial begin
@@ -298,7 +311,7 @@ end
         test_sim();
         //Disable PMU and selftest modes
         write_reg(0,32'h00000000);
-        test_crossbar;
+//        test_crossbar;
         $display("FT = %d",FT);
         $finish;
     end

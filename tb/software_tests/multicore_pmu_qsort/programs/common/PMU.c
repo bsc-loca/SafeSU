@@ -105,18 +105,6 @@ uint32_t get_overflow_32b(void){
     }
     return *var;
 }
-//we write the overflow register to get rid of the interrupt?
-uint32_t get_quota_mask_32b(void){
-    volatile uint32_t *var;
-    for(int i=0; i<N_QUOTA_MASK;i++){
-        var=(uint32_t*)(FIRST_QUOTA_MASK+i*4);
-        #ifdef __UART__
-        printf("QUOTA MASK REG%d\n",i);
-        printf("value :%d \n",*var);
-        #endif
-    }
-    return *var;
-}
 //MCCU functions
 uint32_t enable_MCCU_32b(void){
     volatile uint32_t *var;

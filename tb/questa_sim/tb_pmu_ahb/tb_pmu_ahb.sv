@@ -1,10 +1,10 @@
 /* -----------------------------------------------
-* Project Name   : MCCU research 
+* Project Name   : MCCU research
 * File           : tb_pmu_ahb.sv
 * Organization   : Barcelona Supercomputing Center
-* Author(s)      : Guillem cabo 
+* Author(s)      : Guillem cabo
 * Email(s)       : guillem.cabo@bsc.es
-* References     : 
+* References     :
 * -----------------------------------------------
 * Revision History
 *  Revision   | Author    | Commit | Description
@@ -25,15 +25,19 @@ module tb_pmu_ahb();
 //***Parameters***
     parameter CLK_PERIOD      = 2              ;
     parameter CLK_HALF_PERIOD = CLK_PERIOD / 2 ;
-//***DUT parameters***    
+//***DUT parameters***
     parameter TB_REG_WIDTH          = 32 ;
     parameter TB_N_COUNTERS         = 24 ;
-    parameter TB_N_SOC_EV           = 128;    
+    parameter TB_N_SOC_EV           = 128;
     parameter TB_MCCU_N_CORES       = 6  ;
-    parameter TB_N_CONF_REGS        = 1  ;    
+    parameter TB_N_CONF_REGS        = 1  ;
     parameter TB_MCCU_WEIGHTS_WIDTH = 8  ;
     parameter TB_MCCU_N_EVENTS      = 2  ;
-    parameter FT              = 0  ;     
+    parameter TB_MCCU_ALT_N_CORES       = 3  ;
+    parameter TB_MCCU_ALT_N_WEIGHTS     = 8  ;
+    parameter TB_MCCU_ALT_WEIGHTS_WIDTH = 8  ;
+    parameter TB_MCCU_ALT_N_EVENTS      = 16 ;
+    parameter FT              = 0  ;
 //***Signals***
     reg  clk_i                        ;
     reg  rstn_i                       ;
@@ -53,8 +57,8 @@ module tb_pmu_ahb();
 //***Module***
 	pmu_ahb #
 	(
-        .haddr              (32'h80100000         ),                                                  
-        .hmask              (32'hfff              ),         
+        .haddr              (32'h80100000         ),
+        .hmask              (32'hfff              ),
         .REG_WIDTH          (TB_REG_WIDTH        ),
         .N_COUNTERS         (TB_N_COUNTERS        ),
         .N_SOC_EV           (TB_N_SOC_EV          ),
@@ -62,13 +66,17 @@ module tb_pmu_ahb();
         .N_CONF_REGS        (TB_N_CONF_REGS       ),
         .MCCU_WEIGHTS_WIDTH (TB_MCCU_WEIGHTS_WIDTH),
         .MCCU_N_EVENTS      (TB_MCCU_N_EVENTS     ),
+        .MCCU_ALT_N_CORES       (TB_MCCU_ALT_N_CORES      ),
+        .MCCU_ALT_WEIGHTS_WIDTH (TB_MCCU_ALT_WEIGHTS_WIDTH),
+        .MCCU_ALT_N_WEIGHTS     (TB_MCCU_ALT_N_WEIGHTS    ),
+        .MCCU_ALT_N_EVENTS      (TB_MCCU_ALT_N_EVENTS     ),
         .FT                 (FT                   )
 	)
-    dut_pmu_ahb 
+    dut_pmu_ahb
 	(
         .rstn_i          (rstn_i   ),
         .clk_i           (clk_i    ),
-        .hsel_i          (hsel_i   ),                               
+        .hsel_i          (hsel_i   ),
         .hreadyi_i       (1'b1     ),
         .haddr_i         (haddr_i  ),
         .hwrite_i        (hwrite_i ),
@@ -84,6 +92,7 @@ module tb_pmu_ahb();
         .events_i        (events_i ),
         .intr_overflow_o (         ),
         .intr_MCCU_o     (         ),
+        .intr_quota_o    (         ),
         .intr_RDC_o      (         ),
         .intr_FT1_o      (         ),
         .intr_FT2_o      (         )
@@ -97,7 +106,7 @@ module tb_pmu_ahb();
     task automatic reset_dut;
         begin
             $display("*** Toggle reset.");
-            rstn_i   <= 1'b0 ;  
+            rstn_i   <= 1'b0 ;
             hsel_i   = 0     ;
             htrans_i = 2'b00 ;
             #CLK_PERIOD;
@@ -106,10 +115,10 @@ module tb_pmu_ahb();
             #CLK_PERIOD;
             $display("Done");
         end
-    endtask 
+    endtask
 
 //***task automatic init_sim***
-//Initialize TB registers to a known state. 
+//Initialize TB registers to a known state.
 task automatic init_sim;
         begin
             $display("*** init sim.");
@@ -126,7 +135,7 @@ task automatic init_sim;
             $dumpfile("MCCU_test.vcd");
             $dumpvars(0,dut_pmu_ahb);
         end
-    endtask 
+    endtask
 
 //*** Single word sequential ahb write request
     task automatic sws_ahb_w (input int addr, data, output int rval);
@@ -157,7 +166,7 @@ task automatic init_sim;
             //For now i don't check the results
             rval     = 1                ;
         end
-    endtask 
+    endtask
 //Run "a" cycles, random input events
 task automatic rand_run(input longint a);
         begin
@@ -189,7 +198,7 @@ task automatic rand_run(input longint a);
             rand_run (50                           );
             $display ("Done"                       );
         end
-    endtask 
+    endtask
 
 //***init_sim***
     initial begin

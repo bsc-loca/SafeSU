@@ -40,7 +40,6 @@ prep -top top
 ../../../hdl/PMU_raw.sv
 ../../../submodules/counters/PMU_counters.sv 
 ../../../submodules/overflow/PMU_overflow.sv
-../../../submodules/quota/PMU_quota.sv
 ../../../submodules/MCCU/hdl/MCCU.sv
 ../../../submodules/RDC/hdl/RDC.sv
 ../../../submodules/seu_ip/hamming32t26d_enc.sv

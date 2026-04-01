@@ -2,6 +2,7 @@
 #define N_COUNTERS 24
 #define N_CONF_REGS 1
 #define OVERFLOW 1
+#define QUOTA 1
 #define MCCU 1
 #define RDC 1
 #define BASE_CFG 0
@@ -23,7 +24,7 @@
 #define BASE_MCCU_CFG 27
 #define N_MCCU_CFG 1
 #define END_MCCU_CFG 27
-#define BASE_MCCU_LIMITS 29
+#define BASE_MCCU_LIMITS 28
 #define N_MCCU_LIMITS 4
 #define END_MCCU_LIMITS 31
 #define BASE_MCCU_QUOTA 32
@@ -36,9 +37,9 @@
 #define RDC_WEIGHTS_WIDTH 8
 #define RDC_N_CORES 4
 #define RDC_N_EVENTS 2
-#define BASE_RDC_VECT 39
+#define BASE_RDC_VECT 38
 #define N_RDC_VECT_REGS 1
-#define END_RDC_VECT 39
+#define END_RDC_VECT 38
 #define BASE_RDC_WEIGHTS 36
 #define N_RDC_WEIGHTS 0
 #define END_RDC_WEIGHTS 37

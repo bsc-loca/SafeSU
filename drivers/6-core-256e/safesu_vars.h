@@ -26,7 +26,7 @@
 #define BASE_MCCU_LIMITS 28
 #define N_MCCU_LIMITS 6
 #define END_MCCU_LIMITS 33
-#define BASE_MCCU_QUOTA 35
+#define BASE_MCCU_QUOTA 34
 #define N_MCCU_QUOTA 6
 #define END_MCCU_QUOTA 39
 #define BASE_MCCU_WEIGTHS 40
@@ -75,7 +75,7 @@
 #define CROSSBAR_REG4 (_SAFESU_CROSSBAR[4]) // Crossbar output register 4
 #define CROSSBAR_REG5 (_SAFESU_CROSSBAR[5]) // Crossbar output register 5
 
-// SAFESU overflow (I)nterrupt (E)nable register 
+// SAFESU overflow (I)nterrupt (E)nable register
 #define SAFESU_OVERLFOW_IE (_SAFESU_OVERFLOW[0])
 
 // SAFESU overflow (I)nterrupt (V)ector register
@@ -370,12 +370,12 @@
 
 #define SAFESUCFG1 (_SAFESU_MCCU_RDC[0]) // SAFESU configuration register 1
 
-#define SAFESU_QUOTA_SET0 (_SAFESU_MCCU_QUOTA[0]) // Quota set register 
-#define SAFESU_QUOTA_SET1 (_SAFESU_MCCU_QUOTA[1]) // Quota set register 
-#define SAFESU_QUOTA_SET2 (_SAFESU_MCCU_QUOTA[2]) // Quota set register 
-#define SAFESU_QUOTA_SET3 (_SAFESU_MCCU_QUOTA[3]) // Quota set register 
-#define SAFESU_QUOTA_SET4 (_SAFESU_MCCU_QUOTA[4]) // Quota set register 
-#define SAFESU_QUOTA_SET5 (_SAFESU_MCCU_QUOTA[5]) // Quota set register 
+#define SAFESU_QUOTA_SET0 (_SAFESU_MCCU_QUOTA[0]) // Quota set register
+#define SAFESU_QUOTA_SET1 (_SAFESU_MCCU_QUOTA[1]) // Quota set register
+#define SAFESU_QUOTA_SET2 (_SAFESU_MCCU_QUOTA[2]) // Quota set register
+#define SAFESU_QUOTA_SET3 (_SAFESU_MCCU_QUOTA[3]) // Quota set register
+#define SAFESU_QUOTA_SET4 (_SAFESU_MCCU_QUOTA[4]) // Quota set register
+#define SAFESU_QUOTA_SET5 (_SAFESU_MCCU_QUOTA[5]) // Quota set register
 
 #define SAFESU_QUOTA_REM0 (_SAFESU_MCCU_QUOTA[6]) // Quota current remaining for core 0
 #define SAFESU_QUOTA_REM1 (_SAFESU_MCCU_QUOTA[7]) // Quota current remaining for core 1

@@ -28,7 +28,7 @@
 #define MCCU_WEIGHTS_WIDTH 8
 #define MCCU_N_CORES 6
 #define MCCU_N_EVENTS 2
-#define BASE_MCCU_CFG 27
+#define BASE_MCCU_CFG 29
 #define N_MCCU_CFG 1
 #define END_MCCU_CFG 27
 #define BASE_MCCU_LIMITS 28

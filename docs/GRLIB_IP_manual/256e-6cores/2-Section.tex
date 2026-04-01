@@ -358,9 +358,9 @@ The generic and residual contention metrics have the following meanings:
 \item \textbf{Residual contention}: We observed that, when using the gaisler L2-lite cache, if a htrans "10"(NONSEQ) happens after a non-idle transaction, the response to the current master (the one that issued the "10") transaction is delayed by one cycle. THIS IS GAISLER L2 LITE specific, thus, not portable
 \end{itemize}
 
+
 \subsection{Main configuration and self-test}
 Reset and enable of overflow and regular counters can be performed with register \ref{base_cfg}. All signals are active high.\\
-\\
 Self-test mode allows to bypass the input events from the crossbar and instead use a specific input pattern where signals are constant. This mode can be used for debugging. After the addition of the crossbar and debug inputs, there is a certain overlap. The same results can be achieved with the correct crossbar configuration. Nevertheless, it has been included in this release for compatibility.\\
 \\
 These are the Self-test modes for each configuration value of the fied \textit{selftest mode} in register \ref{base_cfg}:

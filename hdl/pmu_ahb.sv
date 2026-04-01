@@ -1,14 +1,14 @@
 //-----------------------------------------------------
 // ProjectName: LEON3_kc705_pmu
 // Function   : Integrate PMU and AHB interface
-// Description: AHB interface implementation of the  PMU. 
-//              
+// Description: AHB interface implementation of the  PMU.
+//
 //              This module is responsible managing reads and writes from and
 //              AHB master and interface with pmu_ahb module.
 //
 // Coder      : G.Cabo
-// References : AMBA 3 AHB-lite  specifications 
-//              ARM IHI 0033A  
+// References : AMBA 3 AHB-lite  specifications
+//              ARM IHI 0033A
 // Notes      : Any write to a control registers takes 2 clock cycles to
 //              take effect since it propagates from the wrapper to the
 //              internal regs of the PMU
@@ -17,15 +17,15 @@
 `timescale 1 ns / 1 ps
 
 `ifndef SYNT
-    `ifdef FORMAL 
+    `ifdef FORMAL
         `define ASSERTIONS
     `endif
 `endif
 module pmu_ahb #
 	(
-        parameter integer haddr = 0,                                                  
-        parameter integer hmask  = 0,        
-        //------------- External parameters 
+        parameter integer haddr = 0,
+        parameter integer hmask  = 0,
+        //------------- External parameters
 		// Width of registers data bus
 		parameter integer REG_WIDTH	  = 32,
 		// Amount of counters
@@ -36,19 +36,29 @@ module pmu_ahb #
         parameter integer MCCU_WEIGHTS_WIDTH = 8, // By cf, should be parameter
 		// Configuration registers
 		parameter integer N_CONF_REGS = 1,
-        // Number of cores with MCCU capabilities 
-        parameter integer MCCU_N_CORES = 4, // By cf move the location           
+        // Number of cores with MCCU capabilities
+        parameter integer MCCU_N_CORES = 4, // By cf move the location
         // Number of events per core
-        parameter integer MCCU_N_EVENTS = 2 ,  // By cf, should be parameter            
+        parameter integer MCCU_N_EVENTS = 2 ,  // By cf, should be parameter
         // Fault tolerance mechanisms (FT==0 -> FT disabled)
-        parameter integer FT          = 0,   
+        parameter integer FT          = 0,
+        // Number of alternative custom cores with MCCU capabilities
+        parameter integer MCCU_ALT_N_CORES = 3,
+        // Width of the assigned weights for each event on alternative cores
+        parameter integer MCCU_ALT_WEIGHTS_WIDTH = 8,
+        // Number of register weights shared by each alternative core
+        parameter integer MCCU_ALT_N_WEIGHTS = 8,
+        // Number of events shared by each alternative core
+        parameter integer MCCU_ALT_N_EVENTS = 16,
 
-        //------------- Internal Parameters 		
+        //------------- Internal Parameters
         // *** Active functions and global configuration
         //---- Overflow
 		localparam integer OVERFLOW	= 1, //Yes/No
 		//---- MCCU - Maximum-contention Control Unit mode
 		localparam integer MCCU	    = 1, //Yes/No
+    //---- MCCU_ALT - Secondary custom MCCU (requires MCCU)
+    localparam integer MCCU_ALT = 1, //Yes/No
 		//---- RDC - Request Duration Counters
 		localparam integer RDC	    = 1, //Yes/No
 		//---- Crossbar
@@ -56,76 +66,80 @@ module pmu_ahb #
 
          //---- MCCU registers and parameters
             // General parameters feature
-           // Main configuration register for the MCCU 
-        localparam N_MCCU_CFG = 1,		
+           // Main configuration register for the MCCU
+        localparam N_MCCU_CFG = 1,
         // Quota limit assgined to each core
-        localparam N_MCCU_LIMITS = MCCU_N_CORES,
+        localparam N_MCCU_LIMITS = MCCU_N_CORES + MCCU_ALT_N_CORES*MCCU_ALT,
         // Currently available Quota for each core
-        localparam N_MCCU_QUOTA = MCCU_N_CORES,
+        localparam N_MCCU_QUOTA = MCCU_N_CORES + MCCU_ALT_N_CORES*MCCU_ALT,
         // Weights for each one of the available events
         localparam N_MCCU_WEIGHTS = (((MCCU_N_CORES*MCCU_N_EVENTS*MCCU_WEIGHTS_WIDTH)-1)/REG_WIDTH+1),
-        //--- MCCU registers  
-        localparam N_MCCU_REGS = (N_MCCU_CFG + N_MCCU_LIMITS + N_MCCU_QUOTA + N_MCCU_WEIGHTS) * MCCU,
-        
-        //---- RDC registers and parameters. Shared with MCCU 
+        // Shared weights for the Alternative MCCU
+        localparam N_ALT_MCCU_WEIGHTS = (((1*MCCU_ALT_N_WEIGHTS*MCCU_ALT_WEIGHTS_WIDTH)-1)/REG_WIDTH+1),
+        //--- MCCU registers
+        localparam N_MCCU_REGS = (N_MCCU_CFG + N_MCCU_LIMITS + N_MCCU_QUOTA + N_MCCU_WEIGHTS + N_ALT_MCCU_WEIGHTS*MCCU_ALT) * MCCU,
+
+        //---- RDC registers and parameters. Shared with MCCU
             // General parameters feature
-		localparam N_RDC_WEIGHTS = 0, 	
-		  // Interruption vector 
+		localparam N_RDC_WEIGHTS = 0,
+		  // Interruption vector
         localparam N_RDC_VECT_REGS =  ((MCCU_N_CORES*MCCU_N_EVENTS-1)/REG_WIDTH+1),
         // Watermark for each one of the available events
 		localparam N_RDC_WATERMARK = (((MCCU_N_CORES*MCCU_N_EVENTS*MCCU_WEIGHTS_WIDTH)-1)/REG_WIDTH+1),
-        //--- RDC registers 
+        //--- RDC registers
 		localparam N_RDC_REGS = (N_RDC_WEIGHTS + N_RDC_VECT_REGS+N_RDC_WATERMARK) * RDC,
 		//---- OVERFLOW registers
         localparam N_OVERFLOW_REGS = 2*((N_COUNTERS-1)/REG_WIDTH+1) * OVERFLOW,
 		//---- CROSSBAR registers
         localparam N_CROSSBAR_REGS = ((N_COUNTERS* $clog2(N_SOC_EV)-1)/REG_WIDTH+1) * CROSSBAR,
-	 
+
         //---- Total of registers used
-        localparam integer N_REGS = N_COUNTERS + N_CONF_REGS + N_MCCU_REGS + N_RDC_REGS + N_OVERFLOW_REGS + N_CROSSBAR_REGS,	
+        localparam integer N_REGS = N_COUNTERS + N_CONF_REGS + N_MCCU_REGS + N_RDC_REGS + N_OVERFLOW_REGS + N_CROSSBAR_REGS,
 
         // -- Local parameters
 		// haddr width
         localparam integer HADDR_WIDTH = 32 ,
 		// hdata width
-        localparam integer HDATA_WIDTH = 32 
-	)     
-	(     
+        localparam integer HDATA_WIDTH = 32
+	)
+	(
         input  wire                    rstn_i         ,
         input  wire                    clk_i          ,
-        // -- AHB bus slave interface                                                     
-        // slave select       
-        input  wire                    hsel_i         ,                               
-        // previous transfer done        
+        // -- AHB bus slave interface
+        // slave select
+        input  wire                    hsel_i         ,
+        // previous transfer done
         input  wire                    hreadyi_i      ,
-        // address bus         
+        // address bus
         input  wire [HADDR_WIDTH-1:0]  haddr_i        ,
-        // read/write        
+        // read/write
         input  wire                    hwrite_i       ,
-        // transfer type                 
+        // transfer type
         input  wire [1:0]              htrans_i       ,
-        // transfer size                 
+        // transfer size
         input  wire [2:0]              hsize_i        ,
-        // burst type                 
+        // burst type
         input  wire [2:0]              hburst_i       ,
-        // write data bus      
+        // write data bus
         input  wire [HDATA_WIDTH-1:0]  hwdata_i       ,
-        // prtection control    
+        // prtection control
         input  wire [3:0]              hprot_i        ,
-        // locked access     
+        // locked access
         input  wire                    hmastlock_i    ,
-        // trasfer done                
+        // trasfer done
         output wire                    hreadyo_o      ,
-        // response type               
+        // response type
         output wire [1:0]              hresp_o        ,
-        // read data bus    
+        // read data bus
         output wire [HDATA_WIDTH-1:0]  hrdata_o       ,
-        // -- PMU specific signales    
+        // -- PMU specific signales
         input  wire [N_SOC_EV-1:0]     events_i       ,
         //interruption rises when one of the counters overflows
         output wire                    intr_overflow_o,
         // MCCU interruption for exceeded quota. One signal per core
         output wire [MCCU_N_CORES-1:0] intr_MCCU_o    ,
+        // Interruption rises when any ALT MCCU quota is exceeded
+        output wire                    intr_quota_o   ,
         // RDC (Request Duration Counter) interruption for exceeded quota
         output wire                    intr_RDC_o     ,
         // FT (Fault tolerance) interrupt, error detected and recovered
@@ -136,48 +150,50 @@ module pmu_ahb #
         output wire                    en_hwquota_o
     );
     //----------------------------------------------
-    // VIVADO: list of debug signals for ILA 
-    //----------------------------------------------  
-    `ifdef ILA_DEBUG_PMU_AHB                                             
-        (* MARK_DEBUG = "TRUE" *) wire                    debug_hsel_i         ;        
-        (* MARK_DEBUG = "TRUE" *) wire [HADDR_WIDTH-1:0]  debug_haddr_i        ;       
-        (* MARK_DEBUG = "TRUE" *) wire                    debug_hwrite_i       ;       
-        (* MARK_DEBUG = "TRUE" *) wire [1:0]              debug_htrans_i       ;       
-        (* MARK_DEBUG = "TRUE" *) wire [2:0]              debug_hsize_i        ;       
-        (* MARK_DEBUG = "TRUE" *) wire [2:0]              debug_hburst_i       ;       
-        (* MARK_DEBUG = "TRUE" *) wire [HDATA_WIDTH-1:0]  debug_hwdata_i       ;       
-        (* MARK_DEBUG = "TRUE" *) wire [3:0]              debug_hprot_i        ;       
-        (* MARK_DEBUG = "TRUE" *) wire                    debug_hreadyi_i      ;       
-        (* MARK_DEBUG = "TRUE" *) wire                    debug_hmastlock_i    ;       
-        (* MARK_DEBUG = "TRUE" *) wire                    debug_hreadyo_o      ;       
-        (* MARK_DEBUG = "TRUE" *) wire [1:0]              debug_hresp_o        ;       
-        (* MARK_DEBUG = "TRUE" *) wire [HDATA_WIDTH-1:0]  debug_hrdata_o       ;       
-        (* MARK_DEBUG = "TRUE" *) wire [N_SOC_EV-1:0]     debug_events_i       ;        
-        (* MARK_DEBUG = "TRUE" *) wire                    debug_intr_overflow_o;    
-        (* MARK_DEBUG = "TRUE" *) wire [MCCU_N_CORES-1:0] debug_intr_MCCU_o    ;        
-        (* MARK_DEBUG = "TRUE" *) wire                    debug_intr_RDC_o     ;         
-        assign debug_hsel_i          = hsel_i         ;                                                      
-        assign debug_haddr_i         = haddr_i        ;                          
-        assign debug_hwrite_i        = hwrite_i       ;                        
-        assign debug_htrans_i        = htrans_i       ;                        
-        assign debug_hsize_i         = hsize_i        ;                          
-        assign debug_hburst_i        = hburst_i       ;                        
-        assign debug_hwdata_i        = hwdata_i       ;                        
-        assign debug_hprot_i         = hprot_i        ;                          
-        assign debug_hreadyi_i       = hreadyi_i      ;                      
-        assign debug_hmastlock_i     = hmastlock_i    ;                  
-        assign debug_hreadyo_o       = hreadyo_o      ;                      
-        assign debug_hresp_o         = hresp_o        ;                          
-        assign debug_hrdata_o        = hrdata_o       ;                        
-        assign debug_events_i        = events_i       ;                        
-        assign debug_intr_overflow_o = intr_overflow_o;                
-        assign debug_intr_MCCU_o     = intr_MCCU_o    ;                  
-        assign debug_intr_RDC_o      = intr_RDC_o     ;  
-    `endif                                                                                                              
+    // VIVADO: list of debug signals for ILA
+    //----------------------------------------------
+    `ifdef ILA_DEBUG_PMU_AHB
+        (* MARK_DEBUG = "TRUE" *) wire                    debug_hsel_i         ;
+        (* MARK_DEBUG = "TRUE" *) wire [HADDR_WIDTH-1:0]  debug_haddr_i        ;
+        (* MARK_DEBUG = "TRUE" *) wire                    debug_hwrite_i       ;
+        (* MARK_DEBUG = "TRUE" *) wire [1:0]              debug_htrans_i       ;
+        (* MARK_DEBUG = "TRUE" *) wire [2:0]              debug_hsize_i        ;
+        (* MARK_DEBUG = "TRUE" *) wire [2:0]              debug_hburst_i       ;
+        (* MARK_DEBUG = "TRUE" *) wire [HDATA_WIDTH-1:0]  debug_hwdata_i       ;
+        (* MARK_DEBUG = "TRUE" *) wire [3:0]              debug_hprot_i        ;
+        (* MARK_DEBUG = "TRUE" *) wire                    debug_hreadyi_i      ;
+        (* MARK_DEBUG = "TRUE" *) wire                    debug_hmastlock_i    ;
+        (* MARK_DEBUG = "TRUE" *) wire                    debug_hreadyo_o      ;
+        (* MARK_DEBUG = "TRUE" *) wire [1:0]              debug_hresp_o        ;
+        (* MARK_DEBUG = "TRUE" *) wire [HDATA_WIDTH-1:0]  debug_hrdata_o       ;
+        (* MARK_DEBUG = "TRUE" *) wire [N_SOC_EV-1:0]     debug_events_i       ;
+        (* MARK_DEBUG = "TRUE" *) wire                    debug_intr_overflow_o;
+        (* MARK_DEBUG = "TRUE" *) wire                    debug_intr_quota_o   ;
+        (* MARK_DEBUG = "TRUE" *) wire [MCCU_N_CORES-1:0] debug_intr_MCCU_o    ;
+        (* MARK_DEBUG = "TRUE" *) wire                    debug_intr_RDC_o     ;
+        assign debug_hsel_i          = hsel_i         ;
+        assign debug_haddr_i         = haddr_i        ;
+        assign debug_hwrite_i        = hwrite_i       ;
+        assign debug_htrans_i        = htrans_i       ;
+        assign debug_hsize_i         = hsize_i        ;
+        assign debug_hburst_i        = hburst_i       ;
+        assign debug_hwdata_i        = hwdata_i       ;
+        assign debug_hprot_i         = hprot_i        ;
+        assign debug_hreadyi_i       = hreadyi_i      ;
+        assign debug_hmastlock_i     = hmastlock_i    ;
+        assign debug_hreadyo_o       = hreadyo_o      ;
+        assign debug_hresp_o         = hresp_o        ;
+        assign debug_hrdata_o        = hrdata_o       ;
+        assign debug_events_i        = events_i       ;
+        assign debug_intr_overflow_o = intr_overflow_o;
+        assign debug_intr_quota_o    = intr_quota_o   ;
+        assign debug_intr_MCCU_o     = intr_MCCU_o    ;
+        assign debug_intr_RDC_o      = intr_RDC_o     ;
+    `endif
 //----------------------------------------------
 //------------- Local parameters
 //----------------------------------------------
-// ** Types of bursts (hburst_i) ** 
+// ** Types of bursts (hburst_i) **
     //Single burst
     //localparam SINGLE = 3'b00;
     localparam SINGLE = 3'b000; //by fchang 20220120
@@ -211,12 +227,12 @@ module pmu_ahb #
 
 // ** Type of Response outputs (hresp_o)**
     //OKAY. Transfer has finish or has to be extended
-    //ERROR. Transfer is not valid 
+    //ERROR. Transfer is not valid
     localparam READYO_OKAY                = 1'b0;
     localparam READYO_ERROR               = 1'b1;
 
 // ** Transfer status **
-// **{{hresp_o},{hready_o}} 
+// **{{hresp_o},{hready_o}}
     localparam TRANSFER_PENDING           = 2'b00;
     localparam TRANSFER_SUCCESS_COMPLETE  = 2'b01;
     localparam TRANSFER_ERROR_RESP_1CYCLE = 2'b10;
@@ -245,7 +261,7 @@ if(FT==0) begin
             master_addr <= address_phase.master_addr_D;
         end
     end
-    
+
     always_comb begin
         address_phase.select_Q      = select     ;
         address_phase.write_Q       = write      ;
@@ -254,7 +270,7 @@ if(FT==0) begin
 end else begin : Apft //Address phase FT
     logic write_fte1, select_fte1, master_addr_fte1;
     logic write_fte2, select_fte2, master_addr_fte2;
-    
+
     triple_reg #
     (
         .IN_WIDTH (1)
@@ -268,7 +284,7 @@ end else begin : Apft //Address phase FT
         .error1_o (write_fte1           ), // ignore corrected errors
         .error2_o (write_fte2           )
     );
-    
+
     triple_reg #
     (
         .IN_WIDTH (1)
@@ -282,7 +298,7 @@ end else begin : Apft //Address phase FT
         .error1_o (select_fte1           ), // ignore corrected errors
         .error2_o (select_fte2           )
     );
-    
+
     triple_reg #
     (
         .IN_WIDTH (HADDR_WIDTH)
@@ -312,13 +328,13 @@ wire                       invalid_index            ;
 logic [REG_WIDTH-1:0]      slv_reg [0:N_REGS-1]     ;
 logic [REG_WIDTH-1:0]      slv_reg_D [0:N_REGS-1]   ;
 logic [REG_WIDTH-1:0]      slv_reg_Q [0:N_REGS-1]   ;
-          
+
 generate
     if(FT==0) begin
         always_ff @(posedge clk_i) begin
             if(rstn_i == 1'b0 ) begin
                 slv_reg <='{default:0};
-            end else begin 
+            end else begin
                 slv_reg <= slv_reg_D;
             end
         end
@@ -327,7 +343,7 @@ generate
         //----------------------------------------------
 
         //Each cycle the values in slv_reg_D will be saved in slv_reg
-            //So if you want to update slv_reg the values for slv_reg_D shall be 
+            //So if you want to update slv_reg the values for slv_reg_D shall be
             //assigned in this section
             //If you add aditional logic that can change the values of the registers
             //the next always block have to be modified to add the aditional
@@ -341,12 +357,12 @@ generate
                 slv_reg_Q             = slv_reg     ;
                 slv_reg_Q [slv_index] = dwrite_slave;
                 slv_reg_D             = pmu_regs_int;
-                slv_reg_D[slv_index]  = dwrite_slave; 
+                slv_reg_D[slv_index]  = dwrite_slave;
             end else begin
                 slv_reg_D             = pmu_regs_int;
                 slv_reg_Q             = slv_reg     ;
             end
-        end 
+        end
     end else begin : Slvft
     //FT version of the registers
         // Hamming bits, 6 for each 26 bits of data
@@ -356,17 +372,17 @@ generate
         localparam N_HAM32_SLV= (((REG_WIDTH*N_REGS)+(HAM_D-1))/(HAM_D));
         //interrupt FT error
         wire  [N_HAM32_SLV-1:0]         ift_slv                  ;//interrupt fault tolerance mechanism
-        //"Flat" slv_reg Q and D signals        
+        //"Flat" slv_reg Q and D signals
         wire  [N_HAM32_SLV*HAM_D-1:0]   slv_reg_fte              ;//fault tolerance in
         wire  [N_HAM32_SLV*HAM_D-1:0]   slv_reg_fto              ;//fault tolerance out
         wire  [REG_WIDTH-1:0]           slv_reg_ufto [0:N_REGS-1];//unpacked fault tolerance out
         wire  [N_HAM32_SLV*HAM_D-1:0]   slv_reg_pQ               ;//protected output
-        //"Flat" hamming messages (Data+parity bits)          
+        //"Flat" hamming messages (Data+parity bits)
         wire  [(HAM_M*N_HAM32_SLV)-1:0] ham_mbits_D              ;
         wire  [(HAM_M*N_HAM32_SLV)-1:0] ham_mbits_Q              ;
-        //Registers for parity bits          
+        //Registers for parity bits
         logic [HAM_P*N_HAM32_SLV-1:0]   ham_pbits                ;
-        //Feed and send flat assigment in to original format 
+        //Feed and send flat assigment in to original format
         for(genvar i = 0; i < N_REGS; i++) begin
             //assign slv_register inputs to a flat hamming input
             assign slv_reg_fte[(i+1)*REG_WIDTH-1:i*REG_WIDTH] = slv_reg_D[i][REG_WIDTH-1:0];
@@ -405,7 +421,7 @@ generate
             always_ff @(posedge clk_i) begin
                 if(rstn_i == 1'b0 ) begin
                     ham_pbits[(i+1)*HAM_P-1:i*HAM_P] <='{default:0};
-                end else begin 
+                end else begin
                     ham_pbits[(i+1)*HAM_P-1:i*HAM_P] <= {
                                                          ham_mbits_D[i*HAM_M+16]
                                                          ,ham_mbits_D[i*HAM_M+8]
@@ -435,7 +451,7 @@ generate
             hamming32t26d_dec #
             (
             )
-            slv_hamming32t26d_dec 
+            slv_hamming32t26d_dec
             (
                 .data_o      (slv_reg_fto[(i+1)*HAM_D-1:i*HAM_D]),
                 .hv_i        (ham_mbits_Q[(i+1)*HAM_M-1:i*HAM_M]),
@@ -451,7 +467,7 @@ generate
         //----------------------------------------------
 
         //Each cycle the values in slv_reg_D will be saved in slv_reg
-            //So if you want to update slv_reg the values for slv_reg_D shall be 
+            //So if you want to update slv_reg the values for slv_reg_D shall be
             //assigned in this section
             //If you add aditional logic that can change the values of the registers
             //the next always block have to be modified to add the aditional
@@ -461,19 +477,19 @@ generate
             //Write to slv registers if slave was selected & was a write to a valid register
             //Else register the values given by pmu_raw
             if(address_phase.write_Q && address_phase.select_Q && !invalid_index) begin
-                //Feed and send flat assigment in to original format 
+                //Feed and send flat assigment in to original format
                     //assign flat hamming outputs to slv_reg_Q
                 slv_reg_Q             = slv_reg_ufto;
                 slv_reg_Q [slv_index] = dwrite_slave;
                 slv_reg_D             = pmu_regs_int;
-                slv_reg_D[slv_index]  = dwrite_slave; 
+                slv_reg_D[slv_index]  = dwrite_slave;
             end else begin
                 slv_reg_D             = pmu_regs_int;
-                //Feed and send flat assigment in to original format 
+                //Feed and send flat assigment in to original format
                     //assign flat hamming outputs to slv_reg_Q
                 slv_reg_Q             = slv_reg_ufto;
             end
-        end 
+        end
     end
 endgenerate
 
@@ -489,7 +505,7 @@ if(FT == 0) begin
     always_ff @(posedge clk_i) begin
         if(rstn_i == 1'b0 ) begin
             state <= TRANS_IDLE;
-        end else begin 
+        end else begin
             state <= next      ;
         end
     end
@@ -499,18 +515,18 @@ if(FT == 0) begin
     //there is a bug
         case (state)
             TRANS_IDLE: begin
-                complete_transfer_status = TRANSFER_SUCCESS_COMPLETE; 
-                dwrite_slave             = 32'hbeaf1d1e             ; 
-                dread_slave              = 32'hcafe1d1e             ; 
+                complete_transfer_status = TRANSFER_SUCCESS_COMPLETE;
+                dwrite_slave             = 32'hbeaf1d1e             ;
+                dread_slave              = 32'hcafe1d1e             ;
             end
             TRANS_BUSY:begin
-                complete_transfer_status = TRANSFER_SUCCESS_COMPLETE; 
-                dwrite_slave             = 32'hbeafb551             ; 
-                dread_slave              = 32'hcafeb551             ; 
+                complete_transfer_status = TRANSFER_SUCCESS_COMPLETE;
+                dwrite_slave             = 32'hbeafb551             ;
+                dread_slave              = 32'hcafeb551             ;
             end
             TRANS_NONSEQUENTIAL:begin
-                complete_transfer_status = TRANSFER_SUCCESS_COMPLETE; 
-                dwrite_slave = hwdata_i; 
+                complete_transfer_status = TRANSFER_SUCCESS_COMPLETE;
+                dwrite_slave = hwdata_i;
                 if(!address_phase.write_Q && !invalid_index) begin
                     dread_slave          = slv_reg_Q[slv_index]     ;
                 end else begin
@@ -518,8 +534,8 @@ if(FT == 0) begin
                 end
             end
             TRANS_SEQUENTIAL:begin
-                complete_transfer_status = TRANSFER_SUCCESS_COMPLETE; 
-                dwrite_slave             = hwdata_i                 ; 
+                complete_transfer_status = TRANSFER_SUCCESS_COMPLETE;
+                dwrite_slave             = hwdata_i                 ;
                 if(!address_phase.write_Q && !invalid_index) begin
                     dread_slave          = slv_reg_Q[slv_index]     ;
                 end else begin
@@ -530,10 +546,10 @@ if(FT == 0) begin
     end
 end else begin : Stateft
     //Fault tolerant implementation
-        //Triplication of next and state registers 
+        //Triplication of next and state registers
     logic [1:0] state_D, state_Q      ;
     logic       state_fte1, state_fte2; //fault tolerance errors
-    
+
     //error1 signals a corrected error, safe to ignore
     triple_reg #
     (
@@ -548,12 +564,12 @@ end else begin : Stateft
         .error1_o(state_fte1),
         .error2_o(state_fte2)
     );
-    
+
     //data phase - state update
     always_comb begin
         if(rstn_i == 1'b0 ) begin
             state_D = TRANS_IDLE;
-        end else begin 
+        end else begin
             state_D = next;
         end
     end
@@ -563,18 +579,18 @@ end else begin : Stateft
     //there is a bug
         case (state_Q)
             TRANS_IDLE: begin
-                complete_transfer_status = TRANSFER_SUCCESS_COMPLETE; 
-                dwrite_slave             = 32'hbeaf1d1e             ; 
-                dread_slave              = 32'hcafe1d1e             ; 
+                complete_transfer_status = TRANSFER_SUCCESS_COMPLETE;
+                dwrite_slave             = 32'hbeaf1d1e             ;
+                dread_slave              = 32'hcafe1d1e             ;
             end
             TRANS_BUSY:begin
-                complete_transfer_status = TRANSFER_SUCCESS_COMPLETE; 
-                dwrite_slave             = 32'hbeafb551             ; 
-                dread_slave              = 32'hcafeb551             ; 
+                complete_transfer_status = TRANSFER_SUCCESS_COMPLETE;
+                dwrite_slave             = 32'hbeafb551             ;
+                dread_slave              = 32'hcafeb551             ;
             end
             TRANS_NONSEQUENTIAL:begin
-                complete_transfer_status = TRANSFER_SUCCESS_COMPLETE; 
-                dwrite_slave = hwdata_i; 
+                complete_transfer_status = TRANSFER_SUCCESS_COMPLETE;
+                dwrite_slave = hwdata_i;
                 if(!address_phase.write_Q && !invalid_index) begin
                     dread_slave          = slv_reg_Q[slv_index]     ;
                 end else begin
@@ -582,8 +598,8 @@ end else begin : Stateft
                 end
             end
             TRANS_SEQUENTIAL:begin
-                complete_transfer_status = TRANSFER_SUCCESS_COMPLETE; 
-                dwrite_slave = hwdata_i; 
+                complete_transfer_status = TRANSFER_SUCCESS_COMPLETE;
+                dwrite_slave = hwdata_i;
                 if(!address_phase.write_Q && !invalid_index) begin
                     dread_slave          = slv_reg_Q[slv_index]     ;
                 end else begin
@@ -593,7 +609,7 @@ end else begin : Stateft
         endcase
     end
 end
-// address phase - state update 
+// address phase - state update
 always_comb begin
     case (htrans_i)
         TRANS_IDLE: begin
@@ -625,10 +641,10 @@ end
 
 // address phase - register required inputs
 always_comb begin
-    case (next) 
+    case (next)
         TRANS_IDLE:begin
             address_phase.select_D      = hsel_i                     ;
-            address_phase.write_D       = 0                          ; 
+            address_phase.write_D       = 0                          ;
             address_phase.master_addr_D = address_phase.master_addr_Q;
         end
         TRANS_BUSY:begin
@@ -665,7 +681,7 @@ assign hresp_o       = {{complete_transfer_status[1]},{complete_transfer_status[
 wire  ahb_write_req;
 assign ahb_write_req = address_phase.write_Q && address_phase.select_Q;
 logic pmu_raw_FT1, pmu_raw_FT2;
-    
+
 PMU_raw #
 (
     .REG_WIDTH          (REG_WIDTH         ),
@@ -675,9 +691,13 @@ PMU_raw #
     .N_CONF_REGS        (N_CONF_REGS       ),
     .MCCU_WEIGHTS_WIDTH (MCCU_WEIGHTS_WIDTH),
     .MCCU_N_EVENTS      (MCCU_N_EVENTS     ),
-    .FT                 (FT                )    
+    .FT                 (FT                ),
+    .MCCU_ALT_N_CORES        (MCCU_ALT_N_CORES      ),
+    .MCCU_ALT_WEIGHTS_WIDTH  (MCCU_ALT_WEIGHTS_WIDTH),
+    .MCCU_ALT_N_WEIGHTS      (MCCU_ALT_N_WEIGHTS    ),
+    .MCCU_ALT_N_EVENTS       (MCCU_ALT_N_EVENTS     )
 )
-inst_pmu_raw 
+inst_pmu_raw
 (
 	.clk_i        (clk_i        ),
 	.rstn_i       (rstn_i       ),
@@ -690,6 +710,7 @@ inst_pmu_raw
     .events_i     (events_i     ), // By cf 20220126
     .intr_overflow_o             ,
     .intr_MCCU_o                 ,
+    .intr_MCCU_ALT_o (intr_quota_o),
     .intr_RDC_o                  ,
     .en_hwquota_o(en_hwquota_o)
 );
@@ -700,7 +721,7 @@ inst_pmu_raw
 if(FT == 0 ) begin
     assign intr_FT1_o = 1'b0;
     assign intr_FT2_o = 1'b0;
-end else begin 
+end else begin
     //Gather all the signals of corrected errors from FT scopes
         // Codestyle. All scopes start with a capital letter
     assign intr_FT1_o = |{Apft.write_fte1
@@ -731,7 +752,7 @@ end
     //Set f_past_valid after first clock cycle
     always @(posedge clk_i)
         f_past_valid <= 1'b1;
-   
+
     //assume that if f_past is not valid you have to reset
     always @(*) begin
 		if(0 == f_past_valid) begin
@@ -742,13 +763,13 @@ end
 
     default clocking @(posedge clk_i); endclocking;
     //If the peripheral is not selected there is no chance to issue a write
-    assert property (((hsel_i == 0) && f_past_valid 
-                    ) 
+    assert property (((hsel_i == 0) && f_past_valid
+                    )
                     |=> (ahb_write_req == 0));
 
     //If htrans_i is not iddle or busy and  there is a write. ahb_write_req is
     //one in the next cycle unless there is a reset in the next cycle
-    assert property (((hsel_i == 1) && f_past_valid && rstn_i == 1 && $stable(rstn_i) 
+    assert property (((hsel_i == 1) && f_past_valid && rstn_i == 1 && $stable(rstn_i)
                     && (htrans_i != TRANS_IDLE && htrans_i != TRANS_BUSY)
                     && (hwrite_i == 1)
                     )
@@ -766,7 +787,7 @@ end
         //There is no pending write or it is not valid
     sequence no_ahb_write;
         //since ahb is pipelined i check for the last addres phase
-        f_past_valid && (ahb_write_req == 1'b0); 
+        f_past_valid && (ahb_write_req == 1'b0);
     endsequence
         //Register 1, assigned to counter 0 can't decrease
     sequence no_decrease_counter(n);
@@ -777,7 +798,7 @@ end
         $past(slv_reg[n+1]) == 32'hffffffff;
     endsequence
         //check property for all pmu registers.
-        //TODO: Do we actually want to check all ? Takes 6 minutes each. 
+        //TODO: Do we actually want to check all ? Takes 6 minutes each.
     generate
         genvar i;
         for(i = 0; i < N_COUNTERS; i++) begin
@@ -794,14 +815,14 @@ end
     assert property (
         //(ahb_write_req==1'b0) and (rstn_i==1)
         (ahb_write_req==1'b0) && (rstn_i==1) //By fchang 20220121
-        |=> $stable(slv_reg[0]) 
+        |=> $stable(slv_reg[0])
         );
-    
+
     //TODO: If counters cant decrease by their own what explains that we read
     //incoherent values out of the pmu? AHB properties? Does it fail to read
-    //when only one core is available? Does only happen in multicore? What if 
-    //nops are inserted after each read? 
-    
+    //when only one core is available? Does only happen in multicore? What if
+    //nops are inserted after each read?
+
 
 `endif
 
